@@ -2,19 +2,19 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
         xmlns:xhtml="http://www.w3.org/1999/xhtml">
   <url>
-    <loc>https://beautia.vercel.app/</loc>
-    <xhtml:link rel="alternate" hreflang="ko" href="https://beautia.vercel.app/?lang=ko"/>
-    <xhtml:link rel="alternate" hreflang="ja" href="https://beautia.vercel.app/?lang=ja"/>
-    <xhtml:link rel="alternate" hreflang="x-default" href="https://beautia.vercel.app/"/>
+    <loc>https://beautia.io/</loc>
+    <xhtml:link rel="alternate" hreflang="ko" href="https://beautia.io/?lang=ko"/>
+    <xhtml:link rel="alternate" hreflang="ja" href="https://beautia.io/?lang=ja"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://beautia.io/"/>
     <changefreq>weekly</changefreq><priority>1.0</priority>
   </url>
   <url>
-    <loc>https://beautia.vercel.app/community</loc>
-    <xhtml:link rel="alternate" hreflang="ko" href="https://beautia.vercel.app/community?lang=ko"/>
-    <xhtml:link rel="alternate" hreflang="ja" href="https://beautia.vercel.app/community?lang=ja"/>
-    <xhtml:link rel="alternate" hreflang="x-default" href="https://beautia.vercel.app/community"/>
+    <loc>https://beautia.io/community</loc>
+    <xhtml:link rel="alternate" hreflang="ko" href="https://beautia.io/community?lang=ko"/>
+    <xhtml:link rel="alternate" hreflang="ja" href="https://beautia.io/community?lang=ja"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://beautia.io/community"/>
     <changefreq>daily</changefreq><priority>0.9</priority>
   </url>
-  <url><loc>https://beautia.vercel.app/privacy</loc><changefreq>monthly</changefreq><priority>0.3</priority></url>
-  <url><loc>https://beautia.vercel.app/terms</loc><changefreq>monthly</changefreq><priority>0.3</priority></url>
+  <url><loc>https://beautia.io/privacy</loc><changefreq>monthly</changefreq><priority>0.3</priority></url>
+  <url><loc>https://beautia.io/terms</loc><changefreq>monthly</changefreq><priority>0.3</priority></url>
 </urlset>

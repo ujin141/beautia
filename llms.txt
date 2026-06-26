@@ -23,8 +23,8 @@ Beautia(뷰티아)는 일본 여행·워킹홀리데이·거주 중인 한국인
 - 한국어/일본어 전환 지원
 
 ## 링크
-- 웹사이트: https://beautia.vercel.app/
-- 커뮤니티: https://beautia.vercel.app/community.html
+- 웹사이트: https://beautia.io/
+- 커뮤니티: https://beautia.io/community
 - 인스타그램: https://instagram.com/beautia.japan
 - 카카오톡 채널(예약 신청): https://pf.kakao.com/_xhxhixfX
 
