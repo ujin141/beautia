@@ -38,252 +38,350 @@
 </script>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3/dist/tabler-icons.min.css">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@400;500;600;700;900&family=Playfair+Display:ital,wght@0,500;0,700;0,800;1,500&display=swap">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
 <style>
 :root{
- --ink:#1F1A1C;--ink2:#574C50;--sub:#9C928E;--line:#ECE6E3;--line2:#F4EFEC;--soft:#F7F3F1;--tint:#FBF8F6;--pagebg:#F4F0ED;
- --rose:#B5828C;--plum:#6E4A50;--plum2:#5A3A40;--gold:#C98A3C;--rosebg:#FBEFF1;--plumbg:#F1ECEE;--goldbg:#F5EEE1;
+ --bg:#FFFFFF;--ink:#1A1416;--ink2:#6B6064;--sub:#A99FA2;--line:#EFEAEB;--line2:#F5F1F2;--soft:#F7F1F2;--tint:#FBF7F8;--pagebg:#FFFFFF;--paper:#FFFFFF;
+ --accent:#6D4346;--accentsoft:#F1E7E8;--plum:#6D4346;--plum2:#532F33;--gold:#9A7A3A;--rose:#8A555B;--rosebg:#F1E7E8;--plumbg:#F1E9EA;--goldbg:#F2ECDE;
+ --serif:'Pretendard',system-ui,sans-serif;--disp:'Playfair Display',Georgia,serif;
  --s1:4px;--s2:8px;--s3:12px;--s4:16px;--s5:20px;--s6:24px;--s8:32px;--r1:8px;--r2:12px;--r3:16px;
 }
-*{box-sizing:border-box;margin:0;padding:0;-webkit-font-smoothing:antialiased;}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;}
 html{overflow-x:hidden;}
-body{font-family:'Pretendard',system-ui,sans-serif;background:var(--pagebg);color:var(--ink);line-height:1.55;overflow-x:hidden;font-size:14px;}
+body{font-family:'Pretendard',system-ui,sans-serif;background:var(--bg);color:var(--ink);line-height:1.6;overflow-x:hidden;font-size:14px;letter-spacing:-.01em;}
 a{color:inherit;text-decoration:none;}
 .tnum{font-variant-numeric:tabular-nums;}.muted{color:var(--sub);}
-.btn{font-family:inherit;cursor:pointer;border:none;border-radius:var(--r1);font-weight:700;font-size:13.5px;padding:9px 16px;display:inline-flex;align-items:center;gap:6px;transition:.12s;white-space:nowrap;}
-.btn:active{transform:scale(.98);}
+.kicker{font-size:10.5px;font-weight:700;letter-spacing:1.6px;text-transform:uppercase;color:var(--accent);}
+.btn{font-family:inherit;cursor:pointer;border:none;border-radius:999px;font-weight:600;font-size:13px;padding:10px 18px;display:inline-flex;align-items:center;gap:6px;transition:.16s ease;white-space:nowrap;letter-spacing:-.01em;}
+.btn:active{transform:scale(.985);}
 .btn-primary{background:var(--plum);color:#fff;}.btn-primary:hover{background:var(--plum2);}
 .btn-kakao{background:#FEE500;color:#3A1D1D;}
-.btn-ghost{background:#fff;color:var(--plum);border:1px solid var(--line);}
-.av{border-radius:50%;flex:0 0 auto;display:flex;align-items:center;justify-content:center;color:#fff;font-family:Georgia,serif;font-style:italic;font-weight:700;}
-.panel{background:#fff;border:1px solid var(--line);border-radius:var(--r2);}
-.panel-h{font-size:12px;font-weight:800;color:var(--sub);letter-spacing:.5px;padding:14px var(--s4) 9px;}
+.btn-ghost{background:transparent;color:var(--plum);border:1px solid var(--plum);}
+.btn-ghost:hover{background:var(--plum);color:#fff;}
+.av{border-radius:50%;flex:0 0 auto;display:flex;align-items:center;justify-content:center;color:#fff;font-family:inherit;font-weight:600;letter-spacing:0;}
+.panel{background:transparent;border:none;border-radius:0;}
+.panel+.panel{margin-top:var(--s6);}
+.panel-h{font-size:11px;font-weight:700;color:var(--sub);letter-spacing:1.4px;text-transform:uppercase;padding:0 0 12px;}
 
 /* header */
-.hdr{background:#fff;border-bottom:1px solid var(--line);position:sticky;top:0;z-index:60;}
-.hwrap{max-width:1240px;margin:0 auto;display:flex;align-items:center;gap:var(--s6);height:60px;padding:0 var(--s6);}
+.hdr{background:rgba(255,255,255,.85);backdrop-filter:saturate(180%) blur(12px);border-bottom:1px solid var(--line);position:sticky;top:0;z-index:60;}
+.hwrap{max-width:1240px;margin:0 auto;display:flex;align-items:center;gap:var(--s8);height:56px;padding:0 var(--s6);}
 .logo{flex:0 0 auto;display:flex;align-items:center;}
-.logo img{height:26px;display:block;}
-.gnav{display:flex;gap:var(--s5);}
-.gnav a{font-size:14.5px;font-weight:600;color:var(--ink2);cursor:pointer;}
-.gnav a.on{color:var(--plum);font-weight:800;}.gnav a:hover{color:var(--plum);}
-.hsearch{margin-left:auto;display:flex;align-items:center;gap:8px;background:var(--soft);border:1px solid var(--line);border-radius:20px;padding:8px 14px;width:210px;color:var(--sub);}
+.logo img{height:24px;display:block;}
+.gnav{display:flex;gap:var(--s6);}
+.gnav a{font-size:14px;font-weight:500;color:var(--ink2);cursor:pointer;position:relative;padding:4px 0;transition:.14s;}
+.gnav a.on{color:var(--ink);font-weight:600;}
+.gnav a:hover{color:var(--ink);}
+.hsearch{margin-left:auto;display:flex;align-items:center;gap:8px;background:var(--soft);border:1px solid transparent;border-radius:999px;padding:9px 15px;width:200px;color:var(--sub);transition:.16s;}
+.hsearch:focus-within{background:#fff;border-color:var(--line);box-shadow:0 1px 8px -4px rgba(0,0,0,.15);}
 .hsearch input{flex:1;border:none;background:transparent;font-family:inherit;font-size:13.5px;color:var(--ink);outline:none;}
-.hright{display:flex;align-items:center;gap:var(--s3);flex:0 0 auto;}
-.hright .av{width:34px;height:34px;font-size:14px;cursor:pointer;}
-.langtog{display:flex;border:1px solid var(--line);border-radius:20px;overflow:hidden;font-size:12.5px;font-weight:800;}
-.langtog span{padding:6px 11px;cursor:pointer;color:var(--sub);}
-.langtog span.on{background:var(--plum);color:#fff;}
+.hright{display:flex;align-items:center;gap:var(--s4);flex:0 0 auto;}
+.hright .av{width:34px;height:34px;font-size:15px;cursor:pointer;}
+.ptschip{font-size:12.5px;font-weight:800;color:var(--plum);background:var(--plumbg);padding:7px 12px;border-radius:999px;cursor:pointer;letter-spacing:-.01em;font-variant-numeric:tabular-nums;white-space:nowrap;}
+@media(max-width:560px){.ptschip{display:none;}}
+.ptspanel{background:var(--plum);color:#fff;border-radius:16px;padding:20px 22px;margin-top:var(--s5);}
+.ptspanel .pbig{font-family:var(--disp);font-size:34px;font-weight:700;line-height:1;letter-spacing:-.01em;}
+.ptspanel .plbl{font-size:11px;letter-spacing:1px;text-transform:uppercase;opacity:.8;margin-bottom:8px;}
+.ptspanel .pnote{font-size:12px;color:rgba(255,255,255,.78);margin-top:10px;line-height:1.6;}
+.refbox{background:var(--soft);border-radius:14px;padding:16px 18px;margin-top:14px;}
+.refbox h4{font-size:14px;font-weight:800;letter-spacing:-.02em;}
+.refbox p{font-size:12.5px;color:var(--ink2);margin-top:6px;line-height:1.6;}
+.refrow{display:flex;gap:8px;margin-top:12px;}
+.refrow input{flex:1;border:1px solid var(--line);border-radius:10px;padding:10px 12px;font-family:inherit;font-size:12.5px;color:var(--ink2);background:#fff;outline:none;}
+.prulelist{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px;}
+.prulelist .pr{font-size:12px;font-weight:600;color:var(--plum);background:var(--plumbg);padding:6px 12px;border-radius:999px;}
+.phist{margin-top:14px;}
+.phrow{display:flex;justify-content:space-between;align-items:center;padding:11px 0;border-top:1px solid var(--line2);font-size:13px;}
+.phrow:first-child{border-top:none;}
+.phrow .pa{font-weight:800;color:var(--plum);font-variant-numeric:tabular-nums;}
+.phrow .pr2{color:var(--ink2);}.phrow .pd{color:var(--sub);font-size:11.5px;}
+.langtog{display:flex;background:var(--soft);border-radius:999px;overflow:hidden;font-size:12px;font-weight:600;padding:3px;gap:2px;}
+.langtog span{padding:5px 11px;cursor:pointer;color:var(--sub);border-radius:999px;transition:.14s;}
+.langtog span.on{background:#fff;color:var(--plum);box-shadow:0 1px 3px rgba(0,0,0,.08);}
 @media(max-width:900px){.gnav,.hsearch{display:none;}}
 
 /* layout */
-.wrap{max-width:1240px;margin:0 auto;display:grid;grid-template-columns:208px minmax(0,1fr) 300px;gap:var(--s5);padding:var(--s5) var(--s6) 60px;align-items:start;}
+.wrap{max-width:1240px;margin:0 auto;display:grid;grid-template-columns:176px minmax(0,1fr) 264px;gap:32px;padding:18px var(--s6) 48px;align-items:start;}
 .col-side{position:sticky;top:76px;}
-@media(max-width:1080px){.wrap{grid-template-columns:208px minmax(0,1fr);}.col-right{display:none;}}
-@media(max-width:760px){.wrap{display:block;padding:var(--s4);}.col-left{display:none;}}
+@media(max-width:1080px){.wrap{grid-template-columns:160px minmax(0,1fr);gap:28px;}.col-right{display:none;}}
+@media(max-width:760px){.wrap{display:block;padding:var(--s5) var(--s4) 60px;}.col-left{display:none;}}
 
 /* left nav */
-.lnav{padding:var(--s2);}
-.lnav .lh{font-size:11px;font-weight:800;color:var(--sub);letter-spacing:.5px;padding:10px 12px 6px;}
-.lnav a{display:flex;align-items:center;gap:11px;padding:9px 12px;border-radius:var(--r1);font-size:14px;font-weight:600;color:var(--ink2);cursor:pointer;}
-.lnav a .ti{font-size:18px;color:var(--sub);width:19px;text-align:center;}
-.lnav a .cnt{margin-left:auto;font-size:11.5px;color:var(--sub);font-weight:700;}
-.lnav a:hover{background:var(--tint);}.lnav a.on{background:var(--plumbg);color:var(--plum);}.lnav a.on .ti{color:var(--plum);}
-.lnav .div{height:1px;background:var(--line2);margin:8px 10px;}
+.lnav{padding:0;}
+.lnav .lh{font-size:10.5px;font-weight:700;color:var(--sub);letter-spacing:1.5px;text-transform:uppercase;padding:0 0 12px;margin-top:28px;}
+.lnav .lh:first-child{margin-top:0;}
+.lnav a{display:flex;align-items:center;gap:10px;padding:8px 12px;border-radius:10px;font-size:14px;font-weight:500;color:var(--ink2);cursor:pointer;transition:.13s;}
+.lnav a .ti{font-size:17px;color:var(--sub);width:18px;text-align:center;transition:.13s;}
+.lnav a .cnt{margin-left:auto;font-size:11.5px;color:var(--sub);font-weight:500;}
+.lnav a:hover{background:var(--soft);color:var(--ink);}
+.lnav a.on{background:var(--plum);color:#fff;font-weight:600;}
+.lnav a.on .ti,.lnav a.on .cnt{color:rgba(255,255,255,.78);}
+.lnav .div{height:1px;background:var(--line);margin:18px 12px 0;}
 
-/* board */
-.board-top{display:flex;align-items:center;justify-content:space-between;gap:var(--s3);background:#fff;border:1px solid var(--line);border-radius:var(--r2);padding:10px 12px;margin-bottom:var(--s4);}
-.sorttabs{display:flex;gap:var(--s1);}
-.stab{display:flex;align-items:center;gap:5px;font-size:13.5px;font-weight:700;color:var(--sub);padding:7px 13px;border-radius:20px;cursor:pointer;}
-.stab .ti{font-size:16px;}.stab.on{background:var(--soft);color:var(--plum);}
-.regsel{border:1px solid var(--line);border-radius:var(--r1);padding:8px 11px;font-family:inherit;font-size:13px;color:var(--ink2);background:#fff;outline:none;cursor:pointer;}
-.boardhead{display:flex;align-items:baseline;gap:10px;padding:2px 4px var(--s3);}
-.boardhead h1{font-size:19px;font-weight:800;letter-spacing:-.4px;}.boardhead .c{font-size:13px;color:var(--sub);}
+/* board top */
+.board-top{display:flex;align-items:center;justify-content:space-between;gap:var(--s3);margin-bottom:12px;}
+.sorttabs{display:flex;gap:var(--s1);background:var(--soft);border-radius:999px;padding:4px;}
+.stab{display:flex;align-items:center;gap:5px;font-size:13px;font-weight:600;color:var(--sub);padding:8px 16px;border-radius:999px;cursor:pointer;transition:.14s;}
+.stab .ti{font-size:15px;}
+.stab:hover{color:var(--ink);}
+.stab.on{background:#fff;color:var(--plum);box-shadow:0 1px 4px rgba(0,0,0,.07);}
+.regsel{border:1px solid var(--line);border-radius:999px;padding:9px 14px;font-family:inherit;font-size:12.5px;color:var(--ink2);background:#fff;outline:none;cursor:pointer;}
+.boardhead{display:flex;align-items:baseline;gap:10px;padding:0 0 14px;}
+.boardhead h1{font-size:21px;font-weight:800;letter-spacing:-.03em;line-height:1.1;}
+.boardhead .c{font-size:12.5px;color:var(--sub);font-weight:500;}
 
-.card{display:flex;background:#fff;border:1px solid var(--line);border-radius:var(--r2);margin-bottom:10px;overflow:hidden;cursor:pointer;transition:border-color .12s,box-shadow .12s;}
-.card:hover{border-color:#E0D4CF;box-shadow:0 6px 18px -12px rgba(90,60,66,.4);}
-.vote{flex:0 0 52px;background:var(--tint);border-right:1px solid var(--line2);display:flex;flex-direction:column;align-items:center;gap:3px;padding:14px 0;}
-.vote .vb{width:30px;height:30px;border-radius:8px;display:flex;align-items:center;justify-content:center;color:var(--sub);transition:.12s;}
-.vote .vb:hover{background:var(--rosebg);color:var(--rose);}.vote .vb .ti{font-size:19px;}
-.vote .vn{font-size:13px;font-weight:800;color:var(--ink2);}
-.vote.liked .vb{color:var(--rose);}.vote.liked .vn{color:var(--rose);}
-.cbody{flex:1;min-width:0;padding:13px var(--s4) 12px;}
-.chead{display:flex;align-items:center;gap:7px;font-size:12px;color:var(--sub);flex-wrap:wrap;}
-.chead .av{width:20px;height:20px;font-size:10px;}
-.chead .cat{font-weight:800;color:var(--rose);}
-.rbadge{font-size:10px;font-weight:800;padding:2px 7px;border-radius:5px;}
-.rb-guest{background:var(--rosebg);color:#9A5E6A;}.rb-owner{background:var(--plumbg);color:var(--plum);}.rb-official{background:var(--goldbg);color:#9A7B3C;}
-.chead .dot{width:2px;height:2px;border-radius:50%;background:var(--sub);opacity:.6;}
-.ctitle{font-size:16px;font-weight:700;margin-top:7px;letter-spacing:-.3px;line-height:1.4;}
-.cexc{font-size:13.5px;color:var(--ink2);margin-top:5px;line-height:1.55;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;}
-.cmedia{display:grid;gap:4px;margin-top:11px;border-radius:var(--r1);overflow:hidden;}
-.cmedia.one{grid-template-columns:1fr;}.cmedia.g2{grid-template-columns:1fr 1fr;}.cmedia.g3{grid-template-columns:1.7fr 1fr 1fr;}
-.cmedia .mi{background-size:cover;background-position:center;height:128px;position:relative;background-color:var(--soft);}
-.cmedia.one .mi{height:240px;}
-.cmedia .more{position:absolute;inset:0;background:rgba(20,12,15,.5);color:#fff;display:flex;align-items:center;justify-content:center;font-size:19px;font-weight:800;}
-.ctags{display:flex;gap:6px;flex-wrap:wrap;margin-top:10px;}
-.ctag{font-size:11.5px;font-weight:600;color:var(--plum);background:var(--plumbg);padding:3px 9px;border-radius:6px;}
-.dtags{display:flex;gap:7px;flex-wrap:wrap;margin-top:18px;}
-.dtag{font-size:12.5px;font-weight:600;color:var(--plum);background:var(--plumbg);padding:5px 12px;border-radius:7px;}
+/* image-led feed grid */
+.feedgrid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px 16px;}
+@media(max-width:1080px){.feedgrid{grid-template-columns:repeat(2,minmax(0,1fr));}}
+@media(max-width:560px){.feedgrid{grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;}}
+.card{display:flex;flex-direction:column;background:transparent;border:none;border-radius:0;margin:0;padding:0;overflow:visible;cursor:pointer;}
+.vote,.cthumb,.cmedia{display:none;}
+.cover{position:relative;width:100%;aspect-ratio:5/4;border-radius:12px;overflow:hidden;background:var(--soft);}
+.cover img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block;z-index:1;transition:transform .5s cubic-bezier(.2,.6,.2,1);}
+.card:hover .cover img{transform:scale(1.045);}
+.cover .ptext{position:absolute;inset:0;z-index:0;display:flex;align-items:flex-end;padding:18px;color:#fff;font-size:19px;font-weight:800;letter-spacing:-.025em;line-height:1.3;}
+.cover .scrim{display:none;}
+.cover .catchip{position:absolute;left:11px;top:11px;z-index:3;background:rgba(20,15,13,.5);backdrop-filter:blur(6px);color:#fff;font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;padding:5px 11px;border-radius:999px;}
+.cover .newchip{position:absolute;right:11px;top:11px;z-index:3;background:var(--accent);color:#fff;font-size:10px;font-weight:800;letter-spacing:.5px;padding:4px 9px;border-radius:999px;}
+.cover .morechip{position:absolute;right:11px;bottom:11px;z-index:3;background:rgba(20,15,13,.62);backdrop-filter:blur(4px);color:#fff;font-size:11px;font-weight:600;padding:3px 9px;border-radius:999px;display:flex;align-items:center;gap:4px;}
+.cbody{padding:9px 2px 0;}
+.chead{display:flex;align-items:center;gap:6px;font-size:11px;color:var(--sub);flex-wrap:wrap;margin-top:6px;}
+.chead .av{display:none;}
+.chead .cat{display:none;}
+.rbadge{font-size:11.5px;font-weight:500;padding:0;color:var(--ink2);}
+.rb-guest{color:var(--sub);}.rb-owner{color:var(--plum);}.rb-designer{color:#3E7C7B;}.rb-official{color:var(--gold);}
+.chead .dot{width:2.5px;height:2.5px;border-radius:50%;background:var(--sub);opacity:.55;}
+.ctitle{font-size:14px;font-weight:700;margin-top:0;letter-spacing:-.02em;line-height:1.38;transition:color .14s;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;}
+.card.nophoto .ctitle{display:none;}
+.cexc{font-size:12px;color:var(--ink2);margin-top:5px;line-height:1.5;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;}
+.card:not(.nophoto) .cexc{display:none;}
+.ctags{display:none;}
+/* lead — full-width hero */
+.card.lead{grid-column:1 / -1;margin-bottom:8px;}
+.card.lead .cover{aspect-ratio:128/45;border-radius:18px;}
+.card.lead .cover .scrim{display:block;position:absolute;inset:0;z-index:2;background:linear-gradient(90deg,rgba(15,11,10,.72) 0%,rgba(15,11,10,.32) 55%,transparent 100%);}
+.card.lead .leadtext{position:absolute;left:0;bottom:0;z-index:3;padding:34px 38px;max-width:74%;color:#fff;}
+.card.lead .lead-cat{font-size:11px;font-weight:700;letter-spacing:1.6px;text-transform:uppercase;color:rgba(255,255,255,.92);}
+.card.lead .lead-title{font-size:29px;font-weight:800;letter-spacing:-.035em;line-height:1.18;margin-top:11px;}
+.card.lead .lead-exc{font-size:14px;line-height:1.55;margin-top:10px;opacity:.9;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;}
+.card.lead .cover .ptext,.card.lead .cbody{display:none;}
+@media(max-width:760px){.card.lead .cover{aspect-ratio:16/10;}.card.lead .leadtext{max-width:92%;padding:24px;}.card.lead .lead-title{font-size:23px;}}
+
+.dtags{display:flex;gap:8px;flex-wrap:wrap;margin-top:22px;}
+.dtag{font-size:12.5px;font-weight:500;color:var(--ink2);background:var(--soft);padding:6px 13px;border-radius:999px;}.dtag::before{content:'#';color:var(--sub);}
 .charcount{font-size:11px;color:var(--sub);text-align:right;margin-top:4px;}
+.cmedia{display:none;}
 /* retention */
-.newdot{font-size:9px;font-weight:800;color:#fff;background:var(--rose);padding:1px 5px;border-radius:4px;letter-spacing:.3px;}
+.newdot{font-size:9px;font-weight:800;color:#fff;background:var(--accent);padding:2px 6px;border-radius:999px;letter-spacing:.4px;}
 .card.read .ctitle{color:var(--sub);}
-.card.read .vote{opacity:.8;}
-.streak{display:flex;align-items:center;gap:12px;background:linear-gradient(135deg,#FFF4E8,#FBEFF1);border:1px solid var(--line);border-radius:var(--r2);padding:14px 16px;margin-bottom:14px;}
-.streak .fire{font-size:26px;line-height:1;}
-.streak .sn{font-size:15px;font-weight:800;color:var(--plum);}
+.streak{display:flex;align-items:center;gap:11px;background:var(--soft);border:none;border-radius:12px;padding:11px 14px;margin-bottom:16px;}
+.streak .fire{font-size:22px;line-height:1;}
+.streak .sn{font-size:14.5px;font-weight:700;color:var(--ink);letter-spacing:-.01em;}
 .streak .sl{font-size:11.5px;color:var(--ink2);margin-top:2px;}
-.related{margin-top:var(--s6);padding-top:var(--s5);border-top:1px solid var(--line);}
-.related h4{font-size:15px;font-weight:800;margin-bottom:6px;}
-.rel{display:flex;gap:12px;align-items:center;padding:12px 0;border-top:1px solid var(--line2);cursor:pointer;}
+.related{margin-top:48px;padding-top:var(--s6);border-top:1px solid var(--line);}
+.related h4{font-size:17px;font-weight:700;margin-bottom:8px;letter-spacing:-.02em;}
+.rel{display:flex;gap:14px;align-items:center;padding:14px 0;border-top:1px solid var(--line2);cursor:pointer;}
 .rel:first-of-type{border-top:none;}
-.rel:hover .rt{color:var(--plum);}
-.rel .rt{flex:1;font-size:14.5px;font-weight:600;line-height:1.4;}
+.rel:hover .rt{color:var(--accent);}
+.rel .rt{flex:1;font-size:15px;font-weight:600;line-height:1.45;letter-spacing:-.015em;transition:.14s;}
 .rel .rm{font-size:11.5px;color:var(--sub);margin-top:3px;font-weight:500;}
-.rel .rc{font-size:12.5px;color:var(--sub);white-space:nowrap;font-weight:600;}
-.fab{position:fixed;right:24px;bottom:24px;z-index:80;width:46px;height:46px;border-radius:50%;background:#fff;border:1px solid var(--line);box-shadow:0 10px 24px -8px rgba(90,60,66,.5);display:none;align-items:center;justify-content:center;color:var(--plum);cursor:pointer;}
-.fab.on{display:flex;}.fab .ti{font-size:22px;}
+.rel .rc{font-size:12px;color:var(--sub);white-space:nowrap;font-weight:500;}
+.fab{position:fixed;right:24px;bottom:24px;z-index:80;width:46px;height:46px;border-radius:50%;background:var(--plum);border:none;box-shadow:0 10px 28px -10px rgba(109,67,70,.6);display:none;align-items:center;justify-content:center;color:#fff;cursor:pointer;}
+.fab.on{display:flex;}.fab .ti{font-size:21px;}
 /* member / profile */
-.rolepick{display:flex;gap:10px;margin-top:10px;}
-.rolecard{flex:1;border:1.5px solid var(--line);border-radius:var(--r2);padding:16px 12px;text-align:center;cursor:pointer;transition:.12s;}
-.rolecard.on{border-color:var(--plum);background:var(--plumbg);}
-.rolecard .ti{font-size:26px;color:var(--plum);}
-.rolecard .rt{font-weight:800;font-size:14px;margin-top:6px;}
-.rolecard .rd{font-size:11px;color:var(--sub);margin-top:3px;line-height:1.4;}
-.profhead{display:flex;gap:18px;align-items:flex-start;background:#fff;border:1px solid var(--line);border-radius:var(--r2);padding:22px 24px;}
-.profhead .av{width:72px;height:72px;font-size:30px;}
-.profhead .pn{font-size:22px;font-weight:800;display:flex;align-items:center;gap:8px;flex-wrap:wrap;}
+.rolepick{display:flex;gap:8px;margin-top:10px;}
+.rolecard{padding:15px 8px;}
+.pfava{display:flex;align-items:center;gap:14px;margin-top:10px;}
+.pfava .pv{width:76px;height:76px;border-radius:50%;background:var(--soft);background-size:cover;background-position:center;flex:0 0 auto;display:flex;align-items:center;justify-content:center;color:var(--sub);font-size:26px;border:1px solid var(--line);cursor:pointer;overflow:hidden;}
+.pfava .pi{flex:1;min-width:0;}
+.pfava .pi .h{font-size:13px;font-weight:700;}
+.pfava .pi .s{font-size:11.5px;color:var(--sub);margin-top:3px;line-height:1.5;}
+.pfava .pi button{margin-top:8px;font-family:inherit;cursor:pointer;border:1px solid var(--line);background:#fff;border-radius:999px;padding:7px 13px;font-size:12px;font-weight:700;color:var(--plum);}
+.pfava .pi button:hover{border-color:var(--plum);}
+.rolecard{flex:1;border:1px solid var(--line);border-radius:14px;padding:18px 12px;text-align:center;cursor:pointer;transition:.14s;}
+.rolecard.on{border-color:var(--plum);background:var(--tint);}
+.rolecard .ti{font-size:25px;color:var(--ink);}
+.rolecard .rt{font-weight:700;font-size:14px;margin-top:6px;}
+.rolecard .rd{font-size:11px;color:var(--sub);margin-top:3px;line-height:1.45;}
+.profhead{display:flex;gap:20px;align-items:flex-start;background:transparent;border:none;border-bottom:1px solid var(--line);border-radius:0;padding:0 0 var(--s6);}
+.profhead .av{width:76px;height:76px;font-size:32px;}
+.profhead .pn{font-size:24px;font-weight:800;display:flex;align-items:center;gap:8px;flex-wrap:wrap;letter-spacing:-.03em;}
 .profhead .pm{font-size:13px;color:var(--sub);margin-top:5px;}
-.profhead .pbio{font-size:13.5px;color:var(--ink2);margin-top:9px;line-height:1.55;}
+.profhead .pbio{font-size:13.5px;color:var(--ink2);margin-top:10px;line-height:1.65;}
 .profhead .pact{margin-left:auto;display:flex;flex-direction:column;gap:8px;flex:0 0 auto;}
-.pstats{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-top:12px;}
-.pstat{background:#fff;border:1px solid var(--line);border-radius:var(--r2);padding:16px 8px;text-align:center;}
-.pstat .n{font-size:20px;font-weight:800;color:var(--plum);}
-.pstat .l{font-size:11px;color:var(--sub);margin-top:3px;}
-.shopcard{background:#fff;border:1px solid var(--line);border-radius:var(--r2);padding:18px 20px;margin-top:12px;}
-.shopcard h4{font-size:14px;font-weight:800;display:flex;align-items:center;gap:7px;}
+.pstats{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-top:var(--s6);}
+.pstat{background:var(--soft);border:none;border-radius:14px;padding:18px 8px;text-align:center;}
+.pstat .n{font-family:var(--disp);font-size:25px;font-weight:700;color:var(--ink);}
+.pstat .l{font-size:11px;color:var(--sub);margin-top:4px;}
+.shopcard{background:var(--soft);border:none;border-radius:14px;padding:18px 20px;margin-top:var(--s4);}
+.shopcard h4{font-size:15px;font-weight:700;display:flex;align-items:center;gap:7px;letter-spacing:-.01em;}
 .shopcard .row{font-size:13px;color:var(--ink2);margin-top:8px;}
-.chipset{display:flex;gap:6px;flex-wrap:wrap;margin-top:9px;}
-.chipset .c{font-size:12px;font-weight:600;color:var(--plum);background:var(--plumbg);padding:5px 11px;border-radius:7px;}
-.pseg{display:flex;gap:4px;margin-top:16px;background:var(--soft);border-radius:10px;padding:4px;}
-.pseg .s{flex:1;text-align:center;font-size:13px;font-weight:700;color:var(--sub);padding:9px;border-radius:8px;cursor:pointer;}
-.pseg .s.on{background:#fff;color:var(--plum);box-shadow:0 1px 3px rgba(0,0,0,.06);}
+.chipset{display:flex;gap:7px;flex-wrap:wrap;margin-top:10px;}
+.chipset .c{font-size:12px;font-weight:500;color:var(--ink2);background:#fff;border:1px solid var(--line);padding:5px 12px;border-radius:999px;}
+.pseg{display:flex;gap:4px;margin-top:var(--s6);background:var(--soft);border-radius:999px;padding:4px;}
+.pseg .s{flex:1;text-align:center;font-size:13px;font-weight:600;color:var(--sub);padding:9px;border-radius:999px;cursor:pointer;transition:.14s;}
+.pseg .s.on{background:#fff;color:var(--plum);box-shadow:0 1px 4px rgba(0,0,0,.07);}
 .steps{display:flex;gap:6px;margin-bottom:4px;}
-.steps .sd{flex:1;height:4px;border-radius:3px;background:var(--line);}
+.steps .sd{flex:1;height:3px;border-radius:999px;background:var(--line);}
 .steps .sd.on{background:var(--plum);}
-.secnote{font-size:12px;color:var(--ink2);background:var(--soft);border:1px solid var(--line2);border-radius:var(--r1);padding:11px 13px;margin-top:14px;line-height:1.55;}
+.secnote{font-size:12px;color:var(--ink2);background:var(--soft);border:none;border-radius:12px;padding:12px 14px;margin-top:14px;line-height:1.6;}
 .verifyrow{display:flex;gap:8px;margin-top:9px;}
 .verifyrow .field{margin-top:0;flex:1;}
 .verifyrow .btn{flex:0 0 auto;}
-.vbadge{display:inline-flex;align-items:center;gap:5px;color:#2E8B57;font-weight:700;font-size:13px;margin-top:9px;}
+.vbadge{display:inline-flex;align-items:center;gap:5px;color:#2E7D54;font-weight:600;font-size:13px;margin-top:9px;}
 .vbadge .ti{font-size:17px;}
-.agree{display:flex;align-items:center;gap:9px;padding:9px 0;font-size:13.5px;color:var(--ink2);cursor:pointer;border-top:1px solid var(--line2);}
+.agree{display:flex;align-items:center;gap:9px;padding:11px 0;font-size:13.5px;color:var(--ink2);cursor:pointer;border-top:1px solid var(--line2);}
 .agree:first-of-type{border-top:none;}
 .agree input{width:18px;height:18px;accent-color:var(--plum);flex:0 0 auto;}
-.agree .req{color:var(--rose);font-weight:800;font-size:11px;}
-.agree a{color:var(--plum);font-size:12px;margin-left:auto;cursor:pointer;}
-.profhead .vchip{display:inline-flex;align-items:center;gap:3px;font-size:11px;font-weight:700;color:#2E8B57;background:#EAF6EF;padding:2px 8px;border-radius:6px;}
-.gbtn{width:100%;display:flex;align-items:center;justify-content:center;gap:10px;border:1px solid #DADCE0;background:#fff;border-radius:var(--r1);padding:12px;font-family:inherit;font-weight:700;font-size:14.5px;color:#3C4043;cursor:pointer;margin-top:6px;transition:.12s;}
-.gbtn:hover{background:#F7F8F8;box-shadow:0 1px 4px rgba(0,0,0,.08);}
-.ordiv{display:flex;align-items:center;gap:10px;color:var(--sub);font-size:12px;margin:16px 0 2px;}
+.agree .req{color:var(--accent);font-weight:700;font-size:11px;}
+.agree a{color:var(--ink2);font-size:12px;margin-left:auto;cursor:pointer;text-decoration:underline;}
+.profhead .vchip{display:inline-flex;align-items:center;gap:3px;font-size:11px;font-weight:600;color:#2E7D54;background:#E9F4EE;padding:3px 9px;border-radius:999px;}
+.gbtn{width:100%;display:flex;align-items:center;justify-content:center;gap:10px;border:1px solid var(--line);background:#fff;border-radius:999px;padding:13px;font-family:inherit;font-weight:600;font-size:14px;color:var(--ink);cursor:pointer;margin-top:6px;transition:.14s;}
+.gbtn:hover{background:var(--tint);border-color:var(--ink);}
+.ordiv{display:flex;align-items:center;gap:10px;color:var(--sub);font-size:11px;letter-spacing:.5px;margin:18px 0 2px;}
 .ordiv::before,.ordiv::after{content:'';flex:1;height:1px;background:var(--line);}
 @media(max-width:560px){.pstats{grid-template-columns:repeat(2,1fr);}.profhead{flex-wrap:wrap;}.profhead .pact{margin-left:0;flex-direction:row;width:100%;}}
-.cact{display:flex;gap:var(--s5);margin-top:11px;font-size:12.5px;color:var(--sub);font-weight:600;}
-.cact .a{display:flex;align-items:center;gap:5px;}.cact .ti{font-size:16px;}
-.empty{text-align:center;color:var(--sub);font-size:14px;padding:70px 20px;background:#fff;border:1px solid var(--line);border-radius:var(--r2);}
-/* promo banner */
-.promo{position:relative;height:152px;border-radius:var(--r2);overflow:hidden;margin-bottom:var(--s4);border:1px solid var(--line);}
-.promo .slide{position:absolute;inset:0;display:flex;flex-direction:column;justify-content:center;padding:0 28px;color:#fff;opacity:0;transition:opacity .5s;cursor:pointer;pointer-events:none;}
-.promo .slide.on{opacity:1;pointer-events:auto;}
-.promo .pbadge{align-self:flex-start;font-size:10.5px;font-weight:800;letter-spacing:1px;background:rgba(255,255,255,.22);padding:4px 10px;border-radius:20px;}
-.promo h3{font-size:21px;font-weight:800;margin-top:10px;letter-spacing:-.3px;}
-.promo p{font-size:13px;margin-top:6px;opacity:.92;max-width:78%;line-height:1.5;}
-.promo .dots{position:absolute;bottom:12px;right:16px;display:flex;gap:6px;z-index:3;}
-.promo .dots i{width:7px;height:7px;border-radius:50%;background:rgba(255,255,255,.5);cursor:pointer;transition:.2s;}
-.promo .dots i.on{background:#fff;width:18px;border-radius:4px;}
-/* info curation strip */
-.infosec{margin-bottom:var(--s5);}
-.infosec .ih{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;}
-.infosec .ih h3{font-size:16px;font-weight:800;letter-spacing:-.3px;}
-.infosec .ih a{font-size:12.5px;color:var(--sub);cursor:pointer;font-weight:600;}
-.iscroll{display:flex;gap:12px;overflow-x:auto;padding-bottom:4px;}
-.iscroll::-webkit-scrollbar{height:0;}
-.icard{flex:0 0 196px;background:#fff;border:1px solid var(--line);border-radius:var(--r2);overflow:hidden;cursor:pointer;transition:.12s;}
-.icard:hover{border-color:#E0D4CF;box-shadow:0 6px 16px -12px rgba(90,60,66,.4);}
-.icard .ith{height:104px;background-size:cover;background-position:center;display:flex;align-items:center;justify-content:center;color:rgba(255,255,255,.9);}
-.icard .ith .ti{font-size:30px;}
-.icard .ib{padding:10px 12px 12px;}
-.icard .iflag{font-size:11px;color:var(--sub);font-weight:600;}
-.icard .it{font-size:13.5px;font-weight:700;line-height:1.4;margin-top:4px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;}
+.cact{display:flex;gap:13px;margin-top:7px;font-size:11.5px;color:var(--sub);font-weight:500;}
+.cact .a{display:flex;align-items:center;gap:4px;}.cact .ti{font-size:14px;}
+.empty{text-align:center;color:var(--sub);font-size:14px;padding:90px 20px;}
 
-/* right */
-.about{padding:var(--s4);}
-.about .tt{font-family:Georgia,serif;font-style:italic;font-size:18px;color:var(--plum);}
-.about .ds{font-size:12.5px;color:var(--ink2);margin-top:7px;line-height:1.6;}
-.about .st{display:flex;margin-top:14px;text-align:center;border-top:1px solid var(--line2);padding-top:13px;}
-.about .st .c{flex:1;}.about .st .n{font-size:16px;font-weight:800;color:var(--plum);}.about .st .l{font-size:10.5px;color:var(--sub);margin-top:2px;}
-.about .btn{margin-top:14px;width:100%;justify-content:center;}
-.rules{padding:6px var(--s4) var(--s4);}
-.rule{display:flex;gap:10px;padding:9px 0;border-top:1px solid var(--line2);font-size:13px;color:var(--ink2);line-height:1.5;}
-.rule:first-child{border-top:none;}.rule .rn{font-weight:800;color:var(--rose);flex:0 0 auto;}
-.hot{padding:var(--s1) 6px var(--s2);}
-.hotitem{display:flex;gap:9px;align-items:flex-start;padding:8px 10px;border-radius:var(--r1);cursor:pointer;}
-.hotitem:hover{background:var(--tint);}
-.hotitem .rk{font-family:Georgia,serif;font-style:italic;font-weight:700;font-size:14px;color:var(--rose);width:14px;flex:0 0 auto;text-align:center;}
-.hotitem .ht{font-size:13px;font-weight:600;line-height:1.4;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;}
-.hotitem .hm{font-size:11px;color:var(--sub);margin-top:2px;}
-.ctabox{background:linear-gradient(160deg,#6E4A50,#52323A);color:#F3DCE2;border-radius:var(--r2);padding:var(--s5);}
-.ctabox h4{color:#fff;font-size:15px;font-weight:800;}.ctabox p{font-size:12.5px;margin-top:7px;color:#E4C2CC;line-height:1.6;}
-.ctabox .btn{margin-top:13px;width:100%;justify-content:center;}
+/* promo — feature */
+.promo{position:relative;height:128px;border-radius:14px;overflow:hidden;margin-bottom:16px;background:var(--ink);}
+.promo .slide{position:absolute;inset:0;display:flex;flex-direction:column;justify-content:flex-end;padding:0 26px 20px;color:#fff;opacity:0;transition:opacity .55s ease;cursor:pointer;pointer-events:none;}
+.promo .slide.on{opacity:1;pointer-events:auto;}
+.promo .slide::after{content:'';position:absolute;inset:0;background:linear-gradient(90deg,rgba(15,11,10,.7),rgba(15,11,10,.25) 60%,transparent),linear-gradient(180deg,transparent,rgba(15,11,10,.45));z-index:0;}
+.promo .pbadge,.promo h3,.promo p{position:relative;z-index:1;}
+.promo .pbadge{align-self:flex-start;font-size:10px;font-weight:700;letter-spacing:2.2px;text-transform:uppercase;color:rgba(255,255,255,.92);}
+.promo h3{font-size:19px;font-weight:800;margin-top:7px;letter-spacing:-.03em;line-height:1.18;}
+.promo p{font-size:12px;margin-top:5px;opacity:.86;max-width:82%;line-height:1.45;}
+.promo .dots{position:absolute;bottom:14px;right:16px;display:flex;gap:6px;z-index:3;}
+.promo .dots i{width:6px;height:6px;border-radius:50%;background:rgba(255,255,255,.4);cursor:pointer;transition:.2s;}
+.promo .dots i.on{background:#fff;width:18px;border-radius:999px;}
+/* info strip */
+.infosec{margin-bottom:18px;}
+.infosec .ih{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:10px;}
+.infosec .ih h3{font-size:14px;font-weight:700;letter-spacing:-.02em;}
+.infosec .ih a{font-size:12px;color:var(--sub);cursor:pointer;font-weight:500;transition:.14s;}
+.infosec .ih a:hover{color:var(--accent);}
+.iscroll{display:flex;gap:12px;overflow-x:auto;padding-bottom:2px;}
+.iscroll::-webkit-scrollbar{height:0;}
+.icard{flex:0 0 152px;background:var(--soft);border:none;border-radius:12px;overflow:hidden;cursor:pointer;transition:.16s ease;}
+.icard:hover{transform:translateY(-2px);box-shadow:0 12px 28px -16px rgba(0,0,0,.3);}
+.icard .ith{height:80px;background-size:cover;background-position:center;display:none;}
+.icard.hasimg .ith{display:block;}
+.icard .ib{padding:9px 11px 11px;}
+.icard .iflag{font-size:9px;color:var(--accent);font-weight:700;letter-spacing:1px;text-transform:uppercase;}
+.icard .it{font-size:12.5px;font-weight:600;line-height:1.4;margin-top:4px;letter-spacing:-.015em;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;transition:color .14s;}
+/* pro showcase */
+.badge-ko{font-size:10px;font-weight:800;color:#fff;background:var(--plum);padding:3px 8px;border-radius:999px;letter-spacing:-.01em;}
+.prosec{margin-bottom:22px;padding-bottom:20px;border-bottom:1px solid var(--line);}
+.prosec .ih{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:12px;flex-wrap:wrap;}
+.prosec .ih h3{font-size:15px;font-weight:800;letter-spacing:-.02em;}
+.protabs{display:flex;gap:3px;background:var(--soft);border-radius:999px;padding:3px;}
+.protab{font-size:11.5px;font-weight:700;color:var(--sub);padding:5px 11px;border-radius:999px;cursor:pointer;transition:.13s;}
+.protab.on{background:#fff;color:var(--plum);box-shadow:0 1px 3px rgba(0,0,0,.08);}
+.proscroll{display:flex;gap:12px;overflow-x:auto;padding-bottom:4px;}
+.proscroll::-webkit-scrollbar{height:0;}
+.procard{flex:0 0 150px;cursor:pointer;}
+.procard .pcimg{position:relative;width:150px;height:150px;border-radius:14px;background-size:cover;background-position:center;background-color:var(--soft);}
+.procard:hover .pcimg{opacity:.94;}
+.procard .koflag{position:absolute;left:8px;top:8px;font-size:9px;font-weight:800;color:#fff;background:var(--plum);padding:3px 7px;border-radius:999px;}
+.procard .pcrole{position:absolute;right:8px;top:8px;font-size:9.5px;font-weight:800;background:rgba(255,255,255,.92);padding:3px 8px;border-radius:999px;}
+.procard .pcb{padding:9px 2px 0;}
+.procard .pcn{font-size:13.5px;font-weight:700;letter-spacing:-.02em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.procard .pcm{font-size:11px;color:var(--sub);margin-top:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.procard .pctags{display:flex;gap:5px;flex-wrap:wrap;margin-top:7px;}
+.procard .pctags span{font-size:10.5px;font-weight:600;color:var(--plum);background:var(--plumbg);padding:3px 8px;border-radius:999px;}
+/* member modal */
+.mgal{display:flex;gap:8px;overflow-x:auto;margin:-6px -6px 6px;padding:0 0 4px;}
+.mgal::-webkit-scrollbar{height:0;}
+.mgal img{flex:0 0 auto;width:150px;height:150px;object-fit:cover;border-radius:12px;cursor:zoom-in;}
+.mhead{margin-top:14px;}
+.mhead .mn{font-size:20px;font-weight:800;letter-spacing:-.03em;display:flex;align-items:center;gap:8px;flex-wrap:wrap;}
+.mbio{font-size:14px;color:var(--ink2);line-height:1.7;margin-top:12px;}
+.minfo{margin-top:14px;border-top:1px solid var(--line);}
+.minfo .mrow{display:flex;gap:12px;padding:11px 0;border-bottom:1px solid var(--line2);font-size:13.5px;color:var(--ink2);}
+.minfo .mrow .ml{font-weight:700;color:var(--ink);min-width:84px;flex:0 0 auto;}
+.icard.hasimg .it{-webkit-line-clamp:2;}
+
+/* right column */
+.about{padding:0;}
+.about .tt{font-size:20px;font-weight:800;color:var(--ink);line-height:1.25;letter-spacing:-.03em;}
+.about .ds{font-size:12.5px;color:var(--ink2);margin-top:10px;line-height:1.7;}
+.about .st{display:flex;margin-top:18px;text-align:left;gap:22px;border-top:none;padding-top:0;}
+.about .st .c{flex:0 0 auto;}.about .st .n{font-family:var(--disp);font-size:22px;font-weight:700;color:var(--ink);}.about .st .l{font-size:10px;color:var(--sub);margin-top:2px;letter-spacing:.6px;text-transform:uppercase;}
+.about .btn{margin-top:18px;width:100%;justify-content:center;}
+.rules{padding:0;}
+.rule{display:flex;gap:11px;padding:10px 0;border-top:1px solid var(--line2);font-size:12.5px;color:var(--ink2);line-height:1.6;}
+.rule:first-child{border-top:none;}.rule .rn{font-family:var(--disp);font-weight:700;color:var(--accent);flex:0 0 auto;}
+.hot{padding:0;}
+.hotitem{display:flex;gap:13px;align-items:flex-start;padding:11px 0;border-top:1px solid var(--line2);cursor:pointer;}
+.hotitem:first-child{border-top:none;}
+.hotitem:hover .ht{color:var(--accent);}
+.hotitem .rk{font-family:var(--disp);font-weight:700;font-size:18px;color:var(--accent);width:18px;flex:0 0 auto;text-align:left;line-height:1.15;}
+.hotitem .ht{font-size:13px;font-weight:600;line-height:1.45;letter-spacing:-.01em;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;transition:color .14s;}
+.hotitem .hm{font-size:11px;color:var(--sub);margin-top:4px;}
+.ctabox{background:var(--plum);color:#fff;border-radius:16px;padding:24px;margin-top:var(--s6);}
+.ctabox h4{color:#fff;font-size:17px;font-weight:700;letter-spacing:-.02em;}.ctabox p{font-size:12.5px;margin-top:9px;color:rgba(255,255,255,.72);line-height:1.65;}
+.ctabox .btn{margin-top:16px;width:100%;justify-content:center;}
 
 /* detail */
-.detail{background:#fff;border:1px solid var(--line);border-radius:var(--r2);padding:var(--s6) var(--s8);}
-.back{display:inline-flex;align-items:center;gap:5px;font-size:13.5px;font-weight:700;color:var(--plum);cursor:pointer;margin-bottom:var(--s5);}
-.dhead{display:flex;align-items:center;gap:11px;}
-.dhead .av{width:42px;height:42px;font-size:16px;}
+.detail{background:transparent;border:none;border-radius:0;padding:0;max-width:700px;margin:0 auto;}
+.back{display:inline-flex;align-items:center;gap:5px;font-size:13px;font-weight:600;color:var(--ink2);cursor:pointer;margin-bottom:var(--s6);transition:.14s;}
+.back:hover{color:var(--accent);}
+.dhead{display:flex;align-items:center;gap:12px;}
+.dhead .av{width:44px;height:44px;font-size:18px;}
 .dhn{font-size:14px;font-weight:700;display:flex;align-items:center;gap:6px;}.dhm{font-size:12px;color:var(--sub);margin-top:2px;}
-.dtitle{font-size:24px;font-weight:800;letter-spacing:-.5px;line-height:1.35;margin-top:18px;}
-.dmeta{display:flex;gap:14px;font-size:12px;color:var(--sub);margin-top:10px;}
+.dtitle{font-size:33px;font-weight:800;letter-spacing:-.04em;line-height:1.22;margin-top:20px;}
+.dmeta{display:flex;gap:16px;font-size:12px;color:var(--sub);margin-top:16px;padding-bottom:var(--s6);border-bottom:1px solid var(--line);}
 .dmeta .a{display:flex;align-items:center;gap:5px;}.dmeta .ti{font-size:15px;}
-.dcontent{font-size:15.5px;line-height:1.85;color:var(--ink);margin-top:16px;white-space:pre-wrap;word-break:break-word;}
-.dgallery{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:8px;margin-top:16px;}
-.dgallery img{width:100%;border-radius:var(--r1);border:1px solid var(--line2);cursor:zoom-in;display:block;}
-.transbox{margin-top:16px;background:var(--soft);border:1px solid var(--line2);border-radius:var(--r1);padding:13px 15px;}
-.transbox .lbl{font-size:11px;font-weight:800;color:var(--plum);letter-spacing:.4px;display:flex;align-items:center;gap:6px;}
-.transbox .orig{font-size:14px;color:var(--ink2);line-height:1.8;margin-top:9px;display:none;white-space:pre-wrap;}
-.transbox .tg{font-size:12px;color:var(--rose);font-weight:700;cursor:pointer;margin-top:9px;display:inline-block;}
-.proof{display:flex;gap:9px;margin-top:var(--s6);padding-top:var(--s4);border-top:1px solid var(--line);}
-.pf{display:inline-flex;align-items:center;gap:7px;border:1px solid var(--line);background:#fff;border-radius:var(--r1);padding:9px 16px;font-size:13px;font-weight:700;color:var(--ink2);cursor:pointer;transition:.12s;}
-.pf:hover{background:var(--tint);}.pf.on{background:var(--rosebg);border-color:transparent;color:var(--rose);}.pf.on.scrap{background:var(--plumbg);color:var(--plum);}.pf .ti{font-size:17px;}
-.csec{margin-top:var(--s6);}.csec h4{font-size:15px;font-weight:800;margin-bottom:8px;}
-.cwrite{display:flex;gap:9px;margin:12px 0 8px;}
-.cwrite input{flex:1;border:1px solid var(--line);background:var(--soft);border-radius:var(--r1);padding:12px 15px;font-family:inherit;font-size:14px;outline:none;}
-.cmt{display:flex;gap:11px;padding:15px 0;border-top:1px solid var(--line2);}
-.cmt .av{width:34px;height:34px;font-size:13px;}.cmt .cn{font-size:13px;font-weight:700;display:flex;align-items:center;gap:6px;}
-.cmt .ct{font-size:14px;margin-top:5px;line-height:1.6;white-space:pre-wrap;word-break:break-word;}.cmt .cd{font-size:11.5px;color:var(--sub);margin-top:6px;}
+.dcontent{font-size:16.5px;line-height:1.9;color:var(--ink2);margin-top:var(--s6);white-space:pre-wrap;word-break:break-word;font-weight:400;letter-spacing:-.01em;}
+.dgallery{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-top:22px;}
+.dgallery.one{grid-template-columns:1fr;}
+.dgallery.three :first-child{grid-column:1 / -1;}
+.dgallery img{width:100%;border-radius:14px;border:1px solid var(--line2);cursor:zoom-in;display:block;object-fit:cover;}
+.dgallery:not(.one) img{aspect-ratio:1/1;}
+.dgallery.one img{max-height:620px;object-fit:contain;background:var(--soft);}
+.transbox{margin-top:18px;background:var(--soft);border:none;border-radius:12px;padding:15px 17px;}
+.transbox .lbl{font-size:10px;font-weight:700;color:var(--accent);letter-spacing:1.2px;text-transform:uppercase;display:flex;align-items:center;gap:6px;}
+.transbox .orig{font-size:14px;color:var(--ink2);line-height:1.8;margin-top:10px;display:none;white-space:pre-wrap;}
+.transbox .tg{font-size:12px;color:var(--accent);font-weight:600;cursor:pointer;margin-top:10px;display:inline-block;}
+.proof{display:flex;gap:10px;margin-top:40px;padding-top:var(--s6);border-top:1px solid var(--line);}
+.pf{display:inline-flex;align-items:center;gap:7px;border:1px solid var(--line);background:#fff;border-radius:999px;padding:10px 20px;font-size:13px;font-weight:600;color:var(--ink2);cursor:pointer;transition:.14s;}
+.pf:hover{border-color:var(--ink);color:var(--ink);}.pf.on{background:var(--accentsoft);border-color:transparent;color:var(--accent);}.pf.on.scrap{background:var(--plumbg);color:var(--plum);}.pf .ti{font-size:17px;}
+.csec{margin-top:44px;}.csec h4{font-size:17px;font-weight:700;margin-bottom:10px;letter-spacing:-.02em;}
+.cwrite{display:flex;gap:9px;margin:14px 0 8px;}
+.cwrite input{flex:1;border:1px solid var(--line);background:var(--soft);border-radius:999px;padding:12px 18px;font-family:inherit;font-size:14px;outline:none;transition:.14s;}
+.cwrite input:focus{background:#fff;border-color:var(--plum);}
+.cmt{display:flex;gap:12px;padding:18px 0;border-top:1px solid var(--line2);}
+.cmt .av{width:36px;height:36px;font-size:14px;}.cmt .cn{font-size:13px;font-weight:700;display:flex;align-items:center;gap:6px;}
+.cmt .ct{font-size:14px;margin-top:5px;line-height:1.65;white-space:pre-wrap;word-break:break-word;color:var(--ink2);}.cmt .cd{font-size:11.5px;color:var(--sub);margin-top:6px;}
 
 /* modal */
-.modal{position:fixed;inset:0;background:rgba(31,18,23,.5);display:none;align-items:center;justify-content:center;z-index:100;padding:20px;}
+.modal{position:fixed;inset:0;background:rgba(23,19,17,.5);backdrop-filter:blur(3px);display:none;align-items:center;justify-content:center;z-index:100;padding:20px;}
 .modal.on{display:flex;}
-.sheet{background:#fff;border-radius:var(--r3);width:100%;max-width:580px;max-height:90vh;overflow:auto;padding:var(--s6);}
-.sheet h3{font-size:19px;font-weight:800;}.sheet .x{float:right;font-size:24px;color:var(--sub);cursor:pointer;line-height:1;}
-.wlabel{font-size:11.5px;font-weight:800;color:var(--sub);letter-spacing:.4px;margin-top:18px;}
-.wrow{display:flex;gap:7px;flex-wrap:wrap;margin-top:9px;align-items:center;}
-.wgl{font-size:11.5px;font-weight:800;color:var(--ink2);margin-right:2px;}
-.wchip{font-size:13px;font-weight:600;color:var(--ink2);background:var(--soft);padding:7px 13px;border-radius:7px;cursor:pointer;border:1px solid transparent;}
-.wchip.on{background:var(--plum);color:#fff;}
-.field{display:block;width:100%;border:1px solid var(--line);border-radius:var(--r1);padding:12px 14px;font-size:15px;font-family:inherit;outline:none;color:var(--ink);margin-top:12px;}
-textarea.field{min-height:220px;resize:vertical;line-height:1.7;}
-.ptiles{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px;}
-.ptile{width:70px;height:70px;border-radius:var(--r1);background-size:cover;background-position:center;position:relative;border:1px solid var(--line);}
+.sheet{background:#fff;border-radius:20px;width:100%;max-width:540px;max-height:90vh;overflow:auto;padding:32px;box-shadow:0 30px 80px -20px rgba(0,0,0,.4);}
+.sheet h3{font-size:22px;font-weight:800;letter-spacing:-.03em;}.sheet .x{float:right;font-size:24px;color:var(--sub);cursor:pointer;line-height:1;}
+.wlabel{font-size:10.5px;font-weight:700;color:var(--sub);letter-spacing:1.2px;text-transform:uppercase;margin-top:22px;}
+.wrow{display:flex;gap:7px;flex-wrap:wrap;margin-top:10px;align-items:center;}
+.wgl{font-size:11.5px;font-weight:700;color:var(--ink2);margin-right:2px;}
+.wchip{font-size:13px;font-weight:500;color:var(--ink2);background:var(--soft);border:1px solid transparent;padding:8px 14px;border-radius:999px;cursor:pointer;transition:.13s;}
+.wchip.on{background:var(--plum);color:#fff;border-color:var(--plum);}
+.field{display:block;width:100%;border:1px solid var(--line);border-radius:12px;padding:12px 15px;font-size:15px;font-family:inherit;outline:none;color:var(--ink);margin-top:12px;background:var(--soft);transition:.14s;}
+.field:focus{background:#fff;border-color:var(--plum);}
+textarea.field{min-height:200px;resize:vertical;line-height:1.75;}
+.ptiles{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px;}
+.ptile{width:72px;height:72px;border-radius:12px;background-size:cover;background-position:center;position:relative;border:1px solid var(--line);}
 .ptile .rm{position:absolute;top:-6px;right:-6px;width:20px;height:20px;border-radius:50%;background:var(--ink);color:#fff;font-size:13px;display:flex;align-items:center;justify-content:center;cursor:pointer;}
 .ptile.add{display:flex;align-items:center;justify-content:center;color:var(--sub);background:var(--soft);border:1px dashed var(--line);cursor:pointer;font-size:22px;}
-.toast{position:fixed;left:50%;bottom:30px;transform:translateX(-50%) translateY(10px);background:var(--ink);color:#fff;font-size:14px;font-weight:600;padding:12px 22px;border-radius:var(--r1);opacity:0;transition:.25s;z-index:200;pointer-events:none;}
+.toast{position:fixed;left:50%;bottom:30px;transform:translateX(-50%) translateY(10px);background:var(--ink);color:#fff;font-size:14px;font-weight:500;padding:13px 24px;border-radius:999px;opacity:0;transition:.25s;z-index:200;pointer-events:none;box-shadow:0 12px 32px -10px rgba(0,0,0,.5);}
 .toast.on{opacity:1;transform:translateX(-50%);}
-.lightbox{position:fixed;inset:0;background:rgba(20,12,15,.9);display:none;align-items:center;justify-content:center;z-index:300;padding:30px;cursor:zoom-out;}
-.lightbox.on{display:flex;}.lightbox img{max-width:100%;max-height:100%;border-radius:8px;}
-@media(max-width:560px){.detail{padding:var(--s5) var(--s4);}.dtitle{font-size:21px;}.vote{flex-basis:46px;}}
+.lightbox{position:fixed;inset:0;background:rgba(20,15,13,.92);display:none;align-items:center;justify-content:center;z-index:300;padding:30px;cursor:zoom-out;}
+.lightbox.on{display:flex;}.lightbox img{max-width:100%;max-height:100%;border-radius:10px;}
+@media(max-width:560px){.detail{padding:0;}.dtitle{font-size:25px;}.boardhead h1{font-size:25px;}.card.lead .ctitle{font-size:25px;}.card.lead .leadimg{height:220px;}.cthumb{flex-basis:104px;}.cthumb .timg{width:104px;height:78px;}.ctitle{font-size:17px;}.promo h3{font-size:21px;}}
 </style>
 </head>
 <body>
@@ -314,6 +412,17 @@ textarea.field{min-height:220px;resize:vertical;line-height:1.7;}
   <div id="pfBody"></div>
   <button class="btn btn-primary" id="pSave" style="width:100%;justify-content:center;padding:13px;margin-top:20px;font-size:15px;" onclick="saveProfile()"></button>
 </div></div>
+<div class="modal" id="cardModal"><div class="sheet" style="max-width:420px;">
+  <span class="x" onclick="closeModal()">×</span><h3 id="cardHd"></h3>
+  <div class="ratiotabs" id="ratioTabs"></div>
+  <div class="cardstage"><div class="cardframe" id="cardFrame"></div></div>
+  <div style="display:flex;gap:9px;margin-top:18px"><button class="btn btn-primary" style="flex:1;justify-content:center" id="cardDl"></button><button class="btn btn-ghost" style="flex:1;justify-content:center" id="cardCap"></button></div>
+  <div class="capbox" id="capBox"></div>
+  <div style="font-size:11.5px;color:var(--sub);margin-top:10px;line-height:1.6" id="cardHint"></div>
+</div></div>
+<div class="modal" id="memberModal"><div class="sheet" style="max-width:480px;">
+  <span class="x" onclick="closeModal()">×</span><div id="memBody"></div>
+</div></div>
 <div class="lightbox" id="lightbox" onclick="this.classList.remove('on')"><img id="lbimg"></div>
 <div class="fab" id="fab" onclick="scrollTo({top:0,behavior:'smooth'})"><i class="ti ti-arrow-up"></i></div>
 <div class="toast" id="toast"></div>
@@ -321,7 +430,7 @@ textarea.field{min-height:220px;resize:vertical;line-height:1.7;}
 <script>
 /* ===== i18n ===== */
 const T={ko:{
- community:'커뮤니티',intro:'서비스 소개',reserve:'예약하기',search:'커뮤니티 검색',write:'글쓰기',
+ community:'커뮤니티',intro:'서비스 소개',areaInfo:'지역 정보',shops:'입점 샵',reserve:'예약하기',search:'커뮤니티 검색',write:'글쓰기',
  board:'게시판',region:'지역',allRegion:'전체 지역',myMenu:'내 메뉴',myPosts:'내가 쓴 글',scrap:'스크랩',
  hot:'인기',new:'최신',cmtSort:'댓글순',allPosts:'전체 글',count:'개',
  about:'한·일 뷰티 라운지',aboutDesc:'한국·일본의 뷰티 사장님과 손님이 모이는 커뮤니티. 미용실·네일·화장품 정보를 나눠요.',
@@ -329,17 +438,25 @@ const T={ko:{
  r1:'서로 존중하기 — 욕설·비방·차별 금지',r2:'광고·홍보성 글, 개인정보 노출 금지',r3:'후기는 솔직하게, 허위·과장 금지',r4:'한·일 사장님·손님 모두 환영해요 🤍',
  popular:'인기 글',ctaTitle:'일본 뷰티, 예약까지',ctaDesc:'마음에 드는 곳 찾았다면? 일본어 0이어도 Beautia가 예약·통역 대행 (무료).',ctaBtn:'카톡으로 예약 신청',
  back:'목록으로',likeBtn:'좋아요',shareBtn:'공유',scrapBtn:'스크랩',comments:'댓글',cmtPh:'댓글을 남겨보세요…',submit:'등록',views:'조회',
+ makeCard:'카드 만들기',cardTitle:'공유 카드 만들기',dlCard:'이미지 저장',copyCap:'캡션 복사',capCopied:'캡션이 복사됐어요',cardHint:'저장해서 인스타·릴스/쇼츠에 올려보세요. 영상 마지막엔 "후기는 Beautia에서"!',linkCopied:'링크가 복사됐어요',cardReview:'REVIEW',
  firstCmt:'첫 댓글을 남겨보세요!',emptyFeed:'아직 글이 없어요. 첫 글을 남겨보세요 ✏️',transBy:'Beautia 번역됨',viewOrigJa:'원문(日本語) 보기 ▾',viewOrigKo:'번역(한국어) 보기 ▾',foldOrig:'접기 ▴',
  wHead:'글쓰기',category:'카테고리',regionOpt:'지역 (선택)',noRegion:'지역무관',titlePh:'제목을 입력하세요',contentPh:'한국·일본 뷰티 사장님·손님 누구나! 질문, 후기, 정보, 수다 환영해요. (욕설·광고·개인정보 X)',photo:'사진 (최대 4장)',register:'등록하기',
  profile:'프로필',nickPh:'닉네임',iam:'나는…',save:'저장',saved:'저장됐어요',posted:'글이 등록됐어요 ✨',scrapped:'스크랩했어요',copied:'링크가 복사됐어요 (데모)',needTC:'제목과 내용을 입력하세요',
- infoTitle:'🗾 일본·한국 뷰티 정보',seeAll:'전체보기',tags:'태그 (선택)',tagsPh:'쉼표로 구분 · 예: 도쿄, 펌, 한국어OK',
+ infoTitle:'일본·한국 뷰티 정보',seeAll:'전체보기',tags:'태그 (선택)',tagsPh:'쉼표로 구분 · 예: 도쿄, 펌, 한국어OK',
  streakLabel:'연속 접속',streakSub:'오늘도 들러줘서 고마워요!',dayUnit:'일',related:'이런 글은 어때요?',todayNew:'오늘 새 글',welcome:'환영해요 👋 회원가입하고 시작해보세요!',
  signup:'회원가입',logout:'로그아웃',mypage:'마이페이지',editProfile:'프로필 편집',selRole:'어떤 회원이신가요?',guestDesc:'일본 뷰티 정보·예약을 찾는 분',ownerDesc:'미용실·네일샵 운영 (한·일)',nick:'닉네임',regionLabel:'주 활동 지역',shopName:'가게 이름',shopNamePh:'예: 시부야헤어룸',servicesL:'시술 분야',interestsL:'관심 시술',bioL:'한줄 소개 (선택)',bioPh:'예: 도쿄 워홀 2년차, 뷰티 정보 공유해요!',join:'가입하기',joinDone:'가입 완료! 환영해요 🎉',joinedOn:'가입',daysAgo:'일째',recvLikes:'받은 좋아요',tabPosts:'내 글',tabScraps:'스크랩',tabComments:'댓글',noPosts:'아직 쓴 글이 없어요',noScraps:'스크랩한 글이 없어요',noComments:'단 댓글이 없어요',logoutConfirm:'로그아웃 할까요? (이 기기의 활동 기록이 지워져요)',needSignup:'회원가입 후 이용할 수 있어요',guestTag:'비회원',gotoSignup:'가입하러 가기',
  botNote:'🛡️ 봇·중복 가입을 막기 위해 연락처 인증이 필요해요.',contact:'연락처 인증',contactPh:'이메일 또는 휴대폰 번호',sendCode:'인증번호 받기',resend:'재발송',codePh:'인증번호 6자리',verify:'확인',verified:'인증 완료',agreements:'약관 동의',req:'필수',agreeTerms:'이용약관 동의',agreePrivacy:'개인정보 수집·이용 동의',agreeMktg:'(선택) 마케팅·이벤트 정보 수신',view:'보기',needContact:'연락처를 입력해주세요',demoCode:'데모 인증번호:',verifiedToast:'인증되었습니다 ✅',codeWrong:'인증번호가 틀려요',needVerify:'연락처 인증을 완료해주세요',needAgree:'필수 약관에 동의해주세요',demoOnly:'데모 화면이에요',verifiedMember:'인증회원',blockedMsg:'차단된 계정이에요. 글·댓글을 남길 수 없어요.',googleBtn:'Google로 계속하기',orText:'또는 이메일로',googleToast:'Google 계정으로 인증됐어요',profileSetup:'프로필 설정',emailLabel:'이메일',emailPh:'이메일 주소',otpSent:'인증 메일을 보냈어요 (코드 또는 링크 확인)',otpNote:'메일의 6자리 코드를 입력하거나, 메일 속 링크를 클릭하세요.',
  cats:{전체:'전체',질문:'질문',후기:'후기',정보:'정보',모델모집:'모델모집',자유:'자유',사장님:'사장님',구인구직:'구인구직'},
- roles:{guest:'손님',owner:'사장님',official:'Beautia'},krGroup:'🇰🇷 한국',jpGroup:'🇯🇵 일본',krShort:'🇰🇷',jpShort:'🇯🇵',member:'커뮤니티 회원'
+ earnReview:'후기 작성',earnPost:'글 작성',earnPhoto:'사진',earnDetail:'정성후기',earnComment:'댓글',earnSignup:'가입 축하',earnInvited:'초대로 가입',
+ points:'포인트',myPoints:'내 포인트',pointHist:'적립 내역',pointRules:'적립 안내',noPoints:'아직 적립 내역이 없어요',referral:'친구 초대',refDesc:'초대 링크로 친구가 가입하면 둘 다 3,000P를 받아요.',refCopy:'초대 링크 복사',refCopied:'초대 링크가 복사됐어요',pointSoon:'적립한 포인트는 추후 예약 할인·혜택으로 사용할 수 있어요.',
+ ruleReview:'후기 작성 +500P',rulePhoto:'사진 3장 이상 +100P',ruleDetail:'상세 후기(300자+) +100P',ruleComment:'댓글 +20P',ruleInvite:'친구 초대 +3,000P',
+ designerDesc:'미용실·네일 디자이너 (시술 담당)',careerL:'경력',careerPh:'예: 헤어 디자이너 5년차 · 도쿄 3년',specialtiesL:'전문 시술',affiliationL:'소속 샵 (선택)',affiliationPh:'예: 시부야헤어룸',photoL:'프로필 사진',photoHint:'얼굴 또는 작업물 사진을 올리면 신뢰도가 올라가요',addPhoto:'사진 추가',changePhoto:'사진 변경',careerBadge:'경력',
+ instaL:'인스타그램 (선택)',instaPh:'@아이디 또는 링크',situationL:'현재 상태',shopDescL:'가게 소개',shopDescPh:'가게 분위기·강점·한국 손님 환영 메시지 등',hoursL:'영업시간 (선택)',hoursPh:'예: 11:00–20:00 · 수요일 휴무',locDetailL:'세부 위치 (선택)',locDetailPh:'예: 시부야역 3번 출구 도보 3분',koOKL:'한국어 응대 가능',situations:{travel:'여행 예정',whv:'워홀·유학',jp:'일본 거주',kr:'한국 거주'},
+ shopPhotosL:'가게 사진 (선택)',workPhotosL:'작업 사진 (선택)',photosHint:'최대 6장 · 홈 전문가 섹션에 노출돼요',proTitle:'한·일 뷰티 전문가',proAll:'전체',proOwner:'사장님 샵',proDesigner:'디자이너',proMore:'전체보기',bookPro:'카톡으로 예약·문의',koBadge:'한국어 OK',
+ selRoleReq:'어떤 회원이신가요? (필수)',needRole:'역할을 먼저 선택해주세요',rolePickFirst:'역할을 선택하면 맞춤 정보를 입력할 수 있어요',
+ roles:{guest:'손님',owner:'사장님',designer:'디자이너',official:'Beautia'},krGroup:'🇰🇷 한국',jpGroup:'🇯🇵 일본',krShort:'🇰🇷',jpShort:'🇯🇵',member:'커뮤니티 회원'
 },ja:{
- community:'コミュニティ',intro:'サービス紹介',reserve:'予約',search:'コミュニティ検索',write:'投稿',
+ community:'コミュニティ',intro:'サービス紹介',areaInfo:'地域情報',shops:'登録サロン',reserve:'予約',search:'コミュニティ検索',write:'投稿',
  board:'掲示板',region:'地域',allRegion:'全地域',myMenu:'マイメニュー',myPosts:'自分の投稿',scrap:'保存',
  hot:'人気',new:'最新',cmtSort:'コメント順',allPosts:'すべての投稿',count:'件',
  about:'韓・日ビューティーラウンジ',aboutDesc:'韓国・日本のビューティーオーナーとお客様が集まるコミュニティ。美容室・ネイル・コスメ情報を共有。',
@@ -347,15 +464,23 @@ const T={ko:{
  r1:'お互いを尊重 — 暴言・誹謗・差別禁止',r2:'広告・宣伝、個人情報の公開禁止',r3:'レビューは正直に、虚偽・誇張禁止',r4:'韓・日のオーナー・お客様みんな歓迎🤍',
  popular:'人気の投稿',ctaTitle:'日本ビューティー、予約まで',ctaDesc:'気に入ったお店が見つかったら？日本語が分からなくてもBeautiaが予約・通訳を代行（無料）。',ctaBtn:'カカオトークで予約',
  back:'一覧へ',likeBtn:'いいね',shareBtn:'シェア',scrapBtn:'保存',comments:'コメント',cmtPh:'コメントを残す…',submit:'登録',views:'閲覧',
+ makeCard:'カード作成',cardTitle:'シェアカードを作成',dlCard:'画像を保存',copyCap:'キャプションをコピー',capCopied:'キャプションをコピーしました',cardHint:'保存してインスタ・リール/ショートに。動画の最後は「レビューはBeautiaで」！',linkCopied:'リンクをコピーしました',cardReview:'REVIEW',
  firstCmt:'最初のコメントを残しましょう！',emptyFeed:'まだ投稿がありません。最初の投稿をどうぞ ✏️',transBy:'Beautia 翻訳',viewOrigJa:'原文(日本語)を見る ▾',viewOrigKo:'翻訳(韓国語)を見る ▾',foldOrig:'閉じる ▴',
  wHead:'投稿',category:'カテゴリー',regionOpt:'地域（任意）',noRegion:'地域問わず',titlePh:'タイトルを入力',contentPh:'韓国・日本のビューティーオーナー・お客様どなたでも！質問・レビュー・情報・雑談歓迎。（暴言・広告・個人情報X）',photo:'写真（最大4枚）',register:'投稿する',
  profile:'プロフィール',nickPh:'ニックネーム',iam:'わたしは…',save:'保存',saved:'保存しました',posted:'投稿しました ✨',scrapped:'保存しました',copied:'リンクをコピーしました（デモ）',needTC:'タイトルと本文を入力してください',
- infoTitle:'🗾 日本・韓国ビューティー情報',seeAll:'すべて見る',tags:'タグ（任意）',tagsPh:'カンマ区切り · 例：東京, パーマ, 韓国語OK',
+ infoTitle:'日本・韓国ビューティー情報',seeAll:'すべて見る',tags:'タグ（任意）',tagsPh:'カンマ区切り · 例：東京, パーマ, 韓国語OK',
  streakLabel:'連続アクセス',streakSub:'今日も来てくれてありがとう！',dayUnit:'日',related:'こんな投稿はいかが？',todayNew:'今日の新着',welcome:'ようこそ 👋 会員登録して始めましょう！',
  signup:'会員登録',logout:'ログアウト',mypage:'マイページ',editProfile:'プロフィール編集',selRole:'どちらの会員ですか？',guestDesc:'日本ビューティー情報・予約をお探しの方',ownerDesc:'美容室・ネイル運営（韓・日）',nick:'ニックネーム',regionLabel:'主な活動地域',shopName:'店舗名',shopNamePh:'例：渋谷ヘアルーム',servicesL:'施術分野',interestsL:'関心のある施術',bioL:'ひとこと紹介（任意）',bioPh:'例：東京ワーホリ2年目、ビューティー情報を共有！',join:'登録する',joinDone:'登録完了！ようこそ 🎉',joinedOn:'登録',daysAgo:'日目',recvLikes:'もらったいいね',tabPosts:'投稿',tabScraps:'保存',tabComments:'コメント',noPosts:'まだ投稿がありません',noScraps:'保存した投稿がありません',noComments:'コメントがありません',logoutConfirm:'ログアウトしますか？（この端末の記録が消えます）',needSignup:'会員登録すると利用できます',guestTag:'ゲスト',gotoSignup:'登録する',
  botNote:'🛡️ ボット・重複登録防止のため連絡先認証が必要です。',contact:'連絡先認証',contactPh:'メール または 携帯番号',sendCode:'認証番号を送る',resend:'再送',codePh:'認証番号6桁',verify:'確認',verified:'認証完了',agreements:'規約同意',req:'必須',agreeTerms:'利用規約に同意',agreePrivacy:'個人情報の取得・利用に同意',agreeMktg:'（任意）マーケティング・イベント情報の受信',view:'見る',needContact:'連絡先を入力してください',demoCode:'デモ認証番号：',verifiedToast:'認証されました ✅',codeWrong:'認証番号が違います',needVerify:'連絡先認証を完了してください',needAgree:'必須規約に同意してください',demoOnly:'デモ画面です',verifiedMember:'認証会員',blockedMsg:'ブロックされたアカウントです。投稿・コメントできません。',googleBtn:'Googleで続ける',orText:'またはメールで',googleToast:'Googleアカウントで認証されました',profileSetup:'プロフィール設定',emailLabel:'メール',emailPh:'メールアドレス',otpSent:'認証メールを送りました（コード/リンク確認）',otpNote:'メールの6桁コードを入力、またはリンクをクリック。',
  cats:{전체:'全体',질문:'質問',후기:'レビュー',정보:'情報',모델모집:'モデル募集',자유:'雑談',사장님:'オーナー',구인구직:'求人'},
- roles:{guest:'ゲスト',owner:'オーナー',official:'Beautia'},krGroup:'🇰🇷 韓国',jpGroup:'🇯🇵 日本',krShort:'🇰🇷',jpShort:'🇯🇵',member:'コミュニティ会員'
+ earnReview:'レビュー投稿',earnPost:'投稿',earnPhoto:'写真',earnDetail:'詳細レビュー',earnComment:'コメント',earnSignup:'登録特典',earnInvited:'招待で登録',
+ points:'ポイント',myPoints:'マイポイント',pointHist:'獲得履歴',pointRules:'獲得方法',noPoints:'まだ獲得履歴がありません',referral:'友達招待',refDesc:'招待リンクから友達が登録すると二人とも3,000Pもらえます。',refCopy:'招待リンクをコピー',refCopied:'招待リンクをコピーしました',pointSoon:'貯めたポイントは今後、予約割引・特典に使えます。',
+ ruleReview:'レビュー投稿 +500P',rulePhoto:'写真3枚以上 +100P',ruleDetail:'詳細レビュー(300字+) +100P',ruleComment:'コメント +20P',ruleInvite:'友達招待 +3,000P',
+ designerDesc:'美容室・ネイルのデザイナー（施術担当）',careerL:'経歴',careerPh:'例: ヘアデザイナー5年 · 東京3年',specialtiesL:'得意な施術',affiliationL:'所属サロン（任意）',affiliationPh:'例: 渋谷ヘアルーム',photoL:'プロフィール写真',photoHint:'顔または作品の写真でより信頼されます',addPhoto:'写真を追加',changePhoto:'写真を変更',careerBadge:'経歴',
+ instaL:'インスタグラム（任意）',instaPh:'@IDまたはリンク',situationL:'現在の状況',shopDescL:'店舗紹介',shopDescPh:'店の雰囲気・強み・韓国のお客様歓迎メッセージなど',hoursL:'営業時間（任意）',hoursPh:'例: 11:00–20:00 · 水曜定休',locDetailL:'詳しい場所（任意）',locDetailPh:'例: 渋谷駅3番出口 徒歩3分',koOKL:'韓国語対応可能',situations:{travel:'旅行予定',whv:'ワーホリ・留学',jp:'日本在住',kr:'韓国在住'},
+ shopPhotosL:'店舗の写真（任意）',workPhotosL:'作品の写真（任意）',photosHint:'最大6枚 · ホームの専門家セクションに表示されます',proTitle:'韓・日ビューティー専門家',proAll:'すべて',proOwner:'サロン',proDesigner:'デザイナー',proMore:'すべて見る',bookPro:'カカオで予約・問い合わせ',koBadge:'韓国語OK',
+ selRoleReq:'どちらの会員ですか？（必須）',needRole:'まず役割を選択してください',rolePickFirst:'役割を選ぶと、それに合わせた情報を入力できます',
+ roles:{guest:'ゲスト',owner:'オーナー',designer:'デザイナー',official:'Beautia'},krGroup:'🇰🇷 韓国',jpGroup:'🇯🇵 日本',krShort:'🇰🇷',jpShort:'🇯🇵',member:'コミュニティ会員'
 }};
 const REGMAP={'서울':'ソウル','부산':'釜山','대구':'大邱','인천':'仁川','한국 기타':'韓国その他','도쿄':'東京','오사카':'大阪','교토':'京都','후쿠오카':'福岡','삿포로':'札幌','나고야':'名古屋','일본 기타':'日本その他'};
 let LANG=(function(){try{var q=new URLSearchParams(location.search).get('lang');if(q==='ja'||q==='ko')return q;return localStorage.getItem('beautia_lang')||'ko';}catch(e){return 'ko';}})();
@@ -366,24 +491,29 @@ const roleL=k=>T[LANG].roles[k]||k;
 
 const CATS=[['전체','ti-layout-grid'],['질문','ti-help-circle'],['후기','ti-star'],['정보','ti-bulb'],['모델모집','ti-camera'],['자유','ti-message-2'],['사장님','ti-building-store'],['구인구직','ti-briefcase']];
 const RGROUPS=[['kr',['서울','부산','대구','인천','한국 기타']],['jp',['도쿄','오사카','교토','후쿠오카','삿포로','나고야','일본 기타']]];
-const ROLES=[{k:'guest',c:'rb-guest'},{k:'owner',c:'rb-owner'},{k:'official',c:'rb-official'}];
+const ROLES=[{k:'guest',c:'rb-guest'},{k:'owner',c:'rb-owner'},{k:'designer',c:'rb-designer'},{k:'official',c:'rb-official'}];
 const SERVICES=[['헤어컷','カット'],['펌','パーマ'],['염색','カラー'],['다운펌','ダウンパーマ'],['네일','ネイル'],['속눈썹','まつげ'],['제모','脱毛'],['메이크업','メイク']];
 const svcL=k=>{const s=SERVICES.find(x=>x[0]===k);return s?(LANG==='ja'?s[1]:s[0]):k;};
+const SITU=['travel','whv','jp','kr'];
+const situL=k=>(T[LANG].situations&&T[LANG].situations[k])||k;
 const GSVG=`<svg width="18" height="18" viewBox="0 0 48 48" style="flex:0 0 auto"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/><path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/></svg>`;
 const GRAD=[['#B5828C','#6E4A50'],['#C2768A','#7E4A6A'],['#E3A857','#B5828C'],['#7E8FB0','#6E4A50'],['#CBA0AC','#8A5A6C']];
 const BANNERS=[
- {badge:'EVENT',bg:'linear-gradient(120deg,#6E4A50,#B5828C)',act:"window.open('https://pf.kakao.com/_xhxhixfX/chat')",ko:{title:'오픈 기념 · 예약 대행 무료',sub:'선착순 100명 · 일본 미용실/네일 한국어 예약'},ja:{title:'オープン記念・予約代行が無料',sub:'先着100名 · 日本の美容室/ネイルを韓国語で予約'}},
- {badge:'INFO',bg:'linear-gradient(120deg,#C2768A,#7E4A6A)',act:"openPost(7)",ko:{title:'엔저 시대, 지금이 기회 🇯🇵',sub:'일본 뷰티 시술을 본토에서 합리적으로'},ja:{title:'円安の今がチャンス 🇯🇵',sub:'日本のビューティーを本場でお得に'}},
- {badge:'NEW',bg:'linear-gradient(120deg,#7E8FB0,#6E4A50)',act:"openPost(1)",ko:{title:'사장님 입점 문의 받아요',sub:'한국 손님 받고 싶은 한·일 미용실/네일샵 환영'},ja:{title:'オーナー様の出店受付中',sub:'韓国のお客様を迎えたい韓・日サロン歓迎'}}
+ {badge:'EVENT',bg:"#2A2024 url('https://images.unsplash.com/photo-1560066984-138dadb4c035?auto=format&fit=crop&w=1200&q=70') center/cover",act:"window.open('https://pf.kakao.com/_xhxhixfX/chat')",ko:{title:'오픈 기념 · 예약 대행 무료',sub:'선착순 100명 · 일본 미용실/네일 한국어 예약'},ja:{title:'オープン記念・予約代行が無料',sub:'先着100名 · 日本の美容室/ネイルを韓国語で予約'}},
+ {badge:'INFO',bg:"#3A2A30 url('https://images.unsplash.com/photo-1540959733332-eab4deabeeaf?auto=format&fit=crop&w=1200&q=70') center/cover",act:"openPost(7)",ko:{title:'엔저 시대, 지금이 기회 🇯🇵',sub:'일본 뷰티 시술을 본토에서 합리적으로'},ja:{title:'円安の今がチャンス 🇯🇵',sub:'日本のビューティーを本場でお得に'}},
+ {badge:'NEW',bg:"#2C3036 url('https://images.unsplash.com/photo-1521590832167-7bcbfaa6381f?auto=format&fit=crop&w=1200&q=70') center/cover",act:"openPost(1)",ko:{title:'사장님 입점 문의 받아요',sub:'한국 손님 받고 싶은 한·일 미용실/네일샵 환영'},ja:{title:'オーナー様の出店受付中',sub:'韓国のお客様を迎えたい韓・日サロン歓迎'}}
 ];
 const $=id=>document.getElementById(id);
 const esc=s=>(s||'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 function timeago(t0){const d=(Date.now()-t0)/1000;const u=LANG==='ja'?['たった今','分前','時間前','日前']:['방금','분 전','시간 전','일 전'];if(d<60)return u[0];if(d<3600)return Math.floor(d/60)+u[1];if(d<86400)return Math.floor(d/3600)+u[2];if(d<2592000)return Math.floor(d/86400)+u[3];return new Date(t0).toLocaleDateString(LANG==='ja'?'ja-JP':'ko-KR',{month:'numeric',day:'numeric'});}
 function hash(s){let h=0;for(let i=0;i<s.length;i++)h=(h*31+s.charCodeAt(i))%99999;return h;}
-function applyAv(el,name){if(!el)return;const g=GRAD[hash(name)%GRAD.length];el.style.background=`linear-gradient(135deg,${g[0]},${g[1]})`;el.textContent=(name||'?')[0];}
-function avHtml(name){const g=GRAD[hash(name)%GRAD.length];return `<div class="av" style="background:linear-gradient(135deg,${g[0]},${g[1]})">${esc((name||'?')[0])}</div>`;}
+const AVC=['#6D4346','#8A555B','#A6727A','#5A3A40','#7E5A50','#9A6A5C'];
+function avColor(name){return AVC[hash(name||'?')%AVC.length];}
+function applyAv(el,name,av){if(!el)return;if(av){el.style.backgroundImage=`url('${av}')`;el.style.backgroundSize='cover';el.style.backgroundPosition='center';el.textContent='';}else{el.style.backgroundImage='';el.style.background=avColor(name);el.textContent=(name||'?')[0];}}
+function avHtml(name,av){if(av)return `<div class="av" style="background:#eee;background-image:url('${av}');background-size:cover;background-position:center"></div>`;return `<div class="av" style="background:${avColor(name)}">${esc((name||'?')[0])}</div>`;}
 function roleBadge(r){const x=ROLES.find(o=>o.k===r)||ROLES[0];return `<span class="rbadge ${x.c}">${roleL(x.k)}</span>`;}
 function regFlag(r){return RGROUPS[0][1].includes(r)?'🇰🇷':(RGROUPS[1][1].includes(r)?'🇯🇵':'');}
+function instaUrl(v){v=(v||'').trim();if(!v)return '#';if(/^https?:\/\//.test(v))return v;return 'https://instagram.com/'+v.replace(/^@/,'');}
 function isNew(p){return Date.now()-p.t<864e5;}
 function blocked(n){return (DB.blocked||[]).includes(n);}
 function toast(m){const el=$('toast');el.textContent=m;el.classList.add('on');clearTimeout(el._);el._=setTimeout(()=>el.classList.remove('on'),1900);}
@@ -393,7 +523,7 @@ let DB,ME,curCat='전체',curSort='hot',curRegion='전체',curQ='',curMenu='',vi
 const SB_URL="https://pzbxcktaljhesrfnqwzq.supabase.co";
 const SB_KEY="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InB6Ynhja3RhbGpoZXNyZm5xd3pxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjgxNjc1MjYsImV4cCI6MjA4Mzc0MzUyNn0.aUZbTgfWbjEISNr1-cu9YJnOGj1lzjXeRVifHygAplc";
 const SB=supabase.createClient(SB_URL,SB_KEY);
-let PROFMAP={};
+let PROFMAP={},PROFILES=[];
 function loadLocal(){
   ME=JSON.parse(localStorage.getItem('beautia_comm_me')||'null')||{};
   ME.likes=ME.likes||[];ME.scraps=ME.scraps||[];ME.read=ME.read||[];
@@ -402,51 +532,66 @@ function loadLocal(){
   const newVisit=ME.visit.last!==today;
   if(newVisit){const y=new Date(Date.now()-864e5).toISOString().slice(0,10);ME.visit.streak=(ME.visit.last===y)?ME.visit.streak+1:1;ME.visit.last=today;}
   ME._firstEver=firstEver;ME._newVisit=newVisit;
+  ME.points=ME.points||0;ME.pointLog=ME.pointLog||[];ME.awarded=ME.awarded||{};
+  ME.ref=ME.ref||('B'+Math.random().toString(36).slice(2,7).toUpperCase());
+  try{const inv=new URLSearchParams(location.search).get('ref');if(inv&&!ME.invitedBy){ME.invitedBy=inv;}}catch(e){}
   ME.registered=false;ME.role='guest';ME.nick=ME.nick||'게스트';ME.region=ME.region||'전체';ME.interests=ME.interests||[];ME.shop=ME.shop||{name:'',area:'',services:[]};
   saveMe();DB={posts:[],blocked:[]};
 }
 function save(){}
-function saveMe(){try{localStorage.setItem('beautia_comm_me',JSON.stringify({likes:ME.likes,scraps:ME.scraps,read:ME.read,visit:ME.visit,nick:ME.nick}));}catch(e){}}
-function mapPost(r){const pm=PROFMAP[r.author]||{};return{id:r.id,cat:r.cat||'자유',region:r.region||'전체',title:r.title||'',content:r.content||'',tags:r.tags||[],imgs:r.imgs||[],pinned:!!r.pinned,hidden:!!r.hidden,like:r.like_count||0,scrap:0,t:r.created_at?new Date(r.created_at).getTime():Date.now(),author:r.author,nick:pm.nick||r.nickname||'익명',role:pm.role||'guest',cmtCount:(r.comments&&r.comments[0])?r.comments[0].count:0,cmts:[],mine:!!(ME.uid&&r.author===ME.uid)};}
+function saveMe(){try{localStorage.setItem('beautia_comm_me',JSON.stringify({likes:ME.likes,scraps:ME.scraps,read:ME.read,visit:ME.visit,nick:ME.nick,avatar:ME.avatar,points:ME.points,pointLog:ME.pointLog,awarded:ME.awarded,ref:ME.ref,invitedBy:ME.invitedBy}));}catch(e){}}
+/* ===== points (적립만, 사용처는 추후) ===== */
+const PTS={review:500,post:100,photo:100,detail:100,comment:20,signup:1000,invite:3000};
+function award(amount,reason,key){
+  if(key){if(ME.awarded[key])return;ME.awarded[key]=1;}
+  ME.points=(ME.points||0)+amount;
+  ME.pointLog=ME.pointLog||[];ME.pointLog.unshift({a:amount,r:reason,t:Date.now()});
+  if(ME.pointLog.length>50)ME.pointLog.length=50;
+  saveMe();
+  const av=$('navPts');if(av)av.textContent='✦ '+ME.points.toLocaleString()+'P';
+  toast('+'+amount.toLocaleString()+'P · '+reason);
+}
+function mapPost(r){const pm=PROFMAP[r.author]||{};return{id:r.id,cat:r.cat||'자유',region:r.region||'전체',title:r.title||'',content:r.content||'',tags:r.tags||[],imgs:r.imgs||[],pinned:!!r.pinned,hidden:!!r.hidden,like:r.like_count||0,scrap:0,t:r.created_at?new Date(r.created_at).getTime():Date.now(),author:r.author,nick:pm.nick||r.nickname||'익명',role:pm.role||'guest',avatar:pm.avatar||'',cmtCount:(r.comments&&r.comments[0])?r.comments[0].count:0,cmts:[],mine:!!(ME.uid&&r.author===ME.uid)};}
 async function loadPosts(){
   try{
-    const {data:profs}=await SB.from('profiles').select('id,nickname,role');PROFMAP={};(profs||[]).forEach(p=>PROFMAP[p.id]={nick:p.nickname,role:p.role});
+    const {data:profs}=await SB.from('profiles').select('id,nickname,role,region,bio,interests,shop');PROFMAP={};(profs||[]).forEach(p=>PROFMAP[p.id]={nick:p.nickname,role:p.role,avatar:(p.shop&&p.shop.avatar)||''});PROFILES=profs||[];
     const {data:posts,error}=await SB.from('posts').select('*, comments(count)').order('created_at',{ascending:false});
     if(error)throw error;DB.posts=(posts||[]).map(mapPost);
-  }catch(e){console.warn('loadPosts',e);DB.posts=DB.posts||[];}
+    if(!DB.posts.length)DB.posts=seed();
+  }catch(e){console.warn('loadPosts',e);DB.posts=(DB.posts&&DB.posts.length)?DB.posts:seed();}
 }
 async function refreshProfile(session){
   if(!session){ME.uid=null;ME.registered=false;ME.role='guest';ME.needProfile=false;return;}
   ME.uid=session.user.id;ME.email=session.user.email||'';ME.provider=(session.user.app_metadata||{}).provider||'email';
   const {data}=await SB.from('profiles').select('*').eq('id',ME.uid).maybeSingle();
-  if(data&&data.nickname){ME.registered=true;ME.needProfile=false;ME.nick=data.nickname;ME.role=data.role||'guest';ME.region=data.region||'전체';ME.bio=data.bio||'';ME.interests=data.interests||[];ME.shop=data.shop||{name:'',area:'',services:[]};ME.is_admin=!!data.is_admin;ME.verified=true;ME.joinedAt=data.created_at?new Date(data.created_at).getTime():Date.now();saveMe();}
+  if(data&&data.nickname){ME.registered=true;ME.needProfile=false;ME.nick=data.nickname;ME.role=data.role||'guest';ME.region=data.region||'전체';ME.bio=data.bio||'';ME.interests=data.interests||[];ME.shop=data.shop||{name:'',area:'',services:[]};ME.avatar=(data.shop&&data.shop.avatar)||'';ME.is_admin=!!data.is_admin;ME.verified=true;ME.joinedAt=data.created_at?new Date(data.created_at).getTime():Date.now();saveMe();}
   else{ME.registered=false;ME.needProfile=true;}
 }
 function seed(){const now=Date.now(),h=3600000,d=86400000;return[
- {id:1,cat:'정보',region:'전체',role:'official',nick:'Beautia',title:'🎉 커뮤니티 오픈! 이런 곳이에요',content:'한국·일본 뷰티를 사랑하는 손님·사장님이 모이는 라운지예요.\n\n· 질문: "이 미용실 한국어 돼요?"\n· 후기: 다녀온 곳 솔직 후기\n· 정보: 예약 꿀팁, 화장품 추천\n· 사장님 라운지: 한국 손님 받는 노하우\n\n광고·욕설·개인정보는 삼가주세요 🤍',like:42,scrap:18,imgs:[],cmts:[{nick:'네일러버',role:'guest',t:'기다렸어요!! 🙌',d:now-2*h}],t:now-2*d},
- {id:2,cat:'질문',region:'서울',role:'guest',nick:'서울사는데',title:'서울인데 일본 가기 전에 미리 예약돼요?',content:'다음달 도쿄 여행 가는데, 한국에 있는 지금 미리 미용실 예약해두고 싶어요. 출국 전에 예약 잡아두는 거 가능할까요?',like:9,scrap:7,imgs:[],cmts:[{nick:'Beautia',role:'official',t:'네! 출국 전에 미리 예약·통역 대행 가능해요. 카톡으로 날짜·스타일 주세요 🙌',d:now-1*h}],t:now-3*h},
- {id:3,cat:'질문',region:'오사카',role:'guest',nick:'난바초보',title:'오사카 난바 근처 한국어 되는 네일샵 있을까요?',content:'다음달 오사카 가는데 신사이바시/난바 쪽에서 젤네일 하려고요. 일본어를 못해서… 한국어 되거나 사진만 보여줘도 잘 해주는 곳 추천 부탁드려요 🥺',like:12,scrap:5,imgs:[],cmts:[],t:now-7*h},
- {id:4,cat:'후기',region:'도쿄',role:'guest',nick:'워홀러여',title:'도쿄 시부야에서 펌한 후기 (대만족 ㅠㅠ)',content:'일본어 1도 모르는데 원하는 펌 사진 보여주고 예약했어요. 기장이랑 컬 세기까지 다 전달돼서 완전 만족 ㅠㅠ 엔저라 가격도 한국보다 쌌어요!',like:28,scrap:11,imgs:[],tags:['도쿄','펌','후기'],cmts:[],t:now-12*h},
- {id:5,cat:'사장님',region:'서울',role:'owner',nick:'홍대헤어쌤',title:'[사장님] 일본 가는 손님께 — 출국 전 펌/염색 팁',content:'홍대에서 미용실 하는데, 일본 여행·워홀 가는 손님들 많아서 팁 드려요. 출국 직전 강한 펌은 비추(현지 손질 어려움), 뿌리염색은 미리 받고 가시는 게 좋아요 🙌',like:16,scrap:9,imgs:[],cmts:[],t:now-1*d},
- {id:6,cat:'사장님',region:'도쿄',role:'owner',nick:'新宿ヘアサロン',lang:'ja',title:'韓国のお客様、いつでも歓迎です🇰🇷',content:'신주쿠에서 미용실 하고 있어요. 한국 손님 정말 환영합니다! 사진 보여주시면 원하는 스타일 맞춰드려요. 한국어 메뉴도 준비했어요.',orig:'新宿で美容室をやっています。韓国のお客様、大歓迎です！写真を見せていただければご希望のスタイルに仕上げます。韓国語メニューもご用意しています。',like:35,scrap:9,imgs:[],tags:['신주쿠','한국어OK'],cmts:[{nick:'도쿄가고파',role:'guest',t:'우와 가보고 싶어요! 위치 어디쯤이에요?',d:now-3*h}],t:now-1*d-2*h},
- {id:7,cat:'정보',region:'전체',role:'guest',nick:'코덕',title:'일본 드럭스토어 쟁여올 화장품 추천템 (6월 ver)',content:'캔메이크 무치푸루 틴트(탕후루립 그 틴트!), 세잔느 톤업 베이스, 클리오는 일본에도 다 있음 ㅋㅋ 퍼스널컬러별로 무치푸루 호수 정리해서 또 올릴게요!',like:51,scrap:33,imgs:[],tags:['화장품','드럭스토어','추천'],cmts:[],t:now-1*d-5*h},
- {id:8,cat:'구인구직',region:'오사카',role:'owner',nick:'오사카네일',title:'[구인] 오사카 네일샵 한국어 가능 스태프 구해요',content:'신사이바시 네일샵에서 한국어 가능한 네일리스트 모십니다. 워홀러 환영! 경력 무관, 성실하신 분이면 OK 🙆‍♀️',like:8,scrap:14,imgs:[],cmts:[],t:now-2*d},
- {id:10,cat:'모델모집',region:'도쿄',role:'owner',nick:'시부야헤어룸',title:'[헤어모델 모집] 컷+펌 무료 모델 구해요 (시부야)',content:'신상 펌 연습 모델 구합니다! 컷+펌 무료(약품비만), 2~3시간 소요. 사진 촬영 동의 필요해요. 한국분 환영, 한국어 통역 가능합니다 🙆‍♀️',like:24,scrap:31,imgs:[],tags:['헤어모델','펌','무료'],cmts:[{nick:'도쿄살이',role:'guest',t:'헉 관심있어요! 날짜 언제쯤이에요?',d:now-2*h}],t:now-5*h},
- {id:11,cat:'모델모집',region:'오사카',role:'owner',nick:'네일아틀리에',title:'[네일모델 모집] 젤네일 반값 모델 (신사이바시)',content:'아트 연습 네일모델 모십니다. 젤네일 반값, 디자인은 상의해서 결정! 약 1.5시간이에요. 워홀러·여행객 환영합니다 💅',like:15,scrap:19,imgs:[],tags:['네일모델','젤네일','반값'],cmts:[],t:now-9*h},
- {id:9,cat:'자유',region:'전체',role:'guest',nick:'엔저덕분',title:'엔저라 자꾸 일본 가고싶다…',content:'환율 보다가 또 항공권 검색함 ㅋㅋㅋ 이참에 머리도 하고 네일도 하고 다 하고 올까봐요. 다들 일본 가면 뷰티 뭐부터 하세요?',like:19,scrap:2,imgs:[],cmts:[{nick:'난바초보',role:'guest',t:'저는 무조건 네일부터요 💅',d:now-6*h}],t:now-2*d-5*h}
+ {id:1,cat:'정보',region:'전체',role:'official',nick:'Beautia',title:'🎉 커뮤니티 오픈! 이런 곳이에요',content:'한국·일본 뷰티를 사랑하는 손님·사장님이 모이는 라운지예요.\n\n· 질문: "이 미용실 한국어 돼요?"\n· 후기: 다녀온 곳 솔직 후기\n· 정보: 예약 꿀팁, 화장품 추천\n· 사장님 라운지: 한국 손님 받는 노하우\n\n광고·욕설·개인정보는 삼가주세요 🤍',like:42,scrap:18,imgs:['https://images.unsplash.com/photo-1521590832167-7bcbfaa6381f?auto=format&fit=crop&w=720&q=70'],cmts:[{nick:'네일러버',role:'guest',t:'기다렸어요!! 🙌',d:now-2*h}],t:now-2*d},
+ {id:2,cat:'질문',region:'서울',role:'guest',nick:'서울사는데',title:'서울인데 일본 가기 전에 미리 예약돼요?',content:'다음달 도쿄 여행 가는데, 한국에 있는 지금 미리 미용실 예약해두고 싶어요. 출국 전에 예약 잡아두는 거 가능할까요?',like:9,scrap:7,imgs:['https://images.unsplash.com/photo-1560066984-138dadb4c035?auto=format&fit=crop&w=720&q=70'],cmts:[{nick:'Beautia',role:'official',t:'네! 출국 전에 미리 예약·통역 대행 가능해요. 카톡으로 날짜·스타일 주세요 🙌',d:now-1*h}],t:now-3*h},
+ {id:3,cat:'질문',region:'오사카',role:'guest',nick:'난바초보',title:'오사카 난바 근처 한국어 되는 네일샵 있을까요?',content:'다음달 오사카 가는데 신사이바시/난바 쪽에서 젤네일 하려고요. 일본어를 못해서… 한국어 되거나 사진만 보여줘도 잘 해주는 곳 추천 부탁드려요 🥺',like:12,scrap:5,imgs:['https://images.unsplash.com/photo-1522335789203-aabd1fc54bc9?auto=format&fit=crop&w=720&q=70'],cmts:[],t:now-7*h},
+ {id:4,cat:'후기',region:'도쿄',role:'guest',nick:'워홀러여',title:'도쿄 시부야에서 펌한 후기 (대만족 ㅠㅠ)',content:'일본어 1도 모르는데 원하는 펌 사진 보여주고 예약했어요. 기장이랑 컬 세기까지 다 전달돼서 완전 만족 ㅠㅠ 엔저라 가격도 한국보다 쌌어요!',like:28,scrap:11,imgs:['https://images.unsplash.com/photo-1562322140-8baeececf3df?auto=format&fit=crop&w=720&q=70','https://images.unsplash.com/photo-1487412947147-5cebf100ffc2?auto=format&fit=crop&w=720&q=70'],tags:['도쿄','펌','후기'],cmts:[],t:now-12*h},
+ {id:5,cat:'사장님',region:'서울',role:'owner',nick:'홍대헤어쌤',title:'[사장님] 일본 가는 손님께 — 출국 전 펌/염색 팁',content:'홍대에서 미용실 하는데, 일본 여행·워홀 가는 손님들 많아서 팁 드려요. 출국 직전 강한 펌은 비추(현지 손질 어려움), 뿌리염색은 미리 받고 가시는 게 좋아요 🙌',like:16,scrap:9,imgs:['https://images.unsplash.com/photo-1487412947147-5cebf100ffc2?auto=format&fit=crop&w=720&q=70'],cmts:[],t:now-1*d},
+ {id:6,cat:'사장님',region:'도쿄',role:'owner',nick:'新宿ヘアサロン',lang:'ja',title:'韓国のお客様、いつでも歓迎です🇰🇷',content:'신주쿠에서 미용실 하고 있어요. 한국 손님 정말 환영합니다! 사진 보여주시면 원하는 스타일 맞춰드려요. 한국어 메뉴도 준비했어요.',orig:'新宿で美容室をやっています。韓国のお客様、大歓迎です！写真を見せていただければご希望のスタイルに仕上げます。韓国語メニューもご用意しています。',like:35,scrap:9,imgs:['https://images.unsplash.com/photo-1522338242992-e1a54906a8da?auto=format&fit=crop&w=720&q=70'],tags:['신주쿠','한국어OK'],cmts:[{nick:'도쿄가고파',role:'guest',t:'우와 가보고 싶어요! 위치 어디쯤이에요?',d:now-3*h}],t:now-1*d-2*h},
+ {id:7,cat:'정보',region:'전체',role:'guest',nick:'코덕',title:'일본 드럭스토어 쟁여올 화장품 추천템 (6월 ver)',content:'캔메이크 무치푸루 틴트(탕후루립 그 틴트!), 세잔느 톤업 베이스, 클리오는 일본에도 다 있음 ㅋㅋ 퍼스널컬러별로 무치푸루 호수 정리해서 또 올릴게요!',like:51,scrap:33,imgs:['https://images.unsplash.com/photo-1596462502278-27bfdc403348?auto=format&fit=crop&w=720&q=70','https://images.unsplash.com/photo-1571781926291-c477ebfd024b?auto=format&fit=crop&w=720&q=70','https://images.unsplash.com/photo-1512496015851-a90fb38ba796?auto=format&fit=crop&w=720&q=70'],tags:['화장품','드럭스토어','추천'],cmts:[],t:now-1*d-5*h},
+ {id:8,cat:'구인구직',region:'오사카',role:'owner',nick:'오사카네일',title:'[구인] 오사카 네일샵 한국어 가능 스태프 구해요',content:'신사이바시 네일샵에서 한국어 가능한 네일리스트 모십니다. 워홀러 환영! 경력 무관, 성실하신 분이면 OK 🙆‍♀️',like:8,scrap:14,imgs:['https://images.unsplash.com/photo-1604654894610-df63bc536371?auto=format&fit=crop&w=720&q=70'],cmts:[],t:now-2*d},
+ {id:10,cat:'모델모집',region:'도쿄',role:'owner',nick:'시부야헤어룸',title:'[헤어모델 모집] 컷+펌 무료 모델 구해요 (시부야)',content:'신상 펌 연습 모델 구합니다! 컷+펌 무료(약품비만), 2~3시간 소요. 사진 촬영 동의 필요해요. 한국분 환영, 한국어 통역 가능합니다 🙆‍♀️',like:24,scrap:31,imgs:['https://images.unsplash.com/photo-1512496015851-a90fb38ba796?auto=format&fit=crop&w=720&q=70'],tags:['헤어모델','펌','무료'],cmts:[{nick:'도쿄살이',role:'guest',t:'헉 관심있어요! 날짜 언제쯤이에요?',d:now-2*h}],t:now-5*h},
+ {id:11,cat:'모델모집',region:'오사카',role:'owner',nick:'네일아틀리에',title:'[네일모델 모집] 젤네일 반값 모델 (신사이바시)',content:'아트 연습 네일모델 모십니다. 젤네일 반값, 디자인은 상의해서 결정! 약 1.5시간이에요. 워홀러·여행객 환영합니다 💅',like:15,scrap:19,imgs:['https://images.unsplash.com/photo-1522335789203-aabd1fc54bc9?auto=format&fit=crop&w=720&q=70'],tags:['네일모델','젤네일','반값'],cmts:[],t:now-9*h},
+ {id:9,cat:'자유',region:'전체',role:'guest',nick:'엔저덕분',title:'엔저라 자꾸 일본 가고싶다…',content:'환율 보다가 또 항공권 검색함 ㅋㅋㅋ 이참에 머리도 하고 네일도 하고 다 하고 올까봐요. 다들 일본 가면 뷰티 뭐부터 하세요?',like:19,scrap:2,imgs:['https://images.unsplash.com/photo-1540959733332-eab4deabeeaf?auto=format&fit=crop&w=720&q=70'],cmts:[{nick:'난바초보',role:'guest',t:'저는 무조건 네일부터요 💅',d:now-6*h}],t:now-2*d-5*h}
 ];}
 
 /* ===== render ===== */
 function renderHeader(){
   $('hwrap').innerHTML=`<a class="logo" href="community.html"><img src="logo-trim.png" alt="Beautia"></a>
-    <nav class="gnav"><a class="on">${t('community')}</a><a href="landing.html">${t('intro')}</a><a href="https://pf.kakao.com/_xhxhixfX/chat" target="_blank">${t('reserve')}</a></nav>
+    <nav class="gnav"><a class="on">${t('community')}</a><a href="info.html">${t('areaInfo')}</a><a href="shop.html">${t('shops')}</a><a href="landing.html">${t('intro')}</a></nav>
     <div class="hsearch"><i class="ti ti-search"></i><input id="q" placeholder="${t('search')}" onkeydown="if(event.key==='Enter')doSearch()"></div>
     <div class="hright">
       <div class="langtog"><span class="${LANG==='ko'?'on':''}" onclick="setLang('ko')">한</span><span class="${LANG==='ja'?'on':''}" onclick="setLang('ja')">日</span></div>
       <button class="btn btn-primary" onclick="openWrite()"><i class="ti ti-pencil"></i> ${t('write')}</button>
-      ${ME.registered?`<div class="av" id="navAv" onclick="openMypage()" title="${t('mypage')}" style="cursor:pointer"></div>`:`<button class="btn btn-ghost" onclick="openSignup()">${t('signup')}</button>`}
+      ${ME.registered?`<span class="ptschip" id="navPts" onclick="openMypage()" title="${t('myPoints')}">✦ ${(ME.points||0).toLocaleString()}P</span><div class="av" id="navAv" onclick="openMypage()" title="${t('mypage')}" style="cursor:pointer"></div>`:`<button class="btn btn-ghost" onclick="openSignup()">${t('signup')}</button>`}
     </div>`;
-  applyAv($('navAv'),ME.nick);
+  applyAv($('navAv'),ME.nick,ME.avatar);
 }
 function renderRight(){
   $('rightcol').innerHTML=`
@@ -456,13 +601,13 @@ function renderRight(){
       <div class="st"><div class="c"><div class="n tnum">1.2k</div><div class="l">${t('members')}</div></div><div class="c"><div class="n tnum">${DB.posts.length}</div><div class="l">${t('posts')}</div></div><div class="c"><div class="n tnum">340</div><div class="l">${t('visits')}</div></div></div>
       <button class="btn btn-primary" onclick="openWrite()"><i class="ti ti-pencil"></i> ${t('write')}</button>
     </div>
-    <div class="panel"><div class="panel-h">📋 ${t('rules')}</div><div class="rules">
+    <div class="panel"><div class="panel-h">${t('rules')}</div><div class="rules">
       ${[1,2,3,4].map(n=>`<div class="rule"><span class="rn">${n}</span><span>${t('r'+n)}</span></div>`).join('')}
     </div></div>
-    <div class="panel"><div class="panel-h">🔥 ${t('popular')}</div><div class="hot" id="hot"></div></div>
+    <div class="panel"><div class="panel-h">${t('popular')}</div><div class="hot" id="hot"></div></div>
     <div class="ctabox"><h4>${t('ctaTitle')}</h4><p>${t('ctaDesc')}</p><a class="btn btn-kakao" href="https://pf.kakao.com/_xhxhixfX/chat" target="_blank">💬 ${t('ctaBtn')}</a></div>`;
   const hot=DB.posts.slice().sort((a,b)=>(b.like+b.scrap*2)-(a.like+a.scrap*2)).slice(0,5);
-  $('hot').innerHTML=hot.map((p,i)=>`<div class="hotitem" onclick="openPost(${p.id})"><span class="rk">${i+1}</span><div><div class="ht">${esc(p.title)}</div><div class="hm tnum">❤ ${p.like} · 💬 ${p.cmtCount||0}</div></div></div>`).join('');
+  $('hot').innerHTML=hot.map((p,i)=>`<div class="hotitem" onclick="openPost(${p.id})"><span class="rk">${i+1}</span><div><div class="ht">${esc(p.title)}</div><div class="hm tnum">♥ ${p.like} · ${t('comments')} ${p.cmtCount||0}</div></div></div>`).join('');
 }
 function renderShell(){
   let nav=`<div class="lh">${t('board')}</div>`;
@@ -496,17 +641,30 @@ function mediaHtml(imgs){if(!imgs||!imgs.length)return'';
   if(imgs.length===1)return `<div class="cmedia one"><div class="mi" style="background-image:url('${imgs[0]}')"></div></div>`;
   const cls=imgs.length===2?'g2':'g3';const show=imgs.slice(0,3);
   return `<div class="cmedia ${cls}">${show.map((s,i)=>`<div class="mi" style="background-image:url('${s}')">${(i===2&&imgs.length>3)?`<span class="more">+${imgs.length-3}</span>`:''}</div>`).join('')}</div>`;}
-function cardHtml(p){const liked=ME.likes.includes(p.id);
-  return `<div class="card ${ME.read.includes(p.id)?'read':''}" onclick="openPost(${p.id})">
-    <div class="vote ${liked?'liked':''}" onclick="event.stopPropagation();toggleLike(${p.id})"><div class="vb"><i class="ti ti-heart${liked?'-filled':''}"></i></div><div class="vn tnum">${p.like}</div></div>
+const POSTER=['#6D4346','#532F33','#5A3A40','#7E5A50','#43292D','#8A555B'];
+function posterTone(p){return POSTER[hash(p.title||'?')%POSTER.length];}
+function coverFail(img){img.style.display='none';const c=img.parentNode;c.classList.add('poster');const card=img.closest('.card');if(card&&!card.classList.contains('lead'))card.classList.add('nophoto');}
+function coverHtml(p){const imgs=p.imgs||[];const has=imgs.length;const tone=posterTone(p);
+  const chips=`<span class="catchip">${catL(p.cat)}</span>${isNew(p)?`<span class="newchip">${t('new')==='최신'?'NEW':'NEW'}</span>`:''}${has>1?`<span class="morechip"><i class="ti ti-photo"></i>+${has-1}</span>`:''}`;
+  const img=has?`<img src="${imgs[0]}" loading="lazy" alt="" onerror="coverFail(this)">`:'';
+  return `<div class="cover ${has?'':'poster'}" style="background:${tone}"><div class="ptext">${esc(p.title)}</div>${img}<div class="scrim"></div>${chips}</div>`;}
+function cardMeta(p){return `<div class="chead">${roleBadge(p.role)}<span class="dot"></span><span>${esc(p.nick)}</span>${p.region&&p.region!=='전체'?`<span class="dot"></span><span>${regFlag(p.region)} ${esc(regL(p.region))}</span>`:''}<span class="dot"></span><span>${timeago(p.t)}</span></div>`;}
+function cardActs(p){return `<div class="cact"><span class="a"><i class="ti ti-heart"></i> ${p.like}</span><span class="a"><i class="ti ti-message-circle"></i> ${p.cmtCount||0}</span><span class="a"><i class="ti ti-eye"></i> ${(p.like*7+p.scrap*3+13)}</span></div>`;}
+function cardHtml(p,i,lead){
+  const has=p.imgs&&p.imgs.length;const tone=posterTone(p);
+  if(lead){
+    return `<div class="card lead ${ME.read.includes(p.id)?'read':''}" onclick="openPost(${p.id})">
+      <div class="cover ${has?'':'poster'}" style="background:${tone}">
+        ${has?`<img src="${p.imgs[0]}" loading="lazy" alt="" onerror="coverFail(this)">`:''}<div class="scrim"></div>
+        <div class="leadtext"><span class="lead-cat">${catL(p.cat)}</span><div class="lead-title">${p.pinned?'📌 ':''}${esc(p.title)}</div><div class="lead-exc">${esc(bodyOf(p))}</div></div>
+        ${isNew(p)?`<span class="newchip">NEW</span>`:''}</div></div>`;
+  }
+  return `<div class="card ${has?'':'nophoto'} ${ME.read.includes(p.id)?'read':''}" onclick="openPost(${p.id})">
+    ${coverHtml(p)}
     <div class="cbody">
-      <div class="chead">${avHtml(p.nick)}<span class="cat">${catL(p.cat)}</span> ${roleBadge(p.role)}<span class="dot"></span><span>${esc(p.nick)}</span>${p.region&&p.region!=='전체'?`<span class="dot"></span><span>${regFlag(p.region)} ${esc(regL(p.region))}</span>`:''}<span class="dot"></span><span>${timeago(p.t)}</span>${isNew(p)?' <span class="newdot">NEW</span>':''}</div>
       <div class="ctitle">${p.pinned?'📌 ':''}${esc(p.title)}</div>
       <div class="cexc">${esc(bodyOf(p))}</div>
-      ${mediaHtml(p.imgs)}
-      ${(p.tags&&p.tags.length)?`<div class="ctags">${p.tags.slice(0,4).map(tg=>`<span class="ctag">#${esc(tg)}</span>`).join('')}</div>`:''}
-      <div class="cact"><span class="a"><i class="ti ti-message-circle"></i> ${p.cmtCount||0}</span><span class="a"><i class="ti ti-bookmark"></i> ${p.scrap}</span><span class="a"><i class="ti ti-eye"></i> ${(p.like*7+p.scrap*3+13)}</span></div>
-    </div></div>`;}
+      ${cardMeta(p)}${cardActs(p)}</div></div>`;}
 function regOptions(){return `<option value="전체">📍 ${t('allRegion')}</option>`+RGROUPS.map(g=>`<optgroup label="${t(g[0]+'Group')}">`+g[1].map(r=>`<option value="${r}" ${r===curRegion?'selected':''}>${regL(r)}</option>`).join('')+'</optgroup>').join('');}
 function headTitle(){if(curMenu==='mine')return t('myPosts');if(curMenu==='scrap')return t('scrap');if(curQ)return`"${esc(curQ)}"`;if(curRegion!=='전체')return (curCat==='전체'?t('allPosts'):catL(curCat))+' · '+regFlag(curRegion)+' '+regL(curRegion);return curCat==='전체'?t('allPosts'):catL(curCat);}
 let promoTimer=null,promoIdx=0;
@@ -515,14 +673,57 @@ function showPromo(){const sl=document.querySelectorAll('.promo .slide'),dt=docu
 function startPromo(){clearInterval(promoTimer);if(document.querySelectorAll('.promo .slide').length<2)return;promoTimer=setInterval(()=>{promoIdx=(promoIdx+1)%BANNERS.length;showPromo();},4500);}
 function promoGo(i){promoIdx=i;showPromo();startPromo();}
 function infoStripHtml(){const info=DB.posts.filter(p=>p.cat==='정보').sort((a,b)=>b.t-a.t).slice(0,8);if(!info.length)return'';
-  return `<div class="infosec"><div class="ih"><h3>${t('infoTitle')}</h3><a onclick="setCat('정보')">${t('seeAll')} ›</a></div><div class="iscroll">${info.map(p=>{const g=GRAD[hash(p.title)%GRAD.length];const has=p.imgs&&p.imgs.length;const th=has?`background-image:url('${p.imgs[0]}')`:`background:linear-gradient(135deg,${g[0]},${g[1]})`;return `<div class="icard" onclick="openPost(${p.id})"><div class="ith" style="${th}">${has?'':'<i class="ti ti-bulb"></i>'}</div><div class="ib"><div class="iflag">${p.region&&p.region!=='전체'?regFlag(p.region)+' '+esc(regL(p.region)):'🗾 '+catL('정보')}</div><div class="it">${esc(p.title)}</div></div></div>`;}).join('')}</div></div>`;}
+  return `<div class="infosec"><div class="ih"><h3>${t('infoTitle')}</h3><a onclick="setCat('정보')">${t('seeAll')} ›</a></div><div class="iscroll">${info.map(p=>{const has=p.imgs&&p.imgs.length;return `<div class="icard${has?' hasimg':''}" onclick="openPost(${p.id})"><div class="ith" style="${has?`background-image:url('${p.imgs[0]}')`:''}"></div><div class="ib"><div class="iflag">${p.region&&p.region!=='전체'?regFlag(p.region)+' '+esc(regL(p.region)):catL('정보')}</div><div class="it">${esc(p.title)}</div></div></div>`;}).join('')}</div></div>`;}
+/* ===== 전문가(사장님·디자이너) 쇼케이스 ===== */
+const PU=(id)=>`https://images.unsplash.com/photo-${id}?auto=format&fit=crop&w=600&q=70`;
+const SEED_PROS=[
+ {id:'sp1',nickname:'시부야 헤어룸',role:'owner',region:'도쿄',bio:'시부야역 3분, 한국인 단골 많은 살롱. 다운펌·매직 OK, 한국어 메뉴 준비했어요.',shop:{name:'시부야 헤어룸',area:'도쿄',services:['헤어컷','펌','염색','다운펌'],koOK:true,locDetail:'시부야역 3번 출구 도보 3분',hours:'11:00–20:00 · 수요일 휴무',insta:'@shibuya_hairroom',avatar:PU('1560066984-138dadb4c035'),photos:[PU('1562322140-8baeececf3df'),PU('1487412947147-5cebf100ffc2'),PU('1512496015851-a90fb38ba796')]}},
+ {id:'sp2',nickname:'미카',role:'designer',region:'도쿄',bio:'원하는 스타일 사진 주시면 디테일까지 맞춰드려요. 한국 손님 환영!',shop:{name:'시부야 헤어룸 소속',area:'도쿄',career:'헤어 디자이너 7년차 · 도쿄 4년',specialties:['헤어컷','펌','염색'],insta:'@mika_hair',avatar:PU('1487412947147-5cebf100ffc2'),photos:[PU('1512496015851-a90fb38ba796'),PU('1562322140-8baeececf3df')]}},
+ {id:'sp3',nickname:'신사이바시 네일 아틀리에',role:'owner',region:'오사카',bio:'섬세한 아트가 강점. 핀터레스트 사진 한 장이면 그대로 재현해드려요.',shop:{name:'신사이바시 네일 아틀리에',area:'오사카',services:['네일'],koOK:true,locDetail:'신사이바시역 2분',hours:'10:00–21:00 · 연중무휴',insta:'@shinsai_nail',avatar:PU('1604654894610-df63bc536371'),photos:[PU('1522335789203-aabd1fc54bc9'),PU('1604654894610-df63bc536371')]}},
+ {id:'sp4',nickname:'유나',role:'designer',region:'오사카',bio:'트렌디 젤네일·아트 전문이에요. 워홀러·여행객 많이 와요.',shop:{name:'신사이바시 네일 아틀리에 소속',area:'오사카',career:'네일리스트 5년차',specialties:['네일'],insta:'@yuna_nail',avatar:PU('1522335789203-aabd1fc54bc9'),photos:[PU('1604654894610-df63bc536371'),PU('1522335789203-aabd1fc54bc9')]}},
+ {id:'sp5',nickname:'신주쿠 래쉬 스튜디오',role:'owner',region:'도쿄',bio:'자연스러운 속눈썹 연장·라쉬리프트 전문. 통역 지원돼요.',shop:{name:'신주쿠 래쉬 스튜디오',area:'도쿄',services:['속눈썹'],koOK:false,locDetail:'신주쿠역 동쪽 5분',hours:'10:00–19:00 · 월요일 휴무',insta:'@shinjuku_lash',avatar:PU('1583001931096-959e9a1a6223'),photos:[PU('1583001931096-959e9a1a6223'),PU('1522338242992-e1a54906a8da')]}},
+];
+let curPro='all',CURPROS=[];
+function avatarOf(p){const s=p.shop||{};return s.avatar||(s.photos&&s.photos[0])||'';}
+function getPros(){const real=PROFILES.filter(p=>(p.role==='owner'||p.role==='designer')&&avatarOf(p));return real.length?real:SEED_PROS;}
+function setPro(k){curPro=k;renderShowcase();}
+function proCard(p){const s=p.shop||{};const img=avatarOf(p);const svc=(p.role==='owner'?(s.services||[]):(s.specialties||[]));
+  return `<div class="procard" onclick="openMemberCard('${p.id}')">
+    <div class="pcimg" style="background-image:url('${img}')">${s.koOK?`<span class="koflag">${t('koBadge')}</span>`:''}<span class="pcrole ${p.role==='owner'?'rb-owner':'rb-designer'}">${roleL(p.role)}</span></div>
+    <div class="pcb"><div class="pcn">${esc(p.nickname||s.name||'')}</div>
+      <div class="pcm">${regFlag(p.region)} ${esc(regL(p.region||'전체'))}${(p.role==='designer'&&s.career)?' · '+esc(s.career):''}</div>
+      ${svc.length?`<div class="pctags">${svc.slice(0,3).map(x=>`<span>${svcL(x)}</span>`).join('')}</div>`:''}</div></div>`;}
+function renderShowcase(){const el=$('proSec');if(!el)return;const pros=getPros();CURPROS=pros;
+  if(!pros.length){el.innerHTML='';return;}
+  let list=pros;if(curPro==='owner')list=pros.filter(p=>p.role==='owner');else if(curPro==='designer')list=pros.filter(p=>p.role==='designer');
+  const tab=(k,l)=>`<span class="protab ${curPro===k?'on':''}" onclick="setPro('${k}')">${l}</span>`;
+  el.innerHTML=`<div class="prosec"><div class="ih"><h3>${t('proTitle')}</h3><span class="protabs">${tab('all',t('proAll'))}${tab('owner',t('proOwner'))}${tab('designer',t('proDesigner'))}</span></div>
+    <div class="proscroll">${list.map(proCard).join('')}</div></div>`;}
+function openMemberCard(id){const p=CURPROS.find(x=>''+x.id===''+id);if(!p)return;const s=p.shop||{};
+  const imgs=[];if(s.avatar)imgs.push(s.avatar);(s.photos||[]).forEach(x=>{if(x!==s.avatar)imgs.push(x);});
+  const svc=(p.role==='owner'?(s.services||[]):(s.specialties||[]));
+  const gal=imgs.length?`<div class="mgal">${imgs.map(x=>`<img src="${x}" onclick="lightbox('${x}')">`).join('')}</div>`:'';
+  const rows=[];
+  if(p.role==='designer'&&s.career)rows.push(`<div class="mrow"><span class="ml">${t('careerBadge')}</span><span>${esc(s.career)}</span></div>`);
+  if(s.name&&p.role==='designer')rows.push(`<div class="mrow"><span class="ml">${t('affiliationL').replace(' (선택)','').replace('（任意）','')}</span><span>${esc(s.name)}</span></div>`);
+  rows.push(`<div class="mrow"><span class="ml">${t('regionLabel')}</span><span>${regFlag(p.region)} ${esc(regL(p.region||'전체'))}${s.locDetail?' · '+esc(s.locDetail):''}</span></div>`);
+  if(s.hours)rows.push(`<div class="mrow"><span class="ml">${t('hoursL').replace(' (선택)','').replace('（任意）','')}</span><span>${esc(s.hours)}</span></div>`);
+  rows.push(`<div class="mrow"><span class="ml">${t('koOKL')}</span><span>${s.koOK?'✅':'Beautia '+'통역'}</span></div>`);
+  if(s.insta)rows.push(`<div class="mrow"><span class="ml">SNS</span><a href="${instaUrl(s.insta)}" target="_blank" style="color:var(--plum);font-weight:700"><i class="ti ti-brand-instagram"></i> ${esc(s.insta)}</a></div>`);
+  $('memBody').innerHTML=`${gal}
+    <div class="mhead"><div class="mn">${esc(p.nickname||s.name||'')} ${roleBadge(p.role)}${s.koOK?` <span class="badge-ko">${t('koBadge')}</span>`:''}</div></div>
+    ${svc.length?`<div class="chipset" style="margin-top:12px">${svc.map(x=>`<span class="c">${svcL(x)}</span>`).join('')}</div>`:''}
+    ${(p.bio||s.shopDesc)?`<div class="mbio">${esc(p.bio||s.shopDesc)}</div>`:''}
+    <div class="minfo">${rows.join('')}</div>
+    <a class="btn btn-kakao" style="width:100%;justify-content:center;margin-top:18px;padding:13px" href="https://pf.kakao.com/_xhxhixfX/chat" target="_blank">💬 ${t('bookPro')}</a>`;
+  $('memberModal').classList.add('on');}
 function renderMain(){
   if(view==='detail'){renderDetail();return;}
   if(view==='profile'){renderMypage();return;}
   const list=visible();
   const showTop=curMenu===''&&!curQ;
   const home=showTop&&curCat==='전체'&&curRegion==='전체';
-  $('main').innerHTML=(showTop?bannerHtml():'')+(home?infoStripHtml():'')+`
+  $('main').innerHTML=(showTop?bannerHtml():'')+(home?'<div id="proSec"></div>':'')+`
     <div class="board-top">
       <div class="sorttabs">
         <span class="stab ${curSort==='hot'?'on':''}" onclick="setSort('hot')"><i class="ti ti-flame"></i>${t('hot')}</span>
@@ -531,23 +732,25 @@ function renderMain(){
       </div>
       <select class="regsel" onchange="setRegion(this.value)">${regOptions()}</select>
     </div>
-    <div class="boardhead"><h1>${headTitle()}</h1><span class="c tnum">${list.length}${t('count')}</span>${(function(){const n=list.filter(isNew).length;return n?`<span class="c" style="color:var(--rose);font-weight:700">· ${t('todayNew')} ${n}</span>`:'';})()}</div>
-    ${list.length?list.map(cardHtml).join(''):`<div class="empty">${t('emptyFeed')}</div>`}`;
+    <div class="boardhead"><h1>${headTitle()}</h1><span class="c tnum">${list.length}${t('count')}</span>${(function(){const n=list.filter(isNew).length;return n?`<span class="c" style="color:var(--accent);font-weight:700">· ${t('todayNew')} ${n}</span>`:'';})()}</div>
+    ${list.length?`<div class="feedgrid">${list.map((p,i)=>cardHtml(p,i,false)).join('')}</div>`:`<div class="empty">${t('emptyFeed')}</div>`}`;
+  if(home)renderShowcase();
   startPromo();
 }
 async function openPost(id){openId=id;if(!ME.read.includes(id)){ME.read.push(id);saveMe();}view='detail';renderDetail();scrollTo({top:0});
   const {data}=await SB.from('comments').select('*').eq('post_id',id).order('created_at',{ascending:true});
-  const p=DB.posts.find(x=>x.id===id);if(p){p.cmts=(data||[]).map(c=>({nick:(PROFMAP[c.author]&&PROFMAP[c.author].nick)||c.nickname||'익명',role:(PROFMAP[c.author]&&PROFMAP[c.author].role)||'guest',t:c.content,d:c.created_at?new Date(c.created_at).getTime():Date.now(),author:c.author}));p.cmtCount=p.cmts.length;}
+  const p=DB.posts.find(x=>x.id===id);if(p){p.cmts=(data||[]).map(c=>({nick:(PROFMAP[c.author]&&PROFMAP[c.author].nick)||c.nickname||'익명',role:(PROFMAP[c.author]&&PROFMAP[c.author].role)||'guest',avatar:(PROFMAP[c.author]&&PROFMAP[c.author].avatar)||'',t:c.content,d:c.created_at?new Date(c.created_at).getTime():Date.now(),author:c.author}));p.cmtCount=p.cmts.length;}
   if(view==='detail'&&openId===id)renderDetail();}
 function renderDetail(){
   clearInterval(promoTimer);
   const p=DB.posts.find(x=>x.id===openId);if(!p){view='feed';renderMain();return;}
   const liked=ME.likes.includes(p.id),scrapped=ME.scraps.includes(p.id);
   const main=bodyOf(p);const alt=(LANG==='ja'&&p.orig)?p.content:p.orig;const altLbl=(LANG==='ja')?t('viewOrigKo'):t('viewOrigJa');
-  const gallery=(p.imgs&&p.imgs.length)?`<div class="dgallery">${p.imgs.map(s=>`<img src="${s}" onclick="lightbox('${s}')">`).join('')}</div>`:'';
+  const gcls=(p.imgs&&p.imgs.length===1)?'one':((p.imgs&&p.imgs.length===3)?'three':'');
+  const gallery=(p.imgs&&p.imgs.length)?`<div class="dgallery ${gcls}">${p.imgs.map(s=>`<img src="${s}" loading="lazy" onclick="lightbox('${s}')">`).join('')}</div>`:'';
   $('main').innerHTML=`<div class="detail">
     <div class="back" onclick="backFeed()"><i class="ti ti-chevron-left"></i> ${t('back')}</div>
-    <div class="dhead">${avHtml(p.nick)}<div><div class="dhn">${esc(p.nick)} ${roleBadge(p.role)}</div><div class="dhm"><span style="color:var(--rose);font-weight:700;">${catL(p.cat)}</span>${p.region&&p.region!=='전체'?' · '+regFlag(p.region)+' '+esc(regL(p.region)):''} · ${timeago(p.t)}</div></div></div>
+    <div class="dhead">${avHtml(p.nick,p.avatar)}<div><div class="dhn">${esc(p.nick)} ${roleBadge(p.role)}</div><div class="dhm"><span style="color:var(--rose);font-weight:700;">${catL(p.cat)}</span>${p.region&&p.region!=='전체'?' · '+regFlag(p.region)+' '+esc(regL(p.region)):''} · ${timeago(p.t)}</div></div></div>
     <div class="dtitle">${esc(p.title)}</div>
     <div class="dmeta"><span class="a"><i class="ti ti-heart"></i> ${p.like}</span><span class="a"><i class="ti ti-message-circle"></i> ${p.cmtCount||0}</span><span class="a"><i class="ti ti-eye"></i> ${(p.like*7+p.scrap*3+13)} ${t('views')}</span></div>
     <div class="dcontent">${esc(main)}</div>
@@ -557,11 +760,12 @@ function renderDetail(){
     <div class="proof">
       <div class="pf ${liked?'on':''}" onclick="toggleLike(${p.id})"><i class="ti ti-heart${liked?'-filled':''}"></i> ${t('likeBtn')} <span class="tnum">${p.like}</span></div>
       <div class="pf scrap ${scrapped?'on':''}" onclick="toggleScrap(${p.id})"><i class="ti ti-bookmark${scrapped?'-filled':''}"></i> ${t('scrapBtn')} <span class="tnum">${p.scrap}</span></div>
-      <div class="pf" onclick="toast(t('copied'))"><i class="ti ti-share-2"></i> ${t('shareBtn')}</div>
+      <div class="pf" onclick="shareLink(${p.id})"><i class="ti ti-link"></i> ${t('shareBtn')}</div>
+      <div class="pf" onclick="openCardMaker(${p.id})"><i class="ti ti-photo"></i> ${t('makeCard')}</div>
     </div>
     <div class="csec"><h4>${t('comments')} ${p.cmts.filter(c=>!blocked(c.nick)).length}</h4>
       <div class="cwrite"><input id="cInput" placeholder="${t('cmtPh')}" maxlength="500" onkeydown="if(event.key==='Enter')addComment()"><button class="btn btn-primary" onclick="addComment()">${t('submit')}</button></div>
-      ${p.cmts.filter(c=>!blocked(c.nick)).length?p.cmts.filter(c=>!blocked(c.nick)).map(c=>`<div class="cmt">${avHtml(c.nick)}<div><div class="cn">${esc(c.nick)} ${roleBadge(c.role)}</div><div class="ct">${esc(c.t)}</div><div class="cd">${timeago(c.d)}</div></div></div>`).join(''):`<div class="empty" style="border:none;padding:24px 0;">${t('firstCmt')}</div>`}
+      ${p.cmts.filter(c=>!blocked(c.nick)).length?p.cmts.filter(c=>!blocked(c.nick)).map(c=>`<div class="cmt">${avHtml(c.nick,c.avatar)}<div><div class="cn">${esc(c.nick)} ${roleBadge(c.role)}</div><div class="ct">${esc(c.t)}</div><div class="cd">${timeago(c.d)}</div></div></div>`).join(''):`<div class="empty" style="border:none;padding:24px 0;">${t('firstCmt')}</div>`}
     </div>
     ${relatedHtml(p)}
     </div>`;
@@ -579,7 +783,7 @@ function toggleScrap(id){const p=DB.posts.find(x=>x.id===id);const i=ME.scraps.i
 async function addComment(){if(!ME.registered){openSignup();toast(t('needSignup'));return;}const v=$('cInput').value.trim();if(!v)return;
   const {error}=await SB.from('comments').insert({post_id:openId,author:ME.uid,nickname:ME.nick,content:v});
   if(error){toast('댓글 실패: '+error.message);return;}
-  $('cInput').value='';await openPost(openId);renderRight();}
+  $('cInput').value='';await openPost(openId);renderRight();award(PTS.comment,t('earnComment'));}
 
 /* write + image upload */
 let wCat='질문',wRegion='전체',wImgs=[];
@@ -595,27 +799,38 @@ function wPick(k,v){if(k==='cat')wCat=v;else wRegion=v;renderWriteForm();}
 function renderPtiles(){let h=wImgs.map((s,i)=>`<div class="ptile" style="background-image:url('${s}')"><div class="rm" onclick="rmImg(${i})">×</div></div>`).join('');if(wImgs.length<4)h+=`<div class="ptile add" onclick="$('wFile').click()"><i class="ti ti-camera-plus"></i></div>`;$('ptiles').innerHTML=h;}
 function rmImg(i){wImgs.splice(i,1);renderPtiles();}
 function onPick(e){const files=[...e.target.files].slice(0,4-wImgs.length);files.forEach(f=>downscale(f,u=>{wImgs.push(u);renderPtiles();}));e.target.value='';}
-function downscale(file,cb){const r=new FileReader();r.onload=ev=>{const img=new Image();img.onload=()=>{const max=900;let w=img.width,h=img.height;if(w>max||h>max){if(w>h){h=Math.round(h*max/w);w=max;}else{w=Math.round(w*max/h);h=max;}}const cv=document.createElement('canvas');cv.width=w;cv.height=h;cv.getContext('2d').drawImage(img,0,0,w,h);cb(cv.toDataURL('image/jpeg',0.8));};img.src=ev.target.result;};r.readAsDataURL(file);}
+function downscale(file,cb,maxArg){const r=new FileReader();r.onload=ev=>{const img=new Image();img.onload=()=>{const max=maxArg||900;let w=img.width,h=img.height;if(w>max||h>max){if(w>h){h=Math.round(h*max/w);w=max;}else{w=Math.round(w*max/h);h=max;}}const cv=document.createElement('canvas');cv.width=w;cv.height=h;cv.getContext('2d').drawImage(img,0,0,w,h);cb(cv.toDataURL('image/jpeg',0.8));};img.src=ev.target.result;};r.readAsDataURL(file);}
 async function submitWrite(){const title=$('wTitle').value.trim(),content=$('wContent').value.trim();if(!title||!content){toast(t('needTC'));return;}
   if(!ME.uid){openSignup();return;}
   const tags=$('wTags').value.split(/[,#\n]+/).map(s=>s.trim()).filter(Boolean).slice(0,6);
   const {error}=await SB.from('posts').insert({author:ME.uid,nickname:ME.nick,cat:wCat,region:wRegion,title,content,tags,imgs:wImgs.slice()});
   if(error){toast('등록 실패: '+error.message);return;}
-  closeModal();curCat='전체';curMenu='';curSort='new';curQ='';view='feed';await loadPosts();renderShell();renderMain();scrollTo({top:0});toast(t('posted'));}
+  closeModal();curCat='전체';curMenu='';curSort='new';curQ='';view='feed';await loadPosts();renderShell();renderMain();scrollTo({top:0});
+  let pts=(wCat==='후기'?PTS.review:PTS.post),why=(wCat==='후기'?t('earnReview'):t('earnPost'));
+  if(wImgs.length>=3){pts+=PTS.photo;why+=' +'+t('earnPhoto');}
+  if(content.length>=300){pts+=PTS.detail;why+=' +'+t('earnDetail');}
+  award(pts,why);}
 
 /* ===== 회원가입 / 프로필 / 마이페이지 ===== */
-let pfMode='login',pfRole='guest',pfInterests=[],pfServices=[];
+let pfMode='login',pfRole='guest',pfInterests=[],pfServices=[],pfSpec=[],pfCareer='',pfAvatar='',pfSitu='',pfKoOK=false,pfPhotos=[];
+function pickSitu(k){pfSitu=(pfSitu===k?'':k);renderProfileForm(false);}
+function pfPickPhotos(){const inp=document.getElementById('pfPhFile');if(inp)inp.click();}
+function onPfPhotos(e){const files=[...e.target.files].slice(0,6-pfPhotos.length);let n=files.length;files.forEach(f=>downscale(f,u=>{pfPhotos.push(u);if(--n<=0)renderProfileForm(false);},800));e.target.value='';}
+function pfRmPhoto(i){pfPhotos.splice(i,1);renderProfileForm(false);}
+function pfPhotosHtml(){let h=pfPhotos.map((s,i)=>`<div class="ptile" style="background-image:url('${s}')"><div class="rm" onclick="pfRmPhoto(${i})">×</div></div>`).join('');if(pfPhotos.length<6)h+=`<div class="ptile add" onclick="pfPickPhotos()"><i class="ti ti-camera-plus"></i></div>`;return `<input type="file" id="pfPhFile" accept="image/*" multiple style="display:none" onchange="onPfPhotos(event)"><div class="ptiles">${h}</div>`;}
 let pfEmail='',pfOtpSent=false,pfAgreeTerms=false,pfAgreePrivacy=false,pfAgreeMktg=false;
 function openSignup(){ if(ME.uid&&ME.needProfile)openCompleteProfile(); else openLogin(); }
 function openLogin(){pfMode='login';pfEmail='';pfOtpSent=false;openProfileModal();}
-function openCompleteProfile(){pfMode='profile';pfRole='guest';pfInterests=[];pfServices=[];pfAgreeTerms=false;pfAgreePrivacy=false;pfAgreeMktg=false;openProfileModal();}
+function openCompleteProfile(){pfMode='profile';pfRole='guest';pfInterests=[];pfServices=[];pfSpec=[];pfCareer='';pfAvatar='';pfSitu='';pfKoOK=false;pfPhotos=[];pfAgreeTerms=false;pfAgreePrivacy=false;pfAgreeMktg=false;openProfileModal();}
 async function googleLogin(){const {error}=await SB.auth.signInWithOAuth({provider:'google',options:{redirectTo:location.origin+location.pathname}});if(error)toast('구글 로그인 오류: '+error.message);}
 async function emailLogin(){const e=$('pfEmail')?$('pfEmail').value.trim():'';if(!e){toast(t('needContact'));return;}pfEmail=e;const {error}=await SB.auth.signInWithOtp({email:e,options:{shouldCreateUser:true,emailRedirectTo:location.origin+location.pathname}});if(error){toast('전송 실패: '+error.message);return;}pfOtpSent=true;renderProfileForm(false);toast(t('otpSent'));}
 async function verifyEmail(){const c=$('pfCode')?$('pfCode').value.trim():'';if(!c){toast(t('needContact'));return;}const {error}=await SB.auth.verifyOtp({email:pfEmail,token:c,type:'email'});if(error){toast(t('codeWrong'));return;}closeModal();}
-function openEditProfile(){pfMode='edit';pfRole=ME.role==='official'?'guest':ME.role;pfInterests=(ME.interests||[]).slice();pfServices=((ME.shop&&ME.shop.services)||[]).slice();openProfileModal();}
+function openEditProfile(){pfMode='edit';pfRole=ME.role==='official'?'guest':ME.role;pfInterests=(ME.interests||[]).slice();pfServices=((ME.shop&&ME.shop.services)||[]).slice();pfSpec=((ME.shop&&ME.shop.specialties)||[]).slice();pfCareer=(ME.shop&&ME.shop.career)||'';pfAvatar=ME.avatar||'';pfSitu=(ME.shop&&ME.shop.situation)||'';pfKoOK=!!(ME.shop&&ME.shop.koOK);pfPhotos=((ME.shop&&ME.shop.photos)||[]).slice();openProfileModal();}
 function openProfileModal(){$('pHead').textContent=pfMode==='login'?t('signup'):(pfMode==='edit'?t('editProfile'):t('profileSetup'));$('pSave').style.display=pfMode==='login'?'none':'';$('pSave').textContent=pfMode==='edit'?t('save'):t('join');renderProfileForm(true);$('profModal').classList.add('on');}
 function pickPfRole(k){pfRole=k;renderProfileForm(false);}
-function toggleArr(which,v){const a=which==='int'?pfInterests:pfServices;const i=a.indexOf(v);if(i<0)a.push(v);else a.splice(i,1);renderProfileForm(false);}
+function toggleArr(which,v){const a=which==='int'?pfInterests:(which==='spec'?pfSpec:pfServices);const i=a.indexOf(v);if(i<0)a.push(v);else a.splice(i,1);renderProfileForm(false);}
+function pickAvatar(){const inp=document.getElementById('pfAvFile');if(inp)inp.click();}
+function onPfAvatar(e){const f=e.target.files&&e.target.files[0];if(!f)return;downscale(f,u=>{pfAvatar=u;const pv=document.getElementById('pfAvPv');if(pv){pv.style.backgroundImage=`url('${u}')`;pv.textContent='';}},320);e.target.value='';}
 function renderProfileForm(first){
   if(pfMode==='login'){
     let h=`<button class="gbtn" onclick="googleLogin()">${GSVG} ${t('googleBtn')}</button><div class="ordiv">${t('orText')}</div>`;
@@ -628,18 +843,41 @@ function renderProfileForm(first){
   const regVal=(!first&&$('pfRegionSel'))?$('pfRegionSel').value:(pfMode==='edit'?(ME.region||'전체'):'전체');
   const bioVal=(!first&&$('pfBio'))?$('pfBio').value:(pfMode==='edit'?(ME.bio||''):'');
   const shopVal=(!first&&$('pfShop'))?$('pfShop').value:(pfMode==='edit'?((ME.shop&&ME.shop.name)||''):'');
-  let h=`<div class="wlabel">${t('selRole')}</div><div class="rolepick">
+  const careerVal=(!first&&$('pfCareer'))?$('pfCareer').value:pfCareer;
+  const instaVal=(!first&&$('pfInsta'))?$('pfInsta').value:(pfMode==='edit'?((ME.shop&&ME.shop.insta)||''):'');
+  const descVal=(!first&&$('pfDesc'))?$('pfDesc').value:(pfMode==='edit'?((ME.shop&&ME.shop.shopDesc)||''):'');
+  const hoursVal=(!first&&$('pfHours'))?$('pfHours').value:(pfMode==='edit'?((ME.shop&&ME.shop.hours)||''):'');
+  const locVal=(!first&&$('pfLoc'))?$('pfLoc').value:(pfMode==='edit'?((ME.shop&&ME.shop.locDetail)||''):'');
+  let h=`<div class="wlabel" style="margin-top:6px">${t('selRoleReq')}</div><div class="rolepick">
     <div class="rolecard ${pfRole==='guest'?'on':''}" onclick="pickPfRole('guest')"><i class="ti ti-user-heart"></i><div class="rt">${roleL('guest')}</div><div class="rd">${t('guestDesc')}</div></div>
-    <div class="rolecard ${pfRole==='owner'?'on':''}" onclick="pickPfRole('owner')"><i class="ti ti-building-store"></i><div class="rt">${roleL('owner')}</div><div class="rd">${t('ownerDesc')}</div></div></div>`;
+    <div class="rolecard ${pfRole==='owner'?'on':''}" onclick="pickPfRole('owner')"><i class="ti ti-building-store"></i><div class="rt">${roleL('owner')}</div><div class="rd">${t('ownerDesc')}</div></div>
+    <div class="rolecard ${pfRole==='designer'?'on':''}" onclick="pickPfRole('designer')"><i class="ti ti-scissors"></i><div class="rt">${roleL('designer')}</div><div class="rd">${t('designerDesc')}</div></div></div>`;
+  if(!pfRole){h+=`<div class="secnote" style="margin-top:14px">${t('rolePickFirst')}</div>`;$('pfBody').innerHTML=h;return;}
+  h+=`<div class="wlabel">${t('photoL')}</div>
+    <input type="file" id="pfAvFile" accept="image/*" style="display:none" onchange="onPfAvatar(event)">
+    <div class="pfava"><div class="pv" id="pfAvPv" onclick="pickAvatar()" style="${pfAvatar?`background-image:url('${pfAvatar}')`:''}">${pfAvatar?'':'<i class="ti ti-camera"></i>'}</div>
+      <div class="pi"><div class="h">${t('photoL')}</div><div class="s">${t('photoHint')}</div><button type="button" onclick="pickAvatar()">${pfAvatar?t('changePhoto'):t('addPhoto')}</button></div></div>`;
   h+=`<div class="wlabel">${t('nick')}</div><input class="field" id="pfNick" maxlength="20" placeholder="${t('nickPh')}" value="${esc(nickVal)}" style="margin-top:8px">`;
   h+=`<div class="wlabel">${t('regionLabel')}</div><select class="field" id="pfRegionSel" style="margin-top:8px"><option value="전체">${t('allRegion')}</option>`+RGROUPS.map(g=>`<optgroup label="${t(g[0]+'Group')}">`+g[1].map(r=>`<option value="${r}" ${r===regVal?'selected':''}>${regL(r)}</option>`).join('')+'</optgroup>').join('')+`</select>`;
   if(pfRole==='owner'){
     h+=`<div class="wlabel">${t('shopName')}</div><input class="field" id="pfShop" maxlength="40" placeholder="${t('shopNamePh')}" value="${esc(shopVal)}" style="margin-top:8px">`;
     h+=`<div class="wlabel">${t('servicesL')}</div><div class="wrow">`+SERVICES.map(s=>`<span class="wchip ${pfServices.includes(s[0])?'on':''}" onclick="toggleArr('svc','${s[0]}')">${svcL(s[0])}</span>`).join('')+`</div>`;
+    h+=`<div class="wlabel">${t('locDetailL')}</div><input class="field" id="pfLoc" maxlength="60" placeholder="${t('locDetailPh')}" value="${esc(locVal)}" style="margin-top:8px">`;
+    h+=`<div class="wlabel">${t('hoursL')}</div><input class="field" id="pfHours" maxlength="40" placeholder="${t('hoursPh')}" value="${esc(hoursVal)}" style="margin-top:8px">`;
+    h+=`<label class="agree" style="margin-top:12px"><input type="checkbox" id="pfKoOK" ${pfKoOK?'checked':''} onchange="pfKoOK=this.checked"> ${t('koOKL')}</label>`;
+    h+=`<div class="wlabel">${t('shopDescL')}</div><textarea class="field" id="pfDesc" maxlength="200" placeholder="${t('shopDescPh')}" style="margin-top:8px;min-height:64px">${esc(descVal)}</textarea>`;
+    h+=`<div class="wlabel">${t('shopPhotosL')}</div><div class="s" style="font-size:11.5px;color:var(--sub);margin-top:3px">${t('photosHint')}</div>${pfPhotosHtml()}`;
+  }else if(pfRole==='designer'){
+    h+=`<div class="wlabel">${t('careerL')}</div><input class="field" id="pfCareer" maxlength="60" placeholder="${t('careerPh')}" value="${esc(careerVal)}" style="margin-top:8px">`;
+    h+=`<div class="wlabel">${t('specialtiesL')}</div><div class="wrow">`+SERVICES.map(s=>`<span class="wchip ${pfSpec.includes(s[0])?'on':''}" onclick="toggleArr('spec','${s[0]}')">${svcL(s[0])}</span>`).join('')+`</div>`;
+    h+=`<div class="wlabel">${t('affiliationL')}</div><input class="field" id="pfShop" maxlength="40" placeholder="${t('affiliationPh')}" value="${esc(shopVal)}" style="margin-top:8px">`;
+    h+=`<div class="wlabel">${t('workPhotosL')}</div><div class="s" style="font-size:11.5px;color:var(--sub);margin-top:3px">${t('photosHint')}</div>${pfPhotosHtml()}`;
   }else{
+    h+=`<div class="wlabel">${t('situationL')}</div><div class="wrow">`+SITU.map(k=>`<span class="wchip ${pfSitu===k?'on':''}" onclick="pickSitu('${k}')">${situL(k)}</span>`).join('')+`</div>`;
     h+=`<div class="wlabel">${t('interestsL')}</div><div class="wrow">`+SERVICES.map(s=>`<span class="wchip ${pfInterests.includes(s[0])?'on':''}" onclick="toggleArr('int','${s[0]}')">${svcL(s[0])}</span>`).join('')+`</div>`;
   }
   h+=`<div class="wlabel">${t('bioL')}</div><textarea class="field" id="pfBio" maxlength="80" placeholder="${t('bioPh')}" style="margin-top:8px;min-height:58px">${esc(bioVal)}</textarea>`;
+  h+=`<div class="wlabel">${t('instaL')}</div><input class="field" id="pfInsta" maxlength="60" placeholder="${t('instaPh')}" value="${esc(instaVal)}" style="margin-top:8px">`;
   if(pfMode==='profile'){
     h+=`<div class="wlabel">${t('agreements')} <span style="color:var(--rose)">*</span></div>
       <label class="agree"><input type="checkbox" id="agTerms" ${pfAgreeTerms?'checked':''} onchange="pfAgreeTerms=this.checked"><span class="req">[${t('req')}]</span> ${t('agreeTerms')}<a href="terms.html" target="_blank" onclick="event.stopPropagation()">${t('view')}</a></label>
@@ -652,14 +890,51 @@ async function saveProfile(){
   const n=$('pfNick').value.trim();if(!n){toast(t('needTC'));return;}
   if(pfMode==='profile'&&(!pfAgreeTerms||!pfAgreePrivacy)){toast(t('needAgree'));return;}
   if(!ME.uid){toast('로그인이 필요해요');return;}
-  const shop=pfRole==='owner'?{name:$('pfShop')?$('pfShop').value.trim():'',area:$('pfRegionSel').value,services:pfServices.slice()}:{};
-  const payload={id:ME.uid,nickname:n,role:pfRole,region:$('pfRegionSel').value,bio:$('pfBio').value.trim(),interests:pfRole==='owner'?[]:pfInterests.slice(),shop};
+  const area=$('pfRegionSel').value;
+  const gv=id=>$(id)?$(id).value.trim():'';
+  let shop={avatar:pfAvatar||'',insta:gv('pfInsta')};
+  if(pfRole==='owner'){shop.name=gv('pfShop');shop.area=area;shop.services=pfServices.slice();shop.locDetail=gv('pfLoc');shop.hours=gv('pfHours');shop.koOK=!!pfKoOK;shop.shopDesc=gv('pfDesc');shop.photos=pfPhotos.slice();}
+  else if(pfRole==='designer'){shop.name=gv('pfShop');shop.area=area;shop.career=($('pfCareer')?gv('pfCareer'):pfCareer);shop.specialties=pfSpec.slice();shop.photos=pfPhotos.slice();}
+  else{shop.situation=pfSitu||'';}
+  const payload={id:ME.uid,nickname:n,role:pfRole,region:area,bio:$('pfBio').value.trim(),interests:(pfRole==='guest')?pfInterests.slice():[],shop};
   const {error}=await SB.from('profiles').upsert(payload);
   if(error){toast('저장 실패: '+error.message);return;}
-  closeModal();await reloadAll();toast(pfMode==='edit'?t('saved'):t('joinDone'));
+  const wasJoin=(pfMode!=='edit');
+  closeModal();await reloadAll();
+  if(wasJoin){toast(t('joinDone'));setTimeout(()=>{award(PTS.signup,t('earnSignup'),'signup:'+ME.uid);if(ME.invitedBy){award(PTS.invite,t('earnInvited'),'invited:'+ME.uid);}},700);}
+  else toast(t('saved'));
 }
 async function reloadAll(){const {data:{session}}=await SB.auth.getSession();await refreshProfile(session);await loadPosts();renderHeader();renderShell();if(view==='profile')renderMypage();else if(view==='detail')renderDetail();else renderMain();}
 async function logout(){if(!confirm(t('logoutConfirm')))return;await SB.auth.signOut();}
+function copyRef(){const el=$('refIn');if(!el)return;el.select();try{navigator.clipboard.writeText(el.value);}catch(e){document.execCommand('copy');}toast(t('refCopied'));}
+/* ===== 공유 + 후기 카드 메이커 (콘텐츠 공장) ===== */
+function shareLink(id){const url=location.href;try{if(navigator.share){navigator.share({title:'Beautia',url:url});return;}}catch(e){}try{navigator.clipboard.writeText(url);}catch(e){}toast(t('linkCopied'));}
+let cardPid=null,cardRatio='45';
+function ratioTabsHtml(){return `<span class="${cardRatio==='45'?'on':''}" onclick="setCardRatio('45')">정사각 4:5</span><span class="${cardRatio==='916'?'on':''}" onclick="setCardRatio('916')">릴스 9:16</span>`;}
+function openCardMaker(id){cardPid=id;cardRatio='45';
+  $('cardHd').textContent=t('cardTitle');$('cardDl').textContent='⬇ '+t('dlCard');$('cardCap').textContent=t('copyCap');$('cardHint').textContent=t('cardHint');
+  $('cardDl').onclick=downloadCard;$('cardCap').onclick=copyCaption;
+  $('ratioTabs').innerHTML=ratioTabsHtml();renderCard();$('capBox').textContent=buildCaption();$('cardModal').classList.add('on');}
+function setCardRatio(r){cardRatio=r;$('ratioTabs').innerHTML=ratioTabsHtml();renderCard();}
+function renderCard(){const p=DB.posts.find(x=>x.id===cardPid);if(!p)return;
+  const fr=$('cardFrame');fr.className='cardframe'+(cardRatio==='916'?' r916':'');
+  const img=(p.imgs&&p.imgs.length)?`<div class="cf-img"><img src="${p.imgs[0]}" crossorigin="anonymous" alt=""></div><div class="cf-scrim"></div>`:'';
+  const isRev=p.cat==='후기';
+  fr.innerHTML=`${img}<div class="cf-in">
+    <div class="cf-top">BEAUTIA · ${p.region&&p.region!=='전체'?esc(regL(p.region))+' ':''}${esc(catL(p.cat))}</div>
+    <div style="flex:1"></div>
+    ${isRev?'<div class="cf-stars">★★★★★</div>':''}
+    <div class="cf-title">${esc(p.title)}</div>
+    <div class="cf-exc">${esc(bodyOf(p))}</div>
+    <div class="cf-foot"><span class="cf-brand">Beautia</span><span class="cf-tag">@beautia.japan</span></div>
+  </div>`;}
+function buildCaption(){const p=DB.posts.find(x=>x.id===cardPid);if(!p)return'';
+  const reg=(p.region&&p.region!=='전체')?regL(p.region):'일본';
+  const tags=['#일본뷰티','#'+reg.replace(/\s/g,''),'#'+catL(p.cat),'#일본여행','#beautia','#일본미용실','#일본네일'];
+  return p.title+'\n\n📍 '+reg+' · '+catL(p.cat)+'\n일본어 0이어도 한국어로 예약·통역 대행 (무료)\n후기 더보기 → @beautia.japan\n\n'+tags.join(' ');}
+function downloadCard(){const fr=$('cardFrame');if(typeof html2canvas==='undefined'){toast('잠시 후 다시 시도해주세요');return;}
+  html2canvas(fr,{scale:3,useCORS:true,backgroundColor:null}).then(cv=>{const a=document.createElement('a');a.href=cv.toDataURL('image/png');a.download='beautia-card-'+cardPid+'.png';document.body.appendChild(a);a.click();a.remove();}).catch(e=>{toast('이미지 저장 실패 (사진 보안 정책)');});}
+function copyCaption(){const txt=$('capBox').textContent;try{navigator.clipboard.writeText(txt);}catch(e){}toast(t('capCopied'));}
 let myTab='posts';
 function openMypage(){view='profile';myTab='posts';renderMypage();scrollTo({top:0});}
 function setMyTab(tb){myTab=tb;renderMypage();}
@@ -668,16 +943,25 @@ function renderMypage(){
   const scraps=DB.posts.filter(p=>ME.scraps.includes(p.id));
   let myCmts=0,recvLikes=0;DB.posts.forEach(p=>{if(p.mine)recvLikes+=p.like;p.cmts.forEach(c=>{if(c.nick===ME.nick)myCmts++;});});
   const days=Math.max(1,Math.floor((Date.now()-(ME.joinedAt||Date.now()))/864e5)+1);
-  const shop=(ME.role==='owner'&&ME.shop&&ME.shop.name)?`<div class="shopcard"><h4><i class="ti ti-building-store"></i> ${esc(ME.shop.name)}</h4>${ME.region&&ME.region!=='전체'?`<div class="row">${regFlag(ME.region)} ${esc(regL(ME.region))}</div>`:''}${(ME.shop.services&&ME.shop.services.length)?`<div class="chipset">${ME.shop.services.map(s=>`<span class="c">${svcL(s)}</span>`).join('')}</div>`:''}</div>`:'';
-  const interests=(ME.role!=='owner'&&ME.interests&&ME.interests.length)?`<div class="shopcard"><h4><i class="ti ti-heart"></i> ${t('interestsL')}</h4><div class="chipset">${ME.interests.map(s=>`<span class="c">${svcL(s)}</span>`).join('')}</div></div>`:'';
+  const S=ME.shop||{};
+  const shop=(ME.role==='owner'&&S.name)?`<div class="shopcard"><h4><i class="ti ti-building-store"></i> ${esc(S.name)}${S.koOK?` <span class="badge-ko">한국어 OK</span>`:''}</h4>${ME.region&&ME.region!=='전체'?`<div class="row">${regFlag(ME.region)} ${esc(regL(ME.region))}${S.locDetail?' · '+esc(S.locDetail):''}</div>`:(S.locDetail?`<div class="row">${esc(S.locDetail)}</div>`:'')}${S.hours?`<div class="row"><i class="ti ti-clock" style="font-size:14px"></i> ${esc(S.hours)}</div>`:''}${(S.services&&S.services.length)?`<div class="chipset">${S.services.map(s=>`<span class="c">${svcL(s)}</span>`).join('')}</div>`:''}${S.shopDesc?`<div class="row" style="margin-top:10px">${esc(S.shopDesc)}</div>`:''}</div>`:'';
+  const interests=(ME.role==='guest')?((S.situation||(ME.interests&&ME.interests.length))?`<div class="shopcard"><h4><i class="ti ti-user-heart"></i> ${roleL('guest')}</h4>${S.situation?`<div class="row"><b>${t('situationL')}</b> · ${esc(situL(S.situation))}</div>`:''}${(ME.interests&&ME.interests.length)?`<div class="chipset">${ME.interests.map(s=>`<span class="c">${svcL(s)}</span>`).join('')}</div>`:''}</div>`:''):'';
+  const designer=(ME.role==='designer')?`<div class="shopcard"><h4><i class="ti ti-scissors"></i> ${roleL('designer')}</h4>${(ME.shop&&ME.shop.career)?`<div class="row"><b>${t('careerBadge')}</b> · ${esc(ME.shop.career)}</div>`:''}${(ME.shop&&ME.shop.name)?`<div class="row"><i class="ti ti-building-store" style="font-size:14px"></i> ${esc(ME.shop.name)}</div>`:''}${(ME.shop&&ME.shop.specialties&&ME.shop.specialties.length)?`<div class="chipset">${ME.shop.specialties.map(s=>`<span class="c">${svcL(s)}</span>`).join('')}</div>`:''}</div>`:'';
   let listHtml;
   if(myTab==='comments'){const cs=[];DB.posts.forEach(p=>p.cmts.forEach(c=>{if(c.nick===ME.nick)cs.push({p,c});}));cs.sort((a,b)=>b.c.d-a.c.d);listHtml=cs.length?cs.map(({p,c})=>`<div class="rel" onclick="openPost(${p.id})"><div style="flex:1;min-width:0"><div class="rt">${esc(c.t)}</div><div class="rm">↳ ${esc(p.title)} · ${timeago(c.d)}</div></div></div>`).join(''):`<div class="empty" style="border:none">${t('noComments')}</div>`;}
-  else{const L=myTab==='posts'?mine:scraps;listHtml=L.length?L.map(cardHtml).join(''):`<div class="empty" style="border:none">${myTab==='posts'?t('noPosts'):t('noScraps')}</div>`;}
+  else{const L=myTab==='posts'?mine:scraps;listHtml=L.length?`<div class="feedgrid">${L.map((p,i)=>cardHtml(p,i,false)).join('')}</div>`:`<div class="empty" style="border:none">${myTab==='posts'?t('noPosts'):t('noScraps')}</div>`;}
+  const refLink=location.origin+location.pathname+'?ref='+ME.ref;
+  const histHtml=(ME.pointLog&&ME.pointLog.length)?ME.pointLog.slice(0,8).map(e=>`<div class="phrow"><span class="pr2">${esc(e.r)}</span><span style="display:flex;gap:12px;align-items:center"><span class="pd">${timeago(e.t)}</span><span class="pa">+${e.a.toLocaleString()}P</span></span></div>`).join(''):`<div class="empty" style="border:none;padding:24px">${t('noPoints')}</div>`;
+  const pointsHtml=`
+    <div class="ptspanel"><div class="plbl">${t('myPoints')}</div><div class="pbig">✦ ${(ME.points||0).toLocaleString()}P</div><div class="pnote">${t('pointSoon')}</div></div>
+    <div class="prulelist"><span class="pr">${t('ruleReview')}</span><span class="pr">${t('rulePhoto')}</span><span class="pr">${t('ruleDetail')}</span><span class="pr">${t('ruleComment')}</span><span class="pr">${t('ruleInvite')}</span></div>
+    <div class="refbox"><h4>${t('referral')}</h4><p>${t('refDesc')}</p><div class="refrow"><input id="refIn" readonly value="${refLink}"><button class="btn btn-primary" onclick="copyRef()">${t('refCopy')}</button></div></div>
+    <div class="phist"><div class="panel-h" style="padding:0 0 6px">${t('pointHist')}</div>${histHtml}</div>`;
   $('main').innerHTML=`
     <div class="back" onclick="backFeed()" style="margin-bottom:14px"><i class="ti ti-chevron-left"></i> ${t('back')}</div>
-    <div class="profhead">${avHtml(ME.nick)}
+    <div class="profhead">${avHtml(ME.nick,ME.avatar)}
       <div style="flex:1;min-width:0"><div class="pn">${esc(ME.nick)} ${roleBadge(ME.role)}${ME.verified?`<span class="vchip"><i class="ti ti-rosette-discount-check-filled"></i> ${t('verifiedMember')}</span>`:''}</div>
-      <div class="pm">${ME.region&&ME.region!=='전체'?regFlag(ME.region)+' '+esc(regL(ME.region))+' · ':''}${t('joinedOn')} ${days}${t('daysAgo')} · 🔥 ${ME.visit.streak}${t('dayUnit')}</div>
+      <div class="pm">${ME.region&&ME.region!=='전체'?regFlag(ME.region)+' '+esc(regL(ME.region))+' · ':''}${t('joinedOn')} ${days}${t('daysAgo')} · 🔥 ${ME.visit.streak}${t('dayUnit')}${(S.insta)?` · <a href="${instaUrl(S.insta)}" target="_blank" style="color:var(--plum);font-weight:700"><i class="ti ti-brand-instagram"></i> ${esc(S.insta.replace(/^https?:\/\/(www\.)?instagram\.com\//,'@').replace(/\/$/,''))}</a>`:''}</div>
       ${ME.bio?`<div class="pbio">${esc(ME.bio)}</div>`:''}</div>
       <div class="pact"><button class="btn btn-ghost btn-sm" onclick="openEditProfile()"><i class="ti ti-edit"></i> ${t('editProfile')}</button><button class="btn btn-ghost btn-sm" onclick="logout()"><i class="ti ti-logout"></i> ${t('logout')}</button></div></div>
     <div class="pstats">
@@ -685,7 +969,8 @@ function renderMypage(){
       <div class="pstat"><div class="n tnum">${myCmts}</div><div class="l">${t('tabComments')}</div></div>
       <div class="pstat"><div class="n tnum">${recvLikes}</div><div class="l">${t('recvLikes')}</div></div>
       <div class="pstat"><div class="n tnum">${ME.scraps.length}</div><div class="l">${t('scrap')}</div></div></div>
-    ${shop}${interests}
+    ${pointsHtml}
+    ${shop}${designer}${interests}
     <div class="pseg"><span class="s ${myTab==='posts'?'on':''}" onclick="setMyTab('posts')">${t('tabPosts')}</span><span class="s ${myTab==='scraps'?'on':''}" onclick="setMyTab('scraps')">${t('tabScraps')}</span><span class="s ${myTab==='comments'?'on':''}" onclick="setMyTab('comments')">${t('tabComments')}</span></div>
     <div style="margin-top:14px">${listHtml}</div>`;
 }
@@ -699,10 +984,18 @@ async function boot(){
   const {data:{session}}=await SB.auth.getSession();
   await refreshProfile(session);
   await loadPosts();
+  applyDeepLink();
   renderHeader();renderShell();renderMain();
+  const dpost=new URLSearchParams(location.search).get('post');
+  if(dpost){const pid=/^\d+$/.test(dpost)?+dpost:dpost;if(DB.posts.some(p=>p.id===pid))openPost(pid);}
   if(ME.needProfile)openCompleteProfile();
   else if(ME._newVisit&&ME.visit&&ME.visit.streak>1)setTimeout(()=>toast('🔥 '+ME.visit.streak+t('dayUnit')+' '+t('streakLabel')+'!'),800);
 }
+function applyDeepLink(){try{const q=new URLSearchParams(location.search);
+  const c=q.get('cat');if(c&&CATS.some(x=>x[0]===c))curCat=c;
+  const r=q.get('region');if(r&&(r==='전체'||RGROUPS.some(g=>g[1].includes(r))))curRegion=r;
+  const qq=q.get('q');if(qq)curQ=qq;
+}catch(e){}}
 SB.auth.onAuthStateChange((ev,session)=>{ if(ev==='SIGNED_IN'||ev==='SIGNED_OUT'||ev==='USER_UPDATED'){ reloadAll().then(()=>{ if(ME.needProfile)openCompleteProfile(); }); } });
 boot();
 </script>

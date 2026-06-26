@@ -22,9 +22,17 @@ Beautia(뷰티아)는 일본 여행·워킹홀리데이·거주 중인 한국인
 - 지역: 🇰🇷 한국(서울·부산 등) · 🇯🇵 일본(도쿄·오사카 등)
 - 한국어/일본어 전환 지원
 
+## 지역별 정보·후기 (지역 × 시술)
+- 도쿄·신주쿠·시부야·긴자·오사카·신사이바시·난바·교토·후쿠오카·삿포로·나고야 등 주요 지역
+- 시술: 네일 / 미용실(헤어·펌·염색·다운펌) / 속눈썹 / 왁싱(제모)
+- 각 페이지: 가격 가이드(엔/원), 예약 팁, 실제 후기, 자주 묻는 질문, 한국어 예약·통역 안내
+- 색인: https://beautia.io/info
+- 예시: https://beautia.io/info/osaka-nail (오사카 네일), https://beautia.io/info/tokyo-hair (도쿄 미용실), https://beautia.io/info/shinjuku-eyelash (신주쿠 속눈썹)
+
 ## 링크
 - 웹사이트: https://beautia.io/
 - 커뮤니티: https://beautia.io/community
+- 지역 정보: https://beautia.io/info
 - 인스타그램: https://instagram.com/beautia.japan
 - 카카오톡 채널(예약 신청): https://pf.kakao.com/_xhxhixfX
 
