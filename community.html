@@ -38,6 +38,7 @@
 </script>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3/dist/tabler-icons.min.css">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
 :root{
  --ink:#1F1A1C;--ink2:#574C50;--sub:#9C928E;--line:#ECE6E3;--line2:#F4EFEC;--soft:#F7F3F1;--tint:#FBF8F6;--pagebg:#F4F0ED;
@@ -334,7 +335,7 @@ const T={ko:{
  infoTitle:'🗾 일본·한국 뷰티 정보',seeAll:'전체보기',tags:'태그 (선택)',tagsPh:'쉼표로 구분 · 예: 도쿄, 펌, 한국어OK',
  streakLabel:'연속 접속',streakSub:'오늘도 들러줘서 고마워요!',dayUnit:'일',related:'이런 글은 어때요?',todayNew:'오늘 새 글',welcome:'환영해요 👋 회원가입하고 시작해보세요!',
  signup:'회원가입',logout:'로그아웃',mypage:'마이페이지',editProfile:'프로필 편집',selRole:'어떤 회원이신가요?',guestDesc:'일본 뷰티 정보·예약을 찾는 분',ownerDesc:'미용실·네일샵 운영 (한·일)',nick:'닉네임',regionLabel:'주 활동 지역',shopName:'가게 이름',shopNamePh:'예: 시부야헤어룸',servicesL:'시술 분야',interestsL:'관심 시술',bioL:'한줄 소개 (선택)',bioPh:'예: 도쿄 워홀 2년차, 뷰티 정보 공유해요!',join:'가입하기',joinDone:'가입 완료! 환영해요 🎉',joinedOn:'가입',daysAgo:'일째',recvLikes:'받은 좋아요',tabPosts:'내 글',tabScraps:'스크랩',tabComments:'댓글',noPosts:'아직 쓴 글이 없어요',noScraps:'스크랩한 글이 없어요',noComments:'단 댓글이 없어요',logoutConfirm:'로그아웃 할까요? (이 기기의 활동 기록이 지워져요)',needSignup:'회원가입 후 이용할 수 있어요',guestTag:'비회원',gotoSignup:'가입하러 가기',
- botNote:'🛡️ 봇·중복 가입을 막기 위해 연락처 인증이 필요해요.',contact:'연락처 인증',contactPh:'이메일 또는 휴대폰 번호',sendCode:'인증번호 받기',resend:'재발송',codePh:'인증번호 6자리',verify:'확인',verified:'인증 완료',agreements:'약관 동의',req:'필수',agreeTerms:'이용약관 동의',agreePrivacy:'개인정보 수집·이용 동의',agreeMktg:'(선택) 마케팅·이벤트 정보 수신',view:'보기',needContact:'연락처를 입력해주세요',demoCode:'데모 인증번호:',verifiedToast:'인증되었습니다 ✅',codeWrong:'인증번호가 틀려요',needVerify:'연락처 인증을 완료해주세요',needAgree:'필수 약관에 동의해주세요',demoOnly:'데모 화면이에요',verifiedMember:'인증회원',blockedMsg:'차단된 계정이에요. 글·댓글을 남길 수 없어요.',googleBtn:'Google로 계속하기',orText:'또는 이메일·휴대폰으로',googleToast:'Google 계정으로 인증됐어요 (데모)',
+ botNote:'🛡️ 봇·중복 가입을 막기 위해 연락처 인증이 필요해요.',contact:'연락처 인증',contactPh:'이메일 또는 휴대폰 번호',sendCode:'인증번호 받기',resend:'재발송',codePh:'인증번호 6자리',verify:'확인',verified:'인증 완료',agreements:'약관 동의',req:'필수',agreeTerms:'이용약관 동의',agreePrivacy:'개인정보 수집·이용 동의',agreeMktg:'(선택) 마케팅·이벤트 정보 수신',view:'보기',needContact:'연락처를 입력해주세요',demoCode:'데모 인증번호:',verifiedToast:'인증되었습니다 ✅',codeWrong:'인증번호가 틀려요',needVerify:'연락처 인증을 완료해주세요',needAgree:'필수 약관에 동의해주세요',demoOnly:'데모 화면이에요',verifiedMember:'인증회원',blockedMsg:'차단된 계정이에요. 글·댓글을 남길 수 없어요.',googleBtn:'Google로 계속하기',orText:'또는 이메일로',googleToast:'Google 계정으로 인증됐어요',profileSetup:'프로필 설정',emailLabel:'이메일',emailPh:'이메일 주소',otpSent:'인증 메일을 보냈어요 (코드 또는 링크 확인)',otpNote:'메일의 6자리 코드를 입력하거나, 메일 속 링크를 클릭하세요.',
  cats:{전체:'전체',질문:'질문',후기:'후기',정보:'정보',모델모집:'모델모집',자유:'자유',사장님:'사장님',구인구직:'구인구직'},
  roles:{guest:'손님',owner:'사장님',official:'Beautia'},krGroup:'🇰🇷 한국',jpGroup:'🇯🇵 일본',krShort:'🇰🇷',jpShort:'🇯🇵',member:'커뮤니티 회원'
 },ja:{
@@ -352,7 +353,7 @@ const T={ko:{
  infoTitle:'🗾 日本・韓国ビューティー情報',seeAll:'すべて見る',tags:'タグ（任意）',tagsPh:'カンマ区切り · 例：東京, パーマ, 韓国語OK',
  streakLabel:'連続アクセス',streakSub:'今日も来てくれてありがとう！',dayUnit:'日',related:'こんな投稿はいかが？',todayNew:'今日の新着',welcome:'ようこそ 👋 会員登録して始めましょう！',
  signup:'会員登録',logout:'ログアウト',mypage:'マイページ',editProfile:'プロフィール編集',selRole:'どちらの会員ですか？',guestDesc:'日本ビューティー情報・予約をお探しの方',ownerDesc:'美容室・ネイル運営（韓・日）',nick:'ニックネーム',regionLabel:'主な活動地域',shopName:'店舗名',shopNamePh:'例：渋谷ヘアルーム',servicesL:'施術分野',interestsL:'関心のある施術',bioL:'ひとこと紹介（任意）',bioPh:'例：東京ワーホリ2年目、ビューティー情報を共有！',join:'登録する',joinDone:'登録完了！ようこそ 🎉',joinedOn:'登録',daysAgo:'日目',recvLikes:'もらったいいね',tabPosts:'投稿',tabScraps:'保存',tabComments:'コメント',noPosts:'まだ投稿がありません',noScraps:'保存した投稿がありません',noComments:'コメントがありません',logoutConfirm:'ログアウトしますか？（この端末の記録が消えます）',needSignup:'会員登録すると利用できます',guestTag:'ゲスト',gotoSignup:'登録する',
- botNote:'🛡️ ボット・重複登録防止のため連絡先認証が必要です。',contact:'連絡先認証',contactPh:'メール または 携帯番号',sendCode:'認証番号を送る',resend:'再送',codePh:'認証番号6桁',verify:'確認',verified:'認証完了',agreements:'規約同意',req:'必須',agreeTerms:'利用規約に同意',agreePrivacy:'個人情報の取得・利用に同意',agreeMktg:'（任意）マーケティング・イベント情報の受信',view:'見る',needContact:'連絡先を入力してください',demoCode:'デモ認証番号：',verifiedToast:'認証されました ✅',codeWrong:'認証番号が違います',needVerify:'連絡先認証を完了してください',needAgree:'必須規約に同意してください',demoOnly:'デモ画面です',verifiedMember:'認証会員',blockedMsg:'ブロックされたアカウントです。投稿・コメントできません。',googleBtn:'Googleで続ける',orText:'または メール・携帯で',googleToast:'Googleアカウントで認証されました（デモ）',
+ botNote:'🛡️ ボット・重複登録防止のため連絡先認証が必要です。',contact:'連絡先認証',contactPh:'メール または 携帯番号',sendCode:'認証番号を送る',resend:'再送',codePh:'認証番号6桁',verify:'確認',verified:'認証完了',agreements:'規約同意',req:'必須',agreeTerms:'利用規約に同意',agreePrivacy:'個人情報の取得・利用に同意',agreeMktg:'（任意）マーケティング・イベント情報の受信',view:'見る',needContact:'連絡先を入力してください',demoCode:'デモ認証番号：',verifiedToast:'認証されました ✅',codeWrong:'認証番号が違います',needVerify:'連絡先認証を完了してください',needAgree:'必須規約に同意してください',demoOnly:'デモ画面です',verifiedMember:'認証会員',blockedMsg:'ブロックされたアカウントです。投稿・コメントできません。',googleBtn:'Googleで続ける',orText:'またはメールで',googleToast:'Googleアカウントで認証されました',profileSetup:'プロフィール設定',emailLabel:'メール',emailPh:'メールアドレス',otpSent:'認証メールを送りました（コード/リンク確認）',otpNote:'メールの6桁コードを入力、またはリンクをクリック。',
  cats:{전체:'全体',질문:'質問',후기:'レビュー',정보:'情報',모델모집:'モデル募集',자유:'雑談',사장님:'オーナー',구인구직:'求人'},
  roles:{guest:'ゲスト',owner:'オーナー',official:'Beautia'},krGroup:'🇰🇷 韓国',jpGroup:'🇯🇵 日本',krShort:'🇰🇷',jpShort:'🇯🇵',member:'コミュニティ会員'
 }};
@@ -389,21 +390,38 @@ function toast(m){const el=$('toast');el.textContent=m;el.classList.add('on');cl
 function lightbox(src){$('lbimg').src=src;$('lightbox').classList.add('on');}
 
 let DB,ME,curCat='전체',curSort='hot',curRegion='전체',curQ='',curMenu='',view='feed',openId=null;
-function load(){
-  DB=JSON.parse(localStorage.getItem('beautia_comm2')||'null');
-  ME=JSON.parse(localStorage.getItem('beautia_comm_me')||'null');
-  if(!ME){ME={nick:'게스트'+Math.floor(Math.random()*9000+1000),role:'guest',registered:false,region:'전체',bio:'',interests:[],shop:{name:'',area:'',services:[]},joinedAt:Date.now(),likes:[],scraps:[]};saveMe();}
-  ME.likes=ME.likes||[];ME.scraps=ME.scraps||[];ME.read=ME.read||[];ME.interests=ME.interests||[];ME.shop=ME.shop||{name:'',area:'',services:[]};if(!ME.region)ME.region='전체';if(!ME.joinedAt)ME.joinedAt=Date.now();
+const SB_URL="https://pzbxcktaljhesrfnqwzq.supabase.co";
+const SB_KEY="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InB6Ynhja3RhbGpoZXNyZm5xd3pxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjgxNjc1MjYsImV4cCI6MjA4Mzc0MzUyNn0.aUZbTgfWbjEISNr1-cu9YJnOGj1lzjXeRVifHygAplc";
+const SB=supabase.createClient(SB_URL,SB_KEY);
+let PROFMAP={};
+function loadLocal(){
+  ME=JSON.parse(localStorage.getItem('beautia_comm_me')||'null')||{};
+  ME.likes=ME.likes||[];ME.scraps=ME.scraps||[];ME.read=ME.read||[];
   const firstEver=!ME.visit;ME.visit=ME.visit||{last:'',streak:0};
   const today=new Date().toISOString().slice(0,10);
   const newVisit=ME.visit.last!==today;
   if(newVisit){const y=new Date(Date.now()-864e5).toISOString().slice(0,10);ME.visit.streak=(ME.visit.last===y)?ME.visit.streak+1:1;ME.visit.last=today;}
-  ME._firstEver=firstEver;ME._newVisit=newVisit;saveMe();
-  if(!DB){DB={seq:100,posts:seed()};save();}
-  DB.blocked=DB.blocked||[];
+  ME._firstEver=firstEver;ME._newVisit=newVisit;
+  ME.registered=false;ME.role='guest';ME.nick=ME.nick||'게스트';ME.region=ME.region||'전체';ME.interests=ME.interests||[];ME.shop=ME.shop||{name:'',area:'',services:[]};
+  saveMe();DB={posts:[],blocked:[]};
 }
-function save(){try{localStorage.setItem('beautia_comm2',JSON.stringify(DB));}catch(e){toast('저장공간 초과: 사진을 줄여주세요');}}
-function saveMe(){localStorage.setItem('beautia_comm_me',JSON.stringify(ME));}
+function save(){}
+function saveMe(){try{localStorage.setItem('beautia_comm_me',JSON.stringify({likes:ME.likes,scraps:ME.scraps,read:ME.read,visit:ME.visit,nick:ME.nick}));}catch(e){}}
+function mapPost(r){const pm=PROFMAP[r.author]||{};return{id:r.id,cat:r.cat||'자유',region:r.region||'전체',title:r.title||'',content:r.content||'',tags:r.tags||[],imgs:r.imgs||[],pinned:!!r.pinned,hidden:!!r.hidden,like:r.like_count||0,scrap:0,t:r.created_at?new Date(r.created_at).getTime():Date.now(),author:r.author,nick:pm.nick||r.nickname||'익명',role:pm.role||'guest',cmtCount:(r.comments&&r.comments[0])?r.comments[0].count:0,cmts:[],mine:!!(ME.uid&&r.author===ME.uid)};}
+async function loadPosts(){
+  try{
+    const {data:profs}=await SB.from('profiles').select('id,nickname,role');PROFMAP={};(profs||[]).forEach(p=>PROFMAP[p.id]={nick:p.nickname,role:p.role});
+    const {data:posts,error}=await SB.from('posts').select('*, comments(count)').order('created_at',{ascending:false});
+    if(error)throw error;DB.posts=(posts||[]).map(mapPost);
+  }catch(e){console.warn('loadPosts',e);DB.posts=DB.posts||[];}
+}
+async function refreshProfile(session){
+  if(!session){ME.uid=null;ME.registered=false;ME.role='guest';ME.needProfile=false;return;}
+  ME.uid=session.user.id;ME.email=session.user.email||'';ME.provider=(session.user.app_metadata||{}).provider||'email';
+  const {data}=await SB.from('profiles').select('*').eq('id',ME.uid).maybeSingle();
+  if(data&&data.nickname){ME.registered=true;ME.needProfile=false;ME.nick=data.nickname;ME.role=data.role||'guest';ME.region=data.region||'전체';ME.bio=data.bio||'';ME.interests=data.interests||[];ME.shop=data.shop||{name:'',area:'',services:[]};ME.is_admin=!!data.is_admin;ME.verified=true;ME.joinedAt=data.created_at?new Date(data.created_at).getTime():Date.now();saveMe();}
+  else{ME.registered=false;ME.needProfile=true;}
+}
 function seed(){const now=Date.now(),h=3600000,d=86400000;return[
  {id:1,cat:'정보',region:'전체',role:'official',nick:'Beautia',title:'🎉 커뮤니티 오픈! 이런 곳이에요',content:'한국·일본 뷰티를 사랑하는 손님·사장님이 모이는 라운지예요.\n\n· 질문: "이 미용실 한국어 돼요?"\n· 후기: 다녀온 곳 솔직 후기\n· 정보: 예약 꿀팁, 화장품 추천\n· 사장님 라운지: 한국 손님 받는 노하우\n\n광고·욕설·개인정보는 삼가주세요 🤍',like:42,scrap:18,imgs:[],cmts:[{nick:'네일러버',role:'guest',t:'기다렸어요!! 🙌',d:now-2*h}],t:now-2*d},
  {id:2,cat:'질문',region:'서울',role:'guest',nick:'서울사는데',title:'서울인데 일본 가기 전에 미리 예약돼요?',content:'다음달 도쿄 여행 가는데, 한국에 있는 지금 미리 미용실 예약해두고 싶어요. 출국 전에 예약 잡아두는 거 가능할까요?',like:9,scrap:7,imgs:[],cmts:[{nick:'Beautia',role:'official',t:'네! 출국 전에 미리 예약·통역 대행 가능해요. 카톡으로 날짜·스타일 주세요 🙌',d:now-1*h}],t:now-3*h},
@@ -444,7 +462,7 @@ function renderRight(){
     <div class="panel"><div class="panel-h">🔥 ${t('popular')}</div><div class="hot" id="hot"></div></div>
     <div class="ctabox"><h4>${t('ctaTitle')}</h4><p>${t('ctaDesc')}</p><a class="btn btn-kakao" href="https://pf.kakao.com/_xhxhixfX/chat" target="_blank">💬 ${t('ctaBtn')}</a></div>`;
   const hot=DB.posts.slice().sort((a,b)=>(b.like+b.scrap*2)-(a.like+a.scrap*2)).slice(0,5);
-  $('hot').innerHTML=hot.map((p,i)=>`<div class="hotitem" onclick="openPost(${p.id})"><span class="rk">${i+1}</span><div><div class="ht">${esc(p.title)}</div><div class="hm tnum">❤ ${p.like} · 💬 ${p.cmts.length}</div></div></div>`).join('');
+  $('hot').innerHTML=hot.map((p,i)=>`<div class="hotitem" onclick="openPost(${p.id})"><span class="rk">${i+1}</span><div><div class="ht">${esc(p.title)}</div><div class="hm tnum">❤ ${p.like} · 💬 ${p.cmtCount||0}</div></div></div>`).join('');
 }
 function renderShell(){
   let nav=`<div class="lh">${t('board')}</div>`;
@@ -487,7 +505,7 @@ function cardHtml(p){const liked=ME.likes.includes(p.id);
       <div class="cexc">${esc(bodyOf(p))}</div>
       ${mediaHtml(p.imgs)}
       ${(p.tags&&p.tags.length)?`<div class="ctags">${p.tags.slice(0,4).map(tg=>`<span class="ctag">#${esc(tg)}</span>`).join('')}</div>`:''}
-      <div class="cact"><span class="a"><i class="ti ti-message-circle"></i> ${p.cmts.length}</span><span class="a"><i class="ti ti-bookmark"></i> ${p.scrap}</span><span class="a"><i class="ti ti-eye"></i> ${(p.like*7+p.scrap*3+13)}</span></div>
+      <div class="cact"><span class="a"><i class="ti ti-message-circle"></i> ${p.cmtCount||0}</span><span class="a"><i class="ti ti-bookmark"></i> ${p.scrap}</span><span class="a"><i class="ti ti-eye"></i> ${(p.like*7+p.scrap*3+13)}</span></div>
     </div></div>`;}
 function regOptions(){return `<option value="전체">📍 ${t('allRegion')}</option>`+RGROUPS.map(g=>`<optgroup label="${t(g[0]+'Group')}">`+g[1].map(r=>`<option value="${r}" ${r===curRegion?'selected':''}>${regL(r)}</option>`).join('')+'</optgroup>').join('');}
 function headTitle(){if(curMenu==='mine')return t('myPosts');if(curMenu==='scrap')return t('scrap');if(curQ)return`"${esc(curQ)}"`;if(curRegion!=='전체')return (curCat==='전체'?t('allPosts'):catL(curCat))+' · '+regFlag(curRegion)+' '+regL(curRegion);return curCat==='전체'?t('allPosts'):catL(curCat);}
@@ -517,7 +535,10 @@ function renderMain(){
     ${list.length?list.map(cardHtml).join(''):`<div class="empty">${t('emptyFeed')}</div>`}`;
   startPromo();
 }
-function openPost(id){openId=id;if(!ME.read.includes(id)){ME.read.push(id);saveMe();}view='detail';renderDetail();scrollTo({top:0});}
+async function openPost(id){openId=id;if(!ME.read.includes(id)){ME.read.push(id);saveMe();}view='detail';renderDetail();scrollTo({top:0});
+  const {data}=await SB.from('comments').select('*').eq('post_id',id).order('created_at',{ascending:true});
+  const p=DB.posts.find(x=>x.id===id);if(p){p.cmts=(data||[]).map(c=>({nick:(PROFMAP[c.author]&&PROFMAP[c.author].nick)||c.nickname||'익명',role:(PROFMAP[c.author]&&PROFMAP[c.author].role)||'guest',t:c.content,d:c.created_at?new Date(c.created_at).getTime():Date.now(),author:c.author}));p.cmtCount=p.cmts.length;}
+  if(view==='detail'&&openId===id)renderDetail();}
 function renderDetail(){
   clearInterval(promoTimer);
   const p=DB.posts.find(x=>x.id===openId);if(!p){view='feed';renderMain();return;}
@@ -528,7 +549,7 @@ function renderDetail(){
     <div class="back" onclick="backFeed()"><i class="ti ti-chevron-left"></i> ${t('back')}</div>
     <div class="dhead">${avHtml(p.nick)}<div><div class="dhn">${esc(p.nick)} ${roleBadge(p.role)}</div><div class="dhm"><span style="color:var(--rose);font-weight:700;">${catL(p.cat)}</span>${p.region&&p.region!=='전체'?' · '+regFlag(p.region)+' '+esc(regL(p.region)):''} · ${timeago(p.t)}</div></div></div>
     <div class="dtitle">${esc(p.title)}</div>
-    <div class="dmeta"><span class="a"><i class="ti ti-heart"></i> ${p.like}</span><span class="a"><i class="ti ti-message-circle"></i> ${p.cmts.length}</span><span class="a"><i class="ti ti-eye"></i> ${(p.like*7+p.scrap*3+13)} ${t('views')}</span></div>
+    <div class="dmeta"><span class="a"><i class="ti ti-heart"></i> ${p.like}</span><span class="a"><i class="ti ti-message-circle"></i> ${p.cmtCount||0}</span><span class="a"><i class="ti ti-eye"></i> ${(p.like*7+p.scrap*3+13)} ${t('views')}</span></div>
     <div class="dcontent">${esc(main)}</div>
     ${gallery}
     ${(p.tags&&p.tags.length)?`<div class="dtags">${p.tags.map(tg=>`<span class="dtag">#${esc(tg)}</span>`).join('')}</div>`:''}
@@ -555,7 +576,10 @@ function backFeed(){view='feed';renderMain();scrollTo({top:0});}
 function toggleOrig(e){const o=$('origText');const sh=o.style.display!=='block';o.style.display=sh?'block':'none';e.target.textContent=sh?t('foldOrig'):(LANG==='ja'?t('viewOrigKo'):t('viewOrigJa'));}
 function toggleLike(id){const p=DB.posts.find(x=>x.id===id);const i=ME.likes.indexOf(id);if(i<0){ME.likes.push(id);p.like++;}else{ME.likes.splice(i,1);p.like--;}saveMe();save();if(view==='detail')renderDetail();else renderMain();renderRight();}
 function toggleScrap(id){const p=DB.posts.find(x=>x.id===id);const i=ME.scraps.indexOf(id);if(i<0){ME.scraps.push(id);p.scrap++;toast(t('scrapped'));}else{ME.scraps.splice(i,1);p.scrap--;}saveMe();save();if(view==='detail')renderDetail();}
-function addComment(){if(!ME.registered){openSignup();toast(t('needSignup'));return;}if(blocked(ME.nick)){toast(t('blockedMsg'));return;}const v=$('cInput').value.trim();if(!v)return;const p=DB.posts.find(x=>x.id===openId);p.cmts.push({nick:ME.nick,role:ME.role,t:v,d:Date.now()});save();renderDetail();renderRight();}
+async function addComment(){if(!ME.registered){openSignup();toast(t('needSignup'));return;}const v=$('cInput').value.trim();if(!v)return;
+  const {error}=await SB.from('comments').insert({post_id:openId,author:ME.uid,nickname:ME.nick,content:v});
+  if(error){toast('댓글 실패: '+error.message);return;}
+  $('cInput').value='';await openPost(openId);renderRight();}
 
 /* write + image upload */
 let wCat='질문',wRegion='전체',wImgs=[];
@@ -572,31 +596,39 @@ function renderPtiles(){let h=wImgs.map((s,i)=>`<div class="ptile" style="backgr
 function rmImg(i){wImgs.splice(i,1);renderPtiles();}
 function onPick(e){const files=[...e.target.files].slice(0,4-wImgs.length);files.forEach(f=>downscale(f,u=>{wImgs.push(u);renderPtiles();}));e.target.value='';}
 function downscale(file,cb){const r=new FileReader();r.onload=ev=>{const img=new Image();img.onload=()=>{const max=900;let w=img.width,h=img.height;if(w>max||h>max){if(w>h){h=Math.round(h*max/w);w=max;}else{w=Math.round(w*max/h);h=max;}}const cv=document.createElement('canvas');cv.width=w;cv.height=h;cv.getContext('2d').drawImage(img,0,0,w,h);cb(cv.toDataURL('image/jpeg',0.8));};img.src=ev.target.result;};r.readAsDataURL(file);}
-function submitWrite(){const title=$('wTitle').value.trim(),content=$('wContent').value.trim();if(!title||!content){toast(t('needTC'));return;}
+async function submitWrite(){const title=$('wTitle').value.trim(),content=$('wContent').value.trim();if(!title||!content){toast(t('needTC'));return;}
+  if(!ME.uid){openSignup();return;}
   const tags=$('wTags').value.split(/[,#\n]+/).map(s=>s.trim()).filter(Boolean).slice(0,6);
-  DB.seq++;DB.posts.unshift({id:DB.seq,cat:wCat,region:wRegion,role:ME.role,nick:ME.nick,title,content,tags,like:0,scrap:0,imgs:wImgs.slice(),cmts:[],t:Date.now(),mine:true});
-  save();closeModal();curCat='전체';curMenu='';curSort='new';curQ='';view='feed';renderShell();renderMain();scrollTo({top:0});toast(t('posted'));}
+  const {error}=await SB.from('posts').insert({author:ME.uid,nickname:ME.nick,cat:wCat,region:wRegion,title,content,tags,imgs:wImgs.slice()});
+  if(error){toast('등록 실패: '+error.message);return;}
+  closeModal();curCat='전체';curMenu='';curSort='new';curQ='';view='feed';await loadPosts();renderShell();renderMain();scrollTo({top:0});toast(t('posted'));}
 
 /* ===== 회원가입 / 프로필 / 마이페이지 ===== */
-let pfMode='signup',pfRole='guest',pfInterests=[],pfServices=[];
-let pfContact='',pfVerified=false,pfCodeSent=false,pfSentCode='',pfAgreeTerms=false,pfAgreePrivacy=false,pfAgreeMktg=false,pfGoogle=false;
-function openSignup(){pfMode='signup';pfRole='guest';pfInterests=[];pfServices=[];pfContact='';pfVerified=false;pfCodeSent=false;pfSentCode='';pfAgreeTerms=false;pfAgreePrivacy=false;pfAgreeMktg=false;pfGoogle=false;openProfileModal();}
-function onGoogle(){pfGoogle=true;pfVerified=true;pfContact='user'+Math.floor(Math.random()*900+100)+'@gmail.com';renderProfileForm(false);if($('pfNick')&&!$('pfNick').value.trim())$('pfNick').value='Google'+Math.floor(Math.random()*900+100);toast(t('googleToast'));}
-function sendCode(){const c=$('pfContact')?$('pfContact').value.trim():'';if(!c){toast(t('needContact'));return;}pfContact=c;pfSentCode=String(Math.floor(100000+Math.random()*900000));pfCodeSent=true;renderProfileForm(false);toast(t('demoCode')+' '+pfSentCode);}
-function verifyCode(){const v=$('pfCode')?$('pfCode').value.trim():'';if(v&&v===pfSentCode){pfVerified=true;renderProfileForm(false);toast(t('verifiedToast'));}else{toast(t('codeWrong'));}}
+let pfMode='login',pfRole='guest',pfInterests=[],pfServices=[];
+let pfEmail='',pfOtpSent=false,pfAgreeTerms=false,pfAgreePrivacy=false,pfAgreeMktg=false;
+function openSignup(){ if(ME.uid&&ME.needProfile)openCompleteProfile(); else openLogin(); }
+function openLogin(){pfMode='login';pfEmail='';pfOtpSent=false;openProfileModal();}
+function openCompleteProfile(){pfMode='profile';pfRole='guest';pfInterests=[];pfServices=[];pfAgreeTerms=false;pfAgreePrivacy=false;pfAgreeMktg=false;openProfileModal();}
+async function googleLogin(){const {error}=await SB.auth.signInWithOAuth({provider:'google',options:{redirectTo:location.origin+location.pathname}});if(error)toast('구글 로그인 오류: '+error.message);}
+async function emailLogin(){const e=$('pfEmail')?$('pfEmail').value.trim():'';if(!e){toast(t('needContact'));return;}pfEmail=e;const {error}=await SB.auth.signInWithOtp({email:e,options:{shouldCreateUser:true,emailRedirectTo:location.origin+location.pathname}});if(error){toast('전송 실패: '+error.message);return;}pfOtpSent=true;renderProfileForm(false);toast(t('otpSent'));}
+async function verifyEmail(){const c=$('pfCode')?$('pfCode').value.trim():'';if(!c){toast(t('needContact'));return;}const {error}=await SB.auth.verifyOtp({email:pfEmail,token:c,type:'email'});if(error){toast(t('codeWrong'));return;}closeModal();}
 function openEditProfile(){pfMode='edit';pfRole=ME.role==='official'?'guest':ME.role;pfInterests=(ME.interests||[]).slice();pfServices=((ME.shop&&ME.shop.services)||[]).slice();openProfileModal();}
-function openProfileModal(){$('pHead').textContent=pfMode==='signup'?t('signup'):t('editProfile');$('pSave').textContent=pfMode==='signup'?t('join'):t('save');renderProfileForm(true);$('profModal').classList.add('on');}
+function openProfileModal(){$('pHead').textContent=pfMode==='login'?t('signup'):(pfMode==='edit'?t('editProfile'):t('profileSetup'));$('pSave').style.display=pfMode==='login'?'none':'';$('pSave').textContent=pfMode==='edit'?t('save'):t('join');renderProfileForm(true);$('profModal').classList.add('on');}
 function pickPfRole(k){pfRole=k;renderProfileForm(false);}
 function toggleArr(which,v){const a=which==='int'?pfInterests:pfServices;const i=a.indexOf(v);if(i<0)a.push(v);else a.splice(i,1);renderProfileForm(false);}
 function renderProfileForm(first){
-  const nickVal=(!first&&$('pfNick'))?$('pfNick').value:(pfMode==='edit'?ME.nick:'');
+  if(pfMode==='login'){
+    let h=`<button class="gbtn" onclick="googleLogin()">${GSVG} ${t('googleBtn')}</button><div class="ordiv">${t('orText')}</div>`;
+    h+=`<div class="wlabel">${t('emailLabel')}</div><input class="field" id="pfEmail" type="email" placeholder="${t('emailPh')}" value="${esc(pfEmail)}" style="margin-top:8px" ${pfOtpSent?'disabled':''}>`;
+    if(!pfOtpSent)h+=`<button class="btn btn-primary" style="width:100%;justify-content:center;padding:12px;margin-top:12px" onclick="emailLogin()">${t('sendCode')}</button>`;
+    else h+=`<div class="verifyrow" style="margin-top:12px"><input class="field" id="pfCode" placeholder="${t('codePh')}" maxlength="8" inputmode="numeric"><button class="btn btn-primary" onclick="verifyEmail()">${t('verify')}</button></div><div class="secnote">${t('otpNote')}</div>`;
+    $('pfBody').innerHTML=h;return;
+  }
+  const nickVal=(!first&&$('pfNick'))?$('pfNick').value:(pfMode==='edit'?ME.nick:(ME.email?ME.email.split('@')[0]:''));
   const regVal=(!first&&$('pfRegionSel'))?$('pfRegionSel').value:(pfMode==='edit'?(ME.region||'전체'):'전체');
   const bioVal=(!first&&$('pfBio'))?$('pfBio').value:(pfMode==='edit'?(ME.bio||''):'');
   const shopVal=(!first&&$('pfShop'))?$('pfShop').value:(pfMode==='edit'?((ME.shop&&ME.shop.name)||''):'');
-  if(!first&&$('pfContact'))pfContact=$('pfContact').value;
-  let h='';
-  if(pfMode==='signup')h+=`<button class="gbtn" onclick="onGoogle()">${GSVG} ${t('googleBtn')}</button><div class="ordiv">${t('orText')}</div>`;
-  h+=`<div class="wlabel">${t('selRole')}</div><div class="rolepick">
+  let h=`<div class="wlabel">${t('selRole')}</div><div class="rolepick">
     <div class="rolecard ${pfRole==='guest'?'on':''}" onclick="pickPfRole('guest')"><i class="ti ti-user-heart"></i><div class="rt">${roleL('guest')}</div><div class="rd">${t('guestDesc')}</div></div>
     <div class="rolecard ${pfRole==='owner'?'on':''}" onclick="pickPfRole('owner')"><i class="ti ti-building-store"></i><div class="rt">${roleL('owner')}</div><div class="rd">${t('ownerDesc')}</div></div></div>`;
   h+=`<div class="wlabel">${t('nick')}</div><input class="field" id="pfNick" maxlength="20" placeholder="${t('nickPh')}" value="${esc(nickVal)}" style="margin-top:8px">`;
@@ -608,14 +640,7 @@ function renderProfileForm(first){
     h+=`<div class="wlabel">${t('interestsL')}</div><div class="wrow">`+SERVICES.map(s=>`<span class="wchip ${pfInterests.includes(s[0])?'on':''}" onclick="toggleArr('int','${s[0]}')">${svcL(s[0])}</span>`).join('')+`</div>`;
   }
   h+=`<div class="wlabel">${t('bioL')}</div><textarea class="field" id="pfBio" maxlength="80" placeholder="${t('bioPh')}" style="margin-top:8px;min-height:58px">${esc(bioVal)}</textarea>`;
-  if(pfMode==='signup'){
-    h+=`<div class="secnote">${t('botNote')}</div>`;
-    h+=`<div class="wlabel">${t('contact')} <span style="color:var(--rose)">*</span></div>
-      <div class="verifyrow"><input class="field" id="pfContact" placeholder="${t('contactPh')}" value="${esc(pfContact)}" ${pfVerified?'disabled':''}>
-      <button class="btn ${pfVerified?'btn-ghost':'btn-primary'}" onclick="sendCode()" ${pfVerified?'disabled':''}>${pfCodeSent?t('resend'):t('sendCode')}</button></div>`;
-    if(pfCodeSent&&!pfVerified)
-      h+=`<div class="verifyrow"><input class="field" id="pfCode" placeholder="${t('codePh')}" maxlength="6" inputmode="numeric"><button class="btn btn-primary" onclick="verifyCode()">${t('verify')}</button></div>`;
-    if(pfVerified)h+=`<div class="vbadge"><i class="ti ti-circle-check-filled"></i> ${t('verified')}</div>`;
+  if(pfMode==='profile'){
     h+=`<div class="wlabel">${t('agreements')} <span style="color:var(--rose)">*</span></div>
       <label class="agree"><input type="checkbox" id="agTerms" ${pfAgreeTerms?'checked':''} onchange="pfAgreeTerms=this.checked"><span class="req">[${t('req')}]</span> ${t('agreeTerms')}<a href="terms.html" target="_blank" onclick="event.stopPropagation()">${t('view')}</a></label>
       <label class="agree"><input type="checkbox" id="agPriv" ${pfAgreePrivacy?'checked':''} onchange="pfAgreePrivacy=this.checked"><span class="req">[${t('req')}]</span> ${t('agreePrivacy')}<a href="privacy.html" target="_blank" onclick="event.stopPropagation()">${t('view')}</a></label>
@@ -623,21 +648,18 @@ function renderProfileForm(first){
   }
   $('pfBody').innerHTML=h;
 }
-function saveProfile(){
+async function saveProfile(){
   const n=$('pfNick').value.trim();if(!n){toast(t('needTC'));return;}
-  if(pfMode==='signup'){
-    if(!pfVerified){toast(t('needVerify'));return;}
-    if(!pfAgreeTerms||!pfAgreePrivacy){toast(t('needAgree'));return;}
-  }
-  ME.nick=n;ME.role=pfRole;ME.region=$('pfRegionSel').value;ME.bio=$('pfBio').value.trim();
-  if(pfRole==='owner')ME.shop={name:$('pfShop')?$('pfShop').value.trim():'',area:ME.region,services:pfServices.slice()},ME.interests=[];
-  else ME.interests=pfInterests.slice();
-  if(pfMode==='signup'){ME.registered=true;ME.verified=true;ME.contact=pfContact;ME.agreeMktg=pfAgreeMktg;ME.provider=pfGoogle?'google':'local';ME.joinedAt=ME.joinedAt||Date.now();}
-  saveMe();closeModal();renderHeader();renderShell();
-  if(pfMode==='signup'){view='feed';renderMain();toast(t('joinDone'));}
-  else{if(view==='profile')renderMypage();else if(view==='detail')renderDetail();else renderMain();toast(t('saved'));}
+  if(pfMode==='profile'&&(!pfAgreeTerms||!pfAgreePrivacy)){toast(t('needAgree'));return;}
+  if(!ME.uid){toast('로그인이 필요해요');return;}
+  const shop=pfRole==='owner'?{name:$('pfShop')?$('pfShop').value.trim():'',area:$('pfRegionSel').value,services:pfServices.slice()}:{};
+  const payload={id:ME.uid,nickname:n,role:pfRole,region:$('pfRegionSel').value,bio:$('pfBio').value.trim(),interests:pfRole==='owner'?[]:pfInterests.slice(),shop};
+  const {error}=await SB.from('profiles').upsert(payload);
+  if(error){toast('저장 실패: '+error.message);return;}
+  closeModal();await reloadAll();toast(pfMode==='edit'?t('saved'):t('joinDone'));
 }
-function logout(){if(!confirm(t('logoutConfirm')))return;localStorage.removeItem('beautia_comm_me');location.reload();}
+async function reloadAll(){const {data:{session}}=await SB.auth.getSession();await refreshProfile(session);await loadPosts();renderHeader();renderShell();if(view==='profile')renderMypage();else if(view==='detail')renderDetail();else renderMain();}
+async function logout(){if(!confirm(t('logoutConfirm')))return;await SB.auth.signOut();}
 let myTab='posts';
 function openMypage(){view='profile';myTab='posts';renderMypage();scrollTo({top:0});}
 function setMyTab(tb){myTab=tb;renderMypage();}
@@ -671,10 +693,18 @@ function closeModal(){document.querySelectorAll('.modal').forEach(m=>m.classList
 document.querySelectorAll('.modal').forEach(m=>m.addEventListener('click',e=>{if(e.target===m)closeModal();}));
 
 document.documentElement.lang=LANG;
-load();renderHeader();renderShell();renderMain();
 window.addEventListener('scroll',()=>{$('fab').classList.toggle('on',window.scrollY>500);});
-if(ME._firstEver&&!ME.registered)setTimeout(()=>openSignup(),500);
-else if(ME._newVisit&&ME.visit.streak>1)setTimeout(()=>toast('🔥 '+ME.visit.streak+t('dayUnit')+' '+t('streakLabel')+'!'),700);
+async function boot(){
+  loadLocal();
+  const {data:{session}}=await SB.auth.getSession();
+  await refreshProfile(session);
+  await loadPosts();
+  renderHeader();renderShell();renderMain();
+  if(ME.needProfile)openCompleteProfile();
+  else if(ME._newVisit&&ME.visit&&ME.visit.streak>1)setTimeout(()=>toast('🔥 '+ME.visit.streak+t('dayUnit')+' '+t('streakLabel')+'!'),800);
+}
+SB.auth.onAuthStateChange((ev,session)=>{ if(ev==='SIGNED_IN'||ev==='SIGNED_OUT'||ev==='USER_UPDATED'){ reloadAll().then(()=>{ if(ME.needProfile)openCompleteProfile(); }); } });
+boot();
 </script>
 </body>
 </html>
