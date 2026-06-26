@@ -4,6 +4,7 @@ Allow: /
 Disallow: /admin.html
 Disallow: /owner.html
 Disallow: /salon.html
+Disallow: /community_admin.html
 
 # AI / Answer engines (GEO·AEO) — 색인 허용
 User-agent: GPTBot
