@@ -1,0 +1,1075 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Beautia — 일본 미용실 한국어 예약</title>
+<link rel="icon" type="image/png" href="logo-icon.png">
+<link rel="apple-touch-icon" href="logo-icon.png">
+<meta name="description" content="일본에서 한국어로 미용실 예약 — 검증된 미용실, 한국어 예약·통역 대행 무료.">
+<meta name="theme-color" content="#6E4A50">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="Beautia">
+<meta property="og:title" content="Beautia — 일본에서 한국어로 미용실 예약">
+<meta property="og:description" content="검증된 일본 미용실, 한국어 예약·통역 대행 무료">
+<meta property="og:type" content="website">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3/dist/tabler-icons.min.css">
+<style>
+:root{--ink:#2A2326;--ink2:#54484C;--sub:#A39B98;--line:#F0ECEA;--soft:#F7F4F2;--tint:#FAF7F5;--rose:#B5828C;--plum:#6E4A50;--gold:#E3A857;--rosebg:#FBEFF1;--plumbg:#F2EEF0;--goldbg:#F3EDE1;--sun:#C2768A;--sat:#7E8FB0;}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;-webkit-font-smoothing:antialiased;}
+body{font-family:'Pretendard',system-ui,sans-serif;background:radial-gradient(130% 90% at 50% -8%,#F2EBE7 0%,#E6DBD5 52%,#DACDC7 100%);background-attachment:fixed;color:var(--ink);min-height:100vh;display:flex;justify-content:center;align-items:center;padding:24px 12px;}
+.phone{width:390px;max-width:100%;height:min(844px,92vh);background:#fff;border:1px solid rgba(110,74,80,.07);border-radius:48px;overflow:hidden;display:flex;flex-direction:column;box-shadow:0 50px 100px -32px rgba(70,40,46,.5),0 18px 44px -22px rgba(70,40,46,.24),0 0 0 1px rgba(255,255,255,.5) inset;position:relative;}
+.statusbar{flex:0 0 auto;display:flex;align-items:center;justify-content:space-between;padding:10px 24px 4px;font-size:12px;font-weight:600;}
+.statusbar .ti{font-size:14px;}
+.screens{position:relative;flex:1 1 auto;overflow:hidden;}
+.screen{position:absolute;inset:0;display:none;flex-direction:column;}
+.screen.active{display:flex;animation:in .4s cubic-bezier(.22,.61,.36,1);}
+@keyframes in{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+.body{flex:1 1 auto;overflow-y:auto;}
+.body::-webkit-scrollbar{width:0;}
+.topbar{flex:0 0 auto;display:flex;align-items:center;gap:10px;padding:13px 16px;border-bottom:1px solid var(--line);}
+.topbar .t{font-size:15px;font-weight:600;}
+.bottombar{flex:0 0 auto;border-top:1px solid var(--line);}
+.ico{cursor:pointer;}
+.muted{color:var(--sub);}
+.star{color:var(--gold);}
+.btn{font-family:inherit;cursor:pointer;border:none;border-radius:12px;font-weight:600;transition:transform .12s;}
+.btn:active{transform:scale(.975);}
+.btn-primary{background:var(--plum);color:#fff;box-shadow:0 8px 20px -8px rgba(110,74,80,.55);}
+.btn-ghost{background:#fff;border:1px solid rgba(181,130,140,.55);color:var(--plum);}
+.w100{width:100%;}.pad{padding:11px 16px 16px;}
+/* header */
+.hdr{display:flex;align-items:center;justify-content:space-between;padding:10px 18px 12px;}
+.logo{font-family:Georgia,'Times New Roman',serif;font-size:26px;font-weight:700;color:var(--plum);letter-spacing:.3px;}
+.hdr-ic{display:flex;gap:15px;color:var(--sub);}.hdr-ic .ti{font-size:20px;}
+.hdr-ic .loc{font-size:20px;color:var(--rose);}
+.search{margin:0 18px 16px;display:flex;align-items:center;gap:9px;background:var(--soft);border-radius:12px;padding:12px 14px;color:var(--sub);font-size:13px;cursor:pointer;}
+.search input{flex:1;border:none;background:transparent;font-family:inherit;font-size:13px;color:var(--ink);outline:none;}
+/* category */
+.cats{display:grid;grid-template-columns:repeat(4,1fr);gap:16px 0;text-align:center;padding:0 16px 18px;}
+.cat{cursor:pointer;}
+.cat .ic{width:50px;height:50px;margin:0 auto;border-radius:16px;display:flex;align-items:center;justify-content:center;transition:transform .15s;}
+.cat:active .ic{transform:scale(.92);}
+.cat .ic .ti{font-size:23px;}
+.cat .l{font-size:11px;display:block;margin-top:6px;color:#3A3034;}
+.cat.r .ic{background:var(--rosebg);}.cat.r .ic .ti{color:var(--rose);}
+.cat.p .ic{background:var(--plumbg);}.cat.p .ic .ti{color:var(--plum);}
+/* banner */
+.banner{margin:0 18px 18px;background:var(--plum);border-radius:14px;padding:15px 17px;display:flex;align-items:center;gap:13px;cursor:pointer;}
+.banner .bi{width:42px;height:42px;border-radius:12px;background:#fff;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.banner .bi .ti{font-size:22px;color:var(--plum);}
+.banner h4{font-size:14px;font-weight:600;color:#fff;}
+.banner p{font-size:11px;color:#fff;opacity:.8;margin-top:3px;}
+.banner>.ti{color:#fff;opacity:.7;font-size:18px;}
+/* section */
+.sec{display:flex;align-items:center;justify-content:space-between;padding:2px 18px 12px;}
+.sec h3{font-size:17px;font-weight:700;}
+.sec .more{font-size:12px;color:var(--sub);cursor:pointer;}
+.secsub{font-size:11px;color:var(--sub);padding:0 18px 14px;margin-top:-8px;}
+.gap{height:8px;background:var(--soft);}
+/* card grid */
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:13px;padding:0 18px 20px;}
+.scard{border:1px solid var(--line);border-radius:14px;overflow:hidden;cursor:pointer;background:#fff;box-shadow:0 1px 2px rgba(90,60,66,.04),0 12px 26px -18px rgba(90,60,66,.18);}
+.scard:active{transform:scale(.99);}
+.scard .img{height:104px;position:relative;display:flex;align-items:center;justify-content:center;}
+.scard .img .ti.bg{font-size:26px;opacity:.55;}
+.scard .heart{position:absolute;top:8px;right:8px;width:28px;height:28px;border-radius:50%;background:rgba(255,255,255,.92);display:flex;align-items:center;justify-content:center;}
+.scard .heart .ti{font-size:15px;}
+.scard .bd{padding:9px 10px 11px;}
+.scard .nm{font-size:14px;font-weight:600;}
+.scard .rt{font-size:12px;margin:5px 0 4px;}.scard .rt b{font-weight:700;}
+.scard .ar{font-size:11px;color:var(--sub);}
+.scard .tg{margin-top:7px;display:flex;gap:4px;flex-wrap:wrap;}
+.tag{font-size:10px;padding:2px 7px;border-radius:6px;font-weight:500;}
+.tag.v{background:var(--goldbg);color:#9A7B3C;}
+.tag.k{background:var(--rosebg);color:#9A5E6A;}
+.tag.n{background:var(--plumbg);color:#7E7378;}
+/* rank */
+.rank{padding:16px 18px 8px;}
+.rkitem{display:flex;align-items:center;gap:12px;margin-bottom:13px;cursor:pointer;}
+.rkitem .no{font-size:16px;font-weight:800;color:var(--rose);width:14px;}
+.rkitem .th{width:46px;height:46px;border-radius:10px;flex-shrink:0;}
+.rkitem .nm{font-size:14px;font-weight:600;}
+.rkitem .ds{font-size:11px;color:var(--sub);margin-top:3px;}
+.rkitem .rr{font-size:12px;}
+/* tabs */
+.tabs{display:flex;padding:9px 0 14px;}
+.tabs .tab{flex:1;text-align:center;color:var(--sub);font-size:10px;cursor:pointer;white-space:nowrap;}
+.tabs .tab .ti{font-size:21px;display:block;margin-bottom:3px;}
+.tabs .tab.on{color:var(--rose);font-weight:600;}
+.tabs .tab.on .ti{transform:translateY(-1px) scale(1.05);}
+/* detail */
+.hero{height:190px;position:relative;display:flex;align-items:center;justify-content:center;}
+.hero .ti.bg{font-size:40px;opacity:.5;}
+.hero .nav{position:absolute;top:12px;width:34px;height:34px;border-radius:50%;background:rgba(255,255,255,.92);display:flex;align-items:center;justify-content:center;cursor:pointer;}
+.hero .nav .ti{font-size:18px;color:var(--ink);}
+.hero .back{left:12px;}.hero .fav{right:12px;}
+.dw{padding:22px 18px 6px;}
+.dw h2{font-size:22px;font-weight:700;letter-spacing:-.3px;}
+.dw .rrow{display:flex;align-items:center;gap:6px;font-size:13px;margin-top:8px;}
+.dw .rrow .cnt{color:var(--sub);}
+.dw .ar{font-size:12px;color:var(--sub);margin-top:6px;}
+.chk{margin-top:16px;background:var(--soft);border-radius:12px;padding:14px 15px;}
+.chk h4{font-size:12px;font-weight:700;margin-bottom:10px;}.chk h4 .ti{color:var(--rose);font-size:14px;}
+.chk .it{font-size:12px;line-height:2;}.chk .it .ti{color:var(--rose);font-size:13px;}
+.svc{padding:22px 18px 10px;border-top:8px solid var(--soft);}.svc h4{font-size:14px;font-weight:700;margin-bottom:13px;letter-spacing:-.2px;}
+.svc .ln{display:flex;justify-content:space-between;font-size:13px;padding:12px 0;border-bottom:1px solid var(--line);}
+.rvs{padding:22px 18px 12px;border-top:8px solid var(--soft);}.rvs h4{font-size:14px;font-weight:700;margin-bottom:14px;letter-spacing:-.2px;}
+.rv{display:flex;gap:11px;margin-bottom:18px;}
+.rv .av{width:30px;height:30px;border-radius:50%;background:var(--rosebg);color:var(--plum);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:600;flex-shrink:0;}
+.rv .nm{font-size:12px;font-weight:600;}
+.rv .tx{font-size:11px;color:var(--ink2);margin-top:3px;line-height:1.5;}
+/* form */
+.fld{padding:16px 18px 0;}
+.fld label{font-size:13px;font-weight:600;display:block;margin-bottom:9px;}
+.fld .req{color:var(--rose);}
+.chips{display:flex;flex-wrap:wrap;gap:8px;}
+.chip2{font-size:13px;padding:8px 14px;border:1px solid var(--line);border-radius:22px;background:#fff;cursor:pointer;color:var(--sub);}
+.chip2.on{background:var(--plum);color:#fff;border-color:var(--plum);}
+.dts{display:flex;gap:8px;flex-wrap:wrap;}
+.dt{font-size:12px;padding:9px 12px;border:1px solid var(--line);border-radius:12px;background:#fff;cursor:pointer;text-align:center;}
+.dt.on{background:var(--rosebg);border-color:var(--rose);font-weight:600;color:var(--plum);}
+.up{border:1px dashed var(--rose);border-radius:12px;padding:18px;text-align:center;color:var(--sub);font-size:12px;cursor:pointer;}
+.up .ti{font-size:22px;display:block;margin-bottom:6px;color:var(--rose);}
+textarea{width:100%;font-family:inherit;font-size:13px;border:1px solid var(--line);border-radius:12px;padding:11px;resize:none;color:var(--ink);}
+.note{margin:16px 18px 0;background:var(--soft);border-radius:12px;padding:11px 13px;font-size:11px;line-height:1.6;}
+.note .ti{color:var(--rose);}
+.fsalon{margin:14px 18px 0;font-size:13px;color:var(--sub);}.fsalon b{color:var(--ink);}
+/* progress chat */
+.steps{display:flex;align-items:center;gap:5px;flex-wrap:wrap;padding:10px 16px;background:var(--soft);font-size:10px;color:var(--sub);}
+.steps .s.done{color:var(--rose);font-weight:600;}
+.steps .s.now{color:var(--plum);font-weight:700;background:#fff;padding:2px 8px;border-radius:20px;}
+.chat{padding:14px 16px;}
+.bme{max-width:82%;margin-left:auto;background:var(--plum);color:#fff;border-radius:14px 14px 3px 14px;padding:9px 12px;font-size:12px;line-height:1.5;}
+.bbot{max-width:82%;background:var(--soft);color:var(--ink);border-radius:14px 14px 14px 3px;padding:9px 12px;font-size:12px;line-height:1.5;}
+.sys{text-align:center;font-size:10px;color:var(--sub);margin:11px 0;}.sys .ti{font-size:12px;vertical-align:-2px;}
+.resp{max-width:90%;background:#fff;border:1px solid var(--line);border-radius:14px 14px 14px 3px;padding:11px 12px;}
+.resp p{font-size:12px;margin-bottom:8px;}.resp .it{font-size:11px;line-height:1.95;}.resp .it .ti{color:var(--rose);font-size:12px;}
+.resp .or{font-size:10px;color:var(--sub);margin-top:8px;cursor:pointer;}
+.cinput{display:flex;gap:8px;align-items:center;padding:10px 14px;}
+.cinput input{flex:1;height:38px;border:1px solid var(--line);border-radius:20px;padding:0 14px;font-family:inherit;font-size:13px;outline:none;}
+.cinput .snd{width:38px;height:38px;border-radius:50%;background:var(--plum);color:#fff;border:none;display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;}
+/* === messenger chat room === */
+.chatbg{background:var(--tint);padding:14px 14px 8px;}
+.dpill{display:block;width:fit-content;margin:2px auto 16px;background:rgba(110,74,80,.08);color:var(--plum);font-size:10px;font-weight:600;padding:4px 13px;border-radius:20px;}
+.mrow{display:flex;gap:7px;margin-bottom:13px;align-items:flex-start;}
+.mrow.me{flex-direction:row-reverse;}
+.mav{width:30px;height:30px;border-radius:50%;flex-shrink:0;display:flex;align-items:center;justify-content:center;overflow:hidden;}
+.mav .mono{font-size:12px;}
+.mcol{max-width:78%;display:flex;flex-direction:column;}
+.mrow.me .mcol{align-items:flex-end;}
+.nmtag{font-size:9.5px;color:var(--sub);margin:0 3px 3px;font-weight:600;}
+.bub{padding:9px 12px;font-size:12.5px;line-height:1.55;border-radius:15px;word-break:break-word;}
+.mrow.bot .bub{background:#fff;border:1px solid var(--line);border-top-left-radius:5px;color:var(--ink);}
+.mrow.me .bub{background:var(--rose);color:#fff;border-top-right-radius:5px;}
+.btime{font-size:9.5px;color:var(--sub);margin:4px 4px 0;}
+.psum{background:#fff;border-bottom:1px solid var(--line);}
+.psum .ph{display:flex;align-items:center;gap:8px;padding:11px 16px;cursor:pointer;font-size:12px;}
+.psum .ph .dot{width:7px;height:7px;border-radius:50%;background:var(--gold);box-shadow:0 0 0 3px rgba(227,168,87,.18);flex-shrink:0;}
+.psum .ph .lbl{font-weight:700;color:var(--plum);}
+.psum .ph .tg{margin-left:auto;color:var(--sub);font-size:11px;display:flex;align-items:center;gap:3px;}
+.psum .ph .tg .ti{transition:transform .2s;}
+.psum.open .ph .tg .ti{transform:rotate(180deg);}
+.psum .pbody{display:none;padding:2px 16px 13px;}
+.psum.open .pbody{display:block;}
+.psum .pbody .r{display:flex;justify-content:space-between;font-size:12px;padding:4px 0;}
+.psum .pbody .r .k{color:var(--sub);}
+.psteps{display:flex;align-items:center;gap:5px;margin-top:9px;padding-top:10px;border-top:1px solid var(--line);font-size:10px;color:var(--sub);}
+.psteps .s.done{color:var(--rose);font-weight:600;}
+.psteps .s.now{color:#fff;background:var(--plum);font-weight:700;padding:2px 8px;border-radius:20px;}
+.psteps .ti{font-size:11px;}
+.pbottom{background:#fff;border-top:1px solid var(--line);}
+.pact{padding:11px 14px 10px;border-bottom:1px solid var(--line);}
+.pact .msg{font-size:11px;color:var(--sub);text-align:center;margin-bottom:9px;}
+.pact .row{display:flex;gap:8px;}
+/* complete */
+.done{padding:30px 22px;text-align:center;}
+.dic{width:64px;height:64px;border-radius:50%;background:var(--plum);color:#fff;display:flex;align-items:center;justify-content:center;margin:10px auto 16px;box-shadow:0 12px 26px -8px rgba(110,74,80,.5);}
+.dic .ti{font-size:34px;}
+.done h2{font-size:20px;font-weight:700;}.done .p{font-size:13px;color:var(--sub);margin-top:8px;line-height:1.6;}
+.tkt{margin:22px 0;text-align:left;border:1px solid var(--line);border-radius:14px;overflow:hidden;}
+.tkt .h{background:var(--soft);padding:11px 14px;font-size:12px;font-weight:700;}
+.tkt .b{padding:14px;}.tkt .r{display:flex;justify-content:space-between;font-size:13px;padding:6px 0;}.tkt .r .k{color:var(--sub);}
+.tkt .ja{margin-top:10px;background:var(--soft);border-radius:8px;padding:10px;font-size:11px;line-height:1.6;}
+/* lists */
+.ptitle{font-size:22px;font-weight:700;padding:16px 18px 12px;}
+.seg{display:flex;gap:6px;padding:0 18px 12px;}
+.seg .s{flex:1;text-align:center;font-size:13px;padding:9px 0;border-radius:9px;cursor:pointer;color:var(--sub);background:var(--soft);}
+.seg .s.on{background:var(--plum);color:#fff;font-weight:600;}
+.lrow{display:flex;gap:12px;margin:0 18px 12px;background:#fff;border:1px solid var(--line);border-radius:14px;padding:11px;cursor:pointer;align-items:center;box-shadow:0 1px 2px rgba(90,60,66,.04);}
+.lrow .th{width:60px;height:60px;border-radius:10px;flex-shrink:0;display:flex;align-items:center;justify-content:center;}
+.lrow .th .ti{font-size:22px;opacity:.55;}
+.lrow .nm{font-size:14px;font-weight:600;}
+.lrow .sb{font-size:11px;color:var(--sub);margin-top:4px;}
+.lrow .mt{font-size:11px;color:var(--sub);margin-top:6px;display:flex;gap:6px;align-items:center;flex-wrap:wrap;}
+.schip{font-size:10px;font-weight:600;padding:2px 8px;border-radius:20px;background:var(--rosebg);color:var(--plum);}
+.schip.done{background:var(--soft);color:var(--sub);}
+.ministep{display:flex;align-items:center;gap:4px;font-size:10px;color:var(--rose);margin-top:8px;font-weight:600;}
+.ministep .d{width:13px;height:3px;border-radius:2px;background:var(--line);}.ministep .d.on{background:var(--rose);}
+.empty{text-align:center;color:var(--sub);font-size:12px;padding:48px 20px;}.empty .ti{font-size:30px;display:block;margin-bottom:10px;color:var(--line);}
+.cgrid{display:flex;gap:6px;margin-top:9px;}
+.qbtn{font-size:11px;font-weight:600;padding:6px 12px;border-radius:8px;border:1px solid var(--rose);color:var(--plum);background:#fff;cursor:pointer;}
+.qbtn.fill{background:var(--plum);color:#fff;border-color:var(--plum);}
+.cav{width:60px;height:60px;border-radius:50%;background:var(--plum);color:#fff;display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:700;font-family:Georgia,serif;flex-shrink:0;}
+.cr{text-align:right;flex-shrink:0;}.cr .tm{font-size:10px;color:var(--sub);}
+.unread{display:inline-block;margin-top:7px;min-width:18px;height:18px;line-height:18px;border-radius:9px;background:var(--rose);color:#fff;font-size:10px;font-weight:600;padding:0 5px;text-align:center;}
+.online{display:inline-block;width:7px;height:7px;border-radius:50%;background:#3B6D11;margin-left:4px;}
+.mlabel{font-size:11px;color:var(--sub);font-weight:600;padding:18px 18px 8px;}
+/* mypage */
+.prof{display:flex;align-items:center;gap:14px;padding:20px 18px;}
+.prof .av{width:54px;height:54px;border-radius:50%;background:var(--plum);color:#fff;display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:600;}
+.prof .nm{font-size:17px;font-weight:600;}.prof .ph{font-size:12px;color:var(--sub);margin-top:3px;}
+.stat{display:flex;margin:0 18px;background:#fff;border:1px solid var(--line);border-radius:14px;box-shadow:0 1px 2px rgba(90,60,66,.04);}
+.stat .s{flex:1;text-align:center;padding:14px 0;cursor:pointer;border-right:1px solid var(--line);}
+.stat .s:last-child{border-right:none;}
+.stat .n{font-size:18px;font-weight:700;}.stat .l{font-size:11px;color:var(--sub);margin-top:3px;}
+.promo{margin:14px 18px 4px;background:var(--plum);border-radius:14px;padding:14px 16px;display:flex;align-items:center;gap:12px;cursor:pointer;box-shadow:0 10px 24px -10px rgba(110,74,80,.5);}
+.promo>.ti{font-size:24px;color:#fff;flex-shrink:0;}
+.promo h5{font-size:13px;font-weight:600;color:#fff;}.promo p{font-size:11px;color:#fff;opacity:.82;margin-top:2px;}
+.menu .m{display:flex;align-items:center;gap:12px;padding:15px 18px;font-size:14px;cursor:pointer;border-top:1px solid var(--line);}
+.menu .m .ti{font-size:19px;color:var(--rose);width:22px;}.menu .m .chev{margin-left:auto;color:var(--sub);font-size:16px;}
+.ver{text-align:center;font-size:11px;color:var(--sub);padding:22px;}
+/* search */
+.fb{display:flex;flex-wrap:nowrap;gap:7px;padding:0 18px 12px;overflow-x:auto;}.fb::-webkit-scrollbar{height:0;}
+.fb .chip2{flex:0 0 auto;white-space:nowrap;}
+.rescount{font-size:11px;color:var(--sub);padding:0 18px 12px;}
+.stars{display:flex;gap:6px;font-size:30px;color:#E6DAD6;}.stars .st{cursor:pointer;}.stars .st.on{color:var(--gold);}
+.rvsalon{display:flex;gap:10px;align-items:center;padding:14px 18px;border-bottom:1px solid var(--line);}
+.rvlabel{font-size:13px;font-weight:600;padding:18px 18px 10px;}
+.toast{position:absolute;left:50%;bottom:92px;transform:translateX(-50%);background:var(--plum);color:#fff;font-size:12px;padding:9px 16px;border-radius:20px;opacity:0;transition:.25s;pointer-events:none;text-align:center;max-width:80%;}
+.toast.show{opacity:1;}
+/* === senior polish === */
+.mono{font-family:Georgia,'Times New Roman',serif;font-weight:700;color:rgba(110,74,80,.28);line-height:1;letter-spacing:.5px;}
+.scard .img .mono{font-size:42px;}
+.hero .mono{font-size:70px;}
+.lrow .th .mono,.rkitem .th .mono{font-size:20px;}
+.logo{font-style:normal;letter-spacing:-.3px;font-size:24px;display:inline-flex;align-items:center;gap:8px;}
+.logoic{width:30px;height:30px;border-radius:9px;background:var(--plum);color:#fff;display:inline-flex;align-items:center;justify-content:center;flex-shrink:0;}
+.logoic .ti{font-size:17px;}
+.logoimg{height:26px;width:auto;display:block;}
+.oblogoimg{display:block;height:34px;width:auto;margin:0 auto 20px;}
+.obherologo{display:block;height:32px;width:auto;margin:0 auto;}
+.ptitle,.dw h2,.sec h3,.done h2,.t{letter-spacing:-.5px;}
+.scard .nm,.lrow .nm,.rkitem .nm{letter-spacing:-.2px;}
+.scard .rt b,.dw .rrow b,.rkitem .rr b{font-variant-numeric:tabular-nums;}
+.cat .ic{background:var(--soft);box-shadow:inset 0 0 0 1px rgba(110,74,80,.04);}
+.cat .ic .ti{color:#8C6A70;font-size:22px;}
+.cat .l{color:var(--ink2);}
+.grid2{gap:14px;}
+.scard{border-color:#F2EDEB;box-shadow:0 1px 1px rgba(90,60,66,.03),0 8px 22px -14px rgba(90,60,66,.16);}
+.scard .bd{padding:11px 11px 13px;}
+.scard .img{height:108px;}
+.hero{height:202px;}
+.banner{border-radius:16px;}
+.lrow{border-color:#F2EDEB;}
+.lrow .th,.rkitem .th{display:flex;align-items:center;justify-content:center;}
+.tabs{padding:11px 0 16px;}
+.tabs .tab .ti{font-size:22px;}
+/* === fine details === */
+.lrow,.rkitem,.scard,.cat,.stat .s,.menu .m,.actrow .a{transition:transform .12s ease,background .15s ease;}
+.lrow:active,.rkitem:active,.scard:active,.cat:active,.stat .s:active,.actrow .a:active{transform:scale(.98);}
+.menu .m:active{background:var(--soft);}
+.empty .ti{opacity:.7;}
+.locw{font-size:13px;font-weight:600;display:flex;align-items:center;gap:2px;cursor:pointer;color:var(--ink);}
+.locw .ti{font-size:17px;color:var(--rose);}
+.inforow{display:flex;align-items:flex-start;gap:11px;font-size:13px;padding:13px 0;border-bottom:1px solid var(--line);color:var(--ink2);}
+.inforow .ti{font-size:17px;color:var(--rose);flex-shrink:0;margin-top:1px;}
+.inforow b{color:var(--ink);font-weight:600;}
+#detailBody .blk{padding:22px 18px 12px;border-top:8px solid var(--soft);}#detailBody .blk h4{font-size:14px;font-weight:700;margin-bottom:14px;letter-spacing:-.2px;}
+.map{height:118px;border-radius:12px;margin-top:12px;background:linear-gradient(135deg,#EAE6E1,#D9D2CA);display:flex;flex-direction:column;gap:7px;align-items:center;justify-content:center;cursor:pointer;}
+.maplab{font-size:11px;color:var(--plum);font-weight:600;background:rgba(255,255,255,.88);padding:4px 11px;border-radius:20px;}
+.map .ti{color:var(--rose);font-size:26px;}
+.ctawrap{padding:10px 16px 16px;}
+.ctawrap .fl{font-size:11px;color:var(--sub);text-align:center;margin-bottom:8px;}
+.ctawrap .fl b{color:var(--rose);}
+.steps{justify-content:center;}.steps .ti{color:#D8CFCB;}
+.actrow{display:flex;gap:10px;margin-top:18px;}
+.actrow .a{flex:1;display:flex;flex-direction:column;align-items:center;gap:6px;font-size:11px;color:var(--plum);cursor:pointer;padding:12px 6px;border:1px solid var(--line);border-radius:12px;background:#fff;}
+.actrow .a .ti{font-size:20px;color:var(--rose);}
+.toast{box-shadow:0 10px 24px -8px rgba(70,40,46,.5);font-weight:500;}
+.fsalon{margin:16px 18px 0;}
+.fcard{display:flex;align-items:center;gap:11px;background:var(--soft);border-radius:14px;padding:11px 13px;}
+.fcard .th{width:46px;height:46px;border-radius:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.fcard .th .mono{font-size:20px;}
+.fcard .nm{font-size:15px;font-weight:600;letter-spacing:-.2px;}
+.fcard .mt{font-size:11px;color:var(--sub);margin-top:3px;}
+.fld textarea{transition:border-color .15s;}
+.fld textarea:focus{outline:none;border-color:var(--rose);}
+.cinput input:focus{border-color:var(--rose);}
+/* === booking inquiry design === */
+.fsec{padding:20px 18px 0;}
+.flabel{font-size:14px;font-weight:700;margin-bottom:11px;letter-spacing:-.2px;}
+.flabel .req{color:var(--rose);}
+.flabel .fhint{font-size:11px;font-weight:400;color:var(--sub);margin-left:5px;}
+.flabel2{font-size:12px;font-weight:600;color:var(--sub);margin:16px 0 9px;}
+.fsub{font-size:12px;color:var(--sub);margin:13px 0 8px;}
+.dp:active{transform:scale(.95);}
+.tiles{display:flex;gap:8px;}
+.tile{width:62px;height:62px;border:1px dashed rgba(181,130,140,.7);border-radius:12px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;color:var(--sub);font-size:10px;cursor:pointer;background:#FCFAF9;transition:transform .12s;}
+.tile:active{transform:scale(.95);}
+.tile .ti{font-size:18px;color:var(--rose);}
+.estimate{margin:22px 18px 0;background:var(--soft);border-radius:14px;padding:15px 16px;}
+.estimate .et{font-size:12px;color:var(--sub);font-weight:600;margin-bottom:9px;}
+.estimate .erow{display:flex;justify-content:space-between;font-size:13px;padding:4px 0;}
+.estimate .esum{display:flex;justify-content:space-between;align-items:baseline;border-top:1px solid var(--line);margin-top:9px;padding-top:9px;}
+.estimate .ev{font-size:18px;font-weight:700;font-variant-numeric:tabular-nums;}
+.estimate .en{font-size:11px;color:var(--sub);margin-top:9px;line-height:1.5;}
+.tgrid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;}
+.tslot{text-align:center;padding:9px 0;border:1px solid var(--line);border-radius:10px;font-size:12px;cursor:pointer;background:#fff;font-variant-numeric:tabular-nums;transition:transform .12s,background .15s;color:var(--ink);}
+.tslot:active{transform:scale(.94);background:var(--rosebg);}
+.slotchips{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px;}
+.slotchip{display:flex;align-items:center;gap:7px;background:var(--rosebg);color:var(--plum);border-radius:20px;padding:7px 9px 7px 13px;font-size:12px;font-weight:600;font-variant-numeric:tabular-nums;}
+.slotchip .x{cursor:pointer;color:var(--rose);display:flex;}.slotchip .x .ti{font-size:14px;}
+.slothint{font-size:11px;color:var(--sub);margin-top:10px;}
+.optgroup{margin-top:24px;border-top:8px solid var(--soft);}
+.opthd{font-size:14px;font-weight:700;padding:16px 18px;letter-spacing:-.2px;display:flex;align-items:center;cursor:pointer;}
+.opthd .fhint{font-weight:400;color:var(--sub);font-size:11px;margin-left:5px;}
+.opthd .ti{margin-left:auto;color:var(--sub);font-size:18px;transition:transform .2s;}
+.optbody{display:none;}
+.optbody.open{display:block;}
+.snum{display:inline-flex;align-items:center;justify-content:center;width:20px;height:20px;border-radius:50%;background:var(--rose);color:#fff;font-size:11px;font-weight:700;margin-right:8px;vertical-align:1px;}
+.bsum{font-size:12px;color:var(--sub);text-align:center;margin-bottom:9px;}
+.bsum b{color:var(--ink);font-weight:600;}
+.bsum .ph{color:var(--sub);}
+.dzwrap{display:flex;gap:10px;overflow-x:auto;padding-bottom:4px;margin-top:4px;}
+.dzwrap::-webkit-scrollbar{height:0;}
+.dzcard{flex:0 0 auto;width:112px;border:1px solid var(--line);border-radius:14px;padding:13px 10px;text-align:center;cursor:pointer;background:#fff;transition:transform .12s;}
+.dzcard:active{transform:scale(.97);}
+.dzcard.on{border-color:var(--rose);box-shadow:inset 0 0 0 1px var(--rose);}
+.dzav{width:46px;height:46px;border-radius:50%;margin:0 auto 8px;display:flex;align-items:center;justify-content:center;font-family:Georgia,serif;font-weight:700;font-size:18px;color:rgba(110,74,80,.45);}
+.dzn{font-size:13px;font-weight:600;}
+.dzr{font-size:10px;color:var(--rose);margin-top:2px;font-weight:600;}
+.dzsp{font-size:10px;color:var(--sub);margin-top:3px;line-height:1.3;}
+.dzfee{font-size:10px;color:var(--sub);margin-top:6px;}
+.dzcard.any{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:120px;}
+.dzcard.any .ti{font-size:24px;color:var(--rose);margin-bottom:8px;}
+.tslot.off{color:#CFC6C2;background:var(--tint);border-color:#F2EDEB;cursor:default;text-decoration:line-through;}
+.dzhead{display:flex;gap:14px;align-items:center;padding:20px 18px 4px;}
+.dzbig{width:66px;height:66px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:Georgia,serif;font-weight:700;font-size:27px;color:rgba(110,74,80,.42);flex-shrink:0;}
+.dzhead h2{font-size:20px;font-weight:700;}
+.dzhead .dzmeta{font-size:12px;color:var(--rose);font-weight:600;margin-top:5px;}
+.dzhead .dzmeta2{font-size:12px;color:var(--sub);margin-top:4px;}
+.pf{padding:8px 18px 0;}
+.pf h4{font-size:15px;font-weight:700;margin:14px 0 12px;}
+.pfgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;}
+.pft{aspect-ratio:1;border-radius:10px;display:flex;align-items:flex-end;}
+.pft .lab{font-size:10px;color:#fff;background:rgba(60,40,44,.4);padding:3px 7px;border-radius:6px;margin:7px;font-weight:600;}
+.pft{cursor:pointer;}
+/* === user details === */
+.cancelbtn{font-size:11px;color:var(--sub);cursor:pointer;text-decoration:underline;margin-left:2px;}
+.popkw{padding:4px 18px 14px;}
+.popkw .h{font-size:14px;font-weight:700;margin-bottom:12px;letter-spacing:-.2px;}
+.popkw .ks{display:flex;flex-wrap:wrap;gap:8px;}
+.popkw .k{font-size:13px;padding:8px 14px;border:1px solid var(--line);border-radius:20px;cursor:pointer;background:#fff;color:var(--ink);}
+.popkw .k .ti{font-size:12px;color:var(--rose);margin-right:3px;}
+.infocard{margin:18px;background:var(--soft);border-radius:14px;padding:14px 16px;}
+.infocard .ir{display:flex;gap:10px;align-items:flex-start;font-size:12px;color:var(--ink2);padding:5px 0;line-height:1.5;}
+.infocard .ir .ti{font-size:16px;color:var(--rose);flex-shrink:0;margin-top:1px;}
+.tipcard{margin-top:14px;background:#FBF0F2;border:1px solid #F3DDE2;border-radius:12px;padding:13px 14px;display:flex;gap:10px;}
+.tipcard>.ti{font-size:18px;color:var(--rose);flex-shrink:0;}
+.tipcard p{font-size:12px;color:var(--plum);line-height:1.55;}
+.origja{display:none;margin-top:8px;background:var(--soft);border-radius:8px;padding:9px 11px;font-size:11px;color:var(--ink2);line-height:1.5;}
+.origja.show{display:block;}
+.lightbox{position:absolute;inset:0;background:rgba(40,30,33,.82);display:none;flex-direction:column;align-items:center;justify-content:center;z-index:50;}
+.lightbox.show{display:flex;}
+.lightbox .big{width:74%;aspect-ratio:1;border-radius:16px;display:flex;align-items:flex-end;}
+.lightbox .big .lab{font-size:13px;color:#fff;background:rgba(60,40,44,.5);padding:5px 11px;border-radius:8px;margin:12px;font-weight:600;}
+.lightbox .cls{position:absolute;top:18px;right:18px;width:36px;height:36px;border-radius:50%;background:rgba(255,255,255,.92);display:flex;align-items:center;justify-content:center;cursor:pointer;}
+.lightbox .cls .ti{font-size:20px;color:var(--ink);}
+.lightbox .cap{color:#fff;font-size:12px;margin-top:14px;opacity:.8;}
+.cal{margin-top:4px;border:1px solid var(--line);border-radius:14px;padding:12px 12px 14px;}
+.calhd{display:flex;align-items:center;justify-content:space-between;padding:0 2px 12px;}
+.calhd .calt{font-size:14px;font-weight:700;letter-spacing:-.2px;}
+.calhd .cnav{width:30px;height:30px;display:flex;align-items:center;justify-content:center;border-radius:50%;cursor:pointer;color:var(--plum);}
+.calhd .cnav:active{background:var(--soft);}
+.calw{display:grid;grid-template-columns:repeat(7,1fr);text-align:center;font-size:11px;color:var(--sub);padding-bottom:6px;}
+.calw .sun{color:var(--sun);}.calw .sat{color:var(--sat);}
+.calg{display:grid;grid-template-columns:repeat(7,1fr);gap:2px;}
+.cd{height:36px;display:flex;align-items:center;justify-content:center;font-size:13px;border-radius:9px;cursor:pointer;font-variant-numeric:tabular-nums;}
+.cd.empty{cursor:default;}
+.cd.sun{color:var(--sun);}.cd.sat{color:var(--sat);}
+.cd.off{color:#D8D0CC;cursor:default;text-decoration:line-through;}
+.cd.on{background:var(--rose)!important;color:#fff!important;font-weight:700;}
+.cd:not(.empty):not(.off):not(.on):active{background:var(--soft);}
+/* === more details === */
+.toggle{width:44px;height:26px;border-radius:14px;background:var(--line);position:relative;cursor:pointer;transition:.2s;flex-shrink:0;}
+.toggle.on{background:var(--rose);}
+.toggle::after{content:'';position:absolute;top:3px;left:3px;width:20px;height:20px;border-radius:50%;background:#fff;transition:.2s;}
+.toggle.on::after{left:21px;}
+.setrow{display:flex;align-items:center;gap:12px;padding:16px 18px;border-bottom:1px solid var(--line);font-size:14px;}
+.setrow .sd{font-size:11px;color:var(--sub);margin-top:3px;}
+.sortrow{display:flex;gap:7px;padding:0 18px 12px;}
+.sortrow .so{font-size:12px;padding:6px 13px;border-radius:20px;border:1px solid var(--line);cursor:pointer;color:var(--sub);background:#fff;}
+.sortrow .so.on{background:var(--ink);color:#fff;border-color:var(--ink);}
+.noti{display:flex;gap:12px;padding:15px 18px;border-bottom:1px solid var(--line);cursor:pointer;}
+.noti .nic{width:38px;height:38px;border-radius:10px;background:var(--rosebg);color:var(--rose);display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.noti .nic .ti{font-size:19px;}
+.noti .ntx{font-size:13px;line-height:1.45;}
+.noti .ntm{font-size:11px;color:var(--sub);margin-top:4px;}
+.noti.unread{background:#FCF7F8;}
+.recent{display:flex;gap:12px;overflow-x:auto;padding:0 18px 18px;}
+.recent::-webkit-scrollbar{height:0;}
+.rc{flex:0 0 auto;width:84px;cursor:pointer;}
+.rc .rim{width:84px;height:84px;border-radius:14px;display:flex;align-items:center;justify-content:center;}
+.rc .rim .mono{font-size:30px;}
+.rc .rn{font-size:11px;font-weight:600;margin-top:6px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.mrv{margin:0 18px 12px;background:#fff;border:1px solid var(--line);border-radius:14px;padding:13px 14px;}
+.mrv .top{display:flex;align-items:center;gap:8px;}
+.mrv .nm{font-size:14px;font-weight:600;}
+.mrv .del{margin-left:auto;color:var(--sub);font-size:12px;cursor:pointer;}
+.mrv .tx{font-size:12px;color:var(--ink2);margin-top:7px;line-height:1.5;}
+.hero .share{right:54px;}
+.pfopen{color:var(--rose);text-decoration:underline;cursor:pointer;}
+/* === hi-q chat/list/mypage === */
+.bsummary{margin:14px 16px 2px;background:var(--soft);border-radius:14px;padding:12px 14px;}
+.bsrow{display:flex;justify-content:space-between;font-size:12px;padding:4px 0;}
+.bsrow .k{color:var(--sub);}
+.datesep{text-align:center;font-size:11px;color:var(--sub);margin:16px 0 8px;position:relative;}
+.datesep span{background:#fff;padding:0 10px;position:relative;z-index:1;}
+.datesep:before{content:'';position:absolute;left:16px;right:16px;top:50%;height:1px;background:var(--line);}
+.mt-me{font-size:10px;color:var(--sub);text-align:right;margin:3px 2px 14px;}
+.mt-bot{font-size:10px;color:var(--sub);margin:3px 0 14px 38px;}
+.brow{display:flex;gap:8px;align-items:flex-start;}
+.bavatar{width:30px;height:30px;border-radius:50%;flex-shrink:0;display:flex;align-items:center;justify-content:center;}
+.bavatar .mono{font-size:13px;}
+.sys2{text-align:center;font-size:11px;color:var(--sub);background:var(--soft);border-radius:10px;padding:10px 12px;margin:8px 14px 4px;line-height:1.5;}
+.chatrow{display:flex;gap:12px;padding:13px 18px;cursor:pointer;align-items:center;border-bottom:1px solid var(--line);}
+.chatrow:active{background:var(--soft);}
+.chatrow .av{width:50px;height:50px;border-radius:50%;flex-shrink:0;display:flex;align-items:center;justify-content:center;position:relative;}
+.chatrow .av .mono{font-size:18px;}
+.chatrow .av .od{position:absolute;right:1px;bottom:1px;width:11px;height:11px;border-radius:50%;background:#3B6D11;border:2px solid #fff;}
+.chatrow .nm{font-size:14px;font-weight:600;display:flex;align-items:center;gap:6px;}
+.chatrow .last{font-size:12px;color:var(--sub);margin-top:4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:205px;}
+.chatrow .rt{text-align:right;flex-shrink:0;align-self:flex-start;margin-top:3px;}
+.chatrow .rt .tm{font-size:11px;color:var(--sub);}
+.chatrow .rt .un{display:inline-block;margin-top:8px;min-width:18px;height:18px;line-height:18px;border-radius:9px;background:var(--rose);color:#fff;font-size:10px;font-weight:600;padding:0 5px;}
+.cnt2{font-size:10px;opacity:.7;margin-left:2px;}
+.bkcard{margin:0 18px 12px;background:#fff;border:1px solid var(--line);border-radius:14px;overflow:hidden;box-shadow:0 1px 2px rgba(90,60,66,.04);}
+.bktop{display:flex;gap:12px;padding:13px 14px;cursor:pointer;align-items:flex-start;}
+.bktop .th{width:56px;height:56px;border-radius:10px;flex-shrink:0;display:flex;align-items:center;justify-content:center;}
+.bktop .th .mono{font-size:20px;}
+.bktop .nm{font-size:14px;font-weight:600;}
+.bktop .info{font-size:12px;color:var(--sub);margin-top:5px;line-height:1.5;}
+.bkstep{display:flex;align-items:center;gap:5px;font-size:10px;color:var(--rose);font-weight:600;padding:0 14px 12px;}
+.bkstep .d{width:14px;height:3px;border-radius:2px;background:var(--line);}.bkstep .d.on{background:var(--rose);}
+.bkact{display:flex;border-top:1px solid var(--line);}
+.bkact .a{flex:1;text-align:center;padding:11px;font-size:13px;font-weight:600;color:var(--plum);cursor:pointer;border-left:1px solid var(--line);}
+.bkact .a:first-child{border-left:none;}
+.bkact .a.muted{color:var(--sub);font-weight:400;}
+.profhd{display:flex;align-items:center;gap:14px;padding:22px 18px 16px;}
+.profhd .av{width:56px;height:56px;border-radius:50%;background:var(--plum);color:#fff;display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:600;flex-shrink:0;}
+.profhd .nm{font-size:18px;font-weight:700;display:flex;align-items:center;gap:7px;letter-spacing:-.3px;}
+.profhd .lv{font-size:10px;font-weight:600;background:var(--rosebg);color:var(--rose);padding:2px 8px;border-radius:20px;}
+.profhd .ph{font-size:12px;color:var(--sub);margin-top:4px;}
+.profhd .edit{margin-left:auto;color:var(--sub);font-size:20px;cursor:pointer;}
+.upcard{margin:14px 18px 0;background:#fff;border:1px solid var(--line);border-radius:14px;padding:13px 14px;display:flex;gap:12px;align-items:center;cursor:pointer;box-shadow:0 1px 2px rgba(90,60,66,.04);}
+.upcard .uic{width:42px;height:42px;border-radius:10px;background:var(--rosebg);color:var(--rose);display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.upcard .uic .ti{font-size:20px;}
+.upcard .t1{font-size:13px;font-weight:600;}
+.upcard .t2{font-size:11px;color:var(--sub);margin-top:3px;}
+/* === mypage glanceable === */
+.mybg{background:var(--tint);}
+.profcard{margin:14px 18px 0;background:#fff;border:1px solid var(--line);border-radius:16px;padding:16px;box-shadow:0 1px 2px rgba(90,60,66,.04);}
+.profcard .prow{display:flex;align-items:flex-start;gap:14px;}
+.pav{width:54px;height:54px;border-radius:50%;background:var(--plum);color:#fff;display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:600;flex-shrink:0;}
+.pnm{font-size:17px;font-weight:700;display:flex;align-items:center;gap:7px;letter-spacing:-.3px;}
+.psub{font-size:12px;color:var(--sub);margin-top:5px;}
+.pset{margin-left:auto;color:var(--sub);font-size:20px;cursor:pointer;}
+.pstat{display:flex;align-items:center;margin-top:15px;padding-top:14px;border-top:1px solid var(--line);}
+.pstat .ps{flex:1;text-align:center;cursor:pointer;}
+.pstat .ps .n{font-size:18px;font-weight:700;}
+.pstat .ps .l{font-size:11px;color:var(--sub);margin-top:3px;}
+.pstat .pdiv{width:1px;height:26px;background:var(--line);}
+.qgrid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin:14px 18px 0;}
+.qgrid .q{background:#fff;border:1px solid var(--line);border-radius:14px;padding:14px 4px;text-align:center;cursor:pointer;box-shadow:0 1px 2px rgba(90,60,66,.04);}
+.qgrid .q:active{background:var(--soft);}
+.qgrid .qic{width:38px;height:38px;border-radius:11px;background:var(--rosebg);color:var(--rose);display:flex;align-items:center;justify-content:center;margin:0 auto 7px;}
+.qgrid .qic .ti{font-size:19px;}
+.qgrid .q span{font-size:11px;color:var(--ink);font-weight:500;}
+.menu{background:#fff;border:1px solid var(--line);border-radius:14px;margin:0 18px;overflow:hidden;box-shadow:0 1px 2px rgba(90,60,66,.04);}
+.menu .m:first-child{border-top:none;}
+/* === detail facts + fast date strip === */
+.facts{display:flex;flex-wrap:wrap;gap:7px;margin:16px 0 6px;}
+.facts .f{font-size:11px;color:var(--plum);background:var(--soft);border-radius:8px;padding:6px 11px;display:inline-flex;align-items:center;gap:5px;line-height:1.25;}
+.facts .f .ti{font-size:12px;color:var(--rose);}
+.facts .f.key{background:var(--rosebg);color:var(--rose);font-weight:700;}
+.morerv{font-size:12px;color:var(--rose);font-weight:600;cursor:pointer;padding:10px 0 2px;}
+.dstrip{display:flex;gap:8px;overflow-x:auto;padding:2px 0 2px;}
+.dstrip::-webkit-scrollbar{height:0;}
+.dp{flex:0 0 auto;width:46px;padding:9px 0;border:1px solid var(--line);border-radius:12px;text-align:center;cursor:pointer;background:#fff;transition:transform .12s;}
+.dp .dpw{display:block;font-size:10px;color:var(--sub);margin-bottom:3px;}
+.dp .dpd{display:block;font-size:15px;font-weight:600;font-variant-numeric:tabular-nums;color:var(--ink);}
+.dp.on{background:var(--rose);border-color:var(--rose);}
+.dp.on .dpw,.dp.on .dpd{color:#fff;}
+.dp.off{opacity:.4;text-decoration:line-through;cursor:default;}
+.dp.sun .dpw{color:var(--sun);}.dp.sat .dpw{color:var(--sat);}
+.caltoggle{display:flex;align-items:center;gap:5px;justify-content:center;font-size:11px;color:var(--sub);margin-top:10px;cursor:pointer;}
+.caltoggle .ti{font-size:13px;}
+.caltoggle #caltglchev{transition:transform .2s;}
+.tile.added{background:var(--rosebg);border-color:var(--rose)!important;color:var(--rose);font-weight:600;}
+.tile.added .ti{color:var(--rose);}
+.bellw{position:relative;display:inline-flex;cursor:pointer;}
+.ndot{position:absolute;top:-2px;right:-2px;width:8px;height:8px;border-radius:50%;background:#E0524F;border:1.5px solid #fff;display:none;}
+.rvtags{display:flex;flex-wrap:wrap;gap:5px;margin-top:7px;}
+.rvtags span{font-size:10px;color:var(--rose);background:var(--rosebg);border-radius:6px;padding:2px 7px;}
+/* === booking complete (ticket) === */
+.cmplbg{background:var(--tint);}
+.cmpl{padding:20px 18px 26px;}
+.cmhd{display:flex;align-items:center;gap:13px;margin-bottom:18px;}
+.cmcheck{width:46px;height:46px;border-radius:50%;background:var(--plum);color:#fff;display:flex;align-items:center;justify-content:center;flex-shrink:0;box-shadow:0 8px 18px -6px rgba(110,74,80,.5);}
+.cmcheck .ti{font-size:24px;}
+.cmt{font-size:18px;font-weight:700;letter-spacing:-.3px;}
+.cmsub{font-size:12px;color:var(--sub);margin-top:3px;}
+.ticket{background:#fff;border:1px solid var(--line);border-radius:16px;overflow:hidden;box-shadow:0 8px 22px -12px rgba(90,60,66,.22);}
+.tkhd{display:flex;align-items:center;gap:6px;padding:12px 16px;font-size:12px;font-weight:700;color:var(--plum);border-bottom:1px solid var(--line);}
+.tkhd .ti{color:var(--rose);font-size:15px;}
+.tkhd .conf{margin-left:auto;font-size:10px;background:var(--rosebg);color:var(--rose);padding:2px 9px;border-radius:20px;}
+.tkhero{padding:17px 16px;text-align:center;}
+.tkhero .tklab{font-size:11px;color:var(--sub);}
+.tkhero .tkdt{font-size:22px;font-weight:700;letter-spacing:-.4px;margin-top:5px;}
+.tkhero .tksalon{font-size:13px;color:var(--ink);margin-top:7px;}
+.tkperf{height:0;border-top:1.5px dashed var(--line);margin:0 16px;}
+.tkgrid{display:flex;padding:15px 16px;}
+.tkgrid .g{flex:1;}
+.tkgrid .g+.g{border-left:1px solid var(--line);padding-left:16px;}
+.tkgrid .g .k{display:block;font-size:11px;color:var(--sub);margin-bottom:5px;}
+.tkgrid .g .v{font-size:14px;font-weight:600;}
+.tkja{margin:0 16px 16px;background:var(--soft);border-radius:11px;padding:12px 13px;}
+.tkja .jalab{font-size:10px;color:var(--rose);font-weight:700;display:flex;align-items:center;gap:4px;margin-bottom:6px;}
+.tkja .jatxt{font-size:12px;line-height:1.65;color:var(--ink);}
+.cmact{display:flex;gap:8px;margin-top:16px;}
+.cmact .a{flex:1;border:1px solid var(--line);border-radius:12px;padding:12px 0;text-align:center;font-size:12px;cursor:pointer;background:#fff;display:flex;flex-direction:column;align-items:center;gap:5px;}
+.cmact .a .ti{font-size:19px;color:var(--rose);}
+.cmtips{display:flex;justify-content:center;gap:7px;flex-wrap:wrap;margin-top:16px;}
+.cmtips span{font-size:10px;color:var(--sub);background:var(--soft);border-radius:7px;padding:5px 10px;}
+.cmtips span .ti{font-size:11px;vertical-align:-1px;margin-right:2px;}
+/* === home magazine / columns === */
+.cols{display:flex;gap:12px;overflow-x:auto;padding:4px 18px 4px;}
+.cols::-webkit-scrollbar{height:0;}
+.colcard{flex:0 0 auto;width:198px;cursor:pointer;}
+.colimg{height:114px;border-radius:14px;position:relative;display:flex;align-items:flex-end;padding:10px;overflow:hidden;}
+.colimg .ti{position:absolute;right:-8px;top:-8px;font-size:62px;color:rgba(255,255,255,.24);}
+.colimg .colcat{position:relative;font-size:10px;font-weight:600;color:#fff;background:rgba(60,40,44,.32);padding:3px 9px;border-radius:20px;}
+.colttl{font-size:13px;font-weight:600;margin-top:9px;line-height:1.4;letter-spacing:-.2px;}
+.coldesc{font-size:11px;color:var(--sub);margin-top:4px;line-height:1.4;}
+.colhero{padding:26px 20px 22px;min-height:160px;display:flex;flex-direction:column;justify-content:flex-end;}
+.colhero .colcat{align-self:flex-start;font-size:11px;font-weight:600;color:#fff;background:rgba(60,40,44,.3);padding:3px 10px;border-radius:20px;margin-bottom:11px;}
+.colhero h2{font-size:20px;font-weight:700;color:var(--ink);line-height:1.35;letter-spacing:-.3px;}
+.colreader{padding:18px 20px 0;}
+.colreader p{font-size:13.5px;line-height:1.78;color:var(--ink2);margin-bottom:14px;}
+.colcta{margin-top:4px;display:flex;align-items:center;justify-content:center;gap:7px;background:var(--soft);color:var(--plum);font-weight:600;font-size:13px;border-radius:12px;padding:13px;cursor:pointer;}
+.colcta .ti{font-size:16px;}
+/* === bottom sheet === */
+.sheet-wrap{position:absolute;inset:0;background:rgba(40,30,33,.42);display:none;align-items:flex-end;z-index:60;}
+.sheet-wrap.show{display:flex;}
+.sheet{width:100%;background:#fff;border-radius:22px 22px 0 0;max-height:82%;overflow-y:auto;animation:shup .26s cubic-bezier(.2,.7,.3,1);}
+@keyframes shup{from{transform:translateY(100%)}to{transform:translateY(0)}}
+.shgrip{width:38px;height:4px;border-radius:2px;background:var(--line);margin:10px auto 2px;}
+.shhd{display:flex;align-items:center;font-size:15px;font-weight:700;padding:8px 18px 12px;letter-spacing:-.2px;}
+.shx{margin-left:auto;color:var(--sub);font-size:20px;cursor:pointer;}
+.shbody{padding:4px 18px 24px;}
+.shrow{display:flex;align-items:center;gap:12px;padding:14px 2px;cursor:pointer;border-top:1px solid var(--line);font-size:14px;}
+.shrow .ti{font-size:19px;color:var(--rose);width:22px;flex-shrink:0;}
+.shrow .chev{margin-left:auto;color:var(--sub);font-size:16px;width:auto;}
+.shrow .sd2{font-size:11px;color:var(--sub);margin-top:2px;}
+.shthumb{width:48px;height:48px;border-radius:9px;flex-shrink:0;}
+.shlab{font-size:12px;color:var(--sub);margin:14px 0 8px;}
+.shchips{display:flex;flex-wrap:wrap;gap:8px;}
+.shchips .c{font-size:13px;padding:9px 15px;border:1px solid var(--line);border-radius:22px;cursor:pointer;background:#fff;}
+.shchips .c.on{background:var(--plum);color:#fff;border-color:var(--plum);}
+.shp{font-size:13px;line-height:1.7;color:var(--ink2);margin-bottom:12px;}
+.shp b{color:var(--ink);}
+.shinput{width:100%;height:46px;border:1px solid var(--line);border-radius:12px;padding:0 15px;font-family:inherit;font-size:14px;outline:none;background:var(--soft);color:var(--ink);}
+.shinput::placeholder{color:var(--sub);}
+.shinput:focus{border-color:var(--rose);background:#fff;}
+.btn:active{transform:scale(.99);filter:brightness(.98);}
+.body{-webkit-overflow-scrolling:touch;}
+/* === onboarding === */
+.obbody{display:flex;flex-direction:column;padding:0;}
+.obhero{background:linear-gradient(155deg,#F5EBE8 10%,#E3C9CC);padding:56px 26px 40px;}
+.oblogo{font-family:Georgia,'Times New Roman',serif;font-style:italic;font-weight:700;font-size:34px;color:var(--plum);letter-spacing:.5px;}
+.obtag{font-size:21px;font-weight:700;line-height:1.42;margin-top:16px;letter-spacing:-.4px;color:var(--ink);}
+.obvals{padding:28px 26px 10px;display:flex;flex-direction:column;gap:20px;}
+.obv{display:flex;gap:13px;align-items:center;}
+.obvi{width:44px;height:44px;border-radius:13px;background:var(--rosebg);color:var(--rose);display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.obvi .ti{font-size:22px;}
+.obv b{font-size:14px;font-weight:600;display:block;letter-spacing:-.2px;}
+.obv span{font-size:12px;color:var(--sub);}
+.obform{margin-top:auto;padding:16px 26px 30px;}
+.obfine{font-size:10px;color:var(--sub);text-align:center;margin-top:13px;line-height:1.5;}
+/* === onboarding stepper === */
+.obbody2{flex:1 1 auto;display:flex;flex-direction:column;overflow-y:auto;}
+.obhead{height:46px;flex:0 0 auto;display:flex;align-items:center;justify-content:flex-end;padding:0 18px;}
+.obskip{font-size:13px;color:var(--sub);cursor:pointer;}
+.obstage{flex:1;display:flex;flex-direction:column;justify-content:center;padding:6px 26px 0;animation:in .26s ease;}
+.obvis{margin-bottom:26px;}
+.obtitle{font-size:25px;font-weight:700;line-height:1.34;letter-spacing:-.6px;color:var(--ink);}
+.obdesc{font-size:14px;color:var(--sub);margin-top:12px;line-height:1.6;}
+.obfooter{flex:0 0 auto;padding:16px 26px 28px;}
+.obdots{display:flex;gap:6px;justify-content:center;margin-bottom:16px;}
+.obdots i{width:7px;height:7px;border-radius:50%;background:var(--line);transition:.25s;}
+.obdots i.on{background:var(--rose);width:20px;border-radius:4px;}
+.obhero2{background:linear-gradient(155deg,#F5EBE8,#EAD3D6);border-radius:20px;padding:36px 24px;text-align:center;}
+.obhero2 .lg{font-family:Georgia,'Times New Roman',serif;font-style:italic;font-weight:700;font-size:42px;color:var(--plum);letter-spacing:.5px;}
+.obhero2 .ch{display:flex;flex-wrap:wrap;justify-content:center;gap:6px;margin-top:18px;}
+.obhero2 .ch span{font-size:11px;background:rgba(255,255,255,.72);color:var(--plum);padding:4px 11px;border-radius:20px;}
+.obcard{background:#fff;border:1px solid var(--line);border-radius:16px;overflow:hidden;box-shadow:0 8px 22px -14px rgba(90,60,66,.2);}
+.obcard .im{height:98px;display:flex;align-items:center;justify-content:center;}
+.obcard .im .mono{font-size:38px;}
+.obcard .bd{padding:13px 15px 15px;}
+.obcard .nm{font-size:15px;font-weight:700;}
+.obcard .rt{font-size:12px;margin-top:4px;}
+.obcard .fc{display:flex;flex-wrap:wrap;gap:6px;margin-top:11px;}
+.obcard .fc span{font-size:10px;background:var(--soft);color:var(--plum);padding:4px 9px;border-radius:7px;display:inline-flex;gap:4px;align-items:center;}
+.obcard .fc span.key{background:var(--rosebg);color:var(--rose);font-weight:700;}
+.obcard .fc .ti{font-size:11px;color:var(--rose);}
+.obchat{background:var(--tint);border-radius:18px;padding:18px 16px;display:flex;flex-direction:column;gap:11px;}
+.obchat .me{align-self:flex-end;background:var(--rose);color:#fff;font-size:12.5px;line-height:1.5;padding:9px 13px;border-radius:14px 14px 4px 14px;max-width:82%;}
+.obchat .sysl{align-self:center;font-size:10px;color:var(--sub);}
+.obchat .botl{align-self:flex-start;background:#fff;border:1px solid var(--line);font-size:12.5px;line-height:1.5;padding:9px 13px;border-radius:14px 14px 14px 4px;max-width:84%;}
+.obchat .botl b{color:var(--plum);font-weight:700;}
+.obfin .h{font-size:24px;font-weight:700;letter-spacing:-.5px;}
+.obfin .s{font-size:13px;color:var(--sub);margin:8px 0 22px;line-height:1.55;}
+.obfld{font-size:12px;color:var(--sub);margin:16px 0 9px;}
+/* === open status + cancel === */
+.ost{position:absolute;top:8px;left:8px;font-size:10px;font-weight:600;padding:3px 8px;border-radius:20px;background:rgba(255,255,255,.92);box-shadow:0 1px 3px rgba(90,60,66,.12);}
+.ost.open{color:#3B6D11;}.ost.warn{color:#BA7515;}.ost.off{color:var(--sub);}
+.facts .f.ostf .dotx{width:6px;height:6px;border-radius:50%;display:inline-block;}
+.facts .f.ostf.open{background:#EAF3DE;color:#3B6D11;}.facts .f.ostf.open .dotx{background:#3B6D11;}
+.facts .f.ostf.warn{background:#FAEEDA;color:#BA7515;}.facts .f.ostf.warn .dotx{background:#BA7515;}
+.facts .f.ostf.off{background:var(--soft);color:var(--sub);}.facts .f.ostf.off .dotx{background:var(--sub);}
+.search .sinx{font-size:17px;}
+.popkw .h .recclr{margin-left:auto;font-size:11px;color:var(--sub);font-weight:400;cursor:pointer;}
+.popkw .k.rk{padding-right:9px;}
+.popkw .k .ti.ti-history{color:var(--sub);}
+.popkw .k .rx{font-size:11px;color:var(--sub);margin:0 0 0 6px;}
+.ntread{margin-left:auto;font-size:12px;color:var(--rose);font-weight:600;cursor:pointer;}
+.mrv .edit{color:var(--rose);}
+.edstars{display:flex;gap:6px;font-size:26px;color:#E6DAD6;}
+.edstars .est{cursor:pointer;}
+.edstars .est.on{color:var(--gold);}
+.oauth{width:100%;display:flex;align-items:center;justify-content:center;gap:8px;font-size:15px;font-weight:600;border:none;border-radius:14px;height:50px;cursor:pointer;font-family:inherit;letter-spacing:-.2px;transition:transform .12s;}
+.oauth:active{transform:scale(.985);}
+.oauth .ti{font-size:19px;}
+.oauth.kakao{background:#FEE500;color:#3C1E1E;}
+.oauth.apple{background:#111;color:#fff;}
+.oauth.email{background:#fff;border:1px solid var(--line);color:var(--ink);}
+.obauth{display:flex;flex-direction:column;gap:10px;margin-top:26px;}
+.obbadge{width:64px;height:64px;border-radius:18px;background:var(--plum);color:#fff;display:flex;align-items:center;justify-content:center;margin:0 auto 18px;box-shadow:0 12px 26px -10px rgba(110,74,80,.5);}
+.obbadge .ti{font-size:30px;}
+.obguest{text-align:center;font-size:13px;color:var(--sub);margin-top:18px;cursor:pointer;text-decoration:underline;text-underline-offset:3px;}
+/* === launch visual polish === */
+*{text-rendering:optimizeLegibility;}
+.tabs .tab{transition:color .2s ease;}
+.tabs .tab .ti{transition:transform .22s cubic-bezier(.34,1.56,.64,1);}
+.scard,.lrow,.bkcard,.chatrow,.upcard,.qgrid .q,.cmact .a,.colcard,.dzcard,.dp,.tslot{transition:transform .14s ease,box-shadow .22s ease,border-color .2s ease;}
+.btn-primary{box-shadow:0 10px 24px -10px rgba(110,74,80,.5);}
+.btn-primary:active{box-shadow:0 4px 12px -7px rgba(110,74,80,.5);}
+.rv .tx,.coldesc,.colreader p,.shp,.tkja .jatxt,.note,.facts .f{line-height:1.62;}
+.sheet{box-shadow:0 -10px 44px -14px rgba(70,40,46,.3);}
+.bottombar{box-shadow:0 -1px 0 rgba(110,74,80,.06);}
+.topbar{box-shadow:0 1px 0 rgba(110,74,80,.04);}
+.scard .img,.hero,.rc .rim,.colimg{background-blend-mode:multiply;}
+.rstimes{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;}
+.rstime{text-align:center;padding:9px 0;border:1px solid var(--line);border-radius:10px;font-size:12px;cursor:pointer;background:#fff;font-variant-numeric:tabular-nums;}
+.rstime.on{background:var(--rose);color:#fff;border-color:var(--rose);}
+</style>
+</head>
+<body>
+<div class="phone">
+  <div class="statusbar"><span id="clock">9:41</span><span style="display:flex;gap:6px"><i class="ti ti-signal-4g"></i><i class="ti ti-wifi"></i><i class="ti ti-battery-3"></i></span></div>
+  <div class="screens">
+
+    <section class="screen" id="onboard">
+      <div class="obbody2">
+        <div class="obhead"><span class="obskip" id="obskip" onclick="obGo(3)">건너뛰기</span></div>
+        <div class="obstage" id="obstage"></div>
+      </div>
+      <div class="obfooter" id="obfooter"></div>
+    </section>
+
+    <section class="screen" id="home">
+      <div class="body">
+        <div class="hdr"><img src="logo-trim.png" class="logoimg" alt="Beautia"><div class="hdr-ic" style="align-items:center"><span class="locw" onclick="regionSheet()"><i class="ti ti-map-pin"></i>도쿄</span><i class="ti ti-heart ico" onclick="go('favorites')"></i><span class="bellw" onclick="go('noti')"><i class="ti ti-bell ico"></i><span class="ndot" id="bellDot"></span></span></div></div>
+        <div class="search" onclick="go('search')"><i class="ti ti-search" style="font-size:18px"></i> 시술·지역·미용실 검색</div>
+        <div class="cats" id="cats"></div>
+        <div class="banner" onclick="go('concierge')"><div class="bi"><i class="ti ti-language"></i></div><div style="flex:1"><h4>한국어로 예약, 통역은 무료</h4><p>일본어 한마디 없이 예약 끝</p></div><i class="ti ti-chevron-right"></i></div>
+        <div class="banner" style="background:#fff;border:1px solid var(--line);margin-top:-6px" onclick="location.href='community.html'"><div class="bi" style="background:var(--rosebg)"><i class="ti ti-users" style="color:var(--rose)"></i></div><div style="flex:1"><h4 style="color:var(--ink)">한·일 뷰티 커뮤니티</h4><p style="color:var(--sub)">사장님·손님 정보·후기 나눠요</p></div><i class="ti ti-chevron-right" style="color:var(--sub)"></i></div>
+        <div class="sec"><h3>신오쿠보 인기</h3><span class="more" onclick="go('search')">더보기 ›</span></div>
+        <div class="grid2" id="popular"></div>
+        <div id="recentSec"></div>
+        <div class="gap"></div>
+        <div class="rank"><div class="sec" style="padding-left:0;padding-right:0"><h3>한국인 후기 많은 곳</h3></div><div class="secsub" style="padding-left:0;margin-top:-6px">최근 3개월 후기 기준</div><div id="rank"></div></div>
+        <div id="columnSec"></div>
+      </div>
+      <div class="bottombar" id="navHome"></div>
+    </section>
+
+    <section class="screen" id="column"><div class="topbar"><i class="ti ti-chevron-left ico" style="font-size:18px" onclick="goBack('home')"></i><span class="t">매거진</span></div><div class="body" id="columnBody"></div></section>
+
+    <section class="screen" id="search">
+      <div class="body">
+        <div class="hdr" style="padding-bottom:6px"><span style="font-size:18px;font-weight:700">탐색</span></div>
+        <div class="search" style="margin-bottom:12px"><i class="ti ti-search" style="font-size:18px"></i><input id="sin" placeholder="시술·지역·미용실 검색" oninput="renderSearch()" onkeydown="if(event.key==='Enter'){saveSearch(this.value);this.blur();}"><i class="ti ti-x sinx" id="sinx" onclick="clearSearch()" style="display:none;cursor:pointer;color:var(--sub)"></i></div>
+        <div class="fb" id="fb">
+          <span class="chip2" onclick="tf(this)">한국어 OK</span>
+          <span class="chip2" onclick="tf(this)">검증</span>
+          <span class="chip2" onclick="tf(this)">다운펌</span>
+          <span class="chip2" onclick="tf(this)">매직</span>
+          <span class="chip2" onclick="tf(this)">1인샵</span>
+        </div>
+        <div class="popkw" id="popkw"></div>
+        <div class="rescount" id="rescount"></div>
+        <div class="sortrow" id="sortrow"><span class="so on" onclick="sortPick(this,'추천')">추천</span><span class="so" onclick="sortPick(this,'평점순')">평점순</span><span class="so" onclick="sortPick(this,'후기순')">후기순</span></div>
+        <div class="grid2" id="searchBody"></div>
+      </div>
+      <div class="bottombar" id="navSearch"></div>
+    </section>
+
+    <section class="screen" id="detail"><div class="body" id="detailBody"></div>
+      <div class="bottombar"><div class="ctawrap"><div class="fl" id="detailCta"><b>지명 없이</b> · 미용실이 배정해요</div><button class="btn btn-primary w100" style="padding:13px" onclick="go('form')">예약하기</button></div></div></section>
+
+    <section class="screen" id="noti"><div class="topbar"><i class="ti ti-chevron-left ico" style="font-size:18px" onclick="goBack('home')"></i><span class="t">알림</span><span class="ntread" onclick="markNotiRead()">모두 읽음</span></div><div class="body" id="notiBody"></div></section>
+
+    <section class="screen" id="myreviews"><div class="topbar"><i class="ti ti-chevron-left ico" style="font-size:18px" onclick="goBack('mypage')"></i><span class="t">내가 쓴 리뷰</span></div><div class="body" id="myrvBody"></div></section>
+
+    <section class="screen" id="settings"><div class="topbar"><i class="ti ti-chevron-left ico" style="font-size:18px" onclick="goBack('mypage')"></i><span class="t">알림 설정</span></div><div class="body">
+      <div class="setrow"><div><div>예약 알림</div><div class="sd">예약 진행·확정 알림</div></div><div class="toggle on" style="margin-left:auto" onclick="this.classList.toggle('on')"></div></div>
+      <div class="setrow"><div><div>채팅 알림</div><div class="sd">미용실 답변 도착 시</div></div><div class="toggle on" style="margin-left:auto" onclick="this.classList.toggle('on')"></div></div>
+      <div class="setrow"><div><div>마케팅 알림</div><div class="sd">이벤트·혜택 소식</div></div><div class="toggle" style="margin-left:auto" onclick="this.classList.toggle('on')"></div></div>
+      <div class="setrow" onclick="langSheet()"><div><div>언어 · 지역</div><div class="sd">한국어 · 도쿄</div></div><i class="ti ti-chevron-right" style="margin-left:auto;color:var(--sub)"></i></div>
+    </div></section>
+
+    <section class="screen" id="designer">
+      <div class="topbar"><i class="ti ti-chevron-left ico" style="font-size:18px" onclick="goBack('detail')"></i><span class="t" id="dzTitle"></span></div>
+      <div class="body" id="dzBody"></div>
+      <div class="bottombar"><div class="ctawrap"><div class="fl" id="dzFee"></div><button class="btn btn-primary w100" style="padding:13px" onclick="bookDz()">이 디자이너로 예약</button></div></div>
+    </section>
+
+    <section class="screen" id="form">
+      <div class="topbar"><i class="ti ti-chevron-left ico" style="font-size:18px" onclick="goBack('detail')"></i><span class="t">예약</span></div>
+      <div class="body">
+        <div class="fsalon" id="fsalon"></div>
+
+        <div class="fsec"><div class="flabel"><span class="snum">1</span>시술 <span class="req">*</span></div>
+          <div class="chips" id="svcChips">
+            <span class="chip2 on" onclick="selSvc(this)">다운펌</span><span class="chip2" onclick="selSvc(this)">커트</span><span class="chip2" onclick="selSvc(this)">염색</span><span class="chip2" onclick="selSvc(this)">매직</span><span class="chip2" onclick="selSvc(this)">클리닉</span><span class="chip2" onclick="selSvc(this)">남성컷</span>
+          </div></div>
+
+        <div class="fsec"><div class="flabel"><span class="snum">2</span>날짜·시간 <span class="req">*</span> <span class="fhint">골라서 추가 · 최대 3개</span></div>
+          <div class="flabel2" id="dateLabel">날짜</div>
+          <div class="dstrip" id="dstrip"></div>
+          <div class="caltoggle" onclick="toggleCal()"><i class="ti ti-calendar"></i><span id="caltgl">전체 달력에서 선택</span><i class="ti ti-chevron-down" id="caltglchev"></i></div>
+          <div class="cal" id="cal" style="display:none"></div>
+          <div class="flabel2" id="timeLabel">시간</div>
+          <div class="tgrid" id="tgrid"></div>
+          <div class="slotchips" id="slotList"></div>
+          <div class="slothint" id="slotHint"></div></div>
+
+        <div class="optgroup">
+          <div class="opthd" onclick="toggleOpt()">추가 정보 입력 <span class="fhint">선택 · 넣으면 더 정확해요</span><i class="ti ti-chevron-down" id="optchev"></i></div>
+          <div class="optbody" id="optbody">
+            <div class="fsec"><div class="flabel" style="font-size:13px">지금 머리 상태</div>
+              <div class="chips">
+                <span class="chip2" onclick="this.classList.toggle('on')">긴 머리</span><span class="chip2" onclick="this.classList.toggle('on')">단발</span><span class="chip2" onclick="this.classList.toggle('on')">숏</span><span class="chip2" onclick="this.classList.toggle('on')">탈색모</span><span class="chip2" onclick="this.classList.toggle('on')">펌 이력</span>
+              </div></div>
+            <div class="fsec"><div class="flabel" style="font-size:13px">사진 <span class="fhint">현재 머리·원하는 스타일</span></div>
+              <div class="tiles"><div class="tile" onclick="addPhoto(this)"><i class="ti ti-plus"></i>현재</div><div class="tile" onclick="addPhoto(this)"><i class="ti ti-plus"></i>현재</div><div class="tile" onclick="addPhoto(this)"><i class="ti ti-plus"></i>원하는</div></div></div>
+            <div class="fsec"><div class="flabel" style="font-size:13px">요청사항 <span class="fhint">한국어로 편하게</span></div>
+              <textarea rows="3" id="reqText">다운펌만 하고 기장은 유지하고 싶어요. 탈색모라 손상 최소화 부탁드려요.</textarea></div>
+          </div>
+        </div>
+
+        <div class="estimate" id="estimate"></div>
+
+        <div class="note"><i class="ti ti-language"></i> 한국어로 적으면 Beautia가 일본어로 통역해 미용실에 전달해요 · 보통 24~48시간 내 확정 · <b>무료</b></div>
+        <div style="height:14px"></div>
+      </div>
+      <div class="bottombar"><div class="ctawrap"><div class="bsum" id="bsum"></div><button class="btn btn-primary w100" style="padding:13px" onclick="submitBooking()">예약하기</button></div></div>
+    </section>
+
+    <section class="screen" id="progress">
+      <div class="topbar" id="progTop"></div>
+      <div class="psum" id="psum"></div>
+      <div class="body chatbg" id="progBody"></div>
+      <div class="pbottom"><div class="pact" id="pact"></div><div class="cinput"><input id="pInput" placeholder="메시지 입력 · 한국어로" onkeydown="if(event.key==='Enter')pSend()"><button class="snd" onclick="pSend()"><i class="ti ti-send"></i></button></div></div>
+    </section>
+
+    <section class="screen" id="complete"><div class="body cmplbg" id="completeBody"></div>
+      <div class="bottombar"><div class="pad"><button class="btn btn-primary w100" style="padding:13px" onclick="go('home')">홈으로</button></div></div></section>
+
+    <section class="screen" id="chats"><div class="body"><div class="ptitle">채팅</div><div id="chatsBody"></div></div><div class="bottombar" id="navChats"></div></section>
+
+    <section class="screen" id="mybookings"><div class="body"><div class="ptitle">내 예약</div>
+      <div class="seg"><div class="s on" onclick="selSeg('진행중',this)">진행중</div><div class="s" onclick="selSeg('완료',this)">완료</div><div class="s" onclick="selSeg('취소',this)">취소</div></div>
+      <div id="bookBody"></div></div><div class="bottombar" id="navBook"></div></section>
+
+    <section class="screen" id="favorites">
+      <div class="topbar"><i class="ti ti-chevron-left ico" style="font-size:18px" onclick="goBack('home')"></i><span class="t">찜한 미용실</span></div>
+      <div class="body"><div id="favBody"></div></div></section>
+
+    <section class="screen" id="mypage"><div class="body mybg">
+      <div class="profcard">
+        <div class="prow"><div class="pav" id="pav">게</div><div style="flex:1"><div class="pnm" id="pnm">게스트 <span class="lv">Beautia 회원</span></div><div class="psub">도쿄 거주</div></div><i class="ti ti-pencil pset" onclick="editProfileSheet()"></i></div>
+        <div class="pstat"><div class="ps" onclick="go('mybookings')"><div class="n" id="stBook">0</div><div class="l">예약</div></div><div class="pdiv"></div><div class="ps" onclick="go('myreviews')"><div class="n" id="stRev">0</div><div class="l">리뷰</div></div><div class="pdiv"></div><div class="ps" onclick="go('favorites')"><div class="n" id="stFav">0</div><div class="l">찜</div></div></div>
+      </div>
+      <div id="myUp"></div>
+      <div class="qgrid">
+        <div class="q" onclick="go('mybookings')"><div class="qic"><i class="ti ti-calendar-check"></i></div><span>예약 내역</span></div>
+        <div class="q" onclick="go('favorites')"><div class="qic"><i class="ti ti-heart"></i></div><span>찜</span></div>
+        <div class="q" onclick="go('myreviews')"><div class="qic"><i class="ti ti-star"></i></div><span>내 리뷰</span></div>
+        <div class="q" onclick="go('noti')"><div class="qic"><i class="ti ti-bell"></i></div><span>알림</span></div>
+      </div>
+      <div class="promo" onclick="go('concierge')"><i class="ti ti-message-language"></i><div><h5>한국어 예약 대행 — 무료</h5><p>일본어 없이, Beautia가 통역해드려요</p></div></div>
+      <div class="mlabel">설정 · 지원</div><div class="menu">
+        <div class="m" onclick="go('settings')"><i class="ti ti-bell"></i> 알림 설정 <i class="ti ti-chevron-right chev"></i></div>
+        <div class="m" onclick="langSheet()"><i class="ti ti-world"></i> 언어 · 지역 (한국어 · 도쿄) <i class="ti ti-chevron-right chev"></i></div>
+        <div class="m" onclick="supportSheet()"><i class="ti ti-message-circle"></i> 고객센터 (카톡) <i class="ti ti-chevron-right chev"></i></div>
+        <div class="m" onclick="termsSheet()"><i class="ti ti-file-text"></i> 약관 · 개인정보 <i class="ti ti-chevron-right chev"></i></div>
+        <div class="m" onclick="logout()"><i class="ti ti-logout"></i> 로그아웃 <i class="ti ti-chevron-right chev"></i></div></div>
+      <div class="ver">Beautia v1.0</div>
+    </div><div class="bottombar" id="navMy"></div></section>
+
+    <section class="screen" id="concierge">
+      <div class="topbar"><i class="ti ti-chevron-left ico" style="font-size:18px" onclick="go('chats')"></i><div class="cav" style="width:32px;height:32px"><i class="ti ti-scissors" style="font-size:15px"></i></div><div style="flex:1"><span class="t">Beautia 컨시어지</span><div class="muted" style="font-size:10px">보통 몇 분 내 답장</div></div></div>
+      <div class="body"><div class="chat" id="cChat">
+        <div class="bbot" style="margin-bottom:10px">안녕하세요, Beautia입니다. 일본 미용실 관련해서 한국어로 편하게 물어보세요.</div>
+        <div class="bme" style="margin-bottom:10px">신주쿠에서 남자 커트 잘하는 곳 있을까요?</div>
+        <div class="bbot" style="margin-bottom:10px">신주쿠라면 ARTISAN 추천드려요. 남성 커트 후기가 좋고 한국어도 됩니다. 예약 도와드릴까요?</div>
+        <div class="bme" style="margin-bottom:10px">네, 부탁드려요.</div>
+        <div class="bbot">원하시는 날짜만 주시면 미용실에 일본어로 전달하고, 확정되면 알려드릴게요.</div>
+      </div></div>
+      <div class="bottombar"><div class="cinput"><input id="cInput" placeholder="한국어로 물어보세요" onkeydown="if(event.key==='Enter')cSend()"><button class="snd" onclick="cSend()"><i class="ti ti-arrow-up"></i></button></div></div>
+    </section>
+
+    <section class="screen" id="review">
+      <div class="topbar"><i class="ti ti-chevron-left ico" style="font-size:18px" onclick="go('mybookings')"></i><span class="t">리뷰 작성</span></div>
+      <div class="body">
+        <div id="rvSalon"></div>
+        <div class="rvlabel">시술은 어떠셨나요?</div>
+        <div class="stars" style="padding:0 18px" id="stars"><span class="st on" onclick="setStars(1)">★</span><span class="st on" onclick="setStars(2)">★</span><span class="st on" onclick="setStars(3)">★</span><span class="st on" onclick="setStars(4)">★</span><span class="st on" onclick="setStars(5)">★</span></div>
+        <div class="rvlabel">좋았던 점</div>
+        <div class="chips" style="padding:0 18px"><span class="chip2 on" onclick="this.classList.toggle('on')">한국어 통했어요</span><span class="chip2" onclick="this.classList.toggle('on')">시술 잘됨</span><span class="chip2" onclick="this.classList.toggle('on')">친절해요</span><span class="chip2" onclick="this.classList.toggle('on')">가격 합리적</span></div>
+        <div class="fld"><label>사진 <span class="fhint" style="font-weight:400">선택</span></label><div class="tiles"><div class="tile" onclick="addPhoto(this)"><i class="ti ti-plus"></i>사진1</div><div class="tile" onclick="addPhoto(this)"><i class="ti ti-plus"></i>사진2</div><div class="tile" onclick="addPhoto(this)"><i class="ti ti-plus"></i>사진3</div></div></div>
+        <div class="fld"><label>한마디 (한국어로)</label><textarea rows="3" id="rvText" placeholder="한국어로 편하게 적어주세요"></textarea></div>
+        <div style="height:12px"></div>
+      </div>
+      <div class="bottombar"><div class="pad"><button class="btn btn-primary w100" style="padding:13px" onclick="submitReview()">등록하기</button></div></div>
+    </section>
+
+  </div>
+  <div class="toast" id="toast"></div>
+  <div class="lightbox" id="lightbox" onclick="closePf()"><div class="cls" onclick="closePf()"><i class="ti ti-x"></i></div><div class="big" id="lbbig"></div><div class="cap">실제 작업 사진이 들어갈 자리예요</div></div>
+  <div class="sheet-wrap" id="sheetWrap" onclick="closeSheet()"><div class="sheet" id="sheet" onclick="event.stopPropagation()"></div></div>
+</div>
+<script>
+const SALONS=[
+ {id:'artisan',name:'ARTISAN',area:'신오쿠보',walk:'도보 2분',price:'¥¥',rating:4.7,reviews:128,badge:'verified',kr:true,tags:['검증','한국어 OK'],tint:'#EBDFDB',tc:'#C3AEA8',checks:['한국어 응대 가능','다운펌·커트 잘함','뿌리염색·탈색 가능','가격 사전 고지'],svc:[['커트','¥4,500~'],['다운펌','¥8,800~'],['뿌리염색','¥6,000~']]},
+ {id:'lien',name:'Lien Tokyo',area:'시부야',walk:'도보 6분',price:'¥¥¥',rating:4.9,reviews:210,badge:'verified',kr:true,tags:['검증','매직'],tint:'#E7DEE6',tc:'#B8A6BC',checks:['한국어 응대 가능','매직·볼륨매직','염색 전문','가격 사전 고지'],svc:[['커트','¥5,500~'],['매직','¥12,000~'],['염색','¥7,000~']]},
+ {id:'nao',name:'atelier Nao',area:'긴자',walk:'도보 3분',price:'¥¥',rating:4.7,reviews:64,badge:'listed',kr:false,tags:['1인샵','뿌리염색'],tint:'#EEE7DC',tc:'#C9BBA0',checks:['사진 상담 가능','뿌리염색·탈색','조용한 1인샵'],svc:[['커트','¥4,000~'],['염색','¥6,000~']]},
+ {id:'hygge',name:'Hygge Hair',area:'나카메구로',walk:'도보 5분',price:'¥¥',rating:4.8,reviews:96,badge:'verified',kr:true,tags:['검증','1인샵'],tint:'#E3E0DA',tc:'#B2ADA3',checks:['한국어 응대 가능','1인샵·프라이빗'],svc:[['커트','¥5,000~'],['펌','¥9,000~']]},
+ {id:'mirror',name:'Mirror Tokyo',area:'이케부쿠로',walk:'도보 4분',price:'¥¥',rating:0,reviews:0,badge:'verified',kr:true,tags:['신규','염색'],tint:'#E9E2EC',tc:'#BBAEC2',checks:['한국어 응대 가능','염색 전문'],svc:[['염색','¥6,500~']]},
+ {id:'sora',name:'Sora hair',area:'신주쿠',walk:'도보 2분',price:'¥¥',rating:0,reviews:0,badge:'verified',kr:true,tags:['신규','남성컷'],tint:'#EAE4DC',tc:'#C0B6A6',checks:['한국어 응대 가능','남성컷 전문'],svc:[['커트','¥4,200~']]}
+];
+const BR={artisan:[{n:'지은',r:5,t:'한국말로 다 통해서 편했어요. 다운펌 자연스럽게 잘 나왔어요.'},{n:'민서',r:5,t:'사진 보여주니 바로 이해하고 원하는 대로 해주셨어요.'}],lien:[{n:'현우',r:5,t:'매직 깔끔하게 잘 됐어요. 또 갈 거예요.'}]};
+const DZ={artisan:[{n:'유키',r:'원장',sp:'다운펌·커트',fee:1100,rt:4.8,av:['10:00','11:00','14:00','15:00','18:00','19:00']},{n:'미나',r:'디자이너',sp:'염색·클리닉',fee:0,rt:4.7,av:['10:00','10:30','11:00','11:30','13:00','13:30','14:00','16:00','16:30','17:00']},{n:'소라',r:'디자이너',sp:'남성컷',fee:0,rt:4.6,av:['12:00','12:30','13:00','15:00','15:30','17:30','18:00','18:30']}],lien:[{n:'아오이',r:'원장',sp:'매직·볼륨',fee:1500,rt:4.9,av:['10:30','11:00','15:00','15:30','16:00','19:00']},{n:'레이',r:'디자이너',sp:'염색',fee:0,rt:4.8,av:['10:00','10:30','11:00','13:00','13:30','14:00','14:30','17:00','17:30','18:00']}],nao:[{n:'나오',r:'원장·1인샵',sp:'뿌리염색·커트',fee:0,rt:4.7,av:['11:00','13:00','15:00','17:00']}],hygge:[{n:'하루',r:'원장·1인샵',sp:'펌·커트',fee:0,rt:4.8,av:['10:00','12:00','14:00','16:00','18:00']}],mirror:[{n:'카논',r:'디자이너',sp:'염색',fee:0,rt:0,av:['10:00','10:30','11:00','13:00','14:00','15:00','16:00']}],sora:[{n:'타쿠',r:'원장',sp:'남성컷',fee:0,rt:0,av:['11:00','11:30','12:00','16:00','16:30','17:00','18:00']}]};
+const CLOSED={artisan:2,lien:3,nao:1,hygge:4,mirror:2,sora:3};
+const WDN=['일','월','화','수','목','금','토'];
+const COLUMNS=[
+ {cat:'예약 가이드',icon:'ti-calendar-check',title:'일본 미용실, 예약 전 알아둘 5가지',desc:'예약제·시술 시간·결제까지 미리 체크',tint:'#EBDFDB',tc:'#C3AEA8',body:['일본 미용실은 대부분 예약제예요. 워크인(예약 없이 방문)도 받지만, 원하는 디자이너와 시간을 잡으려면 미리 예약하는 게 좋아요.','시술 시간은 한국보다 여유 있게 잡혀요. 커트 약 60분, 펌·염색은 90~150분 정도라 일정을 넉넉히 비워두세요.','결제는 시술이 끝난 뒤 현장에서 현금 또는 카드로 해요. 선결제는 거의 없습니다.','표시 가격에 소비세(10%)가 포함인지 별도인지 확인하면 좋아요.','Beautia로 예약하면 한국어로 요청만 주셔도 일본어 통역과 예약을 무료로 대신해 드려요.']},
+ {cat:'시술 용어',icon:'ti-language',title:'다운펌·매직, 일본어로 뭐라고 할까?',desc:'한 장으로 보는 시술 용어집',tint:'#E7DEE6',tc:'#B8A6BC',body:['다운펌은 ストレートパーマ(스트레이트 파마), 강한 직모교정은 縮毛矯正(슈쿠모쿄세이, 매직)이라고 해요.','뿌리염색은 リタッチカラー(리터치 컬러), 전체 염색은 フルカラー예요.','클리닉·트리트먼트는 トリートメント, 두피 케어는 ヘッドスパ(헤드스파)라고 합니다.','용어가 헷갈려도 괜찮아요. Beautia가 한국어 요청을 정확한 일본어로 바꿔 미용실에 전달해요.']},
+ {cat:'지역 추천',icon:'ti-map-pin',title:'신주쿠 vs 시부야, 어디서 머리할까',desc:'동네별 분위기와 가격대 비교',tint:'#EEE7DC',tc:'#C9BBA0',body:['신주쿠·신오쿠보는 한국인이 많고 한국어가 통하는 곳이 가장 많아요. 가성비도 좋은 편이에요.','시부야·오모테산도는 트렌디한 디자이너 샵이 많지만 가격대는 높은 편입니다.','긴자·나카메구로는 조용한 1인샵·프라이빗 살롱이 많아 차분한 시술을 원할 때 좋아요.','어디가 맞을지 모르겠다면 컨시어지에게 편하게 물어보세요.']},
+ {cat:'결제 꿀팁',icon:'ti-coin',title:'일본은 팁이 없어요 — 결제 문화 정리',desc:'현장 결제·세금·예약 변경까지',tint:'#E3E0DA',tc:'#B2ADA3',body:['일본은 팁 문화가 없어요. 시술비 외에 따로 팁을 줄 필요가 없습니다.','대부분 시술 후 현장에서 결제하고, 현금과 카드 모두 받는 곳이 많아요.','예약 변경·취소는 가능한 한 빨리 알려주세요. 당일 취소는 미용실에 따라 제한이 있을 수 있어요.','Beautia 예약 시 예상 금액을 미리 안내해 드려서 당황할 일이 없어요.']}
+];
+const S=id=>SALONS.find(s=>s.id===id);
+function bg(s){return 'linear-gradient(140deg,'+s.tint+' 6%,'+s.tc+')';}
+function mono(s){return '<span class="mono">'+s.name[0].toUpperCase()+'</span>';}
+let state,cur,curBooking,seg='진행중',rvStars=5;
+function load(){try{state=JSON.parse(localStorage.getItem('beautia_gn'))}catch(e){}if(!state){state={user:null,fav:[],bookings:[],reviews:{},recent:[],searches:[]};save();}state.recent=state.recent||[];state.reviews=state.reviews||{};state.fav=state.fav||[];state.bookings=state.bookings||[];state.searches=state.searches||[];}
+function save(){localStorage.setItem('beautia_gn',JSON.stringify(state));}
+function startApp(){var n=document.getElementById('obName');var v=(n&&n.value||'').trim()||'게스트';state.user={name:v,since:Date.now()};save();go('home');toast(v+'님, 환영해요');}
+function oauthStart(p){var n=document.getElementById('obName');var v=(n&&n.value||'').trim();state.user={name:v||'회원',login:p,since:Date.now()};save();go('home');toast(p+'(으)로 시작했어요');}
+var obStep=0;
+function obGo(n){obStep=n;renderOnboard();}
+function obNext(){if(obStep<3)obGo(obStep+1);}
+function renderOnboard(){
+  var stage=document.getElementById('obstage'),foot=document.getElementById('obfooter'),skip=document.getElementById('obskip');if(!stage)return;
+  var s=S('artisan');skip.style.visibility=obStep<3?'visible':'hidden';
+  if(obStep===0){
+    stage.innerHTML='<div class="obvis"><div class="obhero2"><img src="logo-trim.png" class="obherologo" alt="Beautia"><div class="ch"><span>신주쿠</span><span>신오쿠보</span><span>시부야</span><span>긴자</span></div></div></div><div class="obtitle">일본에서 만나는<br>믿을 수 있는<br>한국어 미용실</div><div class="obdesc">Beautia가 검증한 곳만, 한국어로 편하게 예약하세요.</div>';
+  }else if(obStep===1){
+    stage.innerHTML='<div class="obvis"><div class="obcard"><div class="im" style="background:'+bg(s)+'">'+mono(s)+'</div><div class="bd"><div class="nm">ARTISAN</div><div class="rt"><i class="ti ti-star star" style="font-size:11px;vertical-align:-1px"></i> <b>4.7</b> <span class="muted">· 신오쿠보</span></div><div class="fc"><span class="key"><i class="ti ti-rosette-discount-check"></i> Beautia 검증</span><span><i class="ti ti-check"></i> 한국어 OK</span><span><i class="ti ti-check"></i> 다운펌</span></div></div></div></div><div class="obtitle">검증된 미용실만</div><div class="obdesc">한국어 응대·다운펌·탈색까지, 한국인 기준으로 직접 확인했어요.</div>';
+  }else if(obStep===2){
+    stage.innerHTML='<div class="obvis"><div class="obchat"><div class="me">다운펌 하고 싶어요.<br>6/28 가능할까요?</div><div class="sysl"><i class="ti ti-language" style="vertical-align:-2px"></i> Beautia가 일본어로 통역</div><div class="botl">「ダウンパーマ、6/28 14:00で<b>ご案内可能です</b>」</div></div></div><div class="obtitle">한국어로 신청,<br>통역은 무료</div><div class="obdesc">일본어 한마디 없이. Beautia가 미용실에 대신 전달하고 확정해드려요.</div>';
+  }else{
+    stage.innerHTML='<div class="obfin"><img src="logo-trim.png" class="oblogoimg" alt="Beautia"><div class="h" style="text-align:center">시작할 준비가 됐어요</div><div class="s" style="text-align:center">로그인하면 예약·채팅이 안전하게 저장돼요</div><div class="obauth"><button class="oauth kakao" onclick="oauthStart(\'카카오\')"><i class="ti ti-message-circle-2"></i> 카카오로 시작</button><button class="oauth apple" onclick="oauthStart(\'Apple\')"><i class="ti ti-brand-apple"></i> Apple로 계속</button><button class="oauth email" onclick="oauthStart(\'이메일\')"><i class="ti ti-mail"></i> 이메일로 계속</button></div><div class="obguest" onclick="startApp()">게스트로 둘러보기</div></div>';
+    var fi=document.getElementById('obName');if(fi)setTimeout(function(){fi.focus();},80);
+  }
+  var dots='<div class="obdots">'+[0,1,2,3].map(function(i){return '<i class="'+(i===obStep?'on':'')+'"></i>';}).join('')+'</div>';
+  foot.innerHTML=obStep<3?(dots+'<button class="btn btn-primary w100" style="padding:14px" onclick="obNext()">다음</button>'):('<div class="obfine">시작하면 이용약관과 개인정보 처리방침에 동의하게 됩니다</div>');
+}
+function logout(){if(state){state.user=null;save();}navStack=[];obStep=0;go('onboard');}
+function editProfileSheet(){openSheet('프로필 편집','<div class="shlab" style="margin-top:0">닉네임</div><input id="pfName" class="shinput" maxlength="12" value="'+((state.user&&state.user.name)||'')+'"><button class="btn btn-primary w100" style="margin-top:16px;padding:13px" onclick="saveProfile()">저장하기</button>');}
+function saveProfile(){var v=(document.getElementById('pfName').value||'').trim();if(!v)return toast('닉네임을 입력해주세요');if(!state.user)state.user={};state.user.name=v;save();closeSheet();renderMy();toast('프로필을 저장했어요');}
+function startClock(){function t(){var d=new Date();var el=document.getElementById('clock');if(el)el.textContent=d.getHours()+':'+(d.getMinutes()<10?'0':'')+d.getMinutes();}t();setInterval(t,30000);}
+var navStack=[];
+function go(id,isBack){var a=document.querySelector('.screen.active');var prevId=a?a.id:null;document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));document.getElementById(id).classList.add('active');
+  if(!isBack&&prevId&&prevId!==id){navStack.push(prevId);if(navStack.length>30)navStack.shift();}
+  const b=document.getElementById(id).querySelector('.body');if(b)b.scrollTop=0;
+  ({home:renderHome,search:renderSearch,detail:renderDetail,form:renderForm,progress:renderProgress,complete:renderComplete,chats:renderChats,mybookings:renderBookings,favorites:renderFav,mypage:renderMy,review:renderReview,designer:renderDesigner,noti:renderNoti,myreviews:renderMyReviews,column:renderColumn,onboard:renderOnboard}[id]||function(){})();
+  if(['home','search','mybookings','chats','mypage'].includes(id))renderNavs(id);
+  if(id==='progress'){var pb=document.getElementById('progBody');if(pb)pb.scrollTop=pb.scrollHeight;}}
+function goBack(fb){var p=navStack.pop();go(p||fb||'home',true);}
+let tt;function toast(m){const t=document.getElementById('toast');t.textContent=m;t.classList.add('show');clearTimeout(tt);tt=setTimeout(()=>t.classList.remove('show'),1500);}
+function addPhoto(el){if(el.classList.toggle('added')){el.dataset.o=el.innerHTML;el.innerHTML='<i class="ti ti-check"></i>추가됨';}else if(el.dataset.o!=null){el.innerHTML=el.dataset.o;}}
+function copyLink(){try{if(navigator.clipboard)navigator.clipboard.writeText('https://beautia.app/s/'+(cur||''));}catch(e){}toast('링크를 복사했어요');}
+function openSheet(title,html){var sh=document.getElementById('sheet');sh.innerHTML='<div class="shgrip"></div><div class="shhd">'+title+'<i class="ti ti-x shx" onclick="closeSheet()"></i></div><div class="shbody">'+html+'</div>';document.getElementById('sheetWrap').classList.add('show');sh.scrollTop=0;}
+function closeSheet(){document.getElementById('sheetWrap').classList.remove('show');}
+function openMaps(q){try{window.open('https://www.google.com/maps/search/'+encodeURIComponent(q),'_blank');}catch(e){}toast('지도 앱을 열어요');}
+function addCal(){var b=curBooking||state.bookings[0];if(!b)return;var s=S(b.sid);var t=b.dt||(b.dates&&b.dates[0])||'';var m=t.match(/(\d+)\/(\d+)[^\d]*?(\d{1,2}):(\d{2})/);var dt=m?new Date(2026,+m[1]-1,+m[2],+m[3],+m[4]):(function(){var m2=t.match(/(\d+)\/(\d+)/);return m2?new Date(2026,+m2[1]-1,+m2[2],10,0):new Date();})();var end=new Date(dt.getTime()+90*60000);function z(n){return(n<10?'0':'')+n;}function f(d){return d.getFullYear()+z(d.getMonth()+1)+z(d.getDate())+'T'+z(d.getHours())+z(d.getMinutes())+'00';}var ics='BEGIN:VCALENDAR\nVERSION:2.0\nBEGIN:VEVENT\nSUMMARY:'+s.name+' 예약 ('+b.svc.join('·')+')\nDTSTART:'+f(dt)+'\nDTEND:'+f(end)+'\nLOCATION:'+s.area+'\nDESCRIPTION:Beautia 예약 · '+(b.dz||'상관없음')+'\nEND:VEVENT\nEND:VCALENDAR';try{var blob=new Blob([ics],{type:'text/calendar'});var url=URL.createObjectURL(blob);var a=document.createElement('a');a.href=url;a.download='beautia-booking.ics';document.body.appendChild(a);a.click();a.remove();setTimeout(function(){URL.revokeObjectURL(url);},1000);}catch(e){}toast('캘린더 파일을 저장했어요');}
+function regionSheet(){openSheet('지역 선택','<div class="shp">현재 <b>도쿄</b>에서 운영 중이에요. 동네를 선택하면 바로 찾아드려요.</div><div class="shchips">'+['신주쿠','신오쿠보','시부야','긴자','나카메구로','이케부쿠로'].map(function(a){return '<span class="c" onclick="closeSheet();searchSvc(\''+a+'\')">'+a+'</span>';}).join('')+'</div>');}
+function langSheet(){openSheet('언어 · 지역','<div class="shlab" style="margin-top:0">앱 언어</div><div class="shchips"><span class="c on">한국어</span><span class="c" onclick="toast(\'日本語는 준비 중이에요\')">日本語</span></div><div class="shlab">이용 지역</div><div class="shchips"><span class="c on">도쿄</span><span class="c" onclick="toast(\'오사카는 준비 중이에요\')">오사카</span></div>');}
+function faqSheet(){openSheet('자주 묻는 질문','<div class="shp"><b>예약은 어떻게 하나요?</b><br>미용실을 고르고 시술·날짜를 선택해 예약하면, Beautia가 일본어로 통역해 미용실에 전달해요.</div><div class="shp"><b>비용이 드나요?</b><br>예약·통역 대행은 무료예요. 시술비만 현장에서 결제하면 됩니다.</div><div class="shp"><b>취소·변경은요?</b><br>내 예약에서 취소할 수 있고, 채팅에서 다른 날짜로 재조율을 요청할 수 있어요.</div>');}
+function supportSheet(){openSheet('고객센터','<div class="shrow" style="border-top:none" onclick="toast(\'카카오톡 채널로 연결돼요\')"><i class="ti ti-message-circle"></i><div><div>카카오톡 채널 상담</div><div class="sd2">평일 10:00~19:00</div></div><i class="ti ti-chevron-right chev"></i></div><div class="shrow" onclick="toast(\'help@beautia.app\')"><i class="ti ti-mail"></i><div><div>이메일 문의</div><div class="sd2">help@beautia.app</div></div><i class="ti ti-chevron-right chev"></i></div><div class="shrow" onclick="faqSheet()"><i class="ti ti-help-circle"></i><div><div>자주 묻는 질문</div><div class="sd2">예약·결제·취소 안내</div></div><i class="ti ti-chevron-right chev"></i></div>');}
+function termsSheet(){openSheet('약관 · 개인정보','<div class="shp"><b>서비스 이용약관</b><br>Beautia는 한국 이용자가 일본 미용실을 이용하도록 한국어 예약·통역을 대행합니다. 시술 계약은 미용실과 이용자 사이에 성립하며, Beautia는 예약 중개·통역을 지원합니다.</div><div class="shp"><b>개인정보 처리방침</b><br>예약에 필요한 최소한의 정보(연락처·시술 요청·사진)만 수집하며, 예약 전달 목적 외에는 사용하지 않습니다.</div><div class="shrow" onclick="toast(\'전문은 웹에서 제공돼요\')"><i class="ti ti-external-link"></i>전문 보기<i class="ti ti-chevron-right chev"></i></div>');}
+function magazineSheet(){openSheet('Beautia 매거진',COLUMNS.map(function(c,i){return '<div class="shrow"'+(i===0?' style="border-top:none"':'')+' onclick="closeSheet();openColumn('+i+')"><div class="shthumb" style="background:'+bg(c)+'"></div><div><div>'+c.title+'</div><div class="sd2">'+c.cat+' · '+c.desc+'</div></div><i class="ti ti-chevron-right chev"></i></div>';}).join(''));}
+function reviewsSheet(){var s=S(cur);var rv=(BR[s.id]||[]).concat(state.reviews[s.id]||[]);openSheet('후기 '+rc(s),'<div class="shp" style="margin-bottom:10px"><i class="ti ti-star" style="color:#E3A857"></i> <b>'+rt(s)+'</b> · 후기 '+rc(s)+'개</div>'+(rv.length?rv.map(function(r){return '<div class="rv"><div class="av">'+r.n[0]+'</div><div><div class="nm">'+r.n+' <span class="star" style="font-size:11px">'+'★'.repeat(r.r)+'</span></div><div class="tx">'+r.t+'</div>'+(r.tags&&r.tags.length?'<div class="rvtags">'+r.tags.map(function(t){return '<span>'+t+'</span>';}).join('')+'</div>':'')+'</div></div>';}).join(''):'<div class="muted" style="font-size:12px">아직 후기가 없어요.</div>'));}
+function rt(s){return s.rating>0?s.rating:'신규';}
+function rc(s){return (BR[s.id]||[]).length+((state.reviews[s.id]||[]).length)+ (s.reviews||0);}
+function favC(id){return state.fav.includes(id)?'var(--rose)':'#C9BEC0';}
+function toggleFav(id,e){if(e)e.stopPropagation();const i=state.fav.indexOf(id);i<0?state.fav.push(id):state.fav.splice(i,1);save();toast(i<0?'찜했어요':'찜을 해제했어요');const a=document.querySelector('.screen.active').id;({home:renderHome,favorites:renderFav,detail:renderDetail,search:renderSearch}[a]||function(){})();}
+function tagH(t){const c=t==='검증'?'v':(t.includes('한국어')?'k':'n');return `<span class="tag ${c}">${t}</span>`;}
+/* nav */
+function navHTML(a){const it=[['home','ti-home','홈'],['search','ti-search','탐색'],['mybookings','ti-calendar','내 예약'],['chats','ti-message-circle','채팅'],['mypage','ti-user','마이']];return '<div class="tabs">'+it.map(t=>`<div class="tab ${t[0]===a?'on':''}" onclick="go('${t[0]}')"><i class="ti ${t[1]}"></i>${t[2]}</div>`).join('')+'</div>';}
+function renderNavs(a){({home:'navHome',search:'navSearch',mybookings:'navBook',chats:'navChats',mypage:'navMy'}[a]&&(document.getElementById({home:'navHome',search:'navSearch',mybookings:'navBook',chats:'navChats',mypage:'navMy'}[a]).innerHTML=navHTML(a)));}
+/* card */
+function card(s){var st=openStatus(s.id);return `<div class="scard" onclick="openSalon('${s.id}')"><div class="img" style="background:${bg(s)}">${mono(s)}<span class="ost ${st.cls}">${st.s}</span><span class="heart" onclick="toggleFav('${s.id}',event)"><i class="ti ti-heart" style="color:${favC(s.id)}"></i></span></div><div class="bd"><div class="nm">${s.name}</div><div class="rt"><i class="ti ti-star star" style="font-size:12px;vertical-align:-1px"></i> <b>${rt(s)}</b> <span class="muted">${s.reviews>0?'리뷰 '+rc(s):'신규 입점'}</span></div><div class="ar">${s.area} · ${s.walk}</div><div class="tg">${s.tags.map(tagH).join('')}</div></div></div>`;}
+/* home */
+function renderHome(){
+  document.getElementById('cats').innerHTML=[['커트','ti-scissors','r','searchSvc(\'커트\')'],['펌','ti-ripple','r','searchSvc(\'펌\')'],['염색','ti-palette','r','searchSvc(\'염색\')'],['클리닉','ti-sparkles','r','searchSvc(\'클리닉\')'],['남성컷','ti-user','p','searchSvc(\'남성컷\')'],['스타일링','ti-wind','p','go(\'search\')'],['두피·클리닉','ti-massage','p','searchSvc(\'클리닉\')'],['더보기','ti-dots','p','go(\'search\')']].map(c=>`<div class="cat" onclick="${c[3]}"><div class="ic"><i class="ti ${c[1]}"></i></div><span class="l">${c[0]}</span></div>`).join('');
+  document.getElementById('popular').innerHTML=SALONS.filter(s=>!s.isnew).slice(0,4).map(card).join('');
+  var rec=(state.recent||[]).map(S).filter(Boolean);document.getElementById('recentSec').innerHTML=rec.length?('<div class="sec"><h3>최근 본 미용실</h3></div><div class="recent">'+rec.map(s=>'<div class="rc" onclick="openSalon(\''+s.id+'\')"><div class="rim" style="background:'+bg(s)+'">'+mono(s)+'</div><div class="rn">'+s.name+'</div></div>').join('')+'</div>'):'';
+  document.getElementById('rank').innerHTML=[S('lien'),S('artisan'),S('hygge')].map((s,i)=>`<div class="rkitem" onclick="openSalon('${s.id}')"><span class="no" ${i==2?'style="color:#C9BEC0"':''}>${i+1}</span><div class="th" style="background:${bg(s)}"></div><div style="flex:1"><div class="nm">${s.name}</div><div class="ds">${s.area} · ${s.tags.join(' · ')}</div></div><div class="rr"><i class="ti ti-star star" style="font-size:12px;vertical-align:-1px"></i> <b>${rt(s)}</b> <span class="muted">· ${rc(s)}</span></div></div>`).join('');
+  var bd=document.getElementById('bellDot');if(bd)bd.style.display=(state.bookings.some(b=>b.status==='진행')&&!state.notiRead)?'block':'none';
+  document.getElementById('columnSec').innerHTML='<div class="sec" style="margin-top:20px"><h3>Beautia 매거진</h3><span class="more" onclick="magazineSheet()">더보기 ›</span></div><div class="secsub" style="margin-top:-6px">일본 미용실, 이것만 알면 편해요</div><div class="cols">'+COLUMNS.map(function(c,i){return '<div class="colcard" onclick="openColumn('+i+')"><div class="colimg" style="background:'+bg(c)+'"><i class="ti '+c.icon+'"></i><span class="colcat">'+c.cat+'</span></div><div class="colttl">'+c.title+'</div><div class="coldesc">'+c.desc+'</div></div>';}).join('')+'</div>';
+}
+function openSalon(id){cur=id;window.curDz=-1;state.recent=(state.recent||[]).filter(x=>x!==id);state.recent.unshift(id);state.recent=state.recent.slice(0,8);save();go('detail');}
+function openColumn(i){window.curCol=i;go('column');}
+function renderColumn(){var c=COLUMNS[window.curCol||0];document.getElementById('columnBody').innerHTML='<div class="colhero" style="background:'+bg(c)+'"><span class="colcat">'+c.cat+'</span><h2>'+c.title+'</h2></div><div class="colreader">'+c.body.map(function(p){return '<p>'+p+'</p>';}).join('')+'<div class="colcta" onclick="go(\'search\')"><i class="ti ti-search"></i> 한국어 OK 미용실 둘러보기</div><div style="height:18px"></div></div>';}
+function pickDz(el,i){el.parentElement.querySelectorAll('.dzcard').forEach(c=>c.classList.remove('on'));el.classList.add('on');window.curDz=i;}
+function dzLabel(){var a=DZ[cur]||[];if(window.curDz==null||window.curDz<0||!a[window.curDz])return '상관없음';return a[window.curDz].n+' '+a[window.curDz].r;}
+function openDesigner(i){window.curDzView=i;go('designer');}
+function openPf(t,l){document.getElementById('lbbig').style.background=t;document.getElementById('lbbig').innerHTML='<span class="lab">'+l+'</span>';document.getElementById('lightbox').classList.add('show');}
+function closePf(){document.getElementById('lightbox').classList.remove('show');}
+function cSend(){var inp=document.getElementById('cInput');var v=(inp.value||'').trim();if(!v)return;var c=document.getElementById('cChat');c.insertAdjacentHTML('beforeend','<div class="bme" style="margin-bottom:10px">'+v+'</div>');inp.value='';var b=c.parentElement;b.scrollTop=b.scrollHeight;var reps=['원하시는 지역과 시술을 알려주시면 추천드릴게요.','네, 가능한 미용실 알아보고 일본어로 예약 전달해 드릴게요.','좋아요. 날짜만 정해주시면 제가 미용실에 문의할게요.'];var rep=reps[(window.cN=(window.cN||0)+1)%reps.length];setTimeout(function(){c.insertAdjacentHTML('beforeend','<div class="bbot">'+rep+'</div>');b.scrollTop=b.scrollHeight;},700);}
+function bookDz(){window.curDz=window.curDzView;go('form');}
+function pickDzSel(el,i){el.parentElement.querySelectorAll('.dzcard').forEach(c=>c.classList.remove('on'));el.classList.add('on');window.curDz=i;var dc=document.getElementById('detailCta');if(dc)dc.innerHTML=i>=0?('<b>지명</b> · '+dzLabel()):'<b>지명 없이</b> · 미용실이 배정해요';}
+function renderDesigner(){var a=DZ[cur]||[],d=a[window.curDzView],s=S(cur);if(!d)return;document.getElementById('dzTitle').textContent=d.n+' '+d.r;document.getElementById('dzFee').innerHTML=d.fee?('지명료 <b>+¥'+d.fee.toLocaleString()+'</b>'):'지명료 무료 · 한국어 예약 대행 무료';var tints=['#EBDFDB','#E7DEE6','#EEE7DC','#E3E0DA','#E9E2EC','#EAE4DC'],labs=['다운펌','염색','매직','커트','펌','클리닉'];var pf=tints.map((t,i)=>`<div class="pft" style="background:${t}" onclick="openPf('${t}','${labs[i]}')"><span class="lab">${labs[i]}</span></div>`).join('');var drv=[{n:'수빈',r:5,t:d.n+' 디자이너님이 원하는 스타일 그대로 해주셨어요.'},{n:'예진',r:5,t:'한국어로 편하게 상담했고 '+d.sp.split('·')[0]+' 결과가 만족스러웠어요.'}];document.getElementById('dzBody').innerHTML=`<div class="dzhead"><div class="dzbig" style="background:${bg(s)}">${d.n[0]}</div><div><h2>${d.n}</h2><div class="dzmeta">${d.r} · ${s.name}</div><div class="dzmeta2"><i class="ti ti-star star"></i> ${d.rt||'신규'} · ${d.sp}</div></div></div><div class="pf"><h4>포트폴리오</h4><div class="pfgrid">${pf}</div><h4 style="margin-top:20px">후기</h4>${drv.map(r=>`<div class="rv"><div class="av">${r.n[0]}</div><div><div class="nm">${r.n} <span class="star" style="font-size:11px">${'★'.repeat(r.r)}</span></div><div class="tx">${r.t}</div>${r.tags&&r.tags.length?'<div class="rvtags">'+r.tags.map(t=>'<span>'+t+'</span>').join('')+'</div>':''}</div></div>`).join('')}<div style="height:14px"></div></div>`;}
+/* detail */
+function renderDetail(){const s=S(cur);if(!s)return;const rv=(BR[s.id]||[]).concat(state.reviews[s.id]||[]);const dz=DZ[s.id]||[];
+  document.getElementById('detailBody').innerHTML=`<div class="hero" style="background:${bg(s)}">${mono(s)}<div class="nav back" onclick="goBack('home')"><i class="ti ti-chevron-left"></i></div><div class="nav share" onclick="event.stopPropagation();copyLink()"><i class="ti ti-share"></i></div><div class="nav fav" onclick="toggleFav('${s.id}',event)"><i class="ti ti-heart" style="color:${favC(s.id)}"></i></div></div>
+  <div class="dw"><h2>${s.name}</h2><div class="rrow"><i class="ti ti-star star"></i> <b>${rt(s)}</b> <span class="cnt">${s.reviews>0?'· 리뷰 '+rc(s):'· 신규 입점'}</span></div><div class="ar"><i class="ti ti-map-pin" style="font-size:12px"></i> ${s.area} · ${s.walk} · ${s.price}</div>
+  <div class="facts">${(function(){var st=openStatus(s.id);return '<span class="f ostf '+st.cls+'"><span class="dotx"></span>'+st.label+'</span>';})()}<span class="f key"><i class="ti ti-rosette-discount-check"></i> Beautia 검증</span>${s.checks.map(c=>`<span class="f"><i class="ti ti-check"></i> ${c}</span>`).join('')}<span class="f"><i class="ti ti-clock"></i> 10–20시</span><span class="f"><i class="ti ti-calendar-off"></i> ${CLOSED[s.id]!=null?['일','월','화','수','목','금','토'][CLOSED[s.id]]+' 휴무':'연중무휴'}</span></div></div>
+  <div class="blk"><h4>디자이너 선택 <span style="font-weight:400;color:var(--sub);font-size:11px">탭해서 지명 · 상관없으면 그대로</span></h4><div class="dzwrap"><div class="dzcard any${(window.curDz==null||window.curDz<0)?' on':''}" onclick="pickDzSel(this,-1)"><i class="ti ti-users-group"></i><div class="dzn">상관없음</div><div class="dzsp">미용실 추천</div></div>${dz.map((d,i)=>`<div class="dzcard${window.curDz===i?' on':''}" onclick="pickDzSel(this,${i})"><div class="dzav" style="background:${bg(s)}">${d.n[0]}</div><div class="dzn">${d.n}</div><div class="dzr">${d.r}</div><div class="dzsp">${d.sp}</div><div class="dzfee"><i class="ti ti-star star" style="font-size:10px"></i> ${d.rt||'신규'} · <span class="pfopen" onclick="event.stopPropagation();openDesigner(${i})">포트폴리오</span></div></div>`).join('')}</div></div>
+  <div class="svc"><h4>시술 가격</h4>${s.svc.map(v=>`<div class="ln"><span>${v[0]}</span><span>${v[1]}</span></div>`).join('')}</div>
+  <div class="rvs"><h4>후기 ${rc(s)}</h4>${rv.length?rv.slice(0,2).map(r=>`<div class="rv"><div class="av">${r.n[0]}</div><div><div class="nm">${r.n} <span class="star" style="font-size:11px">${'★'.repeat(r.r)}</span></div><div class="tx">${r.t}</div>${r.tags&&r.tags.length?'<div class="rvtags">'+r.tags.map(t=>'<span>'+t+'</span>').join('')+'</div>':''}</div></div>`).join('')+(rv.length>2?`<div class="morerv" onclick="reviewsSheet()">후기 ${rc(s)}개 모두 보기 ›</div>`:''):'<div class="muted" style="font-size:12px">아직 후기가 없어요. 첫 후기를 남겨보세요.</div>'}</div>
+  <div class="blk"><h4>영업시간 · 위치</h4><div class="inforow"><i class="ti ti-clock"></i><div>10:00 – 20:00 <span class="muted">· ${CLOSED[s.id]!=null?['일','월','화','수','목','금','토'][CLOSED[s.id]]+'요일 휴무':'연중무휴'}</span></div></div><div class="inforow"><i class="ti ti-map-pin"></i><div>${s.area} · ${s.walk} · JR ${s.area}역</div></div><div class="map" onclick="openMaps('${s.area} ${s.name}')"><i class="ti ti-map-pin"></i><span class="maplab">지도에서 보기</span></div></div>
+  <div style="height:16px"></div></div>`;var dc=document.getElementById('detailCta');if(dc)dc.innerHTML=(window.curDz>=0&&(DZ[cur]||[])[window.curDz])?('<b>지명</b> · '+dzLabel()):'<b>지명 없이</b> · 미용실이 배정해요';}
+/* form */
+function renderForm(){const s=S(cur);document.getElementById('fsalon').innerHTML=s?`<div class="fcard"><div class="th" style="background:${bg(s)}">${mono(s)}</div><div><div class="nm">${s.name}</div><div class="mt"><i class="ti ti-star star" style="font-size:11px;vertical-align:-1px"></i> ${rt(s)} · ${s.area} · ${s.walk}</div><div class="mt" style="color:var(--rose);font-weight:600"><i class="ti ti-user" style="font-size:11px;vertical-align:-1px"></i> ${dzLabel()}</div></div></div>`:'';
+  window.calY=2026;window.calM=5;var base=new Date(2026,5,28),defLab='',strip='';for(var i=0;i<14;i++){var dt=new Date(base);dt.setDate(base.getDate()+i);var off=(CLOSED[cur]!=null&&dt.getDay()===CLOSED[cur]);var lab=(dt.getMonth()+1)+'/'+dt.getDate()+'('+WDN[dt.getDay()]+')';if(!off&&!defLab)defLab=lab;var wc=dt.getDay()==0?' sun':dt.getDay()==6?' sat':'';strip+='<div class="dp'+(off?' off':'')+wc+'"'+(off?'':' onclick="pickDate(this)"')+' data-date="'+lab+'"><span class="dpw">'+WDN[dt.getDay()]+'</span><span class="dpd">'+dt.getDate()+'</span></div>';}window.activeDate=defLab;var dstripEl=document.getElementById('dstrip');if(dstripEl){dstripEl.innerHTML=strip;var dp0=dstripEl.querySelector('.dp[data-date="'+defLab+'"]');if(dp0)dp0.classList.add('on');}var calEl=document.getElementById('cal');if(calEl)calEl.style.display='none';var ctg=document.getElementById('caltgl');if(ctg)ctg.textContent='전체 달력에서 선택';var ctc=document.getElementById('caltglchev');if(ctc)ctc.style.transform='';renderCal();var cd=CLOSED[cur],dl=document.getElementById('dateLabel');if(dl)dl.innerHTML=cd!=null?('날짜 <span class="fhint" style="font-weight:400">· '+WDN[cd]+'요일 휴무</span>'):'날짜';var av=(window.curDz!=null&&window.curDz>=0&&(DZ[cur]||[])[window.curDz])?((DZ[cur][window.curDz].av)||null):null;var ts='';for(var h=10;h<=19;h++){['00','30'].forEach(function(mm){if(h==19&&mm=='30')return;var t=(h<10?'0'+h:h)+':'+mm;var ok=!av||av.indexOf(t)>=0;ts+='<div class="tslot'+(ok?'':' off')+'"'+(ok?' onclick="pickTime(this)"':'')+'>'+t+'</div>';});}document.getElementById('tgrid').innerHTML=ts;var tl=document.getElementById('timeLabel');if(tl)tl.innerHTML=av?('시간 <span style="font-weight:400;color:var(--sub);font-size:11px">· '+dzLabel()+' 예약 가능</span>'):'시간';window.formSlots=[];renderSlots();updateEstimate();}
+function selSvc(el){el.classList.toggle('on');updateEstimate();updateSummary();}
+function toggleOpt(){var b=document.getElementById('optbody');var open=!b.classList.contains('open');b.classList.toggle('open',open);var c=document.getElementById('optchev');if(c)c.style.transform=open?'rotate(180deg)':'';}
+function pickDate(el){document.querySelectorAll('#dstrip .dp').forEach(p=>p.classList.remove('on'));document.querySelectorAll('#cal .cd').forEach(c=>c.classList.remove('on'));el.classList.add('on');window.activeDate=el.dataset.date;}
+function pickTime(el){if(!window.activeDate)return toast('날짜를 먼저 선택하세요');if((window.formSlots||[]).length>=3)return toast('최대 3개까지 추가할 수 있어요');var c=window.activeDate+' '+el.textContent.trim();if(window.formSlots.includes(c))return toast('이미 추가된 일시예요');window.formSlots.push(c);renderSlots();}
+function renderSlots(){var el=document.getElementById('slotList');if(!el)return;el.innerHTML=(window.formSlots||[]).map((c,i)=>`<span class="slotchip">${c}<span class="x" onclick="removeSlot(${i})"><i class="ti ti-x"></i></span></span>`).join('');document.getElementById('slotHint').textContent=(window.formSlots||[]).length?'이 일시로 예약을 요청해요 · 미용실이 가능한 시간 회신':'날짜와 시간을 누르면 희망 일시로 추가돼요 (최대 3개)';updateSummary();}
+function updateSummary(){var el=document.getElementById('bsum');if(!el)return;var svc=[...document.querySelectorAll('#svcChips .chip2.on')].map(c=>c.textContent.trim());var n=(window.formSlots||[]).length;if(!svc.length&&!n){el.innerHTML='<span class="ph">시술과 일시를 선택해 주세요</span>';return;}var sp=svc.length?svc.join('·'):'시술 미선택';var dp=n?(window.formSlots[0]+(n>1?(' 외 '+(n-1)+'개'):'')):'일시 미선택';el.innerHTML='<b>'+sp+'</b> · '+dp;}
+function removeSlot(i){window.formSlots.splice(i,1);renderSlots();}
+function renderCal(){var y=window.calY,m=window.calM,wd=['일','월','화','수','목','금','토'];var dim=new Date(y,m+1,0).getDate(),lead=new Date(y,m,1).getDay();var min=new Date(2026,5,28);min.setHours(0,0,0,0);var h='<div class="calhd"><span class="cnav" onclick="calNav(-1)"><i class="ti ti-chevron-left"></i></span><span class="calt">'+y+'년 '+(m+1)+'월</span><span class="cnav" onclick="calNav(1)"><i class="ti ti-chevron-right"></i></span></div>';h+='<div class="calw">'+wd.map((w,i)=>'<span class="'+(i==0?'sun':i==6?'sat':'')+'">'+w+'</span>').join('')+'</div><div class="calg">';for(var d=1;d<=dim;d++){var dt=new Date(y,m,d);var lab=(m+1)+'/'+d+'('+wd[dt.getDay()]+')';var off=dt<min||(CLOSED[cur]!=null&&dt.getDay()===CLOSED[cur]);var on=lab===window.activeDate;var wc=dt.getDay()==0?' sun':dt.getDay()==6?' sat':'';var st=d==1?' style="grid-column-start:'+(dt.getDay()+1)+'"':'';h+='<span class="cd'+(off?' off':'')+(on?' on':'')+wc+'"'+st+(off?'':' onclick="pickCalDate(this,\''+lab+'\')"')+'>'+d+'</span>';}h+='</div>';document.getElementById('cal').innerHTML=h;}
+function calNav(n){var m=window.calM+n,y=window.calY;if(m<0){m=11;y--;}if(m>11){m=0;y++;}window.calY=y;window.calM=m;renderCal();}
+function pickCalDate(el,lab){document.querySelectorAll('#cal .cd').forEach(c=>c.classList.remove('on'));document.querySelectorAll('#dstrip .dp').forEach(p=>p.classList.remove('on'));el.classList.add('on');window.activeDate=lab;}
+function toggleCal(){var c=document.getElementById('cal');if(!c)return;var open=c.style.display==='none';c.style.display=open?'block':'none';if(open)renderCal();var t=document.getElementById('caltgl');if(t)t.textContent=open?'달력 접기':'전체 달력에서 선택';var ch=document.getElementById('caltglchev');if(ch)ch.style.transform=open?'rotate(180deg)':'';}
+function updateEstimate(){var P={'다운펌':8800,'커트':4500,'염색':6000,'매직':12000,'클리닉':5000,'남성컷':4200};var el=document.getElementById('estimate');if(!el)return;var sel=[...document.querySelectorAll('#svcChips .chip2.on')].map(c=>c.textContent.trim());if(!sel.length){el.innerHTML='<div class="erow"><span class="et">예상 비용</span><span class="muted" style="font-size:12px">시술 선택 시 표시</span></div>';return;}var sum=sel.reduce((a,s)=>a+(P[s]||0),0);el.innerHTML='<div class="erow"><span class="et">예상 비용</span><span class="ev">¥'+sum.toLocaleString()+'~</span></div><div class="en">정확한 금액은 미용실 답변 시 확정</div>';}
+function submitBooking(){const svc=[...document.querySelectorAll('#svcChips .chip2.on')].map(c=>c.textContent.trim());const dates=(window.formSlots||[]).slice();if(!svc.length)return toast('시술을 선택해주세요');if(!dates.length)return toast('희망 일시를 추가해주세요');const b={id:Date.now(),sid:cur,svc,dates,dz:dzLabel(),status:'진행',price:null,dt:null};state.bookings.unshift(b);state.notiRead=false;save();curBooking=b;toast('예약을 요청했어요');go('progress');}
+/* progress */
+function renderProgress(){let b=curBooking||state.bookings.find(x=>x.status==='진행')||state.bookings[0];if(!b)return;curBooking=b;const s=S(b.sid);const price=b.price||'¥8,800',dt=b.dt||b.dates[0];const done=b.status==='완료'||b.status==='확정';
+  document.getElementById('progTop').innerHTML=`<i class="ti ti-chevron-left ico" style="font-size:18px" onclick="go('chats')"></i><div class="bavatar" style="width:34px;height:34px;background:${bg(s)}">${mono(s)}</div><div style="flex:1"><div class="t" style="font-size:13px">${s.name}</div><div class="muted" style="font-size:10px">Beautia 통역 대행 · 한국어 OK</div></div><i class="ti ti-dots ico" style="font-size:18px" onclick="togglePsum()"></i>`;
+  const stp=done?`<span class="s done">접수</span><i class="ti ti-arrow-right"></i><span class="s done">전달</span><i class="ti ti-arrow-right"></i><span class="s done">응답</span><i class="ti ti-arrow-right"></i><span class="s done">확정</span>`:`<span class="s done">접수</span><i class="ti ti-arrow-right"></i><span class="s done">전달</span><i class="ti ti-arrow-right"></i><span class="s now">응답</span><i class="ti ti-arrow-right"></i><span class="s">확정</span>`;
+  document.getElementById('psum').innerHTML=`<div class="ph" onclick="togglePsum()"><span class="dot"></span><span class="lbl">${done?'예약 확정됨':'미용실 응답 도착'}</span><span class="tg">예약 정보 <i class="ti ti-chevron-down"></i></span></div><div class="pbody"><div class="r"><span class="k">미용실</span><span>${s.name}</span></div><div class="r"><span class="k">시술</span><span>${b.svc.join('·')}</span></div><div class="r"><span class="k">디자이너</span><span>${b.dz||'상관없음'}</span></div><div class="r"><span class="k">희망 일시</span><span>${b.dates.join(', ')}</span></div><div class="psteps">${stp}</div></div>`;
+  document.getElementById('progBody').innerHTML=`<div class="dpill">오늘</div>`+beaBub('안녕하세요, Beautia예요. 요청하신 예약을 미용실에 일본어로 전달해 드릴게요.','오후 2:12')+meBub(`${b.svc.join('·')} 원해요. ${b.dates[0]} 가능할까요?`,'오후 2:14')+`<div class="sys"><i class="ti ti-language"></i> 한국어를 일본어로 통역해 미용실에 전달했어요</div>`+respBub(s,b,price,dt,'오후 2:31')+beaBub('미용실이 위 조건으로 가능하다고 답했어요. 아래에서 확정하실 수 있어요. 다른 날짜를 원하시면 알려주세요.','오후 2:31');
+  document.getElementById('pact').innerHTML=done?`<div class="msg">예약이 확정되었습니다</div><button class="btn btn-ghost" style="width:100%;padding:11px" onclick="go('complete')">예약증 보기</button>`:`<div class="msg">확정하면 예약 완료 · 시술비는 현장에서 결제</div><div class="row"><button class="btn btn-ghost" style="flex:1;padding:11px" onclick="rescheduleSheet(${b.id})">다른 날짜로</button><button class="btn btn-primary" style="flex:1;padding:11px" onclick="confirmBooking()">이 조건으로 확정</button></div>`;}
+function beaBub(t,tm){return `<div class="mrow bot"><div class="mav" style="background:var(--plum)"><span style="color:#fff;font-family:Georgia,serif;font-weight:700;font-size:13px">B</span></div><div class="mcol"><div class="nmtag">Beautia</div><div class="bub">${t}</div><div class="btime">${tm}</div></div></div>`;}
+function meBub(t,tm){return `<div class="mrow me"><div class="mcol"><div class="bub">${t}</div><div class="btime">${tm} · 읽음</div></div></div>`;}
+function respBub(s,b,price,dt,tm){return `<div class="mrow bot"><div class="mav" style="background:${bg(s)}">${mono(s)}</div><div class="mcol" style="max-width:90%"><div class="nmtag">${s.name} · 번역됨</div><div class="resp"><p>가능합니다. 아래 조건으로 예약 잡아드릴게요.</p><div class="it"><i class="ti ti-check"></i> ${b.svc.join('·')} (기장 유지)</div><div class="it"><i class="ti ti-currency-yen"></i> ${price}</div><div class="it"><i class="ti ti-clock"></i> 약 90분</div><div class="it"><i class="ti ti-calendar"></i> ${dt}</div><div class="or" onclick="this.nextElementSibling.classList.toggle('show')">원문 일본어 보기 ›</div><div class="origja">「${b.svc.join('・')}（長さキープ）で承ります。料金 ${price}、所要約90分。${dt}はいかがでしょうか？」</div></div><div class="btime">${tm}</div></div></div>`;}
+function togglePsum(){document.getElementById('psum').classList.toggle('open');}
+function otherDate(){var c=document.getElementById('progBody');c.insertAdjacentHTML('beforeend',meBub('다른 날짜로 다시 조율 부탁드려요.','오후 2:33'));c.insertAdjacentHTML('beforeend','<div class="sys"><i class="ti ti-language"></i> 미용실에 재조율을 요청했어요</div>');c.scrollTop=c.scrollHeight;toast('다른 날짜로 재조율을 요청했어요');}
+function rescheduleSheet(id){var b=state.bookings.find(function(x){return x.id===id;});if(!b)return;window.rsId=id;window.rsDate='';window.rsTimeV='';var base=new Date(2026,5,28),strip='';for(var i=0;i<14;i++){var dt=new Date(base);dt.setDate(base.getDate()+i);var off=(CLOSED[b.sid]!=null&&dt.getDay()===CLOSED[b.sid]);var lab=(dt.getMonth()+1)+'/'+dt.getDate()+'('+WDN[dt.getDay()]+')';var wc=dt.getDay()==0?' sun':dt.getDay()==6?' sat':'';strip+='<div class="dp'+(off?' off':'')+wc+'"'+(off?'':' onclick="rsPick(this,\''+lab+'\')"')+'><span class="dpw">'+WDN[dt.getDay()]+'</span><span class="dpd">'+dt.getDate()+'</span></div>';}var times='';for(var h=10;h<=18;h++){['00','30'].forEach(function(mm){times+='<span class="rstime" onclick="rsTime(this)">'+(h<10?'0'+h:h)+':'+mm+'</span>';});}openSheet('일정 변경','<div class="shp">새 날짜·시간을 고르면 미용실에 재조율을 요청해요.</div><div class="shlab" style="margin-top:0">날짜</div><div class="dstrip">'+strip+'</div><div class="shlab">시간</div><div class="rstimes">'+times+'</div><button class="btn btn-primary w100" style="margin-top:18px;padding:12px" onclick="doReschedule()">이 일시로 변경 요청</button>');}
+function rsPick(el,lab){el.parentElement.querySelectorAll('.dp').forEach(function(p){p.classList.remove('on');});el.classList.add('on');window.rsDate=lab;}
+function rsTime(el){el.parentElement.querySelectorAll('.rstime').forEach(function(t){t.classList.remove('on');});el.classList.add('on');window.rsTimeV=el.textContent;}
+function doReschedule(){if(!window.rsDate||!window.rsTimeV){toast('날짜와 시간을 선택해주세요');return;}var b=state.bookings.find(function(x){return x.id===window.rsId;});if(!b)return;b.dates=[window.rsDate+' '+window.rsTimeV];b.dt=null;b.status='진행';save();closeSheet();toast('일정 변경을 요청했어요');var sc=document.querySelector('.screen.active').id;if(sc==='progress'){curBooking=b;renderProgress();}else if(sc==='mybookings'){renderBookings();}}
+function pSend(){var inp=document.getElementById('pInput');var v=(inp.value||'').trim();if(!v)return;var c=document.getElementById('progBody');c.insertAdjacentHTML('beforeend',meBub(v,'방금'));inp.value='';c.scrollTop=c.scrollHeight;var reps=['네, 미용실에 일본어로 전달해 드릴게요.','확인해서 바로 알려드릴게요.','말씀해주신 내용 그대로 미용실에 전달하겠습니다.'];var rep=reps[(window.pN=(window.pN||0)+1)%reps.length];setTimeout(function(){c.insertAdjacentHTML('beforeend',beaBub(rep,'방금'));c.scrollTop=c.scrollHeight;},700);}
+function confirmBooking(){if(!curBooking)return;curBooking.status='완료';curBooking.price=curBooking.price||'¥8,800';curBooking.dt=curBooking.dt||curBooking.dates[0];save();go('complete');}
+/* complete */
+function renderComplete(){const b=curBooking||state.bookings[0];const s=S(b.sid);const dz=b.dz||'상관없음';const ja=`「Beautiaを通じて予約した韓国人のお客様です。${b.svc.join('・')}でお願いします。」`;document.getElementById('completeBody').innerHTML=`<div class="cmpl">
+   <div class="cmhd"><div class="cmcheck"><i class="ti ti-check"></i></div><div><div class="cmt">예약이 확정됐어요</div><div class="cmsub">현장에서 아래 예약증을 보여주세요</div></div></div>
+   <div class="ticket">
+     <div class="tkhd"><i class="ti ti-rosette-discount-check"></i> Beautia 예약증 <span class="conf">확정</span></div>
+     <div class="tkhero"><div class="tklab">예약 일시</div><div class="tkdt">${b.dt}</div><div class="tksalon">${s.name} · ${dz}</div></div>
+     <div class="tkperf"></div>
+     <div class="tkgrid"><div class="g"><span class="k">시술</span><span class="v">${b.svc.join('·')}</span></div><div class="g"><span class="k">예상 금액</span><span class="v">${b.price}</span></div></div>
+     <div class="tkja"><div class="jalab"><i class="ti ti-language"></i> 직원에게 이 문장을 보여주세요</div><div class="jatxt">${ja}</div></div>
+   </div>
+   <div class="cmact"><div class="a" onclick="addCal()"><i class="ti ti-calendar-plus"></i>캘린더</div><div class="a" onclick="openMaps('${s.area} ${s.name}')"><i class="ti ti-map-2"></i>길찾기</div><div class="a" onclick="copyLink()"><i class="ti ti-share"></i>공유</div></div>
+   <div class="cmtips"><span><i class="ti ti-credit-card"></i> 현장 결제</span><span><i class="ti ti-coin-off"></i> 팁 없음</span><span><i class="ti ti-clock"></i> 변경 시 미리 알림</span></div>
+  </div>`;}
+/* chats */
+function renderChats(){const conci=`<div class="chatrow" onclick="go('concierge')"><div class="av" style="background:var(--plum)"><span style="color:#fff;font-family:Georgia,serif;font-weight:700;font-size:18px">B</span><span class="od"></span></div><div style="flex:1;min-width:0"><div class="nm">Beautia 컨시어지 <span class="schip" style="font-size:9px">24시간</span></div><div class="last">미용실 추천부터 예약까지, 한국어로 편하게</div></div><div class="rt"><div class="tm">상담중</div></div></div>`;
+  const rows=state.bookings.map(b=>{const s=S(b.sid);const p=b.status==='진행';const last=p?'가능합니다. 아래 조건으로 예약 잡아드릴게요.':'시술은 만족스러우셨나요? 후기를 남겨주세요.';const chip=p?'<span class="schip" style="font-size:9px">진행중</span>':'<span class="schip done" style="font-size:9px">완료</span>';return `<div class="chatrow" onclick="openChat(${b.id})"><div class="av" style="background:${bg(s)}">${mono(s)}</div><div style="flex:1;min-width:0"><div class="nm">${s.name} ${chip}</div><div class="last">${last}</div></div><div class="rt"><div class="tm">${p?'방금':'어제'}</div>${p?'<span class="un">1</span>':''}</div></div>`;}).join('');
+  document.getElementById('chatsBody').innerHTML=`<div class="mlabel">고객지원</div>${conci}<div class="mlabel">예약 채팅</div>${rows||'<div class="empty"><i class="ti ti-message-off"></i>아직 예약 채팅이 없어요</div>'}`;}
+function openChat(id){const b=state.bookings.find(x=>x.id===id);if(b){curBooking=b;go('progress');}}
+/* bookings */
+function selSeg(n,el){seg=n;document.querySelectorAll('#mybookings .seg .s').forEach(x=>x.classList.remove('on'));el.classList.add('on');renderBookings();}
+function renderBookings(){const map={'진행중':['진행','확정'],'완료':['완료'],'취소':['취소']};const names=['진행중','완료','취소'];const segs=document.querySelectorAll('#mybookings .seg .s');names.forEach((nm,i)=>{if(segs[i])segs[i].innerHTML=nm+' <span class="cnt2">'+state.bookings.filter(b=>map[nm].includes(b.status)).length+'</span>';});const list=state.bookings.filter(b=>map[seg].includes(b.status));
+  document.getElementById('bookBody').innerHTML=list.length?list.map(b=>{const s=S(b.sid);const done=b.status==='완료';const canc=b.status==='취소';const dz=b.dz&&b.dz!=='상관없음'?' · '+b.dz:'';const step=b.status==='진행'?'<div class="bkstep"><span class="d on"></span><span class="d on"></span><span class="d on"></span><span class="d"></span> 미용실 응답 도착 · 확정 대기</div>':'';const stat=canc?'<span class="schip done">취소됨</span>':(done?'<span class="schip done">완료</span>':'<span class="schip">응답 도착</span>');const tap=canc?'':(done?`reviewBk(${b.id})`:`openChat(${b.id})`);const act=done?`<div class="bkact"><div class="a" onclick="reviewBk(${b.id})">리뷰 쓰기</div><div class="a muted" onclick="openSalon('${b.sid}')">다시 예약</div></div>`:(canc?`<div class="bkact"><div class="a muted" onclick="openSalon('${b.sid}')">다시 예약</div></div>`:`<div class="bkact"><div class="a" onclick="openChat(${b.id})">채팅 보기</div><div class="a muted" onclick="confirmCancel(${b.id})">예약 취소</div></div>`);return `<div class="bkcard"><div class="bktop" onclick="${tap}"><div class="th" style="background:${bg(s)}">${mono(s)}</div><div style="flex:1"><div class="nm">${s.name}</div><div class="info">${b.svc.join('·')} · ${b.dt||b.dates[0]}${dz}${b.price?' · '+b.price:''}</div></div><div class="stat">${stat}</div></div>${step}${act}</div>`;}).join(''):`<div class="empty"><i class="ti ti-calendar-off"></i>${seg} 예약이 없어요</div>`;}
+function cancelBooking(id){var b=state.bookings.find(x=>x.id===id);if(b){b.status='취소';save();renderBookings();toast('예약을 취소했어요');}}
+function openStatus(sid){var n=new Date(),day=n.getDay(),h=n.getHours()+n.getMinutes()/60;if(CLOSED[sid]!=null&&day===CLOSED[sid])return{cls:'off',s:'휴무',label:'오늘 휴무'};if(h<10)return{cls:'off',s:'영업 전',label:'영업 전 · 10시 오픈'};if(h>=20)return{cls:'off',s:'영업 종료',label:'영업 종료'};if(h>=19)return{cls:'warn',s:'곧 마감',label:'곧 마감 · 20시까지'};return{cls:'open',s:'영업 중',label:'영업 중 · 20시까지'};}
+function pickOne(el){el.parentElement.querySelectorAll('.c').forEach(function(c){c.classList.remove('on');});el.classList.add('on');}
+function confirmCancel(id){openSheet('예약 취소','<div class="shp">이 예약을 취소할까요? 미용실에 취소 요청이 전달돼요.</div><div class="shlab" style="margin-top:0">취소 사유 (선택)</div><div class="shchips"><span class="c" onclick="pickOne(this)">일정 변경</span><span class="c" onclick="pickOne(this)">단순 변심</span><span class="c" onclick="pickOne(this)">다른 곳 예약</span></div><div style="display:flex;gap:8px;margin-top:20px"><button class="btn btn-ghost" style="flex:1;padding:12px" onclick="closeSheet()">취소 안 함</button><button class="btn" style="flex:1;padding:12px;background:#A32D2D;color:#fff" onclick="doCancel('+id+')">예약 취소</button></div>');}
+function doCancel(id){closeSheet();cancelBooking(id);}
+function reviewBk(id){curBooking=state.bookings.find(x=>x.id===id);go('review');}
+/* favorites */
+function renderFav(){const list=state.fav.map(S).filter(Boolean);document.getElementById('favBody').innerHTML=list.length?`<div class="rescount">찜한 미용실 ${list.length}곳</div><div class="grid2">`+list.map(card).join('')+'</div>':`<div class="empty"><i class="ti ti-heart"></i>아직 찜한 곳이 없어요<br>마음에 드는 미용실을 찜해보세요</div>`;}
+/* mypage */
+function renderMy(){var nm=(state.user&&state.user.name)||'게스트';var pav=document.getElementById('pav');if(pav)pav.textContent=nm.slice(0,2);var pnm=document.getElementById('pnm');if(pnm)pnm.innerHTML=nm+' <span class="lv">Beautia 회원</span>';var up=state.bookings.find(b=>b.status==='진행'||b.status==='확정');var u=document.getElementById('myUp');if(u){if(up){var s2=S(up.sid);u.innerHTML='<div class="upcard" onclick="openChat('+up.id+')"><div class="uic"><i class="ti ti-calendar-event"></i></div><div style="flex:1"><div class="t1">다가오는 예약 · '+s2.name+'</div><div class="t2">'+up.svc.join('·')+' · '+(up.dt||up.dates[0])+'</div></div><i class="ti ti-chevron-right" style="color:var(--sub);font-size:18px"></i></div>';}else u.innerHTML='';}document.getElementById('stBook').textContent=state.bookings.length;document.getElementById('stRev').textContent=Object.values(state.reviews).reduce((a,b)=>a+b.length,0);document.getElementById('stFav').textContent=state.fav.length;}
+function renderNoti(){var b=state.bookings.find(x=>x.status==='진행');var it=[];if(b){var s=S(b.sid);it.push(['ti-message-2','<b>'+s.name+'</b> 미용실 답변이 도착했어요. 확인하고 확정해 주세요.','방금',1,'openChat('+b.id+')']);}it.push(['ti-rosette-discount-check','예약이 확정되면 예약증이 발급돼요. 현장에서 보여주세요.','어제',0,'']);it.push(['ti-star','시술 후 후기를 남기면 다른 분께 큰 도움이 돼요.','3일 전',0,"go('mybookings')"]);it.push(['ti-gift','<b>신규 입점</b> 신주쿠·이케부쿠로 미용실이 추가됐어요.','1주 전',0,"go('search')"]);document.getElementById('notiBody').innerHTML=it.map(n=>'<div class="noti'+((n[3]&&!state.notiRead)?' unread':'')+'"'+(n[4]?' onclick="'+n[4]+'"':'')+'><div class="nic"><i class="ti '+n[0]+'"></i></div><div><div class="ntx">'+n[1]+'</div><div class="ntm">'+n[2]+'</div></div></div>').join('');}
+function renderMyReviews(){var rows=[];Object.keys(state.reviews||{}).forEach(function(sid){(state.reviews[sid]||[]).forEach(function(r,idx){var s=S(sid);if(s)rows.push({sid:sid,idx:idx,s:s,r:r});});});document.getElementById('myrvBody').innerHTML=rows.length?('<div class="rescount">내가 쓴 후기 '+rows.length+'개</div>'+rows.map(function(o){return '<div class="mrv"><div class="top"><div class="nm">'+o.s.name+'</div><span class="star" style="font-size:12px">'+'★'.repeat(o.r.r)+'</span><span class="del edit" onclick="editReview(\''+o.sid+'\','+o.idx+')">수정</span><span class="del" style="margin-left:12px" onclick="delMyReview(\''+o.sid+'\','+o.idx+')">삭제</span></div><div class="tx">'+o.r.t+'</div>'+(o.r.tags&&o.r.tags.length?'<div class="rvtags">'+o.r.tags.map(function(t){return '<span>'+t+'</span>';}).join('')+'</div>':'')+'</div>';}).join('')):'<div class="empty"><i class="ti ti-message-circle"></i>아직 작성한 후기가 없어요<br>시술 후 후기를 남겨보세요</div>';}
+function delMyReview(sid,idx){state.reviews[sid].splice(idx,1);if(!state.reviews[sid].length)delete state.reviews[sid];save();renderMyReviews();toast('후기를 삭제했어요');}
+/* search */
+function renderSearch(){const q=(document.getElementById('sin').value||'').trim();const fs=[...document.querySelectorAll('#fb .chip2.on')].map(c=>c.textContent.trim());
+  let list=SALONS.filter(s=>{const hay=(s.name+' '+s.area+' '+s.tags.join(' ')+' '+s.svc.map(v=>v[0]).join(' ')).toLowerCase();if(q&&!hay.includes(q.toLowerCase()))return false;if(fs.includes('한국어 OK')&&!s.kr)return false;if(fs.includes('검증')&&s.badge!=='verified')return false;if(fs.includes('1인샵')&&!s.tags.includes('1인샵'))return false;if(fs.includes('다운펌')&&!hay.includes('다운펌'))return false;if(fs.includes('매직')&&!hay.includes('매직'))return false;return true;});var sb=window.sortBy||'추천';if(sb==='평점순')list.sort((a,b)=>(b.rating||0)-(a.rating||0));else if(sb==='후기순')list.sort((a,b)=>rc(b)-rc(a));
+  var sx=document.getElementById('sinx');if(sx)sx.style.display=q?'block':'none';
+  var pk=document.getElementById('popkw');if(pk){var html='';if(!q&&!fs.length){var rec=state.searches||[];if(rec.length)html+='<div class="h" style="display:flex;align-items:center">최근 검색어<span class="recclr" onclick="clearRecent()">전체 삭제</span></div><div class="ks">'+rec.map(function(k){return '<div class="k rk" onclick="searchSvc(\''+k+'\')"><i class="ti ti-history"></i>'+k+'<i class="ti ti-x rx" onclick="event.stopPropagation();delRecent(\''+k+'\')"></i></div>';}).join('')+'</div>';html+='<div class="h">인기 검색어</div><div class="ks">'+['다운펌','매직','신주쿠','한국어 OK','남성컷','1인샵'].map(function(k){return '<div class="k" onclick="searchSvc(\''+k+'\')"><i class="ti ti-search"></i>'+k+'</div>';}).join('')+'</div>';}pk.innerHTML=html;}
+  document.getElementById('rescount').innerHTML=(q?`'${q}' `:'')+`검색 결과 ${list.length}곳`;
+  document.getElementById('searchBody').innerHTML=list.length?list.map(card).join(''):`<div class="empty" style="grid-column:1/-1"><i class="ti ti-search-off"></i>조건에 맞는 곳이 없어요</div>`;}
+function tf(el){el.classList.toggle('on');renderSearch();}
+function searchSvc(v){saveSearch(v);go('search');document.getElementById('sin').value=v;renderSearch();}
+function saveSearch(t){t=(t||'').trim();if(!t)return;state.searches=(state.searches||[]).filter(function(x){return x!==t;});state.searches.unshift(t);state.searches=state.searches.slice(0,8);save();}
+function clearSearch(){var i=document.getElementById('sin');i.value='';renderSearch();i.focus();}
+function clearRecent(){state.searches=[];save();renderSearch();}
+function delRecent(t){state.searches=(state.searches||[]).filter(function(x){return x!==t;});save();renderSearch();}
+function markNotiRead(){state.notiRead=true;save();renderNoti();var bd=document.getElementById('bellDot');if(bd)bd.style.display='none';toast('알림을 모두 읽음 처리했어요');}
+function editReview(sid,idx){var r=state.reviews[sid][idx];window.edRev={sid:sid,idx:idx,stars:r.r};openSheet('후기 수정','<div class="shlab" style="margin-top:0">평점</div><div class="edstars" id="edStars">'+[1,2,3,4,5].map(function(i){return '<span class="est'+(i<=r.r?' on':'')+'" onclick="edSetStars('+i+')">★</span>';}).join('')+'</div><div class="shlab">내용</div><textarea id="edText" class="shinput" style="height:auto;padding:12px 14px" rows="3">'+(r.t||'')+'</textarea><button class="btn btn-primary w100" style="margin-top:16px;padding:12px" onclick="saveEditReview()">저장</button>');}
+function edSetStars(n){window.edRev.stars=n;document.querySelectorAll('#edStars .est').forEach(function(sp,k){sp.classList.toggle('on',k<n);});}
+function saveEditReview(){var e=window.edRev;if(!e)return;var t=(document.getElementById('edText').value||'').trim();state.reviews[e.sid][e.idx].r=e.stars;state.reviews[e.sid][e.idx].t=t||'만족스러운 시술이었어요.';save();closeSheet();renderMyReviews();toast('후기를 수정했어요');}
+function sortPick(el,s){window.sortBy=s;document.querySelectorAll('#sortrow .so').forEach(x=>x.classList.remove('on'));el.classList.add('on');renderSearch();}
+/* review */
+function setStars(n){rvStars=n;document.querySelectorAll('#stars .st').forEach((s,k)=>s.classList.toggle('on',k<n));}
+function renderReview(){const b=curBooking;const s=b?S(b.sid):S('artisan');setStars(5);document.querySelectorAll('#review .chips .chip2').forEach((c,i)=>c.classList.toggle('on',i===0));var rvt=document.getElementById('rvText');if(rvt)rvt.value='';document.getElementById('rvSalon').innerHTML=`<div class="rvsalon"><div class="th" style="width:46px;height:46px;border-radius:8px;background:${bg(s)}"></div><div><div style="font-size:14px;font-weight:600">${s.name}</div><div class="muted" style="font-size:11px">${b?b.svc.join('·'):'시술'} · ${b?(b.dt||b.dates[0]):''}</div></div></div>`;}
+function submitReview(){const b=curBooking;const sid=b?b.sid:'artisan';if(!state.reviews[sid])state.reviews[sid]=[];var tags=[...document.querySelectorAll('#review .chips .chip2.on')].map(c=>c.textContent.trim());var txt=(document.getElementById('rvText').value||'').trim();if(!txt)txt=tags.length?tags.join(', '):'만족스러운 시술이었어요.';state.reviews[sid].push({n:(state.user&&state.user.name)||'게스트',r:rvStars,t:txt,tags:tags});save();toast('리뷰 등록 완료!');setTimeout(()=>go('mybookings'),700);}
+load();if(state.user){go('home');}else{go('onboard');}startClock();
+</script>
+</body>
+</html>

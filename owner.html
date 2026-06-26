@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Beautia · 경영 대시보드</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3/dist/tabler-icons.min.css">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<!--fonts: pretendard + tabler-->
+<style>
+:root{--rose:#B5828C; --plum:#6E4A50; --cream:#F5EBE8; --page:#FBF8F6; --card:#fff; --line:#ECE0DC; --muted:#9B8487; --gold:#C9A063;
+  --amber:#BA7515; --amberbg:#FAEEDA; --red:#A32D2D; --redbg:#FBEAEA; --green:#3B6D11; --greenbg:#EAF3DE;}
+*{box-sizing:border-box; margin:0; padding:0;}
+body{font-family:'Pretendard',system-ui,sans-serif; background:var(--page); color:var(--plum);}
+.app{display:flex; min-height:100vh;}
+.sidebar{width:216px; flex-shrink:0; background:var(--plum); color:var(--cream); padding:20px 12px; position:sticky; top:0; height:100vh;}
+.brand{font-size:19px; font-weight:700; padding:6px 10px 4px;}
+.brand span{font-size:11px; font-weight:400; opacity:.7; display:block; margin-top:2px;}
+.nav{margin-top:18px;}
+.navitem{display:flex; align-items:center; gap:11px; padding:11px 12px; border-radius:9px; font-size:13.5px; cursor:pointer; color:rgba(245,235,232,.8); margin-bottom:2px;}
+.navitem .ti{font-size:18px;}
+.navitem:hover{background:rgba(255,255,255,.08);}
+.navitem.on{background:var(--rose); color:#fff; font-weight:600;}
+.main{flex:1; min-width:0; display:flex; flex-direction:column;}
+.topbar{display:flex; align-items:center; justify-content:flex-end; gap:16px; padding:14px 26px; border-bottom:.5px solid var(--line); background:var(--card);}
+.topbar .who{display:flex; align-items:center; gap:9px; font-size:13px;}
+.topbar .av{width:30px; height:30px; border-radius:50%; background:var(--rose); color:#fff; display:flex; align-items:center; justify-content:center; font-size:12px; font-weight:600;}
+.topbar .ti{font-size:19px; color:var(--muted);}
+.content{padding:24px 26px;}
+.panel{display:none;} .panel.active{display:block;}
+h2.pt{font-size:21px; font-weight:700; margin-bottom:4px;}
+.psub{font-size:13px; color:var(--muted); margin-bottom:20px;}
+.metrics{display:grid; grid-template-columns:repeat(3,1fr); gap:14px; margin-bottom:18px;}
+.metric{background:var(--card); border:.5px solid var(--line); border-radius:12px; padding:16px 18px;}
+.metric .lab{font-size:12px; color:var(--muted);}
+.metric .val{font-size:27px; font-weight:700; margin-top:7px;}
+.metric .val.late{color:var(--red);}
+.metric .dl{font-size:11px; margin-top:6px; color:var(--muted);}
+.up{color:var(--green); font-weight:600;} .down{color:var(--red); font-weight:600;}
+.grid2{display:grid; grid-template-columns:1fr 1fr; gap:16px;}
+.card{background:var(--card); border:.5px solid var(--line); border-radius:12px; padding:18px 20px; margin-bottom:16px;}
+.card h3{font-size:15px; font-weight:600; margin-bottom:4px;}
+.card .ch3sub{font-size:11px; color:var(--muted); margin-bottom:14px;}
+/* bar chart */
+.chart{display:flex; align-items:flex-end; gap:16px; height:150px; padding:6px 4px 0;}
+.barwrap{flex:1; display:flex; flex-direction:column; align-items:center; justify-content:flex-end; height:100%; gap:7px;}
+.bar{width:64%; background:var(--rose); border-radius:6px 6px 0 0; min-height:4px;}
+.bar.plum{background:var(--plum);}
+.barwrap .v{font-size:12px; font-weight:600;}
+.barwrap .x{font-size:11px; color:var(--muted);}
+/* funnel */
+.funnel .f{margin-bottom:11px;}
+.funnel .fl{display:flex; justify-content:space-between; font-size:12px; margin-bottom:5px;}
+.funnel .fl .pct{color:var(--rose); font-weight:600;}
+.funnel .fbar{height:26px; background:var(--cream); border-radius:6px; overflow:hidden;}
+.funnel .ff{height:100%; background:var(--rose); border-radius:6px; display:flex; align-items:center; padding-left:11px; color:#fff; font-size:11px; font-weight:600;}
+/* table */
+table{width:100%; border-collapse:collapse; font-size:13px;}
+th{text-align:left; font-size:11px; color:var(--muted); font-weight:600; padding:10px 12px; border-bottom:.5px solid var(--line);}
+td{padding:11px 12px; border-bottom:.5px solid var(--line);}
+.r{text-align:right;}
+.badge{font-size:11px; font-weight:600; padding:2px 9px; border-radius:20px;}
+.badge.g{background:var(--greenbg); color:var(--green);} .badge.a{background:var(--amberbg); color:var(--amber);} .badge.r{background:var(--redbg); color:var(--red);}
+.risk{display:flex; align-items:center; gap:11px; padding:12px 0; border-top:.5px solid var(--line); font-size:13px;}
+.risk:first-of-type{border-top:none;}
+.risk .ti{font-size:18px;}
+.muted{color:var(--muted);}
+.qrow{display:flex; align-items:baseline; justify-content:space-between; padding:13px 0; border-top:.5px solid var(--line);}
+.qrow:first-of-type{border-top:none;}
+.qrow .qv{font-size:18px; font-weight:700;}
+.qrow .ql{font-size:13px;} .qrow .qd{font-size:11px; color:var(--muted);}
+@keyframes scrIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+.panel.active{animation:scrIn .22s ease;}
+.brand{font-family:'Cormorant Garamond',Georgia,serif;font-size:23px;letter-spacing:.4px;}
+.brand span{font-family:'Pretendard',sans-serif;letter-spacing:0;}
+h2.pt,.metric .val,.qrow .qv{letter-spacing:-.4px;}
+.btn{transition:transform .12s ease;}.btn:active{transform:scale(.97);}
+/* === design system v2 === */
+*{-webkit-font-smoothing:antialiased;}
+.card,.metric{box-shadow:0 1px 2px rgba(90,60,66,.04),0 10px 26px -18px rgba(90,60,66,.18);border-color:rgba(110,74,80,.09);}
+.btn-primary{box-shadow:0 8px 18px -8px rgba(110,74,80,.5);}
+.sidebar{box-shadow:2px 0 30px -20px rgba(70,40,46,.6);}
+.topbar{box-shadow:0 1px 0 rgba(110,74,80,.05);}
+.navitem{border-radius:10px;}
+.navitem.on{box-shadow:0 8px 18px -8px rgba(181,130,140,.75);}
+.bar{box-shadow:0 6px 14px -8px rgba(181,130,140,.5);}
+/* === white tone unify === */
+body,.main,.content{background:#FBFAF9;}
+.sidebar{background:#fff;color:var(--plum);border-right:1px solid #F0ECEA;box-shadow:none;}
+.brand{color:var(--plum);font-family:Georgia,'Times New Roman',serif;font-style:italic;}
+.brand span{color:var(--muted);font-style:normal;font-family:'Pretendard',sans-serif;}
+.navitem{color:#6B6065;border-radius:10px;}
+.navitem:hover{background:#F7F3F1;}
+.navitem.on{background:var(--rose);color:#fff;}
+.topbar{background:#fff;border-bottom:1px solid #F0ECEA;}
+.card,.metric{background:#fff;border:1px solid #F2EDEB;box-shadow:0 1px 1px rgba(90,60,66,.03),0 8px 22px -16px rgba(90,60,66,.16);}
+h2.pt{font-family:'Pretendard',sans-serif;letter-spacing:-.5px;}
+.metric .val,.qrow .qv,.barwrap .v{font-family:'Pretendard',sans-serif;font-variant-numeric:tabular-nums;letter-spacing:-.5px;}
+th{border-bottom:1px solid #F0ECEA;}td{border-bottom:1px solid #F4EFED;}
+/* === interactive owner === */
+.atoast{position:fixed;left:50%;bottom:30px;transform:translateX(-50%);background:var(--plum);color:#fff;font-size:13px;padding:11px 18px;border-radius:22px;opacity:0;transition:.25s;pointer-events:none;z-index:90;box-shadow:0 10px 24px -8px rgba(70,40,46,.5);}
+.atoast.show{opacity:1;}
+.phead{display:flex;align-items:flex-start;gap:12px;margin-bottom:20px;flex-wrap:wrap;}
+.pseg{display:inline-flex;gap:4px;background:#F4EFED;border-radius:9px;padding:3px;}
+.pseg .p{font-size:12px;font-weight:600;padding:6px 13px;border-radius:7px;cursor:pointer;color:var(--muted);}
+.pseg .p.on{background:#fff;color:var(--plum);box-shadow:0 1px 3px rgba(90,60,66,.14);}
+.btn{font-family:inherit;cursor:pointer;border:none;border-radius:9px;font-weight:600;font-size:13px;padding:9px 14px;}
+.btn-ghost{background:#fff;border:1px solid var(--line);color:var(--plum);}
+.metric .dl .up{color:var(--green);font-weight:600;}
+</style>
+</head>
+<body>
+<div class="app">
+  <aside class="sidebar">
+    <div class="brand">Beautia<span>경영 대시보드 · Owner</span></div>
+    <div class="nav">
+      <div class="navitem on" onclick="showO('summary',this)"><i class="ti ti-chart-pie"></i> 경영 요약</div>
+      <div class="navitem" onclick="showO('growth',this)"><i class="ti ti-trending-up"></i> 성장 · 수익</div>
+      <div class="navitem" onclick="showO('region',this)"><i class="ti ti-map-2"></i> 지역 · 미용실</div>
+      <div class="navitem" onclick="showO('quality',this)"><i class="ti ti-gauge"></i> 운영 품질</div>
+    </div>
+  </aside>
+
+  <main class="main">
+    <div class="topbar">
+      <i class="ti ti-bell"></i>
+      <div class="who"><div class="av">우진</div> 우진 · 대표</div>
+    </div>
+    <div class="content">
+
+      <!-- SUMMARY -->
+      <section class="panel active" id="summary">
+        <div class="phead">
+          <div><h2 class="pt">경영 요약</h2><div class="psub" id="oPsub" style="margin-bottom:0">2026년 6월 · 도쿄</div></div>
+          <div style="margin-left:auto;display:flex;gap:10px;align-items:center">
+            <div class="pseg"><span class="p on" onclick="setPeriod('2026-06',this)">이번 달</span><span class="p" onclick="setPeriod('2026-05',this)">지난 달</span></div>
+            <button class="btn btn-ghost" onclick="exportReport()"><i class="ti ti-download" style="vertical-align:-2px"></i> 리포트</button>
+          </div>
+        </div>
+        <div class="metrics" id="oMetrics"></div>
+        <div class="grid2">
+          <div class="card"><h3>월별 확정 예약</h3><div class="ch3sub">최근 4개월</div><div class="chart" id="oMonthly"></div></div>
+          <div class="card"><h3>전환 퍼널</h3><div class="ch3sub">방문 → 완료</div><div class="funnel" id="oFunnel"></div></div>
+        </div>
+        <div class="card">
+          <h3>지금 챙길 것 (리스크)</h3>
+          <div class="risk" style="cursor:pointer" onclick="toast('운영 콘솔에서 처리하세요')"><i class="ti ti-alert-triangle" style="color:var(--red)"></i> atelier Nao — 미용실 무응답 22h <span class="badge r" style="margin-left:auto">SLA 초과</span></div>
+          <div class="risk" style="cursor:pointer" onclick="toast('번역 검수 대기 2건 — 운영 콘솔')"><i class="ti ti-clock" style="color:var(--amber)"></i> 번역 검수 대기 2건 <span class="badge a" style="margin-left:auto">임박</span></div>
+          <div class="risk"><i class="ti ti-rosette-discount-check" style="color:var(--green)"></i> 검증 배지 강등 위험 0곳 <span class="badge g" style="margin-left:auto">양호</span></div>
+        </div>
+      </section>
+
+      <!-- GROWTH -->
+      <section class="panel" id="growth">
+        <h2 class="pt">성장 · 수익</h2>
+        <div class="psub">송객 수수료 모델 (Phase 2) · 손님은 무료</div>
+        <div class="card"><h3>월별 매출 (송객 수수료)</h3><div class="ch3sub">15% · 단위 ¥</div><div class="chart" id="gRev"></div></div>
+        <div class="grid2">
+          <div class="card"><h3>유닛 이코노믹스 (건당)</h3><div class="ch3sub">완료 예약 기준</div><div id="gUnit"></div></div>
+          <div class="card"><h3>손님</h3><div class="ch3sub">누적</div><div id="gCust"></div></div>
+        </div>
+      </section>
+
+      <!-- REGION / SALON -->
+      <section class="panel" id="region">
+        <h2 class="pt">지역 · 미용실 성과</h2>
+        <div class="psub">도쿄</div>
+        <button class="btn btn-ghost" style="margin-bottom:16px" onclick="exportPanel('region','지역-미용실')"><i class="ti ti-download" style="vertical-align:-2px"></i> 리포트</button>
+        <div class="card" style="padding:0; overflow:hidden"><div id="rAreas"></div></div>
+        <div class="card" style="padding:0; overflow:hidden"><div id="rTop"></div></div>
+      </section>
+
+      <!-- QUALITY -->
+      <section class="panel" id="quality">
+        <h2 class="pt">운영 품질</h2>
+        <div class="psub">서비스가 약속(검증·번역·SLA)을 지키고 있는가</div>
+        <button class="btn btn-ghost" style="margin-bottom:16px" onclick="exportPanel('quality','운영품질')"><i class="ti ti-download" style="vertical-align:-2px"></i> 리포트</button>
+        <div class="metrics" id="qMetrics"></div>
+        <div class="card"><h3>번역 검수 평균 소요</h3><div class="ch3sub">AI + 용어사전 자동화 효과</div><div class="chart" id="qTime"></div><div style="font-size:12px; color:var(--muted); margin-top:10px">용어사전이 쌓일수록 사람 검수 시간 ↓ → 건당 마진 ↑ (Beautia의 해자)</div></div>
+        <div class="card"><h3>운영자 처리량</h3><div id="qThru"></div></div>
+      </section>
+
+    </div>
+  </main>
+</div>
+<div class="atoast" id="atoast"></div>
+<script>
+function toast(m){var t=document.getElementById('atoast');t.textContent=m;t.classList.add('show');clearTimeout(window.tt);window.tt=setTimeout(function(){t.classList.remove('show');},1700);}
+var OP={
+ '2026-06':{psub:'2026년 6월 · 도쿄',
+   m:[['확정 예약','21','<span class="up">▲ 31%</span> 전월 대비'],['완료','17','노쇼 1 · 취소 3'],['매출 (송객 수수료)','¥31,500','Phase 2 · <span class="up">▲ 75%</span>'],['활성 미용실','4','검토중 1'],['신규 손님','28','재방문율 24%'],['평균 평점','4.8','리뷰 12']],
+   monthly:[['3월','3',14],['4월','7',33],['5월','12',57],['6월','21',100]],
+   funnel:[['방문','1,240','100%','100%'],['상세조회','312','25%','62%'],['문의','38','12%','34%'],['확정','21','55%','24%'],['완료','17','81%','19%']],growth:{rev:[['3월','4.5k',14],['4월','10.5k',33],['5월','18k',57],['6월','31.5k',100]],unit:[['평균 시술액','¥12,350'],['수수료율','15%'],['건당 수수료(매출)','¥1,853']],cust:[['누적 손님','73'],['이번 달 신규','28'],['재방문율','24%']]},region:{areas:[['신오쿠보','2','12','14%'],['시부야','1','6','11%'],['긴자','1','3','9%']],top:[['ARTISAN','신오쿠보','9','4.7','100%','33%'],['Lien Tokyo','시부야','6','4.9','95%','28%'],['atelier Nao','긴자','2','4.7','80%','—']]},quality:{m:[['SLA 준수율','92%'],['미용실 응답률','94%'],['검증 정확도','100%']],time:[['4월','9분',100],['5월','6.5분',72],['6월','4.2분',47]],thru:[['우진 (대표 겸 운영)','38건'],['현지 검증원 (예정)','—']]}},
+ '2026-05':{psub:'2026년 5월 · 도쿄',
+   m:[['확정 예약','12','<span class="up">▲ 71%</span> 전월 대비'],['완료','10','노쇼 1 · 취소 1'],['매출 (송객 수수료)','¥18,000','Phase 2 · <span class="up">▲ 71%</span>'],['활성 미용실','3','검토중 1'],['신규 손님','19','재방문율 21%'],['평균 평점','4.8','리뷰 8']],
+   monthly:[['2월','2',10],['3월','3',14],['4월','7',33],['5월','12',57]],
+   funnel:[['방문','840','100%','100%'],['상세조회','210','25%','62%'],['문의','24','11%','34%'],['확정','12','50%','24%'],['완료','10','83%','19%']],growth:{rev:[['2월','1.5k',5],['3월','4.5k',14],['4월','10.5k',33],['5월','18k',57]],unit:[['평균 시술액','¥11,900'],['수수료율','15%'],['건당 수수료(매출)','¥1,785']],cust:[['누적 손님','45'],['이번 달 신규','19'],['재방문율','21%']]},region:{areas:[['신오쿠보','2','7','12%'],['시부야','1','4','10%'],['긴자','1','1','8%']],top:[['ARTISAN','신오쿠보','5','4.7','100%','30%'],['Lien Tokyo','시부야','4','4.9','92%','25%'],['atelier Nao','긴자','1','4.7','75%','—']]},quality:{m:[['SLA 준수율','89%'],['미용실 응답률','91%'],['검증 정확도','100%']],time:[['3월','11분',100],['4월','9분',82],['5월','6.5분',59]],thru:[['우진 (대표 겸 운영)','22건'],['현지 검증원 (예정)','—']]}}
+};
+var curP='2026-06';
+function renderSummary(){var d=OP[curP];
+  document.getElementById('oPsub').textContent=d.psub;
+  document.getElementById('oMetrics').innerHTML=d.m.map(function(x){return '<div class="metric"><div class="lab">'+x[0]+'</div><div class="val">'+x[1]+'</div><div class="dl">'+x[2]+'</div></div>';}).join('');
+  document.getElementById('oMonthly').innerHTML=d.monthly.map(function(x){return '<div class="barwrap"><span class="v">'+x[1]+'</span><div class="bar" style="height:'+x[2]+'%"></div><span class="x">'+x[0]+'</span></div>';}).join('');
+  document.getElementById('oFunnel').innerHTML=d.funnel.map(function(f){return '<div class="f"><div class="fl"><span>'+f[0]+'</span><span class="pct">'+f[2]+'</span></div><div class="fbar"><div class="ff" style="width:'+f[3]+'">'+f[1]+'</div></div></div>';}).join('');
+}
+function setPeriod(p,el){curP=p;document.querySelectorAll('.pseg .p').forEach(function(x){x.classList.remove('on');});el.classList.add('on');renderSummary();renderGrowth();renderRegion();renderQuality();}
+function renderGrowth(){var d=OP[curP];document.getElementById('gRev').innerHTML=d.growth.rev.map(function(x){return '<div class="barwrap"><span class="v">'+x[1]+'</span><div class="bar plum" style="height:'+x[2]+'%"></div><span class="x">'+x[0]+'</span></div>';}).join('');document.getElementById('gUnit').innerHTML=d.growth.unit.map(function(u,i){return '<div class="qrow"><div class="ql">'+u[0]+'</div><div class="qv"'+(i===2?' style="color:var(--green)"':'')+'>'+u[1]+'</div></div>';}).join('');document.getElementById('gCust').innerHTML=d.growth.cust.map(function(c){return '<div class="qrow"><div class="ql">'+c[0]+'</div><div class="qv">'+c[1]+'</div></div>';}).join('');}
+function renderRegion(){var d=OP[curP];document.getElementById('rAreas').innerHTML='<table><thead><tr><th>지역</th><th class="r">미용실</th><th class="r">예약</th><th class="r">상세→문의 전환</th></tr></thead><tbody>'+d.region.areas.map(function(a){return '<tr><td><b>'+a[0]+'</b></td><td class="r">'+a[1]+'</td><td class="r">'+a[2]+'</td><td class="r">'+a[3]+'</td></tr>';}).join('')+'</tbody></table>';document.getElementById('rTop').innerHTML='<table><thead><tr><th>미용실 TOP</th><th class="r">송객</th><th class="r">평점</th><th class="r">응답률</th><th class="r">재방문</th></tr></thead><tbody>'+d.region.top.map(function(t){return '<tr><td><b>'+t[0]+'</b> <span class="muted">'+t[1]+'</span></td><td class="r">'+t[2]+'</td><td class="r">'+t[3]+'</td><td class="r">'+t[4]+'</td><td class="r">'+t[5]+'</td></tr>';}).join('')+'</tbody></table>';}
+function renderQuality(){var d=OP[curP];document.getElementById('qMetrics').innerHTML=d.quality.m.map(function(m){return '<div class="metric"><div class="lab">'+m[0]+'</div><div class="val">'+m[1]+'</div><div class="dl">기준 충족</div></div>';}).join('');document.getElementById('qTime').innerHTML=d.quality.time.map(function(x){return '<div class="barwrap"><span class="v">'+x[1]+'</span><div class="bar" style="height:'+x[2]+'%"></div><span class="x">'+x[0]+'</span></div>';}).join('');document.getElementById('qThru').innerHTML=d.quality.thru.map(function(t){return '<div class="qrow"><div class="ql'+(t[1]==='—'?' muted':'')+'">'+t[0]+'</div><div class="qv'+(t[1]==='—'?' muted':'')+'">'+t[1]+'</div></div>';}).join('');}
+function exportReport(){var d=OP[curP];var rows=[['지표','값','비고']].concat(d.m.map(function(x){return [x[0],String(x[1]),String(x[2]).replace(/<[^>]+>/g,'')];}));var csv=rows.map(function(r){return r.map(function(c){return '"'+c.replace(/"/g,'""')+'"';}).join(',');}).join('\n');try{var b=new Blob(['﻿'+csv],{type:'text/csv'});var u=URL.createObjectURL(b);var a=document.createElement('a');a.href=u;a.download='beautia-report-'+curP+'.csv';document.body.appendChild(a);a.click();a.remove();setTimeout(function(){URL.revokeObjectURL(u);},1000);}catch(e){}toast('리포트(CSV)를 저장했어요 · '+OP[curP].psub);}
+function dl(csv,fn){try{var b=new Blob(['﻿'+csv],{type:'text/csv'});var u=URL.createObjectURL(b);var a=document.createElement('a');a.href=u;a.download=fn;document.body.appendChild(a);a.click();a.remove();setTimeout(function(){URL.revokeObjectURL(u);},1000);}catch(e){}toast('리포트(CSV)를 저장했어요');}
+function exportPanel(pid,name){var p=document.getElementById(pid);var L=[];function q(s){return '"'+String(s).replace(/\s+/g,' ').trim().replace(/"/g,'""')+'"';}p.querySelectorAll('.metric').forEach(function(m){var lab=m.querySelector('.lab'),val=m.querySelector('.val');if(lab&&val)L.push(q(lab.innerText)+','+q(val.innerText));});p.querySelectorAll('table tr').forEach(function(tr){L.push([].map.call(tr.querySelectorAll('th,td'),function(c){return q(c.innerText);}).join(','));});p.querySelectorAll('.qrow').forEach(function(r){var l=r.querySelector('.ql'),v=r.querySelector('.qv');if(l&&v)L.push(q(l.innerText)+','+q(v.innerText));});dl(L.join('\n'),'beautia-'+name+'.csv');}
+function showO(id, el){
+  document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  document.querySelectorAll('.navitem').forEach(n=>n.classList.remove('on'));
+  if(el) el.classList.add('on');
+  window.scrollTo(0,0);
+  if(id==='summary')renderSummary();
+  if(id==='growth')renderGrowth();
+  if(id==='region')renderRegion();
+  if(id==='quality')renderQuality();
+}
+renderSummary();renderGrowth();renderRegion();renderQuality();
+</script>
+</body>
+</html>

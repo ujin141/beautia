@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Beautia · 운영 콘솔</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3/dist/tabler-icons.min.css">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<!--fonts: pretendard + tabler-->
+<style>
+:root{--rose:#B5828C; --plum:#6E4A50; --cream:#F5EBE8; --page:#FBF8F6; --card:#fff; --line:#ECE0DC; --muted:#9B8487; --gold:#C9A063;
+  --amber:#BA7515; --amberbg:#FAEEDA; --red:#A32D2D; --redbg:#FBEAEA; --green:#3B6D11; --greenbg:#EAF3DE;}
+*{box-sizing:border-box; margin:0; padding:0;}
+body{font-family:'Pretendard',system-ui,sans-serif; background:var(--page); color:var(--plum);}
+.app{display:flex; min-height:100vh;}
+/* sidebar */
+.sidebar{width:212px; flex-shrink:0; background:var(--plum); color:var(--cream); padding:20px 12px; position:sticky; top:0; height:100vh;}
+.brand{font-size:19px; font-weight:700; padding:6px 10px 4px;}
+.brand span{font-size:11px; font-weight:400; opacity:.7; display:block; margin-top:2px;}
+.nav{margin-top:18px;}
+.navitem{display:flex; align-items:center; gap:11px; padding:11px 12px; border-radius:9px; font-size:13.5px; cursor:pointer; color:rgba(245,235,232,.8); margin-bottom:2px;}
+.navitem .ti{font-size:18px;}
+.navitem:hover{background:rgba(255,255,255,.08);}
+.navitem.on{background:var(--rose); color:#fff; font-weight:600;}
+.navitem .cnt{margin-left:auto; font-size:11px; background:rgba(255,255,255,.22); padding:1px 7px; border-radius:10px;}
+/* main */
+.main{flex:1; min-width:0; display:flex; flex-direction:column;}
+.topbar{display:flex; align-items:center; justify-content:flex-end; gap:16px; padding:14px 26px; border-bottom:.5px solid var(--line); background:var(--card);}
+.topbar .who{display:flex; align-items:center; gap:9px; font-size:13px;}
+.topbar .av{width:30px; height:30px; border-radius:50%; background:var(--rose); color:#fff; display:flex; align-items:center; justify-content:center; font-size:12px; font-weight:600;}
+.topbar .ti{font-size:19px; color:var(--muted); cursor:pointer;}
+.content{padding:24px 26px; overflow-y:auto;}
+.panel{display:none;} .panel.active{display:block;}
+h2.pt{font-size:21px; font-weight:700; margin-bottom:4px;}
+.psub{font-size:13px; color:var(--muted); margin-bottom:20px;}
+/* metric cards */
+.metrics{display:grid; grid-template-columns:repeat(4,1fr); gap:14px; margin-bottom:24px;}
+.metric{background:var(--card); border:.5px solid var(--line); border-radius:12px; padding:16px 18px;}
+.metric .lab{font-size:12px; color:var(--muted);}
+.metric .val{font-size:28px; font-weight:700; margin-top:8px;}
+.metric .val.warn{color:var(--amber);} .metric .val.late{color:var(--red);}
+.metric .dl{font-size:11px; color:var(--muted); margin-top:6px;}
+.card{background:var(--card); border:.5px solid var(--line); border-radius:12px; padding:18px 20px; margin-bottom:16px;}
+.card h3{font-size:15px; font-weight:600; margin-bottom:14px;}
+.todo{display:flex; align-items:center; gap:12px; padding:11px 0; border-top:.5px solid var(--line); font-size:13px;}
+.todo:first-of-type{border-top:none;}
+.todo .ti{font-size:18px; color:var(--rose);}
+.todo .sla{margin-left:auto; font-size:11px; font-weight:600; padding:2px 9px; border-radius:20px;}
+.sla.ok{background:var(--cream); color:var(--muted);}
+.sla.warn{background:var(--amberbg); color:var(--amber);}
+.sla.late{background:var(--redbg); color:var(--red);}
+.linkbtn{color:var(--rose); font-weight:600; cursor:pointer; font-size:12px;}
+/* kanban */
+.kanban{display:flex; gap:14px; overflow-x:auto; padding-bottom:8px;}
+.kcol{flex:0 0 230px; background:var(--card); border:.5px solid var(--line); border-radius:12px; padding:12px;}
+.kcol .kh{font-size:13px; font-weight:600; margin-bottom:12px; display:flex; align-items:center; gap:7px;}
+.kcol .kh .n{font-size:11px; color:var(--muted); background:var(--cream); padding:1px 7px; border-radius:10px;}
+.kcard{background:var(--page); border:.5px solid var(--line); border-radius:9px; padding:11px; margin-bottom:9px; cursor:pointer;}
+.kcard:hover{border-color:var(--rose);}
+.kcard .nm{font-size:13px; font-weight:600;}
+.kcard .ds{font-size:11px; color:var(--muted); margin:4px 0 8px;}
+.kcard .ft{display:flex; align-items:center; justify-content:space-between;}
+.kcard .ft .sla{font-size:10px; font-weight:600; padding:1px 7px; border-radius:20px;}
+/* translate UI */
+.trhead{display:flex; align-items:center; gap:14px; margin-bottom:18px; flex-wrap:wrap;}
+.trhead .tag{font-size:12px; background:var(--cream); padding:5px 12px; border-radius:8px;}
+.relay{display:grid; grid-template-columns:1fr 1fr; gap:16px;}
+.relay .dir{font-size:12px; font-weight:600; color:var(--rose); margin-bottom:10px; display:flex; align-items:center; gap:7px;}
+.block{margin-bottom:14px;}
+.block .bl{font-size:11px; color:var(--muted); margin-bottom:6px;}
+.orig{background:var(--cream); border-radius:9px; padding:11px 13px; font-size:13px; line-height:1.6;}
+.draft{width:100%; border:.5px solid var(--rose); border-radius:9px; padding:11px 13px; font-size:13px; line-height:1.6; font-family:inherit; color:var(--plum); background:var(--card); resize:none;}
+.hits{display:flex; flex-wrap:wrap; gap:6px; margin-top:9px;}
+.hit{font-size:11px; background:var(--greenbg); color:var(--green); padding:3px 9px; border-radius:20px;}
+.hit .ti{font-size:11px; vertical-align:-1px;}
+.btn{font-family:inherit; cursor:pointer; border:none; border-radius:9px; font-weight:600; font-size:13px; padding:10px 16px; margin-top:12px;}
+.btn-primary{background:var(--plum); color:var(--cream);}
+.btn-rose{background:var(--rose); color:#fff;}
+/* table */
+table{width:100%; border-collapse:collapse; font-size:13px;}
+th{text-align:left; font-size:11px; color:var(--muted); font-weight:600; padding:10px 12px; border-bottom:.5px solid var(--line);}
+td{padding:12px; border-bottom:.5px solid var(--line);}
+.badge{font-size:11px; font-weight:600; padding:2px 9px; border-radius:20px; display:inline-flex; align-items:center; gap:3px;}
+.badge.v{background:var(--cream); color:var(--plum);} .badge.l{background:var(--page); color:var(--muted); border:.5px solid var(--line);}
+.dot{display:inline-block; width:7px; height:7px; border-radius:50%; margin-right:6px;}
+.dot.on{background:var(--green);} .dot.off{background:var(--muted);}
+/* verify checklist */
+.chkrow{display:flex; align-items:center; gap:12px; padding:13px 0; border-top:.5px solid var(--line); font-size:14px;}
+.chkrow:first-of-type{border-top:none;}
+.toggle{margin-left:auto; width:42px; height:24px; border-radius:14px; background:var(--line); position:relative; cursor:pointer; transition:.2s; flex-shrink:0;}
+.toggle.on{background:var(--rose);}
+.toggle::after{content:''; position:absolute; top:3px; left:3px; width:18px; height:18px; border-radius:50%; background:#fff; transition:.2s;}
+.toggle.on::after{left:21px;}
+.muted{color:var(--muted);}
+@keyframes scrIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+.panel.active{animation:scrIn .22s ease;}
+.brand{font-family:'Cormorant Garamond',Georgia,serif;font-size:23px;letter-spacing:.4px;}
+.brand span{font-family:'Pretendard',sans-serif;letter-spacing:0;}
+h2.pt,.metric .val{letter-spacing:-.4px;}
+.btn{transition:transform .12s ease;}.btn:active{transform:scale(.97);}
+/* === design system v2 === */
+*{-webkit-font-smoothing:antialiased;}
+.card,.metric{box-shadow:0 1px 2px rgba(90,60,66,.04),0 10px 26px -18px rgba(90,60,66,.18);border-color:rgba(110,74,80,.09);}
+.kcard{box-shadow:0 1px 2px rgba(90,60,66,.05);}
+.btn-primary{box-shadow:0 8px 18px -8px rgba(110,74,80,.5);}
+.sidebar{box-shadow:2px 0 30px -20px rgba(70,40,46,.6);}
+.topbar{box-shadow:0 1px 0 rgba(110,74,80,.05);}
+.navitem{border-radius:10px;}
+.navitem.on{box-shadow:0 8px 18px -8px rgba(181,130,140,.75);}
+/* === white tone unify === */
+body,.main,.content{background:#FBFAF9;}
+.sidebar{background:#fff;color:var(--plum);border-right:1px solid #F0ECEA;box-shadow:none;}
+.brand{color:var(--plum);font-family:Georgia,'Times New Roman',serif;font-style:italic;}
+.brand span{color:var(--muted);font-style:normal;font-family:'Pretendard',sans-serif;}
+.navitem{color:#6B6065;border-radius:10px;}
+.navitem:hover{background:#F7F3F1;}
+.navitem.on{background:var(--rose);color:#fff;}
+.navitem .cnt{background:rgba(110,74,80,.08);color:var(--plum);}
+.navitem.on .cnt{background:rgba(255,255,255,.25);color:#fff;}
+.topbar{background:#fff;border-bottom:1px solid #F0ECEA;}
+.card,.metric{background:#fff;border:1px solid #F2EDEB;box-shadow:0 1px 1px rgba(90,60,66,.03),0 8px 22px -16px rgba(90,60,66,.16);}
+h2.pt{font-family:'Pretendard',sans-serif;letter-spacing:-.5px;}
+.metric .val{font-family:'Pretendard',sans-serif;font-variant-numeric:tabular-nums;letter-spacing:-.5px;}
+th{border-bottom:1px solid #F0ECEA;}td{border-bottom:1px solid #F4EFED;}
+.kcard{background:#FBFAF9;border-color:#F2EDEB;}
+/* === interactive relay + settlement === */
+.rqueue{display:flex;gap:8px;overflow-x:auto;margin-bottom:16px;padding-bottom:2px;}
+.rq{flex:0 0 auto;border:1px solid #F2EDEB;border-radius:10px;padding:9px 12px;cursor:pointer;background:#fff;min-width:138px;}
+.rq.on{border-color:var(--rose);box-shadow:0 0 0 1px var(--rose) inset;}
+.rq.done{opacity:.5;}
+.rq .qn{font-size:13px;font-weight:600;}
+.rq .qd{font-size:11px;color:var(--muted);margin:3px 0 6px;}
+.rq .qs{font-size:10px;font-weight:600;padding:1px 8px;border-radius:20px;}
+.block.locked{opacity:.65;}
+.sentbadge{display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:600;color:var(--green);background:var(--greenbg);padding:9px 13px;border-radius:9px;margin-top:8px;}
+.waitbox{background:var(--cream);border-radius:9px;padding:26px 18px;text-align:center;color:var(--muted);font-size:13px;line-height:1.6;}
+.waitbox .ti{font-size:24px;display:block;margin-bottom:9px;color:var(--rose);}
+.badge.amber{background:var(--amberbg);color:var(--amber);}
+.modalwrap{position:fixed;inset:0;background:rgba(40,30,33,.45);display:none;align-items:center;justify-content:center;z-index:80;padding:24px;}
+.modalwrap.show{display:flex;}
+.modal{background:#fff;border-radius:16px;max-width:430px;width:100%;max-height:86vh;overflow-y:auto;box-shadow:0 30px 70px -20px rgba(70,40,46,.5);}
+.modal .mh{display:flex;align-items:center;padding:16px 20px;border-bottom:1px solid #F0ECEA;font-size:15px;font-weight:700;}
+.modal .mh .ti{margin-left:auto;cursor:pointer;color:var(--muted);font-size:20px;}
+.modal .mb{padding:20px;}
+.inv .ir{display:flex;justify-content:space-between;font-size:13px;padding:9px 0;border-bottom:1px solid #F4EFED;}
+.inv .ir .k{color:var(--muted);}
+.inv .ir.tot{border-bottom:none;border-top:2px solid var(--plum);margin-top:6px;padding-top:13px;font-weight:700;font-size:16px;}
+.atoast{position:fixed;left:50%;bottom:30px;transform:translateX(-50%);background:var(--plum);color:#fff;font-size:13px;padding:11px 18px;border-radius:22px;opacity:0;transition:.25s;pointer-events:none;z-index:90;box-shadow:0 10px 24px -8px rgba(70,40,46,.5);}
+.atoast.show{opacity:1;}
+.ginp{width:100%;border:.5px solid var(--line);border-radius:9px;padding:11px 13px;font-family:inherit;font-size:13px;color:var(--plum);background:var(--card);outline:none;}
+.ginp:focus{border-color:var(--rose);}
+</style>
+</head>
+<body>
+<div class="app">
+  <aside class="sidebar">
+    <div class="brand">Beautia<span>운영 콘솔 · Admin</span></div>
+    <div class="nav">
+      <div class="navitem on" onclick="showA('dash',this)"><i class="ti ti-layout-dashboard"></i> 대시보드</div>
+      <div class="navitem" onclick="showA('pipeline',this)"><i class="ti ti-layout-kanban"></i> 예약 파이프라인 <span class="cnt">6</span></div>
+      <div class="navitem" onclick="showA('translate',this)"><i class="ti ti-language"></i> 번역 검수 <span class="cnt">2</span></div>
+      <div class="navitem" onclick="showA('salons',this)"><i class="ti ti-building-store"></i> 미용실</div>
+      <div class="navitem" onclick="showA('verify',this)"><i class="ti ti-rosette-discount-check"></i> 검증 관리</div>
+      <div class="navitem" onclick="showA('glossary',this)"><i class="ti ti-book"></i> 용어사전</div>
+      <div class="navitem" onclick="showA('settle',this)"><i class="ti ti-receipt"></i> 정산 <span class="cnt">P2</span></div>
+    </div>
+  </aside>
+
+  <main class="main">
+    <div class="topbar">
+      <i class="ti ti-bell"></i>
+      <div class="who"><div class="av">우진</div> 우진 · admin</div>
+    </div>
+    <div class="content">
+
+      <!-- DASHBOARD -->
+      <section class="panel active" id="dash">
+        <h2 class="pt">대시보드</h2>
+        <div class="psub">오늘 2026-06-23 · 도쿄</div>
+        <div class="metrics">
+          <div class="metric"><div class="lab">신규 문의</div><div class="val">5</div><div class="dl">오늘 +3</div></div>
+          <div class="metric"><div class="lab">처리 대기</div><div class="val warn">2</div><div class="dl">번역 검수 필요</div></div>
+          <div class="metric"><div class="lab">SLA 임박/초과</div><div class="val late">1</div><div class="dl">미용실 무응답 22h</div></div>
+          <div class="metric"><div class="lab">오늘 확정</div><div class="val">4</div><div class="dl">완료 2</div></div>
+        </div>
+        <div class="card">
+          <h3>지금 할 일</h3>
+          <div class="todo"><i class="ti ti-language"></i> ARTISAN · 김지은 — 손님 요청 번역 검수 <span class="linkbtn" onclick="showA('translate',document.querySelectorAll('.navitem')[2])">검수하기</span> <span class="sla warn">임박 1h</span></div>
+          <div class="todo"><i class="ti ti-send"></i> Lien Tokyo · 박서준 — 미용실에 전달 대기 <span class="sla ok">정상</span></div>
+          <div class="todo"><i class="ti ti-alert-triangle"></i> atelier Nao · 이하늘 — 미용실 무응답, 전화 푸시 <span class="sla late">초과 22h</span></div>
+          <div class="todo"><i class="ti ti-message-2"></i> ARTISAN · 최유나 — 응답 도착, 손님에게 번역 전달 <span class="sla ok">정상</span></div>
+        </div>
+        <div class="card">
+          <h3>이번 주 퍼널</h3>
+          <div style="font-size:13px; line-height:2.1; color:var(--muted)">
+            방문 <b style="color:var(--plum)">1,240</b> → 상세조회 <b style="color:var(--plum)">312</b> → 문의 <b style="color:var(--plum)">38</b> → 확정 <b style="color:var(--plum)">21</b> → 완료 <b style="color:var(--plum)">17</b> → 리뷰 <b style="color:var(--plum)">12</b>
+          </div>
+        </div>
+      </section>
+
+      <!-- PIPELINE -->
+      <section class="panel" id="pipeline">
+        <h2 class="pt">예약 파이프라인</h2>
+        <div class="psub">문의가 들어온 순간부터 완료까지. 카드를 눌러 번역 검수로 이동.</div>
+        <div class="kanban" id="kanban"></div>
+      </section>
+
+      <!-- TRANSLATE REVIEW (핵심) -->
+      <section class="panel" id="translate">
+        <h2 class="pt">번역 검수</h2>
+        <div class="psub">AI 초안을 확인·수정한 뒤 전송. 손님과 미용실은 직접 대화하지 않습니다.</div>
+        <div class="rqueue" id="relayQueue"></div>
+        <div id="relayWrap"></div>
+        <div class="card" style="background:var(--cream); border:none">
+          <div style="font-size:12px; color:var(--plum); line-height:1.6"><b>팁:</b> 초안을 수정해 전송하면 그 수정이 용어사전에 학습됩니다. 사전이 쌓일수록 사람 검수 시간이 줄어듭니다 — 이게 Beautia의 해자.</div>
+        </div>
+      </section>
+
+      <!-- SALONS -->
+      <section class="panel" id="salons">
+        <h2 class="pt">미용실</h2>
+        <div class="psub" id="salonsSub">총 4곳 · 도쿄</div>
+        <div class="card" style="padding:0; overflow:hidden"><div id="salonsTable"></div></div>
+        <button class="btn btn-primary" onclick="addSalonModal()"><i class="ti ti-plus" style="vertical-align:-2px"></i> 미용실 등록</button>
+      </section>
+
+      <!-- VERIFY -->
+      <section class="panel" id="verify">
+        <h2 class="pt">검증 관리</h2>
+        <div class="psub">ARTISAN · 신오쿠보 — 한국인 기준 체크리스트</div>
+        <div class="card">
+          <h3>확인 항목</h3>
+          <div class="chkrow">한국어 응대 가능 <div class="toggle on" onclick="this.classList.toggle('on');vChk()"></div></div>
+          <div class="chkrow">다운펌 · 매직 가능 <div class="toggle on" onclick="this.classList.toggle('on');vChk()"></div></div>
+          <div class="chkrow">뿌리염색 · 탈색 가능 <div class="toggle on" onclick="this.classList.toggle('on');vChk()"></div></div>
+          <div class="chkrow">가격 사전 고지 <div class="toggle on" onclick="this.classList.toggle('on');vChk()"></div></div>
+          <div class="chkrow">한국 손님 응대 경험 <div class="toggle on" onclick="this.classList.toggle('on');vChk()"></div></div>
+          <div class="chkrow">역 도보 5분 이내 <div class="toggle on" onclick="this.classList.toggle('on');vChk()"></div></div>
+          <div class="chkrow" style="border-top:1px solid var(--line);margin-top:8px;padding-top:14px;font-weight:700">검증 레벨 <span id="vLevel" style="margin-left:auto;font-weight:400"></span></div>
+        </div>
+        <div class="card">
+          <h3>배지 · 손님 피드백</h3>
+          <div style="font-size:13px; line-height:1.9">현재 배지: <span id="vBadge"></span><br>
+          "한국어 통했나요?" 최근 5건 — <b style="color:var(--green)">5/5 예</b> · 강등 위험 없음</div>
+          <button class="btn btn-rose" onclick="vSave()">검증 저장</button>
+        </div>
+      </section>
+
+      <!-- GLOSSARY -->
+      <section class="panel" id="glossary">
+        <h2 class="pt">용어사전</h2>
+        <div class="psub">미용 전문 한↔일 용어. 번역 검수에서 자동 적용 · 경쟁사가 못 베끼는 자산.</div>
+        <div class="card" style="background:var(--cream);border:none;display:flex;align-items:center;gap:12px"><i class="ti ti-school" style="font-size:22px;color:var(--rose)"></i><div style="font-size:13px;line-height:1.5"><b id="glossLearned">0</b>건 — 이번 세션 검수에서 학습한 표현. 초안을 고쳐 보낼 때마다 늘어납니다 (Beautia의 해자).</div></div>
+        <div class="card" style="padding:0; overflow:hidden"><div id="glossTable"></div></div>
+        <button class="btn btn-primary" onclick="addGlossModal()"><i class="ti ti-plus" style="vertical-align:-2px"></i> 용어 추가</button>
+      </section>
+
+      <!-- SETTLEMENT (Phase 2) -->
+      <section class="panel" id="settle">
+        <h2 class="pt">정산 <span style="font-size:12px; background:var(--cream); color:var(--plum); padding:2px 9px; border-radius:8px; vertical-align:4px">Phase 2</span></h2>
+        <div class="psub">미용실 송객 수수료 · 손님은 무료, 거래량 쌓인 미용실만 과금</div>
+        <div class="metrics" id="settleMetrics"></div>
+        <div class="card" style="padding:0; overflow:hidden"><div id="settleTable"></div></div>
+        <div class="card" style="background:var(--cream); border:none"><div style="font-size:12px; line-height:1.6"><b>모델:</b> 검증 단계엔 전원 무료 → 거래량이 쌓인 미용실부터 송객 수수료 15% 도입. 손님은 끝까지 무료(언어 대행 가치). 노쇼는 수수료 제외.</div></div>
+      </section>
+
+    </div>
+  </main>
+</div>
+<div class="modalwrap" id="modalWrap" onclick="if(event.target===this)closeModal()"><div class="modal"><div class="mh"><span id="modalTitle"></span><i class="ti ti-x" onclick="closeModal()"></i></div><div class="mb" id="modalBody"></div></div></div>
+<div class="atoast" id="atoast"></div>
+<script>
+function showA(id, el){
+  document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  document.querySelectorAll('.navitem').forEach(n=>n.classList.remove('on'));
+  if(el) el.classList.add('on');
+  document.querySelector('.content').scrollTop=0;
+  if(id==='translate')renderRelay();
+  if(id==='settle')renderSettle();
+  if(id==='glossary')renderGloss();
+  if(id==='salons')renderSalons();
+  if(id==='pipeline')renderKanban();
+  if(id==='verify')vChk();
+}
+function vChk(){var on=document.querySelectorAll('#verify .chkrow .toggle.on').length;var lvl=on>=5?{t:'Beautia 검증',c:'v'}:(on>=3?{t:'부분확인',c:'l'}:{t:'미달',c:'l'});var bg=(lvl.c==='v'?'<span class="badge v"><i class="ti ti-rosette-discount-check"></i> '+lvl.t+'</span>':'<span class="badge l">'+lvl.t+'</span>');var L=document.getElementById('vLevel');if(L)L.innerHTML=bg+' &nbsp;'+on+'/6';var B=document.getElementById('vBadge');if(B)B.innerHTML=bg;}
+function vSave(){vChk();toast('검증 정보를 저장했어요');}
+/* toast + modal */
+function toast(m){var t=document.getElementById('atoast');t.textContent=m;t.classList.add('show');clearTimeout(window.tt);window.tt=setTimeout(function(){t.classList.remove('show');},1600);}
+function openModal(title,html){document.getElementById('modalTitle').textContent=title;document.getElementById('modalBody').innerHTML=html;document.getElementById('modalWrap').classList.add('show');}
+function closeModal(){document.getElementById('modalWrap').classList.remove('show');}
+var GLOSS=[{ko:'다운펌',ja:'ダウンパーマ',cat:'펌',use:128},{ko:'매직(스트레이트)',ja:'縮毛矯正',cat:'펌',use:94},{ko:'볼륨매직 / 부분매직',ja:'部分縮毛矯正',cat:'펌',use:41},{ko:'뿌리염색',ja:'リタッチカラー',cat:'염색',use:76},{ko:'탈색 / 탈색모',ja:'ブリーチ / ブリーチ毛',cat:'염색',use:58},{ko:'레이어드컷',ja:'レイヤーカット',cat:'커트',use:33},{ko:'기장 유지',ja:'長さはキープ',cat:'공통',use:110}];
+var glossLearned=0;
+function renderGloss(){var t=document.getElementById('glossTable');if(t)t.innerHTML='<table><thead><tr><th>한국어</th><th>일본어</th><th>분류</th><th>사용</th></tr></thead><tbody>'+GLOSS.map(function(g){return '<tr><td>'+g.ko+'</td><td>'+g.ja+'</td><td class="muted">'+g.cat+'</td><td class="muted">'+g.use+'</td></tr>';}).join('')+'</tbody></table>';var c=document.getElementById('glossLearned');if(c)c.textContent=glossLearned;}
+function addGlossModal(){openModal('용어 추가','<div style="display:flex;flex-direction:column;gap:10px"><input class="ginp" id="gKo" placeholder="한국어 (예: 클리닉)"><input class="ginp" id="gJa" placeholder="일본어 (예: トリートメント)"><input class="ginp" id="gCat" placeholder="분류 (예: 클리닉)"></div><button class="btn btn-primary" style="margin-top:16px;width:100%" onclick="addGloss()">추가</button>');}
+function addGloss(){var ko=(document.getElementById('gKo').value||'').trim(),ja=(document.getElementById('gJa').value||'').trim(),cat=(document.getElementById('gCat').value||'').trim()||'공통';if(!ko||!ja){toast('한국어·일본어를 입력하세요');return;}GLOSS.unshift({ko:ko,ja:ja,cat:cat,use:1});closeModal();renderGloss();toast('용어를 추가했어요');}
+/* === translation relay (working demo) === */
+var REQ=[
+ {id:1024,cust:'김지은',salon:'ARTISAN',area:'신오쿠보',svc:'다운펌',stage:'draft',
+  ko:'다운펌만 하고 기장은 유지하고 싶어요. 탈색모라 손상 최소화 부탁드려요. 6/28 오후 가능할까요?',
+  ja:'ダウンパーマのみで、長さはキープしたいです。ブリーチ毛なのでダメージを最小限にお願いします。6/28の午後は可能でしょうか？',
+  hits:[['다운펌','ダウンパーマ'],['기장 유지','長さキープ'],['탈색모','ブリーチ毛']],
+  sja:'可能です。ダウンパーマ（長さキープ）で¥8,800、約90分です。低ダメージ薬剤を使います。6/28 14:00はいかがですか？',
+  sko:'가능합니다. 다운펌(기장 유지) ¥8,800, 약 90분이에요. 저손상 약제를 사용합니다. 6/28 14:00 어떠세요?'},
+ {id:1025,cust:'정민호',salon:'Lien Tokyo',area:'시부야',svc:'커트',stage:'draft',
+  ko:'앞머리 포함 단발로 자르고 싶어요. 손질 편한 스타일로 추천 부탁드려요. 6/29 가능한가요?',
+  ja:'前髪込みでボブにしたいです。お手入れが楽なスタイルでおすすめをお願いします。6/29は可能ですか？',
+  hits:[['단발','ボブ'],['앞머리','前髪']],
+  sja:'可能です。カット¥5,500、約60分です。6/29 11:00はいかがですか？',
+  sko:'가능합니다. 커트 ¥5,500, 약 60분이에요. 6/29 11:00 어떠세요?'},
+ {id:1026,cust:'박서준',salon:'Lien Tokyo',area:'시부야',svc:'매직',stage:'sent',ko:'볼륨 매직 하고 싶어요. 7/2 가능할까요?',ja:'ボリューム縮毛矯正をしたいです。7/2は可能でしょうか？',hits:[['매직','縮毛矯正']],sja:'可能です。¥12,000、約150分です。7/2 13:00はいかがですか？',sko:'가능합니다. ¥12,000, 약 150분이에요. 7/2 13:00 어떠세요?'},
+ {id:1027,cust:'최유나',salon:'ARTISAN',area:'신오쿠보',svc:'클리닉',stage:'responded',ko:'손상모 클리닉 받고 싶어요. 6/29 가능한가요?',ja:'ダメージ毛のトリートメントを受けたいです。6/29は可能ですか？',hits:[['클리닉','トリートメント']],sja:'可能です。トリートメント¥5,000、約60分です。6/29 16:00はいかがですか？',sko:'가능합니다. 클리닉 ¥5,000, 약 60분이에요. 6/29 16:00 어떠세요?'},
+ {id:1028,cust:'강도윤',salon:'ARTISAN',area:'신오쿠보',svc:'다운펌',stage:'delivered',ko:'다운펌 6/28 가능할까요?',ja:'ダウンパーマ、6/28は可能でしょうか？',hits:[['다운펌','ダウンパーマ']],sja:'可能です。¥8,800、約90分。6/28 14:00で。',sko:'가능합니다. ¥8,800, 약 90분. 6/28 14:00로.'}
+];
+var curReq=0;
+function pendingCount(){return REQ.filter(function(r){return r.stage!=='delivered';}).length;}
+function stTag(r){return r.stage==='delivered'?['완료','sla ok']:(r.stage==='draft'?['번역 필요','sla warn']:(r.stage==='sent'?['전송됨','sla ok']:['응답 도착','sla warn']));}
+function renderQueue(){
+  document.getElementById('relayQueue').innerHTML=REQ.map(function(r,i){var s=stTag(r);return '<div class="rq'+(i===curReq?' on':'')+(r.stage==='delivered'?' done':'')+'" onclick="pickReq('+i+')"><div class="qn">'+r.cust+'</div><div class="qd">'+r.salon+' · '+r.svc+'</div><span class="qs '+s[1]+'">'+s[0]+'</span></div>';}).join('');
+  var cnt=document.querySelectorAll('.navitem')[2].querySelector('.cnt');if(cnt)cnt.textContent=pendingCount();
+}
+function renderRelay(){
+  renderQueue();var r=REQ[curReq];
+  var head='<div class="trhead"><span class="tag">예약 #'+r.id+'</span><span class="tag">손님 '+r.cust+'</span><span class="tag">'+r.salon+' · '+r.area+'</span><span class="tag">'+r.svc+'</span></div>';
+  var left,right;
+  if(r.stage==='draft'){
+    left='<div class="dir"><i class="ti ti-arrow-right"></i> 손님(한국어) → 미용실(일본어)</div><div class="block"><div class="bl">손님 원문 (KO)</div><div class="orig">'+r.ko+'</div></div><div class="block"><div class="bl">AI 번역 초안 (JA) · 수정 가능</div><textarea class="draft" id="draftJa" rows="5">'+r.ja+'</textarea><div class="hits">'+r.hits.map(function(h){return '<span class="hit"><i class="ti ti-check"></i> '+h[0]+' → '+h[1]+'</span>';}).join('')+'</div></div><button class="btn btn-primary" onclick="relaySend()"><i class="ti ti-brand-line" style="vertical-align:-2px"></i> LINE으로 전송</button>';
+  }else{
+    left='<div class="dir"><i class="ti ti-arrow-right"></i> 손님(한국어) → 미용실(일본어)</div><div class="block locked"><div class="bl">손님 원문 (KO)</div><div class="orig">'+r.ko+'</div></div><div class="block locked"><div class="bl">전송된 번역 (JA)</div><div class="orig">'+r.ja+'</div></div><div class="sentbadge"><i class="ti ti-check"></i> LINE으로 전송 완료</div>';
+  }
+  if(r.stage==='draft'||r.stage==='sent'){
+    right='<div class="dir"><i class="ti ti-arrow-left"></i> 미용실(일본어) → 손님(한국어)</div><div class="waitbox"><i class="ti ti-clock"></i>'+(r.stage==='sent'?'미용실 응답을 기다리는 중…':'왼쪽을 전송하면 미용실 응답이 도착해요')+'</div>';
+  }else if(r.stage==='responded'){
+    right='<div class="dir"><i class="ti ti-arrow-left"></i> 미용실(일본어) → 손님(한국어)</div><div class="block"><div class="bl">미용실 원문 (JA)</div><div class="orig">'+r.sja+'</div></div><div class="block"><div class="bl">AI 번역 초안 (KO) · 수정 가능</div><textarea class="draft" id="draftKo" rows="5">'+r.sko+'</textarea></div><button class="btn btn-rose" onclick="relayDeliver()"><i class="ti ti-send" style="vertical-align:-2px"></i> 손님에게 전달</button>';
+  }else{
+    right='<div class="dir"><i class="ti ti-arrow-left"></i> 미용실(일본어) → 손님(한국어)</div><div class="block locked"><div class="bl">미용실 원문 (JA)</div><div class="orig">'+r.sja+'</div></div><div class="block locked"><div class="bl">전달된 번역 (KO)</div><div class="orig">'+r.sko+'</div></div><div class="sentbadge"><i class="ti ti-check"></i> 손님에게 전달 · 예약 확정</div>';
+  }
+  document.getElementById('relayWrap').innerHTML=head+'<div class="card"><div class="relay"><div>'+left+'</div><div>'+right+'</div></div></div>';
+}
+function pickReq(i){curReq=i;renderRelay();}
+function relaySend(){var r=REQ[curReq];var e=(document.getElementById('draftJa').value||'').trim();if(e&&e!==r.ja){r.ja=e;glossLearned++;var ge=document.getElementById('glossLearned');if(ge)ge.textContent=glossLearned;toast('수정 1건이 용어사전에 학습됐어요');}else{toast('LINE으로 전송했어요');}r.stage='sent';renderRelay();renderKanban();setTimeout(function(){if(r.stage==='sent'){r.stage='responded';renderRelay();renderKanban();}},1500);}
+function relayDeliver(){var r=REQ[curReq];var e=(document.getElementById('draftKo').value||'').trim();if(e)r.sko=e;r.stage='delivered';toast('손님에게 전달 · 예약 확정 처리됨');var nx=REQ.findIndex(function(x){return x.stage!=='delivered';});if(nx>=0)curReq=nx;renderRelay();renderKanban();}
+/* === settlement (working demo) === */
+var RATE=0.15;
+var SETTLE=[{salon:'ARTISAN',n:9,amt:112000,status:'미청구'},{salon:'Lien Tokyo',n:6,amt:78000,status:'미청구'},{salon:'atelier Nao',n:2,amt:20000,status:'청구완료'}];
+function yen(n){return '¥'+n.toLocaleString();}
+function renderSettle(){
+  var totN=SETTLE.reduce(function(a,s){return a+s.n;},0),totAmt=SETTLE.reduce(function(a,s){return a+s.amt;},0),totFee=Math.round(totAmt*RATE),unb=SETTLE.filter(function(s){return s.status==='미청구';}).length;
+  document.getElementById('settleMetrics').innerHTML='<div class="metric"><div class="lab">이번 달 완료 송객</div><div class="val">'+totN+'</div><div class="dl">건</div></div><div class="metric"><div class="lab">시술액 합계</div><div class="val">'+yen(totAmt)+'</div><div class="dl">완료 기준</div></div><div class="metric"><div class="lab">수수료 ('+(RATE*100)+'%)</div><div class="val">'+yen(totFee)+'</div><div class="dl">청구 예정</div></div><div class="metric"><div class="lab">미청구</div><div class="val warn">'+unb+'곳</div><div class="dl">월말 청구</div></div>';
+  document.getElementById('settleTable').innerHTML='<table><thead><tr><th>미용실</th><th>완료 송객</th><th>시술액</th><th>수수료('+(RATE*100)+'%)</th><th>상태</th><th></th></tr></thead><tbody>'+SETTLE.map(function(s,i){var fee=Math.round(s.amt*RATE);var st=s.status==='미청구'?'<span class="badge amber">미청구</span>':'<span class="badge v">청구 완료</span>';var act=s.status==='미청구'?'<span class="linkbtn" onclick="makeInvoice('+i+')">청구서 생성</span>':'<span class="linkbtn" onclick="makeInvoice('+i+')">청구서 보기</span>';return '<tr><td><b>'+s.salon+'</b></td><td>'+s.n+'</td><td>'+yen(s.amt)+'</td><td>'+yen(fee)+'</td><td>'+st+'</td><td>'+act+'</td></tr>';}).join('')+'</tbody></table>';
+}
+function makeInvoice(i){var s=SETTLE[i];var fee=Math.round(s.amt*RATE);var btns=s.status==='미청구'?'<div style="display:flex;gap:8px;margin-top:18px"><button class="btn btn-primary" style="flex:1;margin:0" onclick="downloadInvoice('+i+')"><i class="ti ti-download" style="vertical-align:-2px"></i> 청구서 저장</button><button class="btn btn-rose" style="flex:1;margin:0" onclick="confirmInvoice('+i+')">청구 완료 처리</button></div>':'<div style="margin-top:18px"><button class="btn btn-primary" style="width:100%;margin:0" onclick="downloadInvoice('+i+')"><i class="ti ti-download" style="vertical-align:-2px"></i> 청구서 저장</button></div>';
+  openModal('청구서 · '+s.salon,'<div class="inv"><div class="ir"><span class="k">미용실</span><span>'+s.salon+'</span></div><div class="ir"><span class="k">청구 기간</span><span>2026-06</span></div><div class="ir"><span class="k">완료 송객</span><span>'+s.n+'건</span></div><div class="ir"><span class="k">시술액 합계</span><span>'+yen(s.amt)+'</span></div><div class="ir"><span class="k">송객 수수료율</span><span>'+(RATE*100)+'%</span></div><div class="ir tot"><span>청구 금액</span><span>'+yen(fee)+'</span></div></div>'+btns);
+}
+function confirmInvoice(i){SETTLE[i].status='청구완료';closeModal();renderSettle();toast(SETTLE[i].salon+' 청구 완료 처리됨');}
+function downloadInvoice(i){var s=SETTLE[i];var fee=Math.round(s.amt*RATE);var t='Beautia 송객 수수료 청구서\n\n청구처: '+s.salon+'\n청구 기간: 2026-06\n완료 송객: '+s.n+'건\n시술액 합계: '+yen(s.amt)+'\n수수료율: '+(RATE*100)+'%\n────────────\n청구 금액: '+yen(fee)+'\n';try{var b=new Blob([t],{type:'text/plain'});var u=URL.createObjectURL(b);var a=document.createElement('a');a.href=u;a.download='Beautia-invoice-'+s.salon+'-202606.txt';document.body.appendChild(a);a.click();a.remove();setTimeout(function(){URL.revokeObjectURL(u);},1000);}catch(e){}toast('청구서를 저장했어요');}
+var SAL=[{name:'ARTISAN',area:'신오쿠보',verified:true,active:true,contact:'LINE'},{name:'Lien Tokyo',area:'시부야',verified:true,active:true,contact:'LINE'},{name:'atelier Nao',area:'긴자',verified:false,active:true,contact:'전화'},{name:'Hygge Hair',area:'나카메구로',verified:false,active:false,contact:'이메일'}];
+function renderSalons(){var sub=document.getElementById('salonsSub');if(sub)sub.textContent='총 '+SAL.length+'곳 · 도쿄';var t=document.getElementById('salonsTable');if(!t)return;t.innerHTML='<table><thead><tr><th>가게명</th><th>지역</th><th>검증</th><th>상태</th><th>연락</th><th></th></tr></thead><tbody>'+SAL.map(function(s,i){return '<tr><td><b>'+s.name+'</b></td><td>'+s.area+'</td><td>'+(s.verified?'<span class="badge v"><i class="ti ti-rosette-discount-check"></i> 검증</span>':'<span class="badge l">부분확인</span>')+'</td><td><span class="dot '+(s.active?'on':'off')+'" onclick="toggleSalon('+i+')" style="cursor:pointer"></span>'+(s.active?'활성':'검토중')+'</td><td class="muted">'+s.contact+'</td><td><span class="linkbtn" onclick="editSalonModal('+i+')">수정</span></td></tr>';}).join('')+'</tbody></table>';}
+function salonForm(s){return '<div style="display:flex;flex-direction:column;gap:10px"><input class="ginp" id="sName" placeholder="가게명" value="'+(s?s.name:'')+'"><input class="ginp" id="sArea" placeholder="지역 (예: 신주쿠)" value="'+(s?s.area:'')+'"><input class="ginp" id="sContact" placeholder="연락 (LINE/전화/이메일)" value="'+(s?s.contact:'LINE')+'"><label style="font-size:13px;display:flex;align-items:center;gap:8px;color:var(--plum);cursor:pointer"><input type="checkbox" id="sVerified" '+(s&&s.verified?'checked':'')+'> Beautia 검증</label></div>';}
+function addSalonModal(){openModal('미용실 등록',salonForm(null)+'<button class="btn btn-primary" style="margin-top:16px;width:100%" onclick="saveSalon(-1)">등록</button>');}
+function editSalonModal(i){openModal('미용실 수정',salonForm(SAL[i])+'<button class="btn btn-primary" style="margin-top:16px;width:100%" onclick="saveSalon('+i+')">저장</button>');}
+function saveSalon(i){var name=(document.getElementById('sName').value||'').trim(),area=(document.getElementById('sArea').value||'').trim(),contact=(document.getElementById('sContact').value||'').trim()||'LINE',verified=document.getElementById('sVerified').checked;if(!name||!area){toast('가게명·지역을 입력하세요');return;}if(i<0){SAL.push({name:name,area:area,contact:contact,verified:verified,active:false});toast('미용실을 등록했어요 (검토중)');}else{SAL[i].name=name;SAL[i].area=area;SAL[i].contact=contact;SAL[i].verified=verified;toast('정보를 저장했어요');}closeModal();renderSalons();}
+function toggleSalon(i){SAL[i].active=!SAL[i].active;renderSalons();toast(SAL[i].active?'활성화했어요':'검토중으로 전환했어요');}
+var KCOL=[['draft','접수'],['sent','미용실 전달'],['responded','응답 도착'],['delivered','확정']];
+function renderKanban(){var k=document.getElementById('kanban');if(!k)return;k.innerHTML=KCOL.map(function(col){var items=REQ.filter(function(r){return r.stage===col[0];});return '<div class="kcol"><div class="kh">'+col[1]+' <span class="n">'+items.length+'</span></div>'+items.map(function(r){var i=REQ.indexOf(r);var sla=col[0]==='draft'?'<span class="sla warn">번역 필요</span>':(col[0]==='responded'?'<span class="sla warn">전달 대기</span>':'<span class="sla ok">'+col[1]+'</span>');return '<div class="kcard" onclick="kOpen('+i+')"><div class="nm">'+r.cust+'</div><div class="ds">'+r.salon+' · '+r.svc+'</div><div class="ft"><span class="muted" style="font-size:11px">#'+r.id+'</span>'+sla+'</div></div>';}).join('')+'</div>';}).join('');}
+function kOpen(i){curReq=i;showA('translate',document.querySelectorAll('.navitem')[2]);}
+renderRelay();renderSettle();renderGloss();renderSalons();renderKanban();vChk();
+</script>
+</body>
+</html>
