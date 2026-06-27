@@ -1,3 +1,1 @@
-# Google AdSense — 승인 후 pub-XXXX 를 본인 게시자 ID로 교체하세요
-# (AdSense → 계정 → 설정 → 게시자 ID 에서 확인: ca-pub-XXXXXXXXXXXXXXXX 의 pub-XXXX 부분)
-google.com, pub-0000000000000000, DIRECT, f08c47fec0942fa0
+google.com, pub-2237857753220220, DIRECT, f08c47fec0942fa0

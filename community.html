@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="google-site-verification" content="toAtwGl-Up9Adn-xXY-y8V-ch6IBoowrYxmMXg4ZMUs">
 <meta name="naver-site-verification" content="bec0ee3bfd015beb74d81bfea16300eb57e61afd">
+<meta name="google-adsense-account" content="ca-pub-2237857753220220">
 <title>Beautia — 일본 미용실·네일 한국어 예약 · 韓国×日本ビューティーラウンジ</title>
 <link rel="icon" type="image/png" href="logo-icon.png">
 <meta name="theme-color" content="#6E4A50">
@@ -799,7 +800,7 @@ function visible(){let p=DB.posts.filter(x=>!x.hidden&&!blocked(x.nick));
   if(!curMenu){const pin=p.filter(x=>x.pinned),rest=p.filter(x=>!x.pinned);p=[...pin,...rest];}
   return p;}
 /* ===== Google AdSense (승인 후 아래 2개만 채우면 자동 활성화. 비어두면 광고 0·무영향) ===== */
-const AD_CLIENT='';      /* 예: 'ca-pub-1234567890123456' (애드센스 게시자 ID) */
+const AD_CLIENT='ca-pub-2237857753220220';      /* 애드센스 게시자 ID */
 const AD_SLOT_FEED='';   /* 예: '1234567890' (인피드 광고단위 슬롯 ID) */
 let _adsLoaded=false;
 function loadAds(){if(!AD_CLIENT||_adsLoaded)return;_adsLoaded=true;try{const s=document.createElement('script');s.async=true;s.crossOrigin='anonymous';s.src='https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client='+encodeURIComponent(AD_CLIENT);document.head.appendChild(s);}catch(e){}}
