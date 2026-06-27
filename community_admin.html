@@ -8,155 +8,334 @@
 <meta name="robots" content="noindex,nofollow">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3/dist/tabler-icons.min.css">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
-:root{--ink:#1F1A1C;--ink2:#574C50;--sub:#9C928E;--line:#ECE6E3;--line2:#F4EFEC;--soft:#F7F3F1;--tint:#FBF8F6;--pagebg:#F4F0ED;--rose:#B5828C;--plum:#6E4A50;--plum2:#5A3A40;--gold:#C98A3C;--rosebg:#FBEFF1;--plumbg:#F1ECEE;--goldbg:#F5EEE1;--r1:8px;--r2:12px;--red:#C0504D;}
+:root{--bg:#FFFFFF;--ink:#1A1416;--ink2:#6B6064;--sub:#A99FA2;--line:#EFEAEB;--line2:#F5F1F2;--soft:#F7F1F2;--tint:#FBF7F8;--plum:#6D4346;--plum2:#532F33;--gold:#9A7A3A;--plumbg:#F1E9EA;--r1:8px;--r2:12px;--red:#C0504D;--green:#2E7D54;}
 *{box-sizing:border-box;margin:0;padding:0;-webkit-font-smoothing:antialiased;}
-body{font-family:'Pretendard',system-ui,sans-serif;background:var(--pagebg);color:var(--ink);line-height:1.5;}
+body{font-family:'Pretendard',system-ui,sans-serif;background:var(--bg);color:var(--ink);line-height:1.5;letter-spacing:-.01em;}
 a{color:inherit;text-decoration:none;}.tnum{font-variant-numeric:tabular-nums;}.muted{color:var(--sub);}
-.btn{font-family:inherit;cursor:pointer;border:none;border-radius:var(--r1);font-weight:700;font-size:13px;padding:8px 14px;display:inline-flex;align-items:center;gap:6px;transition:.12s;}
-.btn:active{transform:scale(.97);}
-.btn-primary{background:var(--plum);color:#fff;}.btn-ghost{background:#fff;color:var(--plum);border:1px solid var(--line);}
-.hdr{background:#fff;border-bottom:1px solid var(--line);position:sticky;top:0;z-index:20;}
-.hwrap{max-width:1180px;margin:0 auto;display:flex;align-items:center;gap:14px;height:60px;padding:0 24px;}
-.logo{font-family:Georgia,serif;font-style:italic;font-weight:700;font-size:22px;color:var(--plum);}
-.logo small{font-style:normal;font-family:'Pretendard';font-size:12px;font-weight:700;color:var(--sub);margin-left:7px;}
-.hr{margin-left:auto;display:flex;gap:8px;}
-.wrap{max-width:1180px;margin:0 auto;padding:22px 24px 60px;}
+.btn{font-family:inherit;cursor:pointer;border:none;border-radius:999px;font-weight:700;font-size:13px;padding:9px 16px;display:inline-flex;align-items:center;gap:6px;transition:.13s;}
+.btn:active{transform:scale(.98);}
+.btn-primary{background:var(--plum);color:#fff;}.btn-primary:hover{background:var(--plum2);}
+.btn-ghost{background:#fff;color:var(--plum);border:1px solid var(--line);}.btn-ghost:hover{border-color:var(--plum);}
+.hdr{background:rgba(255,255,255,.9);backdrop-filter:blur(10px);border-bottom:1px solid var(--line);position:sticky;top:0;z-index:20;}
+.hwrap{max-width:1200px;margin:0 auto;display:flex;align-items:center;gap:14px;height:58px;padding:0 24px;}
+.logo{font-family:Georgia,serif;font-style:italic;font-weight:700;font-size:21px;color:var(--plum);}
+.logo small{font-style:normal;font-family:'Pretendard';font-size:11px;font-weight:800;letter-spacing:1px;text-transform:uppercase;color:var(--sub);margin-left:8px;}
+.hr{margin-left:auto;display:flex;gap:8px;align-items:center;}
+.me{font-size:12.5px;color:var(--ink2);font-weight:600;margin-right:4px;}
+.wrap{max-width:1200px;margin:0 auto;padding:22px 24px 70px;}
+.tabs{display:flex;gap:4px;background:var(--soft);border-radius:999px;padding:4px;margin-bottom:20px;width:fit-content;}
+.tab{font-size:13px;font-weight:700;color:var(--sub);padding:8px 18px;border-radius:999px;cursor:pointer;transition:.13s;}
+.tab.on{background:#fff;color:var(--plum);box-shadow:0 1px 4px rgba(0,0,0,.07);}
 .kpis{display:grid;grid-template-columns:repeat(6,1fr);gap:12px;margin-bottom:18px;}
-.kpi{background:#fff;border:1px solid var(--line);border-radius:var(--r2);padding:16px 18px;}
+.kpi{background:#fff;border:1px solid var(--line);border-radius:var(--r2);padding:15px 17px;}
 .kpi .l{font-size:12px;color:var(--sub);font-weight:600;}
-.kpi .n{font-size:26px;font-weight:800;color:var(--plum);margin-top:5px;}
-.kpi .s{font-size:11px;color:var(--sub);margin-top:3px;}
+.kpi .n{font-size:25px;font-weight:800;color:var(--plum);margin-top:5px;}
 @media(max-width:1080px){.kpis{grid-template-columns:repeat(3,1fr);}}
 @media(max-width:560px){.kpis{grid-template-columns:repeat(2,1fr);}}
-.blkchip{display:inline-flex;align-items:center;gap:7px;background:#FBEDEC;color:var(--red);border:1px solid #F0CFCC;border-radius:30px;padding:6px 8px 6px 13px;font-size:13px;font-weight:700;margin:4px 4px 0 0;}
-.blkchip .x{width:20px;height:20px;border-radius:50%;background:#fff;color:var(--red);display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:14px;}
-.blkempty{font-size:12.5px;color:var(--sub);padding:6px 4px;}
+.bar{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:18px;}
+.catstat{background:#fff;border:1px solid var(--line);border-radius:999px;padding:7px 14px;font-size:12.5px;font-weight:600;color:var(--ink2);}
+.catstat b{color:var(--plum);margin-left:5px;}
+.sech{font-size:13px;font-weight:800;color:var(--ink);margin:6px 2px 10px;letter-spacing:-.01em;}
 .panel{background:#fff;border:1px solid var(--line);border-radius:var(--r2);overflow:hidden;}
-.toolbar{display:flex;gap:10px;align-items:center;padding:14px 16px;border-bottom:1px solid var(--line);flex-wrap:wrap;}
-.toolbar input,.toolbar select{border:1px solid var(--line);border-radius:var(--r1);padding:9px 12px;font-family:inherit;font-size:13px;background:#fff;outline:none;}
+.toolbar{display:flex;gap:10px;align-items:center;padding:13px 16px;border-bottom:1px solid var(--line);flex-wrap:wrap;}
+.toolbar input,.toolbar select{border:1px solid var(--line);border-radius:999px;padding:9px 14px;font-family:inherit;font-size:13px;background:#fff;outline:none;}
 .toolbar input{flex:1;min-width:180px;}
+.toolbar input:focus,.toolbar select:focus{border-color:var(--plum);}
 .cnt{font-size:13px;color:var(--sub);margin-left:auto;}
 table{width:100%;border-collapse:collapse;}
-th{font-size:11.5px;font-weight:700;color:var(--sub);text-align:left;padding:11px 14px;border-bottom:1px solid var(--line);background:var(--tint);white-space:nowrap;}
+th{font-size:11px;font-weight:800;letter-spacing:.4px;text-transform:uppercase;color:var(--sub);text-align:left;padding:11px 14px;border-bottom:1px solid var(--ink);background:var(--tint);white-space:nowrap;}
 td{font-size:13px;padding:12px 14px;border-bottom:1px solid var(--line2);vertical-align:middle;}
 tr:hover td{background:var(--tint);}
-.tcat{font-size:11px;font-weight:800;color:var(--rose);}
-.ttitle{font-weight:700;color:var(--ink);max-width:360px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
-.tbadge{font-size:10px;font-weight:800;padding:2px 6px;border-radius:5px;margin-left:5px;}
-.b-pin{background:var(--plumbg);color:var(--plum);}.b-hide{background:#EEE;color:#888;}
-.who{color:var(--ink2);}.rb{font-size:9.5px;font-weight:800;padding:1px 6px;border-radius:5px;margin-left:4px;background:var(--rosebg);color:#9A5E6A;}
-.rb.owner{background:var(--plumbg);color:var(--plum);}.rb.official{background:var(--goldbg);color:#9A7B3C;}
+.tcat{font-size:10.5px;font-weight:800;letter-spacing:.5px;text-transform:uppercase;color:var(--plum);}
+.ttitle{font-weight:700;color:var(--ink);max-width:340px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.tbadge{font-size:10px;font-weight:800;padding:2px 7px;border-radius:999px;margin-left:5px;}
+.b-pin{background:var(--plumbg);color:var(--plum);}.b-hide{background:#EEE;color:#888;}.b-blk{background:#FBEDEC;color:var(--red);}
+.av{width:30px;height:30px;border-radius:50%;background:var(--plum);color:#fff;display:inline-flex;align-items:center;justify-content:center;font-weight:700;font-size:13px;background-size:cover;background-position:center;flex:0 0 auto;}
+.who{display:flex;align-items:center;gap:9px;}
+.rb{font-size:9.5px;font-weight:800;padding:1px 7px;border-radius:999px;background:var(--soft);color:var(--sub);}
+.rb.owner{background:var(--plumbg);color:var(--plum);}.rb.designer{background:#E6F0EF;color:#3E7C7B;}.rb.official{background:#F2ECDE;color:var(--gold);}.rb.guest{background:var(--soft);color:var(--sub);}
 .act{display:flex;gap:6px;}
-.iconbtn{width:30px;height:30px;border-radius:7px;border:1px solid var(--line);background:#fff;cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--ink2);}
+.iconbtn{width:31px;height:31px;border-radius:8px;border:1px solid var(--line);background:#fff;cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--ink2);transition:.12s;}
 .iconbtn:hover{background:var(--tint);}
 .iconbtn.on{background:var(--plumbg);color:var(--plum);border-color:transparent;}
 .iconbtn.del:hover{background:#FBEDEC;color:var(--red);border-color:#F0CFCC;}
+.iconbtn.blk.on{background:#FBEDEC;color:var(--red);border-color:transparent;}
+.iconbtn.adm.on{background:#FDF6E3;color:var(--gold);border-color:transparent;}
 .iconbtn .ti{font-size:16px;}
 .empty{text-align:center;color:var(--sub);padding:50px;font-size:14px;}
-.bar{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:18px;}
-.catstat{background:#fff;border:1px solid var(--line);border-radius:30px;padding:7px 14px;font-size:12.5px;font-weight:600;color:var(--ink2);}
-.catstat b{color:var(--plum);margin-left:4px;}
-.toast{position:fixed;left:50%;bottom:28px;transform:translateX(-50%) translateY(10px);background:var(--ink);color:#fff;font-size:13.5px;font-weight:600;padding:11px 20px;border-radius:var(--r1);opacity:0;transition:.25s;z-index:90;pointer-events:none;}
+.toast{position:fixed;left:50%;bottom:28px;transform:translateX(-50%) translateY(10px);background:var(--ink);color:#fff;font-size:13.5px;font-weight:600;padding:12px 22px;border-radius:999px;opacity:0;transition:.25s;z-index:90;pointer-events:none;box-shadow:0 12px 30px -10px rgba(0,0,0,.5);}
 .toast.on{opacity:1;transform:translateX(-50%);}
-.note{background:#fff;border:1px dashed var(--line);border-radius:var(--r2);padding:14px 16px;margin-top:16px;font-size:12.5px;color:var(--sub);line-height:1.6;}
+/* gate */
+.gate{max-width:380px;margin:80px auto;background:#fff;border:1px solid var(--line);border-radius:18px;padding:32px;text-align:center;}
+.gate h2{font-size:20px;font-weight:800;letter-spacing:-.02em;}
+.gate p{font-size:13px;color:var(--sub);margin-top:8px;line-height:1.6;}
+.gate input{width:100%;border:1px solid var(--line);border-radius:10px;padding:12px 14px;font-family:inherit;font-size:14px;outline:none;margin-top:14px;}
+.gate input:focus{border-color:var(--plum);}
+.gate .btn{width:100%;justify-content:center;margin-top:10px;padding:12px;}
+.gate .gbtn{width:100%;display:flex;align-items:center;justify-content:center;gap:10px;border:1px solid var(--line);background:#fff;border-radius:10px;padding:12px;font-family:inherit;font-weight:700;font-size:14px;color:var(--ink);cursor:pointer;}
+.gate .or{font-size:11px;color:var(--sub);letter-spacing:1px;margin:16px 0 2px;}
+.hide{display:none!important;}
+details.sql{margin-top:18px;background:var(--tint);border:1px solid var(--line);border-radius:12px;padding:0 16px;}
+details.sql summary{cursor:pointer;padding:14px 0;font-size:13px;font-weight:700;color:var(--plum);}
+details.sql pre{font-size:11.5px;line-height:1.6;white-space:pre-wrap;color:var(--ink2);padding:0 0 16px;font-family:ui-monospace,Menlo,monospace;}
+.warn{background:#FFF8E8;border:1px solid #F0E4C0;border-radius:12px;padding:13px 16px;margin-bottom:16px;font-size:12.5px;color:#7A5E1A;line-height:1.6;}
 </style>
 </head>
 <body>
 <header class="hdr"><div class="hwrap">
   <span class="logo">Beautia<small>커뮤니티 어드민</small></span>
   <div class="hr">
-    <a class="btn btn-ghost" href="community.html" target="_blank"><i class="ti ti-external-link"></i> 커뮤니티 보기</a>
-    <button class="btn btn-ghost" onclick="render()"><i class="ti ti-refresh"></i> 새로고침</button>
+    <span class="me" id="me"></span>
+    <a class="btn btn-ghost" href="community.html" target="_blank"><i class="ti ti-external-link"></i> 커뮤니티</a>
+    <button class="btn btn-ghost" onclick="loadAll()"><i class="ti ti-refresh"></i> 새로고침</button>
+    <button class="btn btn-ghost hide" id="logoutBtn" onclick="logout()"><i class="ti ti-logout"></i> 로그아웃</button>
   </div>
 </div></header>
 
-<div class="wrap">
-  <div class="kpis" id="kpis"></div>
-  <div class="bar" id="catbar"></div>
-  <div class="panel" style="margin-bottom:18px">
-    <div class="toolbar"><b style="font-size:14px">🚫 차단 계정</b><span class="cnt" id="blkcnt"></span></div>
-    <div id="blocklist" style="padding:12px 16px"></div>
-    <div style="padding:12px 16px;border-top:1px solid var(--line);display:flex;gap:8px">
-      <input id="blkin" placeholder="닉네임으로 직접 차단" style="flex:1;border:1px solid var(--line);border-radius:8px;padding:9px 12px;font-family:inherit;font-size:13px;outline:none" onkeydown="if(event.key==='Enter')blockManual()">
-      <button class="btn btn-primary" onclick="blockManual()"><i class="ti ti-ban"></i> 차단</button>
+<!-- 로그인 게이트 -->
+<div class="wrap" id="gateWrap">
+  <div class="gate">
+    <h2>관리자 로그인</h2>
+    <p>커뮤니티 운영 권한이 있는 계정으로 로그인하세요.</p>
+    <button class="gbtn" onclick="googleLogin()"><svg width="17" height="17" viewBox="0 0 48 48"><path fill="#EA4335" d="M24 9.5c3.5 0 6.7 1.2 9.2 3.6l6.9-6.9C35.9 2.4 30.5 0 24 0 14.6 0 6.5 5.4 2.6 13.2l8 6.2C12.4 13.7 17.7 9.5 24 9.5z"/><path fill="#4285F4" d="M47 24.5c0-1.6-.2-3.1-.4-4.5H24v9h12.9c-.6 3-2.3 5.5-4.8 7.2l7.7 6c4.5-4.2 7.2-10.4 7.2-17.7z"/><path fill="#FBBC05" d="M10.5 28.6c-.5-1.5-.8-3-.8-4.6s.3-3.1.8-4.6l-8-6.2C.9 16.5 0 20.1 0 24s.9 7.5 2.6 10.8l7.9-6.2z"/><path fill="#34A853" d="M24 48c6.5 0 11.9-2.1 15.9-5.8l-7.7-6c-2.1 1.4-4.9 2.3-8.2 2.3-6.3 0-11.6-4.2-13.5-9.9l-7.9 6.2C6.5 42.6 14.6 48 24 48z"/></svg> Google로 로그인</button>
+    <div class="or">또는 이메일</div>
+    <input id="gEmail" type="email" placeholder="이메일 주소">
+    <button class="btn btn-primary" id="gSend" onclick="emailLogin()">인증 메일 받기</button>
+    <div id="gCodeRow" class="hide">
+      <input id="gCode" placeholder="인증번호 6자리" inputmode="numeric">
+      <button class="btn btn-primary" onclick="verifyEmail()">확인</button>
     </div>
+    <details class="sql"><summary>⚙️ 최초 1회 설정 SQL (관리자 권한·정책)</summary><pre id="sqlText"></pre></details>
   </div>
-  <div class="panel">
-    <div class="toolbar">
-      <input id="q" placeholder="제목·작성자 검색" oninput="render()">
-      <select id="fcat" onchange="render()"><option value="">전체 카테고리</option></select>
-      <select id="fstate" onchange="render()"><option value="">전체 상태</option><option value="pinned">📌 공지</option><option value="hidden">🙈 숨김</option><option value="visible">노출중</option></select>
-      <select id="fsort" onchange="render()"><option value="new">최신순</option><option value="hot">인기순</option><option value="cmt">댓글순</option></select>
-      <span class="cnt" id="cnt"></span>
-    </div>
-    <div style="overflow-x:auto"><table id="tbl"></table></div>
-  </div>
-  <div class="note">⚠️ 이 어드민은 <b>이 브라우저(localStorage)</b>의 커뮤니티 데이터를 관리해요. 여러 기기/사용자 공통 관리·회원 관리·신고 처리는 <b>백엔드(Supabase 등)</b> 연결 후 가능해요. (회원 정보는 기기별 저장이라 여기선 글/댓글 관리만 제공)</div>
 </div>
+
+<!-- 권한 없음 -->
+<div class="wrap hide" id="denyWrap">
+  <div class="gate">
+    <h2>권한이 없어요</h2>
+    <p id="denyMsg"></p>
+    <button class="btn btn-primary" onclick="logout()">다른 계정으로 로그인</button>
+    <details class="sql"><summary>⚙️ 이 계정을 관리자로 지정하는 SQL</summary><pre id="sqlText2"></pre></details>
+  </div>
+</div>
+
+<!-- 어드민 본문 -->
+<div class="wrap hide" id="appWrap">
+  <div class="tabs">
+    <span class="tab on" data-tab="dash" onclick="setTab('dash')">대시보드</span>
+    <span class="tab" data-tab="posts" onclick="setTab('posts')">글 관리</span>
+    <span class="tab" data-tab="cmts" onclick="setTab('cmts')">댓글 관리</span>
+    <span class="tab" data-tab="members" onclick="setTab('members')">회원 관리</span>
+  </div>
+
+  <div id="tab-dash">
+    <div class="kpis" id="kpis"></div>
+    <div class="sech">카테고리별 노출 글</div>
+    <div class="bar" id="catbar"></div>
+    <div class="sech">지역별 글</div>
+    <div class="bar" id="regbar"></div>
+    <div class="sech">회원 구성</div>
+    <div class="bar" id="rolebar"></div>
+  </div>
+
+  <div id="tab-posts" class="hide">
+    <div class="panel">
+      <div class="toolbar">
+        <input id="q" placeholder="제목·작성자 검색" oninput="renderPosts()">
+        <select id="fcat" onchange="renderPosts()"></select>
+        <select id="fstate" onchange="renderPosts()"><option value="">전체 상태</option><option value="pinned">📌 공지</option><option value="hidden">🙈 숨김</option><option value="visible">노출중</option></select>
+        <select id="fsort" onchange="renderPosts()"><option value="new">최신순</option><option value="hot">인기순</option><option value="cmt">댓글순</option></select>
+        <span class="cnt" id="pcnt"></span>
+      </div>
+      <div style="overflow-x:auto"><table id="ptbl"></table></div>
+    </div>
+  </div>
+
+  <div id="tab-cmts" class="hide">
+    <div class="panel">
+      <div class="toolbar"><input id="cq" placeholder="댓글 내용·작성자 검색" oninput="renderCmts()"><span class="cnt" id="ccnt"></span></div>
+      <div style="overflow-x:auto"><table id="ctbl"></table></div>
+    </div>
+  </div>
+
+  <div id="tab-members" class="hide">
+    <div class="panel">
+      <div class="toolbar">
+        <input id="mq" placeholder="닉네임 검색" oninput="renderMembers()">
+        <select id="frole" onchange="renderMembers()"><option value="">전체 역할</option><option value="guest">손님</option><option value="owner">사장님</option><option value="designer">디자이너</option><option value="official">공식</option></select>
+        <select id="fmstate" onchange="renderMembers()"><option value="">전체</option><option value="blocked">차단됨</option><option value="admin">관리자</option><option value="pro">전문가(사진O)</option></select>
+        <span class="cnt" id="mcnt"></span>
+      </div>
+      <div style="overflow-x:auto"><table id="mtbl"></table></div>
+    </div>
+  </div>
+</div>
+
 <div class="toast" id="toast"></div>
 
 <script>
-const KEY='beautia_comm2';
+const SB_URL="https://pzbxcktaljhesrfnqwzq.supabase.co";
+const SB_KEY="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InB6Ynhja3RhbGpoZXNyZm5xd3pxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjgxNjc1MjYsImV4cCI6MjA4Mzc0MzUyNn0.aUZbTgfWbjEISNr1-cu9YJnOGj1lzjXeRVifHygAplc";
+const SB=supabase.createClient(SB_URL,SB_KEY);
 const CATS=['질문','후기','정보','모델모집','자유','사장님','구인구직'];
+const REGS=['서울','부산','대구','인천','한국 기타','도쿄','오사카','교토','후쿠오카','삿포로','나고야','일본 기타'];
 const $=id=>document.getElementById(id);
-const esc=s=>(s||'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-function timeago(t){const d=(Date.now()-t)/1000;if(d<3600)return Math.floor(d/60)+'분 전';if(d<86400)return Math.floor(d/3600)+'시간 전';if(d<2592000)return Math.floor(d/86400)+'일 전';return new Date(t).toLocaleDateString('ko-KR',{month:'numeric',day:'numeric'});}
-function toast(m){const e=$('toast');e.textContent=m;e.classList.add('on');clearTimeout(e._);e._=setTimeout(()=>e.classList.remove('on'),1800);}
-function load(){try{return JSON.parse(localStorage.getItem(KEY))||{seq:100,posts:[]};}catch(e){return{seq:100,posts:[]};}}
-function save(db){localStorage.setItem(KEY,JSON.stringify(db));}
-let DB=load();
+const esc=s=>(''+(s==null?'':s)).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+function timeago(t){t=+new Date(t);const d=(Date.now()-t)/1000;if(d<3600)return Math.floor(d/60)+'분 전';if(d<86400)return Math.floor(d/3600)+'시간 전';if(d<2592000)return Math.floor(d/86400)+'일 전';return new Date(t).toLocaleDateString('ko-KR',{month:'numeric',day:'numeric'});}
+function toast(m){const e=$('toast');e.textContent=m;e.classList.add('on');clearTimeout(e._);e._=setTimeout(()=>e.classList.remove('on'),2000);}
+const SQL=`-- Beautia 커뮤니티 어드민 최초 1회 설정 (Supabase SQL Editor에서 실행)
+alter table public.profiles add column if not exists is_admin boolean default false;
+alter table public.profiles add column if not exists blocked boolean default false;
 
-$('fcat').innerHTML='<option value="">전체 카테고리</option>'+CATS.map(c=>`<option>${c}</option>`).join('');
+-- 본인을 관리자로 지정 (이메일을 본인 것으로 교체)
+update public.profiles set is_admin=true
+ where id=(select id from auth.users where email='YOUR@EMAIL.com');
 
-function rbCls(r){return r==='owner'?'rb owner':(r==='official'?'rb official':'rb');}
-function rbName(r){return r==='owner'?'사장님':(r==='official'?'공식':'손님');}
+-- 관리자 권한 정책
+drop policy if exists "admin_update_posts" on public.posts;
+create policy "admin_update_posts" on public.posts for update
+ using (exists(select 1 from public.profiles me where me.id=auth.uid() and me.is_admin));
+drop policy if exists "admin_delete_posts" on public.posts;
+create policy "admin_delete_posts" on public.posts for delete
+ using (exists(select 1 from public.profiles me where me.id=auth.uid() and me.is_admin));
+drop policy if exists "admin_delete_comments" on public.comments;
+create policy "admin_delete_comments" on public.comments for delete
+ using (exists(select 1 from public.profiles me where me.id=auth.uid() and me.is_admin));
+drop policy if exists "admin_update_profiles" on public.profiles;
+create policy "admin_update_profiles" on public.profiles for update
+ using (exists(select 1 from public.profiles me where me.id=auth.uid() and me.is_admin));`;
+$('sqlText').textContent=SQL;$('sqlText2').textContent=SQL;
 
-function render(){
-  DB=load();DB.blocked=DB.blocked||[];
-  const posts=DB.posts||[];
-  const cmts=posts.reduce((a,p)=>a+(p.cmts?p.cmts.length:0),0);
-  const pinned=posts.filter(p=>p.pinned).length, hidden=posts.filter(p=>p.hidden).length;
-  const likes=posts.reduce((a,p)=>a+(p.like||0),0);
-  $('kpis').innerHTML=[
-    ['전체 글',posts.length],['댓글',cmts],['좋아요',likes],['📌 공지',pinned],['🙈 숨김',hidden],['🚫 차단',DB.blocked.length]
-  ].map(([l,n])=>`<div class="kpi"><div class="l">${l}</div><div class="n tnum">${n}</div></div>`).join('');
-  renderBlocked();
-  $('catbar').innerHTML=CATS.map(c=>`<span class="catstat">${c}<b class="tnum">${posts.filter(p=>p.cat===c&&!p.hidden).length}</b></span>`).join('');
-  // filter
+/* ===== auth ===== */
+let ME=null, gEmail='';
+async function googleLogin(){const {error}=await SB.auth.signInWithOAuth({provider:'google',options:{redirectTo:location.origin+location.pathname}});if(error)toast('구글 로그인 오류: '+error.message);}
+async function emailLogin(){const e=$('gEmail').value.trim();if(!e){toast('이메일을 입력하세요');return;}gEmail=e;const {error}=await SB.auth.signInWithOtp({email:e,options:{shouldCreateUser:true,emailRedirectTo:location.origin+location.pathname}});if(error){toast('전송 실패: '+error.message);return;}$('gCodeRow').classList.remove('hide');toast('인증 메일을 보냈어요 (코드 또는 링크 확인)');}
+async function verifyEmail(){const c=$('gCode').value.trim();if(!c){toast('인증번호를 입력하세요');return;}const {error}=await SB.auth.verifyOtp({email:gEmail,token:c,type:'email'});if(error){toast('인증번호가 틀려요');return;}gate();}
+async function logout(){await SB.auth.signOut();location.reload();}
+
+function show(which){['gateWrap','denyWrap','appWrap'].forEach(id=>$(id).classList.toggle('hide',id!==which));}
+async function gate(){
+  const {data:{session}}=await SB.auth.getSession();
+  if(!session){show('gateWrap');$('logoutBtn').classList.add('hide');$('me').textContent='';return;}
+  const {data:prof}=await SB.from('profiles').select('id,nickname,is_admin').eq('id',session.user.id).maybeSingle();
+  $('logoutBtn').classList.remove('hide');
+  $('me').textContent=(session.user.email||'')+(prof&&prof.nickname?' · '+prof.nickname:'');
+  if(prof&&prof.is_admin){ME=session.user;show('appWrap');loadAll();}
+  else{show('denyWrap');$('denyMsg').textContent=(session.user.email||'이 계정')+' 은(는) 관리자 권한이 없어요. 아래 SQL로 관리자로 지정한 뒤 새로고침하세요.';}
+}
+SB.auth.onAuthStateChange((ev)=>{if(ev==='SIGNED_IN'||ev==='SIGNED_OUT')gate();});
+
+/* ===== data ===== */
+let POSTS=[],CMTS=[],PROFS=[],PMAP={},curTab='dash';
+function nickOf(uid){return (PMAP[uid]&&PMAP[uid].nickname)||'(탈퇴/익명)';}
+function roleOf(uid){return (PMAP[uid]&&PMAP[uid].role)||'guest';}
+async function loadAll(){
+  try{
+    const [a,b,c]=await Promise.all([
+      SB.from('profiles').select('id,nickname,role,region,bio,shop,is_admin,blocked,created_at').order('created_at',{ascending:false}),
+      SB.from('posts').select('*').order('created_at',{ascending:false}),
+      SB.from('comments').select('*').order('created_at',{ascending:false}).limit(500)
+    ]);
+    PROFS=a.data||[];PMAP={};PROFS.forEach(p=>PMAP[p.id]=p);
+    POSTS=b.data||[];CMTS=c.data||[];
+    render();
+  }catch(e){toast('불러오기 실패: '+e.message);}
+}
+function fcatInit(){$('fcat').innerHTML='<option value="">전체 카테고리</option>'+CATS.map(c=>`<option>${c}</option>`).join('');}
+fcatInit();
+
+function setTab(tb){curTab=tb;document.querySelectorAll('.tab').forEach(e=>e.classList.toggle('on',e.dataset.tab===tb));['dash','posts','cmts','members'].forEach(id=>$('tab-'+id).classList.toggle('hide',id!==tb));render();}
+function render(){if(curTab==='dash')renderDash();else if(curTab==='posts')renderPosts();else if(curTab==='cmts')renderCmts();else renderMembers();}
+
+function renderDash(){
+  const cmts=CMTS.length, likes=POSTS.reduce((a,p)=>a+(p.like_count||0),0);
+  const pinned=POSTS.filter(p=>p.pinned).length,hidden=POSTS.filter(p=>p.hidden).length;
+  const blocked=PROFS.filter(p=>p.blocked).length;
+  $('kpis').innerHTML=[['전체 글',POSTS.length],['댓글',cmts],['회원',PROFS.length],['📌 공지',pinned],['🙈 숨김',hidden],['🚫 차단',blocked]]
+    .map(([l,n])=>`<div class="kpi"><div class="l">${l}</div><div class="n tnum">${n}</div></div>`).join('');
+  $('catbar').innerHTML=CATS.map(c=>`<span class="catstat">${c}<b class="tnum">${POSTS.filter(p=>p.cat===c&&!p.hidden).length}</b></span>`).join('');
+  $('regbar').innerHTML=REGS.map(r=>`<span class="catstat">${r}<b class="tnum">${POSTS.filter(p=>p.region===r&&!p.hidden).length}</b></span>`).join('');
+  const roles={guest:0,owner:0,designer:0,official:0};PROFS.forEach(p=>{roles[p.role]=(roles[p.role]||0)+1;});
+  $('rolebar').innerHTML=[['손님',roles.guest],['사장님',roles.owner],['디자이너',roles.designer],['공식',roles.official]].map(([l,n])=>`<span class="catstat">${l}<b class="tnum">${n}</b></span>`).join('');
+}
+
+function avHtml(p){const a=p&&p.shop&&p.shop.avatar;if(a)return `<span class="av" style="background-image:url('${a}')"></span>`;const n=(p&&p.nickname||'?')[0];return `<span class="av">${esc(n)}</span>`;}
+function rbCls(r){return 'rb '+(r||'guest');}
+function rbName(r){return r==='owner'?'사장님':r==='designer'?'디자이너':r==='official'?'공식':'손님';}
+
+function renderPosts(){
   const q=$('q').value.trim().toLowerCase(),fc=$('fcat').value,fs=$('fstate').value,so=$('fsort').value;
-  let list=posts.slice();
+  let list=POSTS.slice();
   if(fc)list=list.filter(p=>p.cat===fc);
   if(fs==='pinned')list=list.filter(p=>p.pinned);else if(fs==='hidden')list=list.filter(p=>p.hidden);else if(fs==='visible')list=list.filter(p=>!p.hidden);
-  if(q)list=list.filter(p=>((p.title||'')+(p.nick||'')).toLowerCase().includes(q));
-  if(so==='hot')list.sort((a,b)=>(b.like+b.scrap*2)-(a.like+a.scrap*2));else if(so==='cmt')list.sort((a,b)=>b.cmts.length-a.cmts.length);else list.sort((a,b)=>b.t-a.t);
-  $('cnt').textContent=list.length+'개';
-  $('tbl').innerHTML=`<thead><tr><th>카테고리</th><th>제목</th><th>작성자</th><th>지역</th><th>작성</th><th>❤</th><th>💬</th><th>관리</th></tr></thead><tbody>`+
-    (list.length?list.map(p=>`<tr style="${p.hidden?'opacity:.55':''}">
+  if(q)list=list.filter(p=>((p.title||'')+(p.nickname||'')+nickOf(p.author)).toLowerCase().includes(q));
+  const cc=id=>CMTS.filter(c=>c.post_id===id).length;
+  if(so==='hot')list.sort((a,b)=>(b.like_count||0)-(a.like_count||0));else if(so==='cmt')list.sort((a,b)=>cc(b.id)-cc(a.id));else list.sort((a,b)=>+new Date(b.created_at)-+new Date(a.created_at));
+  $('pcnt').textContent=list.length+'개';
+  $('ptbl').innerHTML=`<thead><tr><th>카테고리</th><th>제목</th><th>작성자</th><th>지역</th><th>작성</th><th>❤</th><th>💬</th><th>관리</th></tr></thead><tbody>`+
+    (list.length?list.map(p=>{const blk=(PMAP[p.author]&&PMAP[p.author].blocked);return `<tr style="${p.hidden?'opacity:.55':''}">
       <td><span class="tcat">${esc(p.cat)}</span></td>
-      <td><span class="ttitle">${p.pinned?'📌 ':''}${esc(p.title)}</span>${p.hidden?'<span class="tbadge b-hide">숨김</span>':''}</td>
-      <td><span class="who">${esc(p.nick)}</span><span class="${rbCls(p.role)}">${rbName(p.role)}</span>${DB.blocked.includes(p.nick)?'<span class="tbadge" style="background:#FBEDEC;color:#C0504D">차단</span>':''}</td>
+      <td><span class="ttitle">${p.pinned?'📌 ':''}${esc(p.title)}</span>${p.hidden?'<span class="tbadge b-hide">숨김</span>':''}${(p.imgs&&p.imgs.length)?'<span class="tbadge b-pin">📷'+p.imgs.length+'</span>':''}</td>
+      <td><span class="who">${esc(nickOf(p.author))} <span class="${rbCls(roleOf(p.author))}">${rbName(roleOf(p.author))}</span>${blk?'<span class="tbadge b-blk">차단</span>':''}</span></td>
       <td class="muted">${p.region&&p.region!=='전체'?esc(p.region):'-'}</td>
-      <td class="muted" style="white-space:nowrap">${timeago(p.t)}</td>
-      <td class="tnum">${p.like||0}</td>
-      <td class="tnum">${p.cmts?p.cmts.length:0}</td>
+      <td class="muted" style="white-space:nowrap">${timeago(p.created_at)}</td>
+      <td class="tnum">${p.like_count||0}</td>
+      <td class="tnum">${cc(p.id)}</td>
       <td><div class="act">
-        <button class="iconbtn ${p.pinned?'on':''}" title="공지 고정" onclick="togglePin(${p.id})"><i class="ti ti-pin"></i></button>
-        <button class="iconbtn ${p.hidden?'on':''}" title="숨김" onclick="toggleHide(${p.id})"><i class="ti ti-eye-off"></i></button>
-        <button class="iconbtn ${DB.blocked.includes(p.nick)?'on':''}" title="작성자 차단/해제" onclick="toggleBlockByPost(${p.id})"><i class="ti ti-ban"></i></button>
-        <button class="iconbtn del" title="삭제" onclick="del(${p.id})"><i class="ti ti-trash"></i></button>
-      </div></td>
-    </tr>`).join(''):'<tr><td colspan="8"><div class="empty">글이 없어요. 커뮤니티에서 글을 작성하면 여기에 표시돼요.</div></td></tr>')+'</tbody>';
+        <button class="iconbtn ${p.pinned?'on':''}" title="공지 고정" onclick="togglePin('${p.id}',${!p.pinned})"><i class="ti ti-pin"></i></button>
+        <button class="iconbtn ${p.hidden?'on':''}" title="숨김" onclick="toggleHide('${p.id}',${!p.hidden})"><i class="ti ti-eye-off"></i></button>
+        <button class="iconbtn del" title="삭제" onclick="delPost('${p.id}')"><i class="ti ti-trash"></i></button>
+      </div></td></tr>`;}).join(''):'<tr><td colspan="8"><div class="empty">글이 없어요.</div></td></tr>')+'</tbody>';
 }
-function togglePin(id){const p=DB.posts.find(x=>x.id===id);if(!p)return;p.pinned=!p.pinned;save(DB);render();toast(p.pinned?'공지로 고정했어요 📌':'고정을 해제했어요');}
-function toggleHide(id){const p=DB.posts.find(x=>x.id===id);if(!p)return;p.hidden=!p.hidden;save(DB);render();toast(p.hidden?'숨김 처리했어요 🙈':'다시 노출했어요');}
-function del(id){if(!confirm('이 글을 삭제할까요? 되돌릴 수 없어요.'))return;DB.posts=DB.posts.filter(x=>x.id!==id);save(DB);render();toast('삭제했어요');}
-function renderBlocked(){const b=DB.blocked||[];$('blkcnt').textContent=b.length+'명';$('blocklist').innerHTML=b.length?b.map((n,i)=>`<span class="blkchip">${esc(n)}<span class="x" title="차단 해제" onclick="unblockIdx(${i})">×</span></span>`).join(''):'<div class="blkempty">차단된 계정이 없어요. 글의 🚫 버튼이나 아래 입력으로 차단할 수 있어요.</div>';}
-function toggleBlockByPost(id){const p=DB.posts.find(x=>x.id===id);if(!p)return;if(p.role==='official'){toast('공식 계정은 차단할 수 없어요');return;}const i=DB.blocked.indexOf(p.nick);if(i<0){if(!confirm('"'+p.nick+'" 계정을 차단할까요? 글·댓글이 모두 숨겨지고 작성이 막혀요.'))return;DB.blocked.push(p.nick);}else DB.blocked.splice(i,1);save(DB);render();toast(i<0?p.nick+' 차단했어요':'차단 해제했어요');}
-function unblockIdx(i){const n=DB.blocked[i];DB.blocked.splice(i,1);save(DB);render();toast((n||'')+' 차단 해제');}
-function blockManual(){const v=$('blkin').value.trim();if(!v)return;if(DB.blocked.includes(v)){toast('이미 차단된 계정이에요');return;}DB.blocked.push(v);save(DB);$('blkin').value='';render();toast(v+' 차단했어요');}
-render();
-window.addEventListener('focus',render);
+function renderCmts(){
+  const q=$('cq').value.trim().toLowerCase();
+  const titleOf=id=>{const p=POSTS.find(x=>x.id===id);return p?p.title:'(삭제된 글)';};
+  let list=CMTS.slice();
+  if(q)list=list.filter(c=>((c.content||'')+(c.nickname||'')+nickOf(c.author)).toLowerCase().includes(q));
+  $('ccnt').textContent=list.length+'개';
+  $('ctbl').innerHTML=`<thead><tr><th>내용</th><th>작성자</th><th>원글</th><th>작성</th><th>관리</th></tr></thead><tbody>`+
+    (list.length?list.map(c=>`<tr>
+      <td style="max-width:380px">${esc(c.content)}</td>
+      <td><span class="who">${esc(nickOf(c.author))} <span class="${rbCls(roleOf(c.author))}">${rbName(roleOf(c.author))}</span></span></td>
+      <td class="muted"><span class="ttitle" style="max-width:200px">${esc(titleOf(c.post_id))}</span></td>
+      <td class="muted" style="white-space:nowrap">${timeago(c.created_at)}</td>
+      <td><div class="act"><button class="iconbtn del" title="삭제" onclick="delCmt('${c.id}')"><i class="ti ti-trash"></i></button></div></td>
+    </tr>`).join(''):'<tr><td colspan="5"><div class="empty">댓글이 없어요.</div></td></tr>')+'</tbody>';
+}
+function renderMembers(){
+  const q=$('mq').value.trim().toLowerCase(),fr=$('frole').value,fm=$('fmstate').value;
+  let list=PROFS.slice();
+  if(fr)list=list.filter(p=>p.role===fr);
+  if(fm==='blocked')list=list.filter(p=>p.blocked);else if(fm==='admin')list=list.filter(p=>p.is_admin);else if(fm==='pro')list=list.filter(p=>(p.role==='owner'||p.role==='designer')&&p.shop&&(p.shop.avatar||(p.shop.photos&&p.shop.photos.length)));
+  if(q)list=list.filter(p=>(p.nickname||'').toLowerCase().includes(q));
+  const pc=uid=>POSTS.filter(p=>p.author===uid).length;
+  $('mcnt').textContent=list.length+'명';
+  $('mtbl').innerHTML=`<thead><tr><th>회원</th><th>역할</th><th>지역</th><th>가게/경력</th><th>글</th><th>가입</th><th>관리</th></tr></thead><tbody>`+
+    (list.length?list.map(p=>{const s=p.shop||{};const sub=p.role==='owner'?(s.name||''):(p.role==='designer'?(s.career||s.name||''):(s.situation||''));return `<tr style="${p.blocked?'opacity:.6':''}">
+      <td><span class="who">${avHtml(p)} <b>${esc(p.nickname||'(미설정)')}</b>${p.is_admin?'<span class="tbadge" style="background:#FDF6E3;color:#9A7A3A">관리자</span>':''}${p.blocked?'<span class="tbadge b-blk">차단</span>':''}</span></td>
+      <td><span class="${rbCls(p.role)}">${rbName(p.role)}</span></td>
+      <td class="muted">${p.region&&p.region!=='전체'?esc(p.region):'-'}</td>
+      <td class="muted"><span class="ttitle" style="max-width:200px">${esc(sub)||'-'}</span>${s.koOK?' <span class="tbadge b-pin">한국어</span>':''}</td>
+      <td class="tnum">${pc(p.id)}</td>
+      <td class="muted" style="white-space:nowrap">${p.created_at?timeago(p.created_at):'-'}</td>
+      <td><div class="act">
+        <button class="iconbtn blk ${p.blocked?'on':''}" title="차단/해제" onclick="toggleBlock('${p.id}',${!p.blocked})"><i class="ti ti-ban"></i></button>
+        <button class="iconbtn adm ${p.is_admin?'on':''}" title="관리자 지정/해제" onclick="toggleAdmin('${p.id}',${!p.is_admin})"><i class="ti ti-shield-check"></i></button>
+      </div></td></tr>`;}).join(''):'<tr><td colspan="7"><div class="empty">회원이 없어요.</div></td></tr>')+'</tbody>';
+}
+
+/* ===== actions (Supabase write) ===== */
+async function up(table,patch,id){const {error}=await SB.from(table).update(patch).eq('id',id);if(error){toast('실패: '+error.message+' (관리자 정책 SQL을 실행했나요?)');return false;}return true;}
+async function togglePin(id,v){if(await up('posts',{pinned:v},id)){const p=POSTS.find(x=>x.id===id);if(p)p.pinned=v;render();toast(v?'공지로 고정했어요 📌':'고정 해제');}}
+async function toggleHide(id,v){if(await up('posts',{hidden:v},id)){const p=POSTS.find(x=>x.id===id);if(p)p.hidden=v;render();toast(v?'숨김 처리했어요 🙈':'다시 노출');}}
+async function delPost(id){if(!confirm('이 글을 삭제할까요? 댓글도 함께 삭제되며 되돌릴 수 없어요.'))return;const {error}=await SB.from('posts').delete().eq('id',id);if(error){toast('삭제 실패: '+error.message);return;}POSTS=POSTS.filter(x=>x.id!==id);render();toast('삭제했어요');}
+async function delCmt(id){if(!confirm('이 댓글을 삭제할까요?'))return;const {error}=await SB.from('comments').delete().eq('id',id);if(error){toast('삭제 실패: '+error.message);return;}CMTS=CMTS.filter(x=>x.id!==id);render();toast('댓글을 삭제했어요');}
+async function toggleBlock(id,v){const p=PMAP[id];if(p&&p.role==='official'){toast('공식 계정은 차단할 수 없어요');return;}if(v&&!confirm('이 회원을 차단할까요? 글·댓글이 커뮤니티에서 숨겨지고 작성이 막혀요.'))return;if(await up('profiles',{blocked:v},id)){if(p)p.blocked=v;render();toast(v?'차단했어요 🚫':'차단 해제');}}
+async function toggleAdmin(id,v){if(v&&!confirm('이 회원에게 관리자 권한을 줄까요?'))return;if(await up('profiles',{is_admin:v},id)){const p=PMAP[id];if(p)p.is_admin=v;render();toast(v?'관리자로 지정했어요':'관리자 해제');}}
+
+gate();
 </script>
 </body>
 </html>
