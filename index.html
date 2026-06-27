@@ -677,7 +677,12 @@ textarea{width:100%;font-family:inherit;font-size:13px;border:1px solid var(--li
 .rstimes{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;}
 .rstime{text-align:center;padding:9px 0;border:1px solid var(--line);border-radius:10px;font-size:12px;cursor:pointer;background:#fff;font-variant-numeric:tabular-nums;}
 .rstime.on{background:var(--rose);color:#fff;border-color:var(--rose);}
+/* 임베드 모드(랜딩 아이폰 안 iframe): 외부 프레임 제거 → 앱이 화면 가득 */
+html.embed,html.embed body{background:transparent!important;}
+html.embed body{padding:0;display:block;min-height:0;}
+html.embed .phone{width:100%;height:100vh;max-width:none;border-radius:0;box-shadow:none;border:none;}
 </style>
+<script>try{if(window.self!==window.top)document.documentElement.className+=' embed';}catch(e){document.documentElement.className+=' embed';}</script>
 </head>
 <body>
 <div class="phone">
@@ -1070,7 +1075,7 @@ function sortPick(el,s){window.sortBy=s;document.querySelectorAll('#sortrow .so'
 function setStars(n){rvStars=n;document.querySelectorAll('#stars .st').forEach((s,k)=>s.classList.toggle('on',k<n));}
 function renderReview(){const b=curBooking;const s=b?S(b.sid):S('artisan');setStars(5);document.querySelectorAll('#review .chips .chip2').forEach((c,i)=>c.classList.toggle('on',i===0));var rvt=document.getElementById('rvText');if(rvt)rvt.value='';document.getElementById('rvSalon').innerHTML=`<div class="rvsalon"><div class="th" style="width:46px;height:46px;border-radius:8px;background:${bg(s)}"></div><div><div style="font-size:14px;font-weight:600">${s.name}</div><div class="muted" style="font-size:11px">${b?b.svc.join('·'):'시술'} · ${b?(b.dt||b.dates[0]):''}</div></div></div>`;}
 function submitReview(){const b=curBooking;const sid=b?b.sid:'artisan';if(!state.reviews[sid])state.reviews[sid]=[];var tags=[...document.querySelectorAll('#review .chips .chip2.on')].map(c=>c.textContent.trim());var txt=(document.getElementById('rvText').value||'').trim();if(!txt)txt=tags.length?tags.join(', '):'만족스러운 시술이었어요.';state.reviews[sid].push({n:(state.user&&state.user.name)||'게스트',r:rvStars,t:txt,tags:tags});save();toast('리뷰 등록 완료!');setTimeout(()=>go('mybookings'),700);}
-load();if(state.user){go('home');}else{go('onboard');}startClock();
+load();if(document.documentElement.classList.contains('embed')||state.user){go('home');}else{go('onboard');}startClock();
 </script>
 </body>
 </html>
