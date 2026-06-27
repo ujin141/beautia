@@ -1,0 +1,46 @@
+<!--
+============================================================
+ Beautia 이메일 템플릿 (Supabase Authentication → Emails → Templates)
+ 사용처: "Magic Link" 와 "Confirm signup" 둘 다 아래 HTML을 붙여넣으세요.
+ 제목(Subject) 추천:
+   - Magic Link    : [Beautia] 로그인 인증 코드
+   - Confirm signup: [Beautia] 이메일 인증을 완료해 주세요
+ 변수: {{ .Token }} = 6자리 코드 / {{ .ConfirmationURL }} = 로그인 링크
+ ↓↓↓ 여기부터 끝까지 복사해서 붙여넣기 ↓↓↓
+============================================================
+-->
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#F2EEEA;margin:0;padding:0;">
+ <tr><td align="center" style="padding:36px 16px;">
+  <table role="presentation" width="480" cellpadding="0" cellspacing="0" style="width:480px;max-width:480px;background:#FFFFFF;border:1px solid #EFEAEB;border-radius:18px;overflow:hidden;">
+   <tr><td style="background:#6D4346;padding:24px 30px;">
+     <span style="font-family:Georgia,'Times New Roman',serif;font-style:italic;font-weight:bold;font-size:23px;color:#FFFFFF;letter-spacing:.2px;">Beautia</span>
+     <span style="font-family:'Apple SD Gothic Neo','Malgun Gothic',Arial,sans-serif;font-size:11px;color:#E6D6D8;letter-spacing:1px;margin-left:8px;">한·일 뷰티 라운지</span>
+   </td></tr>
+   <tr><td style="padding:36px 32px 14px;font-family:'Apple SD Gothic Neo','Malgun Gothic','Noto Sans KR',Arial,sans-serif;">
+     <div style="font-size:11px;font-weight:bold;letter-spacing:1.5px;text-transform:uppercase;color:#A24A56;">EMAIL VERIFICATION</div>
+     <h1 style="margin:10px 0 0;font-size:23px;font-weight:800;color:#1A1416;letter-spacing:-.5px;line-height:1.35;">로그인 코드를 입력해 주세요</h1>
+     <p style="margin:12px 0 0;font-size:14.5px;line-height:1.7;color:#6B6064;">아래 <b style="color:#1A1416;">6자리 코드</b>를 입력하거나, 버튼을 눌러 바로 로그인하세요.<br><span style="font-size:12.5px;color:#A99FA2;">下記の6桁コードを入力するか、ボタンからログインしてください。</span></p>
+   </td></tr>
+   <tr><td style="padding:18px 32px 6px;">
+     <table role="presentation" width="100%" cellpadding="0" cellspacing="0"><tr><td align="center" style="background:#F7F1F2;border:1px solid #EFE0E2;border-radius:14px;padding:22px 12px;">
+       <div style="font-family:'Apple SD Gothic Neo',Arial,sans-serif;font-size:11px;color:#A99FA2;letter-spacing:1px;">인증번호</div>
+       <div style="font-family:'Helvetica Neue',Arial,sans-serif;font-size:38px;font-weight:800;letter-spacing:10px;color:#6D4346;margin-top:6px;">{{ .Token }}</div>
+     </td></tr></table>
+   </td></tr>
+   <tr><td style="padding:18px 32px 6px;">
+     <table role="presentation" width="100%" cellpadding="0" cellspacing="0"><tr><td align="center" style="border-radius:999px;background:#6D4346;">
+       <a href="{{ .ConfirmationURL }}" style="display:block;padding:15px 24px;font-family:'Apple SD Gothic Neo','Malgun Gothic',Arial,sans-serif;font-size:15px;font-weight:bold;color:#FFFFFF;text-decoration:none;border-radius:999px;">로그인하기 →</a>
+     </td></tr></table>
+   </td></tr>
+   <tr><td style="padding:14px 32px 30px;font-family:'Apple SD Gothic Neo','Malgun Gothic',Arial,sans-serif;">
+     <p style="margin:0;font-size:12.5px;line-height:1.7;color:#A99FA2;">이 코드는 잠시 후 만료돼요. 본인이 요청하지 않았다면 이 메일을 무시하셔도 됩니다.<br>버튼이 안 눌리면 아래 링크를 복사해 브라우저에 붙여넣으세요.</p>
+     <p style="margin:8px 0 0;font-size:11.5px;line-height:1.6;color:#C9BFC1;word-break:break-all;">{{ .ConfirmationURL }}</p>
+   </td></tr>
+   <tr><td style="background:#FBF7F8;border-top:1px solid #F1E9EA;padding:20px 30px;font-family:'Apple SD Gothic Neo','Malgun Gothic',Arial,sans-serif;">
+     <div style="font-family:Georgia,serif;font-style:italic;font-weight:bold;font-size:15px;color:#6D4346;">Beautia</div>
+     <p style="margin:6px 0 0;font-size:11.5px;line-height:1.6;color:#A99FA2;">일본 미용실·네일을 한국어로 예약·통역 대행<br>Instagram @beautia.japan · <a href="https://beautia.io" style="color:#A24A56;text-decoration:none;">beautia.io</a></p>
+   </td></tr>
+  </table>
+  <div style="font-family:'Apple SD Gothic Neo',Arial,sans-serif;font-size:11px;color:#B8AFB1;margin-top:16px;">© 2026 Beautia</div>
+ </td></tr>
+</table>
