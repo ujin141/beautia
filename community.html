@@ -766,7 +766,7 @@ function renderRight(){
     </div></div>
     <div class="panel"><div class="panel-h">${t('popular')}</div><div class="hot" id="hot"></div></div>
     <div class="ctabox"><h4>${t('ctaTitle')}</h4><p>${t('ctaDesc')}</p><a class="btn btn-kakao" href="https://pf.kakao.com/_xhxhixfX/chat" target="_blank" rel="noopener noreferrer">💬 ${t('ctaBtn')}</a></div>`;
-  const hot=DB.posts.slice().sort((a,b)=>(b.like+b.scrap*2)-(a.like+a.scrap*2)).slice(0,5);
+  const hot=DB.posts.filter(p=>!p.hidden&&!blocked(p.nick)&&langOK(p)).sort((a,b)=>(b.like+(b.cmtCount||0)*2)-(a.like+(a.cmtCount||0)*2)).slice(0,5);
   $('hot').innerHTML=hot.map((p,i)=>`<div class="hotitem" onclick="openPost(${jsId(p.id)})"><span class="rk">${i+1}</span><div><div class="ht">${esc(p.title)}</div><div class="hm tnum">♥ ${p.like} · ${t('comments')} ${p.cmtCount||0}</div></div></div>`).join('');
 }
 function renderShell(){
@@ -793,7 +793,7 @@ function visible(){let p=DB.posts.filter(x=>!x.hidden&&!blocked(x.nick));
   if(curMenu==='mine')p=p.filter(x=>x.mine);
   else if(curMenu==='scrap')p=p.filter(x=>ME.scraps.includes(x.id));
   else{p=p.filter(langOK);if(curCat!=='전체')p=p.filter(x=>x.cat===curCat);if(curRegion!=='전체')p=p.filter(x=>x.region===curRegion||x.region==='전체');if(curQ)p=p.filter(x=>(x.title+x.content+x.nick).toLowerCase().includes(curQ.toLowerCase()));}
-  if(curSort==='hot')p.sort((a,b)=>(b.like+b.scrap*2)-(a.like+a.scrap*2));else if(curSort==='cmt')p.sort((a,b)=>b.cmts.length-a.cmts.length);else p.sort((a,b)=>b.t-a.t);
+  if(curSort==='hot')p.sort((a,b)=>(b.like+(b.cmtCount||0)*2)-(a.like+(a.cmtCount||0)*2));else if(curSort==='cmt')p.sort((a,b)=>(b.cmtCount||0)-(a.cmtCount||0));else p.sort((a,b)=>b.t-a.t);
   if(!curMenu){const pin=p.filter(x=>x.pinned),rest=p.filter(x=>!x.pinned);p=[...pin,...rest];}
   return p;}
 function langOK(p){return (p.lang||'ko')===LANG;}
@@ -1015,9 +1015,9 @@ function renderDetail(){
 }
 function relatedHtml(p){
   const same=DB.posts.filter(x=>x.id!==p.id&&x.cat===p.cat&&langOK(x));
-  const more=DB.posts.filter(x=>x.id!==p.id&&x.cat!==p.cat&&langOK(x)).sort((a,b)=>(b.like+b.scrap*2)-(a.like+a.scrap*2));
+  const more=DB.posts.filter(x=>x.id!==p.id&&x.cat!==p.cat&&!x.hidden&&langOK(x)).sort((a,b)=>(b.like+(b.cmtCount||0)*2)-(a.like+(a.cmtCount||0)*2));
   const list=[...same,...more].slice(0,4);if(!list.length)return'';
-  return `<div class="related"><h4>${t('related')}</h4>${list.map(r=>`<div class="rel" onclick="openPost(${jsId(r.id)})"><div style="flex:1;min-width:0"><div class="rt">${esc(r.title)}</div><div class="rm">${catL(r.cat)}${r.region&&r.region!=='전체'?' · '+regFlag(r.region)+' '+esc(regL(r.region)):''} · 💬 ${r.cmts.length}</div></div><div class="rc">❤ ${r.like}</div></div>`).join('')}</div>`;
+  return `<div class="related"><h4>${t('related')}</h4>${list.map(r=>`<div class="rel" onclick="openPost(${jsId(r.id)})"><div style="flex:1;min-width:0"><div class="rt">${esc(r.title)}</div><div class="rm">${catL(r.cat)}${r.region&&r.region!=='전체'?' · '+regFlag(r.region)+' '+esc(regL(r.region)):''} · 💬 ${r.cmtCount||0}</div></div><div class="rc">❤ ${r.like}</div></div>`).join('')}</div>`;
 }
 function backFeed(){view='feed';renderMain();scrollTo({top:0});}
 function toggleOrig(e){const o=$('origText');const sh=o.style.display!=='block';o.style.display=sh?'block':'none';e.target.textContent=sh?t('foldOrig'):(LANG==='ja'?t('viewOrigKo'):t('viewOrigJa'));}
