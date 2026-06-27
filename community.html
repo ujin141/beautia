@@ -792,8 +792,7 @@ function setLang(l){LANG=l;localStorage.setItem('beautia_lang',l);document.docum
 function visible(){let p=DB.posts.filter(x=>!x.hidden&&!blocked(x.nick));
   if(curMenu==='mine')p=p.filter(x=>x.mine);
   else if(curMenu==='scrap')p=p.filter(x=>ME.scraps.includes(x.id));
-  if(curMenu!=='mine'&&curMenu!=='scrap')p=p.filter(langOK);
-  else{if(curCat!=='전체')p=p.filter(x=>x.cat===curCat);if(curRegion!=='전체')p=p.filter(x=>x.region===curRegion||x.region==='전체');if(curQ)p=p.filter(x=>(x.title+x.content+x.nick).toLowerCase().includes(curQ.toLowerCase()));}
+  else{p=p.filter(langOK);if(curCat!=='전체')p=p.filter(x=>x.cat===curCat);if(curRegion!=='전체')p=p.filter(x=>x.region===curRegion||x.region==='전체');if(curQ)p=p.filter(x=>(x.title+x.content+x.nick).toLowerCase().includes(curQ.toLowerCase()));}
   if(curSort==='hot')p.sort((a,b)=>(b.like+b.scrap*2)-(a.like+a.scrap*2));else if(curSort==='cmt')p.sort((a,b)=>b.cmts.length-a.cmts.length);else p.sort((a,b)=>b.t-a.t);
   if(!curMenu){const pin=p.filter(x=>x.pinned),rest=p.filter(x=>!x.pinned);p=[...pin,...rest];}
   return p;}
@@ -1278,7 +1277,7 @@ function downloadCard(){const fr=$('cardFrame');if(typeof html2canvas==='undefin
   html2canvas(fr,{scale:3,useCORS:true,backgroundColor:null}).then(cv=>{const a=document.createElement('a');a.href=cv.toDataURL('image/png');a.download='beautia-card-'+cardPid+'.png';document.body.appendChild(a);a.click();a.remove();}).catch(e=>{toast('이미지 저장 실패 (사진 보안 정책)');});}
 function copyCaption(){const txt=$('capBox').textContent;try{navigator.clipboard.writeText(txt);}catch(e){}toast(t('capCopied'));}
 let myTab='posts';
-function openMypage(){view='profile';myTab='posts';renderMypage();scrollTo({top:0});}
+function openMypage(){if(!ME.registered){openLogin();return;}view='profile';myTab='posts';renderMypage();scrollTo({top:0});}
 function setMyTab(tb){myTab=tb;renderMypage();}
 function renderMypage(){
   const mine=DB.posts.filter(p=>p.mine);
