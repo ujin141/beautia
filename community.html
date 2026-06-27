@@ -963,7 +963,6 @@ function renderMain(){
 async function openPost(id){
   // 조회수는 로그인 여부와 상관없이 클릭하면 먼저 +1 (한 기기당 글별 1회만)
   {const p0=DB.posts.find(x=>x.id===id);ME.viewed=ME.viewed||[];if(p0&&ME.viewed.indexOf(id)<0){p0.views=(p0.views||0)+1;ME.viewed.push(id);saveMe();SB.rpc('bump_view',{pid:id}).then(()=>{},()=>{});}}
-  if(!ME.registered){openLogin();toast(t('needLoginView'));renderMain();return;}
   openId=id;if(!ME.read.includes(id)){ME.read.push(id);saveMe();}view='detail';renderDetail();scrollTo({top:0});
   const {data}=await SB.from('comments').select('*').eq('post_id',id).order('created_at',{ascending:true});
   const p=DB.posts.find(x=>x.id===id);if(p){p.cmts=(data||[]).map(c=>{const useNick=(c.nickname==='익명'||c.nickname==='匿名')?c.nickname:((PROFMAP[c.author]&&PROFMAP[c.author].nick)||c.nickname||'익명');const anon=(c.nickname==='익명'||c.nickname==='匿名');return {id:c.id,parentId:c.parent_id||null,nick:useNick,role:anon?'guest':((PROFMAP[c.author]&&PROFMAP[c.author].role)||'guest'),avatar:anon?'':((PROFMAP[c.author]&&PROFMAP[c.author].avatar)||''),t:c.content,d:c.created_at?new Date(c.created_at).getTime():Date.now(),author:c.author,mine:!!(ME.uid&&c.author===ME.uid)};});p.cmtCount=p.cmts.length;}
@@ -1330,8 +1329,6 @@ async function boot(){
   if(dpost){const pid=/^\d+$/.test(dpost)?+dpost:dpost;if(DB.posts.some(p=>p.id===pid))openPost(pid);}
   if(ME.needProfile)openCompleteProfile();
   else if(ME._newVisit&&ME.visit&&ME.visit.streak>1)setTimeout(()=>toast('🔥 '+ME.visit.streak+t('dayUnit')+' '+t('streakLabel')+'!'),800);
-  // 비로그인 방문자: 2초간 미리보기 후 로그인 창(로그인 전엔 안 닫힘)
-  if(!ME.registered&&!ME.needProfile)setTimeout(()=>{if(!ME.registered)openLoginGate();},2000);
 }
 function applyDeepLink(){try{const q=new URLSearchParams(location.search);
   const c=q.get('cat');if(c&&CATS.some(x=>x[0]===c))curCat=c;
