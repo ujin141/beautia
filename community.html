@@ -683,7 +683,6 @@ function loadLocal(){
   ME.registered=false;ME.role='guest';ME.nick=ME.nick||'게스트';ME.region=ME.region||'전체';ME.interests=ME.interests||[];ME.shop=ME.shop||{name:'',area:'',services:[]};
   saveMe();DB={posts:[],blocked:[]};
 }
-function save(){}
 function saveMe(){try{localStorage.setItem('beautia_comm_me',JSON.stringify({likes:ME.likes,scraps:ME.scraps,read:ME.read,viewed:ME.viewed,visit:ME.visit,nick:ME.nick,avatar:ME.avatar,points:ME.points,pointLog:ME.pointLog,awarded:ME.awarded,ref:ME.ref,invitedBy:ME.invitedBy}));}catch(e){}}
 /* ===== points (적립만, 사용처는 추후) ===== */
 const PTS={review:500,post:100,photo:100,detail:100,comment:20,signup:1000,invite:3000};
@@ -695,6 +694,8 @@ function award(amount,reason,key){
   saveMe();
   const av=$('navPts');if(av)av.textContent='✦ '+ME.points.toLocaleString()+'P';
   toast('+'+amount.toLocaleString()+'P · '+reason);
+  // DB 실제 적립 (akey로 중복 방지, 트리거가 profiles.points 합산)
+  if(ME.uid){SB.from('point_ledger').insert({user_id:ME.uid,akey:key||null,amount:amount,reason:reason}).then(()=>{},()=>{});}
 }
 function mapPost(r){const pm=PROFMAP[r.author]||{};const anon=(r.nickname==='익명'||r.nickname==='匿名');return{id:r.id,cat:r.cat||'자유',region:r.region||'전체',lang:r.lang||'ko',title:r.title||'',content:r.content||'',tags:r.tags||[],imgs:r.imgs||[],pinned:!!r.pinned,hidden:!!r.hidden,like:r.like_count||0,scrap:0,views:r.views||0,t:r.created_at?new Date(r.created_at).getTime():Date.now(),author:r.author,nick:anon?r.nickname:(pm.nick||r.nickname||'익명'),role:anon?'guest':(pm.role||'guest'),avatar:anon?'':(pm.avatar||''),cmtCount:(r.comments&&r.comments[0])?r.comments[0].count:0,cmts:[],mine:!!(ME.uid&&r.author===ME.uid)};}
 async function loadPosts(){
@@ -709,7 +710,11 @@ async function refreshProfile(session){
   if(!session){ME.uid=null;ME.registered=false;ME.role='guest';ME.needProfile=false;return;}
   ME.uid=session.user.id;ME.email=session.user.email||'';ME.provider=(session.user.app_metadata||{}).provider||'email';
   const {data}=await SB.from('profiles').select('*').eq('id',ME.uid).maybeSingle();
-  if(data&&data.nickname){ME.registered=true;ME.needProfile=false;ME.nick=data.nickname;ME.role=data.role||'guest';ME.region=data.region||'전체';ME.bio=data.bio||'';ME.interests=data.interests||[];ME.shop=data.shop||{name:'',area:'',services:[]};ME.avatar=(data.shop&&data.shop.avatar)||'';ME.is_admin=!!data.is_admin;ME.verified=true;ME.joinedAt=data.created_at?new Date(data.created_at).getTime():Date.now();saveMe();}
+  if(data&&data.nickname){ME.registered=true;ME.needProfile=false;ME.nick=data.nickname;ME.role=data.role||'guest';ME.region=data.region||'전체';ME.bio=data.bio||'';ME.interests=data.interests||[];ME.shop=data.shop||{name:'',area:'',services:[]};ME.avatar=(data.shop&&data.shop.avatar)||'';ME.is_admin=!!data.is_admin;ME.verified=true;ME.joinedAt=data.created_at?new Date(data.created_at).getTime():Date.now();
+    ME.points=data.points||0;ME.refCode=data.ref_code||ME.refCode||('B'+ME.uid.replace(/-/g,'').slice(0,6).toUpperCase());
+    if(!data.ref_code){try{SB.from('profiles').update({ref_code:ME.refCode}).eq('id',ME.uid).then(()=>{},()=>{});}catch(e){}}
+    try{const {data:led}=await SB.from('point_ledger').select('amount,reason,created_at').eq('user_id',ME.uid).order('created_at',{ascending:false}).limit(50);if(led)ME.pointLog=led.map(x=>({a:x.amount,r:x.reason,t:new Date(x.created_at).getTime()}));}catch(e){}
+    saveMe();}
   else{ME.registered=false;ME.needProfile=true;}
 }
 function seed(){const now=Date.now(),h=3600000,d=86400000;return[
@@ -1191,7 +1196,7 @@ async function saveProfile(){
   if(error){toast('저장 실패: '+error.message);return;}
   const wasJoin=(pfMode!=='edit');
   closeModal();await reloadAll();
-  if(wasJoin){toast(t('joinDone'));setTimeout(()=>{award(PTS.signup,t('earnSignup'),'signup:'+ME.uid);if(ME.invitedBy){award(PTS.invite,t('earnInvited'),'invited:'+ME.uid);}},700);}
+  if(wasJoin){toast(t('joinDone'));setTimeout(()=>{award(PTS.signup,t('earnSignup'),'signup:'+ME.uid);if(ME.invitedBy){award(PTS.invite,t('earnInvited'),'invited:'+ME.uid);SB.rpc('award_referral',{inviter_code:ME.invitedBy}).then(()=>{},()=>{});}},700);}
   else toast(t('saved'));
 }
 async function reloadAll(){const {data:{session}}=await SB.auth.getSession();await refreshProfile(session);if(ME.registered)releaseGate();await loadPosts();renderHeader();renderShell();if(view==='profile')renderMypage();else if(view==='detail')renderDetail();else renderMain();}
@@ -1277,7 +1282,7 @@ function renderMypage(){
   let listHtml;
   if(myTab==='comments'){const cs=[];DB.posts.forEach(p=>p.cmts.forEach(c=>{if(c.nick===ME.nick)cs.push({p,c});}));cs.sort((a,b)=>b.c.d-a.c.d);listHtml=cs.length?cs.map(({p,c})=>`<div class="rel" onclick="openPost(${jsId(p.id)})"><div style="flex:1;min-width:0"><div class="rt">${esc(c.t)}</div><div class="rm">↳ ${esc(p.title)} · ${timeago(c.d)}</div></div></div>`).join(''):`<div class="empty" style="border:none">${t('noComments')}</div>`;}
   else{const L=myTab==='posts'?mine:scraps;listHtml=L.length?`<div class="feedgrid">${L.map((p,i)=>cardHtml(p,i,false)).join('')}</div>`:`<div class="empty" style="border:none">${myTab==='posts'?t('noPosts'):t('noScraps')}</div>`;}
-  const refLink=location.origin+location.pathname+'?ref='+ME.ref;
+  const refLink=location.origin+location.pathname+'?ref='+(ME.refCode||ME.ref);
   const histHtml=(ME.pointLog&&ME.pointLog.length)?ME.pointLog.slice(0,8).map(e=>`<div class="phrow"><span class="pr2">${esc(e.r)}</span><span style="display:flex;gap:12px;align-items:center"><span class="pd">${timeago(e.t)}</span><span class="pa">+${e.a.toLocaleString()}P</span></span></div>`).join(''):`<div class="empty" style="border:none;padding:24px">${t('noPoints')}</div>`;
   const pointsHtml=`
     <div class="ptspanel"><div class="plbl">${t('myPoints')}</div><div class="pbig">✦ ${(ME.points||0).toLocaleString()}P</div><div class="pnote">${t('pointSoon')}</div></div>
