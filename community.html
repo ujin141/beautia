@@ -288,6 +288,20 @@ a{color:inherit;text-decoration:none;}
 .proscroll::-webkit-scrollbar{height:0;}
 .procard{flex:0 0 150px;cursor:pointer;}
 .procard .pcimg{position:relative;width:150px;height:150px;border-radius:14px;background-size:cover;background-position:center;background-color:var(--soft);}
+/* 전문가 가로 스크롤 쇼케이스 */
+.exsec{margin-bottom:20px;}
+.exsec .exhh{display:flex;align-items:center;gap:8px;margin-bottom:11px;padding-bottom:7px;border-bottom:2px solid var(--ac,var(--accent));}
+.exsec .exhh h2{font-size:16px;font-weight:800;letter-spacing:-.025em;display:flex;align-items:center;gap:7px;}
+.exsec .exhh h2 .ti{font-size:18px;color:var(--ac,var(--accent));}
+.exsec .exhh h2 .c{font-size:12px;color:var(--sub);font-weight:600;}
+.exrow{display:flex;gap:14px;overflow-x:auto;padding-bottom:8px;scroll-snap-type:x proximity;-webkit-overflow-scrolling:touch;}
+.exrow::-webkit-scrollbar{height:6px;}
+.exrow::-webkit-scrollbar-track{background:transparent;}
+.exrow::-webkit-scrollbar-thumb{background:var(--line);border-radius:999px;}
+.exrow .procard{flex:0 0 200px;scroll-snap-align:start;transition:transform .16s;}
+.exrow .procard:hover{transform:translateY(-3px);}
+.exrow .procard .pcimg{width:200px;height:152px;}
+@media(max-width:560px){.exrow .procard{flex-basis:172px;}.exrow .procard .pcimg{width:172px;height:132px;}}
 .procard:hover .pcimg{opacity:.94;}
 .procard .koflag{position:absolute;left:8px;top:8px;font-size:9px;font-weight:800;color:#fff;background:var(--plum);padding:3px 7px;border-radius:999px;}
 .procard .pcrole{position:absolute;right:8px;top:8px;font-size:9.5px;font-weight:800;background:rgba(255,255,255,.92);padding:3px 8px;border-radius:999px;}
@@ -805,16 +819,20 @@ function hPanel(title,ic,count,more,rows,accent,cls){return `<div class="hp ${cl
 function featuredHtml(){const base=DB.posts.filter(p=>!p.hidden&&!blocked(p.nick)&&p.imgs&&p.imgs.length);if(!base.length)return'';
   const p=base.slice().sort((a,b)=>(b.like+ (isNew(b)?100:0))-(a.like+(isNew(a)?100:0)))[0];
   return `<div class="hero" onclick="openPost(${jsId(p.id)})"><div class="heroimg" style="background-image:url('${p.imgs[0]}')"></div><div class="heroov"><span class="heroeb">${catL(p.cat)}${p.region&&p.region!=='전체'?' · '+regFlag(p.region)+' '+esc(regL(p.region)):''}</span><div class="herot">${esc(p.title)}</div><div class="herom">${esc(p.nick)} · ${timeago(p.t)} · ♥ ${p.like} · 💬 ${p.cmtCount||0}</div></div></div>`;}
+function expertScrollHtml(){
+  const pros=getPros();CURPROS=pros;
+  const groups=[['owner','ti-building-store',t('proOwner'),'#6D4346'],['designer','ti-scissors',t('proDesigner'),'#3E7C7B']];
+  return groups.map(([role,ic,label,ac])=>{
+    const list=pros.filter(p=>p.role===role);if(!list.length)return'';
+    return `<section class="exsec" style="--ac:${ac}"><div class="exhh"><h2><i class="ti ${ic}"></i> ${label} <span class="c tnum">${list.length}</span></h2></div><div class="exrow">${list.map(proCard).join('')}</div></section>`;
+  }).join('');
+}
 function homeGridHtml(){
   const base=DB.posts.filter(p=>!p.hidden&&!blocked(p.nick));
-  const pros=getPros();CURPROS=pros;
-  const owners=pros.filter(p=>p.role==='owner'),designers=pros.filter(p=>p.role==='designer');
   let panels=[];
-  if(owners.length)panels.push(hPanel(t('proOwner'),'ti-building-store',owners.length,'',owners.slice(0,3).map(proRow).join(''),'#6D4346','expert'));
-  if(designers.length)panels.push(hPanel(t('proDesigner'),'ti-scissors',designers.length,'',designers.slice(0,3).map(proRow).join(''),'#3E7C7B','expert'));
   CATS.filter(c=>c[0]!=='전체').forEach(([c,ic])=>{const all=base.filter(p=>p.cat===c);if(!all.length)return;
     panels.push(hPanel(catL(c),ic,all.length,`setCat('${c}')`,all.slice().sort((a,b)=>b.t-a.t).slice(0,3).map(postRow).join(''),CATAC[c]||'#6D4346'));});
-  return featuredHtml()+`<div class="homegrid">${panels.join('')}</div>`;
+  return panels.length?`<div class="homegrid">${panels.join('')}</div>`:'';
 }
 function renderMain(){
   if(view==='detail'){renderDetail();return;}
@@ -822,7 +840,7 @@ function renderMain(){
   const showTop=curMenu===''&&!curQ;
   const home=showTop&&curCat==='전체'&&curRegion==='전체';
   if(home){
-    $('main').innerHTML=bannerHtml()+homeGridHtml();
+    $('main').innerHTML=bannerHtml()+featuredHtml()+expertScrollHtml()+homeGridHtml();
     startPromo();return;
   }
   const list=visible();
