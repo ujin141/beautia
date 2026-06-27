@@ -30,7 +30,9 @@ export default async function handler(req, res) {
   const plain = (p.content || '').replace(/\s+/g, ' ').trim();
   const title = `${p.title} ${region ? '| ' + region + ' ' : '| '}${cat} - Beautia 커뮤니티`;
   const desc = (plain.slice(0, 150) || `${region} ${cat} - Beautia 한·일 뷰티 커뮤니티`) + (plain.length > 150 ? '…' : '');
-  const ogimg = (p.imgs && p.imgs.length) ? p.imgs[0] : `${SITE}/logo.png`;
+  const hasImg = !!(p.imgs && p.imgs.length);
+  const ogimg = hasImg ? p.imgs[0] : `${SITE}/og-default.png`;
+  const ogSize = hasImg ? '' : '<meta property="og:image:width" content="1200"><meta property="og:image:height" content="630">';
   const created = p.created_at || new Date().toISOString();
 
   // JSON-LD (AEO)
@@ -54,7 +56,7 @@ export default async function handler(req, res) {
       "suggestedAnswer": comments.slice(1, 10).map(c => ({ "@type": "Answer", "text": c.content, "author": { "@type": "Person", "name": c.nickname || '익명' } })) } });
   }
 
-  const imgsHtml = (p.imgs && p.imgs.length) ? `<div class="dgal">${p.imgs.map(s => `<img src="${esc(s)}" alt="${esc(p.title)} 사진" loading="lazy">`).join('')}</div>` : '';
+  const imgsHtml = hasImg ? `<div class="dgal ${p.imgs.length === 1 ? 'one' : ''}">${p.imgs.map(s => `<img src="${esc(s)}" alt="${esc(p.title)} 사진" loading="lazy">`).join('')}</div>` : '';
   const tagsHtml = (p.tags && p.tags.length) ? `<div class="ptags">${p.tags.map(tg => `<span>#${esc(tg)}</span>`).join('')}</div>` : '';
   const cmtHtml = comments.length ? comments.map(c => `<div class="cm"><b>${esc(c.nickname || '익명')}</b><p>${esc(c.content)}</p></div>`).join('') : `<p class="muted">아직 댓글이 없어요. 첫 댓글을 남겨보세요.</p>`;
   const dateStr = new Date(created).toLocaleDateString('ko-KR', { year: 'numeric', month: 'long', day: 'numeric' });
@@ -68,7 +70,7 @@ export default async function handler(req, res) {
 <link rel="alternate" hreflang="ko" href="${canon}"><link rel="alternate" hreflang="x-default" href="${canon}">
 <meta property="og:type" content="article"><meta property="og:site_name" content="Beautia">
 <meta property="og:title" content="${esc(p.title)}"><meta property="og:description" content="${esc(desc)}">
-<meta property="og:url" content="${canon}"><meta property="og:image" content="${esc(ogimg)}">
+<meta property="og:url" content="${canon}"><meta property="og:image" content="${esc(ogimg)}">${ogSize}
 <meta property="article:published_time" content="${created}">
 <meta name="twitter:card" content="summary_large_image"><meta name="twitter:title" content="${esc(p.title)}"><meta name="twitter:description" content="${esc(desc)}"><meta name="twitter:image" content="${esc(ogimg)}">
 <link rel="icon" type="image/png" href="/logo-icon.png"><meta name="theme-color" content="#6D4346">
@@ -81,8 +83,10 @@ ${ld.map(j => `<script type="application/ld+json">${JSON.stringify(j)}</script>`
 .pmeta{font-size:13px;color:var(--sub);margin-top:14px;display:flex;gap:10px;flex-wrap:wrap;align-items:center;}
 .pcat{font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--plum);}
 .pbody{font-size:16.5px;line-height:1.9;color:var(--ink);margin-top:22px;white-space:pre-wrap;word-break:break-word;}
-.dgal{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:10px;margin-top:20px;}
-.dgal img{width:100%;border-radius:12px;border:1px solid var(--line2);display:block;}
+.dgal{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:10px;margin-top:20px;}
+.dgal.one{grid-template-columns:1fr;}
+.dgal img{width:100%;max-height:620px;object-fit:cover;border-radius:14px;border:1px solid var(--line2);display:block;}
+.dgal.one img{max-height:none;}
 .ptags{display:flex;gap:8px;flex-wrap:wrap;margin-top:18px;}.ptags span{font-size:12.5px;color:var(--plum);background:var(--plumbg);padding:5px 12px;border-radius:999px;}
 .psec{margin-top:34px;padding-top:22px;border-top:1px solid var(--line);}
 .psec h2{font-size:17px;font-weight:800;letter-spacing:-.02em;margin-bottom:12px;}
