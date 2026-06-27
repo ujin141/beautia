@@ -302,6 +302,14 @@ a{color:inherit;text-decoration:none;}
 .exrow .procard:hover{transform:translateY(-3px);}
 .exrow .procard .pcimg{width:200px;height:152px;}
 @media(max-width:560px){.exrow .procard{flex-basis:172px;}.exrow .procard .pcimg{width:172px;height:132px;}}
+.exsec .exhh{justify-content:space-between;}
+.exmore{font-size:12px;font-weight:700;color:var(--ac,var(--accent));cursor:pointer;white-space:nowrap;}
+.exmore:hover{text-decoration:underline;}
+.pcrate{color:#E0A93B;font-weight:800;}.pcrate .n{color:var(--sub);font-weight:600;}.pcrate.new{color:var(--plum);background:var(--plumbg);padding:1px 6px;border-radius:999px;font-size:9.5px;}
+.pcm .dotg{display:inline-block;width:2.5px;height:2.5px;border-radius:50%;background:var(--sub);opacity:.5;margin:0 5px;vertical-align:middle;}
+.prosgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:16px;}
+.prosgrid .procard{flex:none;}
+.prosgrid .procard .pcimg{width:100%;aspect-ratio:4/3;height:auto;}
 .procard:hover .pcimg{opacity:.94;}
 .procard .koflag{position:absolute;left:8px;top:8px;font-size:9px;font-weight:800;color:#fff;background:var(--plum);padding:3px 7px;border-radius:999px;}
 .procard .pcrole{position:absolute;right:8px;top:8px;font-size:9.5px;font-weight:800;background:rgba(255,255,255,.92);padding:3px 8px;border-radius:999px;}
@@ -769,21 +777,22 @@ function infoStripHtml(){const info=DB.posts.filter(p=>p.cat==='정보').sort((a
 /* ===== 전문가(사장님·디자이너) 쇼케이스 ===== */
 const PU=(id)=>`https://images.unsplash.com/photo-${id}?auto=format&fit=crop&w=600&q=70`;
 const SEED_PROS=[
- {id:'sp1',nickname:'시부야 헤어룸',role:'owner',region:'도쿄',bio:'시부야역 3분, 한국인 단골 많은 살롱. 다운펌·매직 OK, 한국어 메뉴 준비했어요.',shop:{name:'시부야 헤어룸',area:'도쿄',services:['헤어컷','펌','염색','다운펌'],koOK:true,locDetail:'시부야역 3번 출구 도보 3분',hours:'11:00–20:00 · 수요일 휴무',insta:'@shibuya_hairroom',avatar:PU('1560066984-138dadb4c035'),photos:[PU('1562322140-8baeececf3df'),PU('1487412947147-5cebf100ffc2'),PU('1512496015851-a90fb38ba796')]}},
- {id:'sp2',nickname:'미카',role:'designer',region:'도쿄',bio:'원하는 스타일 사진 주시면 디테일까지 맞춰드려요. 한국 손님 환영!',shop:{name:'시부야 헤어룸 소속',area:'도쿄',career:'헤어 디자이너 7년차 · 도쿄 4년',specialties:['헤어컷','펌','염색'],insta:'@mika_hair',avatar:PU('1487412947147-5cebf100ffc2'),photos:[PU('1512496015851-a90fb38ba796'),PU('1562322140-8baeececf3df')]}},
- {id:'sp3',nickname:'신사이바시 네일 아틀리에',role:'owner',region:'오사카',bio:'섬세한 아트가 강점. 핀터레스트 사진 한 장이면 그대로 재현해드려요.',shop:{name:'신사이바시 네일 아틀리에',area:'오사카',services:['네일'],koOK:true,locDetail:'신사이바시역 2분',hours:'10:00–21:00 · 연중무휴',insta:'@shinsai_nail',avatar:PU('1604654894610-df63bc536371'),photos:[PU('1522335789203-aabd1fc54bc9'),PU('1604654894610-df63bc536371')]}},
- {id:'sp4',nickname:'유나',role:'designer',region:'오사카',bio:'트렌디 젤네일·아트 전문이에요. 워홀러·여행객 많이 와요.',shop:{name:'신사이바시 네일 아틀리에 소속',area:'오사카',career:'네일리스트 5년차',specialties:['네일'],insta:'@yuna_nail',avatar:PU('1522335789203-aabd1fc54bc9'),photos:[PU('1604654894610-df63bc536371'),PU('1522335789203-aabd1fc54bc9')]}},
- {id:'sp5',nickname:'신주쿠 래쉬 스튜디오',role:'owner',region:'도쿄',bio:'자연스러운 속눈썹 연장·라쉬리프트 전문. 통역 지원돼요.',shop:{name:'신주쿠 래쉬 스튜디오',area:'도쿄',services:['속눈썹'],koOK:false,locDetail:'신주쿠역 동쪽 5분',hours:'10:00–19:00 · 월요일 휴무',insta:'@shinjuku_lash',avatar:PU('1583001931096-959e9a1a6223'),photos:[PU('1583001931096-959e9a1a6223'),PU('1522338242992-e1a54906a8da')]}},
+ {id:'sp1',nickname:'시부야 헤어룸',role:'owner',region:'도쿄',bio:'시부야역 3분, 한국인 단골 많은 살롱. 다운펌·매직 OK, 한국어 메뉴 준비했어요.',shop:{rating:4.9,nrev:128,name:'시부야 헤어룸',area:'도쿄',services:['헤어컷','펌','염색','다운펌'],koOK:true,locDetail:'시부야역 3번 출구 도보 3분',hours:'11:00–20:00 · 수요일 휴무',insta:'@shibuya_hairroom',avatar:PU('1560066984-138dadb4c035'),photos:[PU('1562322140-8baeececf3df'),PU('1487412947147-5cebf100ffc2'),PU('1512496015851-a90fb38ba796')]}},
+ {id:'sp2',nickname:'미카',role:'designer',region:'도쿄',bio:'원하는 스타일 사진 주시면 디테일까지 맞춰드려요. 한국 손님 환영!',shop:{rating:4.8,nrev:86,name:'시부야 헤어룸 소속',area:'도쿄',career:'헤어 디자이너 7년차 · 도쿄 4년',specialties:['헤어컷','펌','염색'],insta:'@mika_hair',avatar:PU('1487412947147-5cebf100ffc2'),photos:[PU('1512496015851-a90fb38ba796'),PU('1562322140-8baeececf3df')]}},
+ {id:'sp3',nickname:'신사이바시 네일 아틀리에',role:'owner',region:'오사카',bio:'섬세한 아트가 강점. 핀터레스트 사진 한 장이면 그대로 재현해드려요.',shop:{rating:4.8,nrev:96,name:'신사이바시 네일 아틀리에',area:'오사카',services:['네일'],koOK:true,locDetail:'신사이바시역 2분',hours:'10:00–21:00 · 연중무휴',insta:'@shinsai_nail',avatar:PU('1604654894610-df63bc536371'),photos:[PU('1522335789203-aabd1fc54bc9'),PU('1604654894610-df63bc536371')]}},
+ {id:'sp4',nickname:'유나',role:'designer',region:'오사카',bio:'트렌디 젤네일·아트 전문이에요. 워홀러·여행객 많이 와요.',shop:{rating:4.7,nrev:61,name:'신사이바시 네일 아틀리에 소속',area:'오사카',career:'네일리스트 5년차',specialties:['네일'],insta:'@yuna_nail',avatar:PU('1522335789203-aabd1fc54bc9'),photos:[PU('1604654894610-df63bc536371'),PU('1522335789203-aabd1fc54bc9')]}},
+ {id:'sp5',nickname:'신주쿠 래쉬 스튜디오',role:'owner',region:'도쿄',bio:'자연스러운 속눈썹 연장·라쉬리프트 전문. 통역 지원돼요.',shop:{rating:4.9,nrev:74,name:'신주쿠 래쉬 스튜디오',area:'도쿄',services:['속눈썹'],koOK:false,locDetail:'신주쿠역 동쪽 5분',hours:'10:00–19:00 · 월요일 휴무',insta:'@shinjuku_lash',avatar:PU('1583001931096-959e9a1a6223'),photos:[PU('1583001931096-959e9a1a6223'),PU('1522338242992-e1a54906a8da')]}},
 ];
 let curPro='all',CURPROS=[];
 function avatarOf(p){const s=p.shop||{};return s.avatar||(s.photos&&s.photos[0])||'';}
 function getPros(){const real=PROFILES.filter(p=>(p.role==='owner'||p.role==='designer')&&avatarOf(p));return real.length?real:SEED_PROS;}
 function setPro(k){curPro=k;renderShowcase();}
 function proCard(p){const s=p.shop||{};const img=avatarOf(p);const svc=(p.role==='owner'?(s.services||[]):(s.specialties||[]));
+  const rate=s.rating?`<span class="pcrate">★ ${s.rating}${s.nrev?` <span class="n">(${s.nrev})</span>`:''}</span>`:`<span class="pcrate new">NEW</span>`;
   return `<div class="procard" onclick="openMemberCard('${p.id}')">
     <div class="pcimg" style="background-image:url('${img}')">${s.koOK?`<span class="koflag">${t('koBadge')}</span>`:''}<span class="pcrole ${p.role==='owner'?'rb-owner':'rb-designer'}">${roleL(p.role)}</span></div>
     <div class="pcb"><div class="pcn">${esc(p.nickname||s.name||'')}</div>
-      <div class="pcm">${regFlag(p.region)} ${esc(regL(p.region||'전체'))}${(p.role==='designer'&&s.career)?' · '+esc(s.career):''}</div>
+      <div class="pcm">${rate}<span class="dotg"></span>${regFlag(p.region)} ${esc(regL(p.region||'전체'))}${(p.role==='designer'&&s.career)?' · '+esc(s.career):''}</div>
       ${svc.length?`<div class="pctags">${svc.slice(0,3).map(x=>`<span>${svcL(x)}</span>`).join('')}</div>`:''}</div></div>`;}
 function renderShowcase(){const el=$('proSec');if(!el)return;const pros=getPros();CURPROS=pros;
   const groups=[['owner','ti-building-store',t('proOwner')],['designer','ti-scissors',t('proDesigner')]];
@@ -824,8 +833,25 @@ function expertScrollHtml(){
   const groups=[['owner','ti-building-store',t('proOwner'),'#6D4346'],['designer','ti-scissors',t('proDesigner'),'#3E7C7B']];
   return groups.map(([role,ic,label,ac])=>{
     const list=pros.filter(p=>p.role===role);if(!list.length)return'';
-    return `<section class="exsec" style="--ac:${ac}"><div class="exhh"><h2><i class="ti ${ic}"></i> ${label} <span class="c tnum">${list.length}</span></h2></div><div class="exrow">${list.map(proCard).join('')}</div></section>`;
+    return `<section class="exsec" style="--ac:${ac}"><div class="exhh"><h2><i class="ti ${ic}"></i> ${label} <span class="c tnum">${list.length}</span></h2><a class="exmore" onclick="openPros('${role}')">${t('seeAll')} ›</a></div><div class="exrow">${list.map(proCard).join('')}</div></section>`;
   }).join('');
+}
+let proRole='all',proRegion='전체';
+function openPros(role){proRole=role||'all';proRegion='전체';view='pros';renderProsView();scrollTo({top:0});}
+function setProRole(k){proRole=k;renderProsView();}
+function setProRegionV(r){proRegion=r;renderProsView();}
+function renderProsView(){
+  const pros=getPros();CURPROS=pros;
+  let list=pros.slice();
+  if(proRole!=='all')list=list.filter(p=>p.role===proRole);
+  if(proRegion!=='전체')list=list.filter(p=>p.region===proRegion);
+  const tab=(k,l)=>`<span class="stab ${proRole===k?'on':''}" onclick="setProRole('${k}')">${l}</span>`;
+  const regs=['전체'].concat(RGROUPS.reduce((a,g)=>a.concat(g[1]),[]));
+  const regSel=`<select class="regsel" onchange="setProRegionV(this.value)">${regs.map(r=>`<option value="${r}" ${r===proRegion?'selected':''}>${r==='전체'?('📍 '+t('allRegion')):(regFlag(r)+' '+regL(r))}</option>`).join('')}</select>`;
+  $('main').innerHTML=`<div class="back" onclick="backFeed()" style="margin-bottom:14px"><i class="ti ti-chevron-left"></i> ${t('back')}</div>
+    <div class="board-top"><div class="sorttabs">${tab('all',t('proAll'))}${tab('owner',t('proOwner'))}${tab('designer',t('proDesigner'))}</div>${regSel}</div>
+    <div class="boardhead"><h1>${t('proTitle')}</h1><span class="c tnum">${list.length}</span></div>
+    ${list.length?`<div class="prosgrid">${list.map(proCard).join('')}</div>`:`<div class="empty">표시할 전문가가 없어요.</div>`}`;
 }
 function homeGridHtml(){
   const base=DB.posts.filter(p=>!p.hidden&&!blocked(p.nick));
@@ -837,6 +863,7 @@ function homeGridHtml(){
 function renderMain(){
   if(view==='detail'){renderDetail();return;}
   if(view==='profile'){renderMypage();return;}
+  if(view==='pros'){renderProsView();return;}
   const showTop=curMenu===''&&!curQ;
   const home=showTop&&curCat==='전체'&&curRegion==='전체';
   if(home){
