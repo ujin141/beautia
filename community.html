@@ -1031,7 +1031,7 @@ async function toggleScrap(id){const p=DB.posts.find(x=>x.id===id);if(!p)return;
   if(!ME.registered){openLogin();toast(t('needSignup'));return;}
   const has=ME.scraps.includes(id);
   if(has){ME.scraps=ME.scraps.filter(x=>x!==id);p.scrap=Math.max(0,p.scrap-1);}else{ME.scraps.push(id);p.scrap++;toast(t('scrapped'));}
-  saveMe();if(view==='detail')renderDetail();else if(view==='profile')renderMypage();
+  saveMe();if(view==='detail')renderDetail();else if(view==='profile')renderMypage();else renderMain();
   if(typeof id==='string'){try{if(has){await SB.from('post_scraps').delete().eq('post_id',id).eq('user_id',ME.uid);}else{await SB.from('post_scraps').insert({post_id:id,user_id:ME.uid});}}catch(e){console.warn('scrap',e);}}}
 let replyTo=null;
 function cItem(c,reply){
@@ -1047,11 +1047,15 @@ function renderCmtList(p){const vis=p.cmts.filter(c=>!blocked(c.nick));
   return tops.map(c=>cItem(c,false)+vis.filter(r=>r.parentId===c.id).map(r=>cItem(r,true)).join('')).join('');}
 function startReply(id){replyTo=(replyTo===id?null:id);renderDetail();setTimeout(()=>{const el=$('replyInput');if(el)el.focus();},30);}
 async function addComment(){if(!ME.registered){openSignup();toast(t('needSignup'));return;}const v=$('cInput').value.trim();if(!v)return;
+  if(addComment._busy)return;addComment._busy=true;
   const {error}=await SB.from('comments').insert({post_id:openId,author:ME.uid,nickname:ME.nick,content:v});
+  addComment._busy=false;
   if(error){toast(secMsg(error)||('댓글 실패: '+error.message));return;}
   $('cInput').value='';replyTo=null;await openPost(openId);renderRight();award(PTS.comment,t('earnComment'),null,'comment');}
 async function addReply(pid){if(!ME.registered){openSignup();toast(t('needSignup'));return;}const el=$('replyInput');const v=el?el.value.trim():'';if(!v)return;
+  if(addReply._busy)return;addReply._busy=true;
   const {error}=await SB.from('comments').insert({post_id:openId,parent_id:pid,author:ME.uid,nickname:ME.nick,content:v});
+  addReply._busy=false;
   if(error){toast(secMsg(error)||('답글 실패: '+(error.message||'')));return;}
   replyTo=null;await openPost(openId);renderRight();award(PTS.comment,t('earnComment'),null,'comment');}
 async function editComment(id){const p=DB.posts.find(x=>x.id===openId);const c=p&&p.cmts.find(x=>x.id===id);if(!c)return;
@@ -1089,16 +1093,17 @@ function downscale(file,cb,maxArg){const r=new FileReader();r.onload=ev=>{const 
 function uploadImg(file,maxArg){return new Promise(resolve=>{const r=new FileReader();r.onload=ev=>{const img=new Image();img.onload=async()=>{const max=maxArg||1200;let w=img.width,h=img.height;if(w>max||h>max){if(w>h){h=Math.round(h*max/w);w=max;}else{w=Math.round(w*max/h);h=max;}}const cv=document.createElement('canvas');cv.width=w;cv.height=h;cv.getContext('2d').drawImage(img,0,0,w,h);const dataUrl=cv.toDataURL('image/jpeg',0.82);try{if(ME.uid&&cv.toBlob){const blob=await new Promise(res=>cv.toBlob(res,'image/jpeg',0.82));if(blob){const path=ME.uid+'/'+Date.now()+'-'+Math.random().toString(36).slice(2,8)+'.jpg';const {error}=await SB.storage.from('beautia').upload(path,blob,{contentType:'image/jpeg',upsert:false});if(!error){const {data}=SB.storage.from('beautia').getPublicUrl(path);if(data&&data.publicUrl){resolve(data.publicUrl);return;}}}}}catch(e){console.warn('upload',e);}resolve(dataUrl);};img.src=ev.target.result;};r.readAsDataURL(file);});}
 async function submitWrite(){const title=$('wTitle').value.trim(),content=$('wContent').value.trim();if(!title||!content){toast(t('needTC'));return;}
   if(!ME.uid){openSignup();return;}
+  if(submitWrite._busy)return;submitWrite._busy=true;
   const tags=$('wTags').value.split(/[,#\n]+/).map(s=>s.trim()).filter(Boolean).slice(0,6);
   if(wEditId){
     const eid=wEditId;
     const {error}=await SB.from('posts').update({cat:wCat,region:wRegion,lang:wLang,title,content,tags,imgs:wImgs.slice()}).eq('id',eid);
-    if(error){console.error('edit error',error);alert('수정 실패\n\n'+(error.message||'')+'\n\ncode: '+(error.code||''));return;}
-    wEditId=null;closeModal();await loadPosts();if(view==='detail'){openId=eid;renderDetail();}else renderMain();toast(t('edited'));return;
+    if(error){submitWrite._busy=false;console.error('edit error',error);alert('수정 실패\n\n'+(error.message||'')+'\n\ncode: '+(error.code||''));return;}
+    submitWrite._busy=false;wEditId=null;closeModal();await loadPosts();if(view==='detail'){openId=eid;renderDetail();}else renderMain();toast(t('edited'));return;
   }
   const {data:ins,error}=await SB.from('posts').insert({author:ME.uid,nickname:wAnonV?t('anonNick'):ME.nick,cat:wCat,region:wRegion,lang:wLang,title,content,tags,imgs:wImgs.slice()}).select('id').maybeSingle();
-  if(error){const sm=secMsg(error);if(sm){toast(sm);return;}console.error('submitWrite error',error);alert('등록 실패\n\n'+(error.message||'')+'\n\ncode: '+(error.code||'')+'\nhint: '+(error.hint||'')+'\ndetails: '+(error.details||''));return;}
-  closeModal();curCat='전체';curMenu='';curSort='new';curQ='';view='feed';await loadPosts();renderShell();renderMain();scrollTo({top:0});
+  if(error){submitWrite._busy=false;const sm=secMsg(error);if(sm){toast(sm);return;}console.error('submitWrite error',error);alert('등록 실패\n\n'+(error.message||'')+'\n\ncode: '+(error.code||'')+'\nhint: '+(error.hint||'')+'\ndetails: '+(error.details||''));return;}
+  submitWrite._busy=false;closeModal();curCat='전체';curMenu='';curSort='new';curQ='';view='feed';await loadPosts();renderShell();renderMain();scrollTo({top:0});
   const pid=ins&&ins.id,isRev=(wCat==='후기');
   award(isRev?PTS.review:PTS.post, isRev?t('earnReview'):t('earnPost'), pid?('post:'+pid):null, isRev?'review':'post');
   if(wImgs.length>=3)award(PTS.photo,t('earnPhoto'),pid?('photo:'+pid):null,'photo');
