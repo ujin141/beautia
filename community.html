@@ -4,12 +4,12 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="google-site-verification" content="toAtwGl-Up9Adn-xXY-y8V-ch6IBoowrYxmMXg4ZMUs">
-<title>Beautia 커뮤니티 — 한·일 뷰티 라운지</title>
+<title>Beautia 커뮤니티 · 韓国×日本ビューティーラウンジ — 일본 미용실·네일 한국어 예약</title>
 <link rel="icon" type="image/png" href="logo-icon.png">
 <meta name="theme-color" content="#6E4A50">
-<meta name="description" content="한국·일본 뷰티 사장님과 손님이 모이는 커뮤니티. 미용실·네일·화장품 질문·후기·정보·모델모집을 나눠요.">
+<meta name="description" content="한국·일본 뷰티 사장님·디자이너·손님 커뮤니티. 미용실·네일·화장품 후기·정보·모델모집. ／ 韓国×日本のビューティーコミュニティ。美容室・ネイル・コスメの口コミ・情報。日本語が分からなくても韓国語で予約・通訳代行。">
 <!-- ===== SEO / AEO / GEO ===== -->
-<meta name="keywords" content="일본 뷰티 커뮤니티, 일본 미용실 후기, 도쿄 네일 후기, 오사카 미용실 추천, 헤어모델 모집, 네일모델 모집, 일본 화장품 추천, 워홀 미용실, 한인 일본 뷰티, 서울 미용실">
+<meta name="keywords" content="일본 뷰티 커뮤니티, 일본 미용실 후기, 도쿄 네일 후기, 오사카 미용실 추천, 헤어모델 모집, 일본 화장품 추천, 워홀 미용실, 한인 일본 뷰티, 日本 美容室 韓国語, 東京 ネイル 口コミ, 大阪 美容室 おすすめ, 韓国語OK サロン, 韓国 ビューティー コミュニティ, まつげエクステ 韓国語">
 <meta name="robots" content="index,follow,max-image-preview:large,max-snippet:-1">
 <link rel="canonical" href="https://beautia.io/community">
 <link rel="alternate" hreflang="ko" href="https://beautia.io/community?lang=ko">
@@ -19,13 +19,13 @@
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://beautia.io/community">
 <meta property="og:site_name" content="Beautia">
-<meta property="og:title" content="Beautia 커뮤니티 — 한·일 뷰티 라운지">
-<meta property="og:description" content="한국·일본 뷰티 사장님과 손님이 모이는 커뮤니티. 미용실·네일·화장품·모델모집 정보를 나눠요.">
+<meta property="og:title" content="Beautia 커뮤니티 · 韓国×日本ビューティーラウンジ">
+<meta property="og:description" content="한·일 뷰티 커뮤니티 — 미용실·네일·화장품 후기·정보. ／ 韓国×日本のビューティーコミュニティ。韓国語で予約・通訳代行。">
 <meta property="og:locale" content="ko_KR"><meta property="og:locale:alternate" content="ja_JP">
 <meta property="og:image" content="https://beautia.io/logo.png">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="Beautia 커뮤니티 — 한·일 뷰티 라운지">
-<meta name="twitter:description" content="일본·한국 뷰티 정보·후기·모델모집을 나누는 커뮤니티">
+<meta name="twitter:title" content="Beautia 커뮤니티 · 韓国×日本ビューティーラウンジ">
+<meta name="twitter:description" content="한·일 뷰티 정보·후기 커뮤니티 ／ 韓国×日本のビューティーコミュニティ">
 <meta name="twitter:image" content="https://beautia.io/logo.png">
 <script type="application/ld+json">
 {"@context":"https://schema.org","@type":"Organization","name":"Beautia","url":"https://beautia.io/","logo":"https://beautia.io/logo.png","sameAs":["https://instagram.com/beautia.japan","https://pf.kakao.com/_xhxhixfX"]}
@@ -412,6 +412,29 @@ textarea.field{min-height:200px;resize:vertical;line-height:1.75;}
 .toast.on{opacity:1;transform:translateX(-50%);}
 .lightbox{position:fixed;inset:0;background:rgba(20,15,13,.92);display:none;align-items:center;justify-content:center;z-index:300;padding:30px;cursor:zoom-out;}
 .lightbox.on{display:flex;}.lightbox img{max-width:100%;max-height:100%;border-radius:10px;}
+/* ===== 공유 카드 메이커 ===== */
+.ratiotabs{display:flex;gap:6px;background:var(--soft);border-radius:999px;padding:4px;margin:14px 0;width:fit-content;}
+.ratiotabs span{padding:7px 16px;border-radius:999px;font-size:12.5px;font-weight:700;color:var(--sub);cursor:pointer;}
+.ratiotabs span.on{background:#fff;color:var(--plum);box-shadow:0 1px 3px rgba(0,0,0,.08);}
+.cardstage{display:flex;justify-content:center;}
+.cardframe{width:300px;height:375px;border-radius:18px;overflow:hidden;position:relative;background:var(--plum);color:#fff;box-shadow:0 20px 50px -20px rgba(0,0,0,.5);}
+.cardframe.r916{height:533px;}
+.cardframe .cf-img{position:absolute;inset:0;}
+.cardframe .cf-img img{width:100%;height:100%;object-fit:cover;}
+.cardframe .cf-scrim{position:absolute;inset:0;background:linear-gradient(180deg,rgba(20,12,13,.15) 0%,rgba(20,12,13,.5) 52%,rgba(20,12,13,.92) 100%);}
+.cardframe .cf-in{position:absolute;inset:0;display:flex;flex-direction:column;padding:24px 22px;z-index:2;}
+.cardframe .cf-toprow{display:flex;gap:6px;flex-wrap:wrap;}
+.cardframe .cf-badge{font-size:10.5px;font-weight:800;letter-spacing:.5px;background:#fff;color:var(--plum);padding:4px 10px;border-radius:999px;}
+.cardframe .cf-badge.ghost{background:rgba(255,255,255,.18);color:#fff;backdrop-filter:blur(4px);}
+.cardframe .cf-stars{color:#FFD27A;font-size:16px;letter-spacing:3px;}
+.cardframe .cf-title{font-size:24px;font-weight:800;letter-spacing:-.03em;line-height:1.26;margin-top:10px;}
+.cardframe .cf-exc{font-size:13px;line-height:1.6;opacity:.94;margin-top:9px;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden;}
+.cardframe .cf-by{font-size:12px;opacity:.9;margin-top:11px;font-weight:600;}
+.cardframe .cf-foot{display:flex;align-items:flex-end;justify-content:space-between;gap:10px;margin-top:14px;padding-top:13px;border-top:1px solid rgba(255,255,255,.25);}
+.cardframe .cf-brand{font-family:Georgia,serif;font-style:italic;font-weight:700;font-size:18px;line-height:1;}
+.cardframe .cf-tag{font-size:9.5px;opacity:.82;margin-top:4px;line-height:1.3;}
+.cardframe .cf-h{font-size:11px;opacity:.9;font-weight:700;white-space:nowrap;}
+.capbox{width:100%;background:var(--soft);border-radius:12px;padding:13px 15px;font-size:12.5px;color:var(--ink2);line-height:1.7;margin-top:10px;white-space:pre-wrap;}
 @media(max-width:560px){.detail{padding:0;}.dtitle{font-size:25px;}.boardhead h1{font-size:25px;}.card.lead .ctitle{font-size:25px;}.card.lead .leadimg{height:220px;}.cthumb{flex-basis:104px;}.cthumb .timg{width:104px;height:78px;}.ctitle{font-size:17px;}.promo h3{font-size:21px;}}
 </style>
 </head>
@@ -1007,13 +1030,15 @@ function renderCard(){const p=DB.posts.find(x=>x.id===cardPid);if(!p)return;
   const fr=$('cardFrame');fr.className='cardframe'+(cardRatio==='916'?' r916':'');
   const img=(p.imgs&&p.imgs.length)?`<div class="cf-img"><img src="${p.imgs[0]}" crossorigin="anonymous" alt=""></div><div class="cf-scrim"></div>`:'';
   const isRev=p.cat==='후기';
+  const reg=(p.region&&p.region!=='전체');
   fr.innerHTML=`${img}<div class="cf-in">
-    <div class="cf-top">BEAUTIA · ${p.region&&p.region!=='전체'?esc(regL(p.region))+' ':''}${esc(catL(p.cat))}</div>
+    <div class="cf-toprow"><span class="cf-badge">${esc(catL(p.cat))}</span>${reg?`<span class="cf-badge ghost">${regFlag(p.region)} ${esc(regL(p.region))}</span>`:''}${(p.imgs&&p.imgs.length>1)?`<span class="cf-badge ghost">📷 ${p.imgs.length}</span>`:''}</div>
     <div style="flex:1"></div>
     ${isRev?'<div class="cf-stars">★★★★★</div>':''}
     <div class="cf-title">${esc(p.title)}</div>
     <div class="cf-exc">${esc(bodyOf(p))}</div>
-    <div class="cf-foot"><span class="cf-brand">Beautia</span><span class="cf-tag">@beautia.japan</span></div>
+    <div class="cf-by">${esc(p.nick||'')}${reg?' · '+regFlag(p.region)+' '+esc(regL(p.region)):''}</div>
+    <div class="cf-foot"><div><div class="cf-brand">Beautia</div><div class="cf-tag">일본 미용실·네일 한국어 예약 · 韓国語予約</div></div><div class="cf-h">@beautia.japan</div></div>
   </div>`;}
 function buildCaption(){const p=DB.posts.find(x=>x.id===cardPid);if(!p)return'';
   const reg=(p.region&&p.region!=='전체')?regL(p.region):'일본';

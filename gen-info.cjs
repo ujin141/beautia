@@ -76,8 +76,8 @@ const HEAD = (title,desc,canon,kw,jsonld)=>`<!DOCTYPE html><html lang="ko"><head
 <meta name="keywords" content="${esc(kw)}">
 <meta name="robots" content="index,follow,max-image-preview:large,max-snippet:-1">
 <link rel="canonical" href="${canon}">
-<link rel="alternate" hreflang="ko" href="${canon}"><link rel="alternate" hreflang="x-default" href="${canon}">
-<meta property="og:type" content="article"><meta property="og:site_name" content="Beautia">
+<link rel="alternate" hreflang="ko" href="${canon}?lang=ko"><link rel="alternate" hreflang="ja" href="${canon}?lang=ja"><link rel="alternate" hreflang="x-default" href="${canon}">
+<meta property="og:type" content="article"><meta property="og:site_name" content="Beautia"><meta property="og:locale" content="ko_KR"><meta property="og:locale:alternate" content="ja_JP">
 <meta property="og:title" content="${esc(title)}"><meta property="og:description" content="${esc(desc)}">
 <meta property="og:url" content="${canon}"><meta property="og:image" content="${SITE}/logo.png">
 <meta name="twitter:card" content="summary_large_image">
@@ -103,12 +103,13 @@ const FOOT = `<footer><div class="fwrap">
 </div></footer></body></html>`;
 
 function page(area, svc){
-  const A=area.ko, AJ=area.ja, S=svc.ko;
+  const A=area.ko, AJ=area.ja, S=svc.ko, SJ=svc.ja;
   const slug=`${area.slug}-${svc.slug}`;
   const canon=`${SITE}/info/${slug}`;
-  const title=`${A} ${S} 추천·후기·가격 | 한국어 예약 — Beautia`;
-  const desc=`${A}(${AJ}) ${S} 추천과 실제 후기, 가격 가이드. 일본어를 못해도 Beautia가 한국어로 예약·통역을 무료 대행해드려요.`;
-  const kw=`${A} ${S}, ${A} ${S} 추천, ${A} ${S} 후기, ${A} ${S} 가격, 일본 ${S}, ${A} 한국어 ${S}, ${AJ} ${svc.ja}`;
+  const title=`${A} ${S} 추천·후기·가격 | ${AJ}${SJ}のおすすめ・口コミ — Beautia`;
+  const desc=`${A}(${AJ}) ${S} 추천·실제 후기·가격 가이드. 일본어 0이어도 Beautia가 한국어로 예약·통역을 무료 대행. ／ ${AJ}の${SJ}を韓国語で予約・通訳代行（無料）。口コミ・料金ガイドあり。`;
+  const kw=`${A} ${S}, ${A} ${S} 추천, ${A} ${S} 후기, ${A} ${S} 가격, 일본 ${S}, ${A} 한국어 ${S}, ${AJ}${SJ}, ${AJ} ${SJ} おすすめ, ${AJ} ${SJ} 口コミ, ${AJ} ${SJ} 料金, ${AJ} ${SJ} 韓国語, 韓国語 予約 代行`;
+  const jaIntro=`${AJ}の${SJ}を、日本語が分からなくてもBeautiaが韓国語で予約・通訳します（予約代行は無料、施術料金のみ現地払い）。`;
 
   const faqs=svc.faqs(A,AJ);
   const jsonld=[
@@ -151,6 +152,7 @@ function page(area, svc){
     <span class="kicker">${A} · ${S}</span>
     <h1>${A} ${S} 추천 & 후기</h1>
     <p class="lead">${svc.intro(A)}</p>
+    <p class="lead" lang="ja" style="font-size:13.5px;color:var(--sub);margin-top:8px">${jaIntro}</p>
     <div class="meta"><span class="hpill">한국어 예약·통역</span><span class="hpill">예약 대행 무료</span><span class="hpill">시술비 현장 결제</span></div>
     <div class="acts"><a class="btn btn-primary" href="https://pf.kakao.com/_xhxhixfX/chat" target="_blank">💬 카톡으로 ${S} 예약</a><a class="btn btn-ghost" href="#reviews">후기 보기</a></div>
   </div>
@@ -221,8 +223,8 @@ for(const a of AREAS){ for(const s of SERVICES){
 
 // ---- index page (/info) ----
 function indexPage(){
-  const title='일본 뷰티 지역 정보 — 미용실·네일·속눈썹·왁싱 추천·후기 | Beautia';
-  const desc='도쿄·오사카·교토·후쿠오카 등 일본 주요 지역의 미용실·네일·속눈썹·왁싱 추천, 후기, 가격 정보를 한국어로. 일본어 없이 Beautia가 예약·통역 대행.';
+  const title='일본 뷰티 지역 정보 · 日本ビューティー地域ガイド — 미용실·네일·속눈썹·왁싱 | Beautia';
+  const desc='도쿄·오사카·교토·후쿠오카 등 일본 주요 지역의 미용실·네일·속눈썹·왁싱 추천·후기·가격을 한국어로. ／ 東京・大阪など日本各地の美容室・ネイル・まつげ・脱毛を韓国語で予約・通訳代行（無料）。';
   const canon=`${SITE}/info`;
   const jsonld=[{"@context":"https://schema.org","@type":"CollectionPage","name":title,"url":canon,"inLanguage":"ko"}];
   let blocks='';

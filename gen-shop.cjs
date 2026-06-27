@@ -72,9 +72,9 @@ const FOOT=`<footer><div class="fwrap">
 function shopPage(s){
   const canon=`${SITE}/shop/${s.slug}`;
   const svcTxt=s.svc.join('·');
-  const title=`${s.name} — ${s.area} ${svcTxt} | 한국어 예약 Beautia`;
-  const desc=`${s.area}(${s.region}) ${svcTxt} · ${s.blurb.slice(0,70)} 일본어 없이 Beautia가 한국어로 예약·통역 대행.`;
-  const kw=`${s.name}, ${s.area} ${s.svc[0]}, ${s.area} ${s.svc[0]} 한국어, ${s.region} ${s.svc[0]} 추천, ${esc(s.ja)}`;
+  const title=`${s.name} (${s.ja}) — ${s.area} ${svcTxt} | 한국어 예약 · 韓国語予約 Beautia`;
+  const desc=`${s.area}(${s.region}) ${svcTxt} · ${s.blurb.slice(0,60)} 일본어 0이어도 Beautia가 한국어로 예약·통역. ／ ${s.ja}を韓国語で予約・通訳代行（無料）。`;
+  const kw=`${s.name}, ${s.ja}, ${s.area} ${s.svc[0]}, ${s.area} ${s.svc[0]} 한국어, ${s.region} ${s.svc[0]} 추천, ${s.area} ${s.svc[0]} 韓国語, 韓国語OK サロン`;
   const qr=`https://api.qrserver.com/v1/create-qr-code/?size=240x240&margin=0&data=${encodeURIComponent(canon)}`;
   const jsonld=[
    {"@context":"https://schema.org","@type":s.type,"name":s.name,"image":U(s.cover,1200),"url":canon,
@@ -146,8 +146,8 @@ const SB=supabase.createClient('${SB_URL}','${SB_KEY}');
 
 // index page /shop
 function indexPage(){
-  const title='Beautia 입점 샵 — 일본 미용실·네일·속눈썹 (한국어 예약)';
-  const desc='Beautia에 입점한 일본 미용실·네일·속눈썹 샵. 한국어 예약·통역 대행. 사장님 입점 문의 환영.';
+  const title='Beautia 입점 샵 · 登録サロン — 일본 미용실·네일·속눈썹 (한국어 예약·韓国語予約)';
+  const desc='Beautia에 입점한 일본 미용실·네일·속눈썹 샵. 한국어 예약·통역 대행. ／ Beautia登録サロン一覧。韓国語で予約・通訳代行（無料）。';
   const canon=`${SITE}/shop`;
   const cards=SHOPS.map(s=>`<a class="rev" href="shop/${s.slug}.html" style="display:block">
     <div style="aspect-ratio:16/9;border-radius:10px;overflow:hidden;margin:-2px -2px 10px"><img src="${U(s.cover,600)}" style="width:100%;height:100%;object-fit:cover" alt="${esc(s.name)}"></div>
