@@ -295,26 +295,26 @@ a{color:inherit;text-decoration:none;}
 .procard .pcm{font-size:11px;color:var(--sub);margin-top:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
 .procard .pctags{display:flex;gap:5px;flex-wrap:wrap;margin-top:7px;}
 .procard .pctags span{font-size:10.5px;font-weight:600;color:var(--plum);background:var(--plumbg);padding:3px 8px;border-radius:999px;}
-/* home category sections (compact, 한눈에) */
-.homesec{margin-bottom:18px;}
-.homesec .hh{display:flex;align-items:baseline;justify-content:space-between;gap:10px;margin-bottom:9px;padding-bottom:6px;border-bottom:1px solid var(--line);}
-.homesec .hh h2{font-size:15px;font-weight:800;letter-spacing:-.025em;display:flex;align-items:center;gap:6px;}
-.homesec .hh h2 .ti{font-size:16px;color:var(--accent);}
-.homesec .hh h2 .c{font-size:11.5px;color:var(--sub);font-weight:600;margin-left:2px;}
-.homesec .hh a{font-size:12px;color:var(--accent);font-weight:600;cursor:pointer;white-space:nowrap;}
-.homesec .hh a:hover{text-decoration:underline;}
-.homesec .hrow{display:flex;gap:13px;overflow-x:auto;padding-bottom:5px;scroll-snap-type:x proximity;}
-.homesec .hrow::-webkit-scrollbar{height:0;}
-.homesec .scard{flex:0 0 158px;scroll-snap-align:start;}
-.homesec .scard .cover{aspect-ratio:16/10;border-radius:10px;}
-.homesec .scard .ctitle{font-size:13px;margin-top:0;-webkit-line-clamp:2;}
-.homesec .scard .cbody{padding:7px 1px 0;}
-.homesec .scard .chead{margin-top:5px;font-size:10.5px;}
-.homesec .scard .cact{margin-top:5px;gap:11px;font-size:11px;}
-/* pro(전문가) section cards compact */
-.homesec.pro .procard{flex:0 0 150px;}
-.homesec.pro .procard .pcimg{width:150px;height:130px;}
-@media(max-width:560px){.homesec .scard{flex-basis:150px;}.homesec.pro .procard{flex-basis:140px;}.homesec.pro .procard .pcimg{width:140px;height:120px;}}
+/* home — 카테고리 패널 그리드 (한눈에) */
+.homegrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;}
+@media(max-width:640px){.homegrid{grid-template-columns:1fr;}}
+.hp{border:1px solid var(--line);border-radius:12px;padding:12px 15px 6px;background:#fff;}
+.hp .ph{display:flex;align-items:center;justify-content:space-between;gap:8px;padding-bottom:8px;border-bottom:1px solid var(--line2);}
+.hp .ph h3{font-size:14px;font-weight:800;letter-spacing:-.02em;display:flex;align-items:center;gap:6px;}
+.hp .ph h3 .ti{font-size:16px;color:var(--accent);}
+.hp .ph h3 .c{font-size:11px;color:var(--sub);font-weight:600;}
+.hp .ph a{font-size:11.5px;color:var(--accent);font-weight:600;cursor:pointer;white-space:nowrap;}
+.hp .ph a:hover{text-decoration:underline;}
+.hp .pl{padding-top:2px;}
+.prw{display:flex;align-items:center;gap:10px;padding:8px 0;cursor:pointer;border-top:1px solid var(--line2);}
+.prw:first-child{border-top:none;}
+.prw:hover .prt{color:var(--accent);}
+.prth{width:38px;height:38px;border-radius:8px;background:var(--soft);background-size:cover;background-position:center;flex:0 0 auto;}
+.prth.rnd{border-radius:50%;}
+.prc{min-width:0;flex:1;}
+.prt{font-size:13px;font-weight:600;letter-spacing:-.01em;line-height:1.3;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;transition:.12s;}
+.prm{font-size:11px;color:var(--sub);margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.kotag{font-size:9px;font-weight:800;color:#fff;background:var(--plum);padding:1px 5px;border-radius:999px;}
 /* member modal */
 .mgal{display:flex;gap:8px;overflow-x:auto;margin:-6px -6px 6px;padding:0 0 4px;}
 .mgal::-webkit-scrollbar{height:0;}
@@ -738,17 +738,22 @@ function openMemberCard(id){const p=CURPROS.find(x=>''+x.id===''+id);if(!p)retur
     <div class="minfo">${rows.join('')}</div>
     <a class="btn btn-kakao" style="width:100%;justify-content:center;margin-top:18px;padding:13px" href="https://pf.kakao.com/_xhxhixfX/chat" target="_blank">💬 ${t('bookPro')}</a>`;
   $('memberModal').classList.add('on');}
-function homeSectionsHtml(){
+const jsId=id=>typeof id==='string'?`'${id}'`:id;
+function postRow(p){const thumb=(p.imgs&&p.imgs.length)?`<div class="prth" style="background-image:url('${p.imgs[0]}')"></div>`:'';
+  return `<div class="prw" onclick="openPost(${jsId(p.id)})">${thumb}<div class="prc"><div class="prt">${p.pinned?'📌 ':''}${esc(p.title)}</div><div class="prm">${esc(p.nick)} · ${timeago(p.t)}${p.cmtCount?' · 💬'+p.cmtCount:''}${isNew(p)?' <span class="newdot">NEW</span>':''}</div></div></div>`;}
+function proRow(pr){const s=pr.shop||{};const img=avatarOf(pr);
+  return `<div class="prw" onclick="openMemberCard('${pr.id}')"><div class="prth rnd" style="background-image:url('${img}')"></div><div class="prc"><div class="prt">${esc(pr.nickname||s.name||'')}${s.koOK?' <span class="kotag">한국어</span>':''}</div><div class="prm">${regFlag(pr.region)} ${esc(regL(pr.region||'전체'))}${(pr.role==='designer'&&s.career)?' · '+esc(s.career):''}</div></div></div>`;}
+function hPanel(title,ic,count,more,rows){return `<div class="hp"><div class="ph"><h3><i class="ti ${ic}"></i> ${title} <span class="c tnum">${count}</span></h3>${more?`<a onclick="${more}">${t('seeAll')} ›</a>`:''}</div><div class="pl">${rows}</div></div>`;}
+function homeGridHtml(){
   const base=DB.posts.filter(p=>!p.hidden&&!blocked(p.nick));
-  return CATS.filter(c=>c[0]!=='전체').map(([c,ic])=>{
-    const all=base.filter(p=>p.cat===c);
-    const ps=all.slice().sort((a,b)=>b.t-a.t).slice(0,8);
-    if(!ps.length)return'';
-    return `<section class="homesec">
-      <div class="hh"><h2><i class="ti ${ic}"></i> ${catL(c)} <span class="c tnum">${all.length}</span></h2><a onclick="setCat('${c}')">${t('seeAll')} ›</a></div>
-      <div class="hrow">${ps.map(p=>`<div class="scard">${cardHtml(p,0,false)}</div>`).join('')}</div>
-    </section>`;
-  }).join('');
+  const pros=getPros();CURPROS=pros;
+  const owners=pros.filter(p=>p.role==='owner'),designers=pros.filter(p=>p.role==='designer');
+  let panels=[];
+  if(owners.length)panels.push(hPanel(t('proOwner'),'ti-building-store',owners.length,'',owners.slice(0,3).map(proRow).join('')));
+  if(designers.length)panels.push(hPanel(t('proDesigner'),'ti-scissors',designers.length,'',designers.slice(0,3).map(proRow).join('')));
+  CATS.filter(c=>c[0]!=='전체').forEach(([c,ic])=>{const all=base.filter(p=>p.cat===c);if(!all.length)return;
+    panels.push(hPanel(catL(c),ic,all.length,`setCat('${c}')`,all.slice().sort((a,b)=>b.t-a.t).slice(0,3).map(postRow).join('')));});
+  return `<div class="homegrid">${panels.join('')}</div>`;
 }
 function renderMain(){
   if(view==='detail'){renderDetail();return;}
@@ -756,8 +761,8 @@ function renderMain(){
   const showTop=curMenu===''&&!curQ;
   const home=showTop&&curCat==='전체'&&curRegion==='전체';
   if(home){
-    $('main').innerHTML=bannerHtml()+'<div id="proSec"></div>'+homeSectionsHtml();
-    renderShowcase();startPromo();return;
+    $('main').innerHTML=bannerHtml()+homeGridHtml();
+    startPromo();return;
   }
   const list=visible();
   $('main').innerHTML=(showTop?bannerHtml():'')+`
