@@ -770,7 +770,7 @@ function renderRight(){
     <div class="panel"><div class="panel-h">${t('popular')}</div><div class="hot" id="hot"></div></div>
     <div class="ctabox"><h4>${t('ctaTitle')}</h4><p>${t('ctaDesc')}</p><a class="btn btn-kakao" href="https://pf.kakao.com/_xhxhixfX/chat" target="_blank" rel="noopener noreferrer">💬 ${t('ctaBtn')}</a></div>`;
   const hot=DB.posts.filter(p=>!p.hidden&&!blocked(p.nick)&&langOK(p)).sort((a,b)=>(b.like+(b.cmtCount||0)*2)-(a.like+(a.cmtCount||0)*2)).slice(0,5);
-  $('hot').innerHTML=hot.map((p,i)=>`<div class="hotitem" onclick="openPost(${jsId(p.id)})"><span class="rk">${i+1}</span><div><div class="ht">${esc(p.title)}</div><div class="hm tnum">♥ ${p.like} · ${t('comments')} ${p.cmtCount||0}</div></div></div>`).join('');
+  $('hot').innerHTML=hot.map((p,i)=>`<div class="hotitem" onclick="openPost(${jsId(p.id)})"><span class="rk">${i+1}</span><div><div class="ht">${esc(p.title)}</div><div class="hm tnum">♥ ${(p.like||0).toLocaleString()} · 💬 ${(p.cmtCount||0).toLocaleString()} · 👁 ${(p.views||0).toLocaleString()}</div></div></div>`).join('');
 }
 function renderShell(){
   let nav=`<div class="lh">${t('board')}</div>`;
@@ -908,7 +908,7 @@ const CATAC={'질문':'#3E7C7B','후기':'#A24A56','정보':'#9A7A3A','모델모
 function hPanel(title,ic,count,more,rows,accent,cls){return `<div class="hp ${cls||''}"${accent?` style="--ac:${accent}"`:''}><div class="ph"><h3><i class="ti ${ic}"></i> ${title} <span class="c tnum">${count}</span></h3>${more?`<a onclick="${more}">${t('seeAll')} ›</a>`:''}</div><div class="pl">${rows}</div></div>`;}
 function featuredHtml(){const base=DB.posts.filter(p=>!p.hidden&&!blocked(p.nick)&&langOK(p)&&p.imgs&&p.imgs.length);if(!base.length)return'';
   const p=base.slice().sort((a,b)=>(b.like+ (isNew(b)?100:0))-(a.like+(isNew(a)?100:0)))[0];
-  return `<div class="hero" onclick="openPost(${jsId(p.id)})"><div class="heroimg" style="background-image:url('${p.imgs[0]}')"></div><div class="heroov"><span class="heroeb">${catL(p.cat)}${p.region&&p.region!=='전체'?' · '+regFlag(p.region)+' '+esc(regL(p.region)):''}</span><div class="herot">${esc(p.title)}</div><div class="herom">${esc(p.nick)} · ${timeago(p.t)} · ♥ ${p.like} · 💬 ${p.cmtCount||0}</div></div></div>`;}
+  return `<div class="hero" onclick="openPost(${jsId(p.id)})"><div class="heroimg" style="background-image:url('${p.imgs[0]}')"></div><div class="heroov"><span class="heroeb">${catL(p.cat)}${p.region&&p.region!=='전체'?' · '+regFlag(p.region)+' '+esc(regL(p.region)):''}</span><div class="herot">${esc(p.title)}</div><div class="herom">${esc(p.nick)} · ${timeago(p.t)} · ♥ ${(p.like||0).toLocaleString()} · 💬 ${(p.cmtCount||0).toLocaleString()} · 👁 ${(p.views||0).toLocaleString()}</div></div></div>`;}
 function expertScrollHtml(){
   const pros=getPros();CURPROS=pros;
   const groups=[['owner','ti-building-store',t('proOwner'),'#6D4346'],['designer','ti-scissors',t('proDesigner'),'#3E7C7B']];
@@ -954,7 +954,7 @@ function homeGridHtml(){
   const chips=`<div class="homechips">`+CATS.filter(c=>c[0]!=='전체'&&base.some(p=>p.cat===c[0])).map(([c,ic])=>`<span class="hchip" style="--ac:${CATAC[c]||'#6D4346'}" onclick="setCat('${c}')"><i class="ti ${ic}"></i>${catL(c)}<b>${base.filter(p=>p.cat===c).length}</b></span>`).join('')+`</div>`;
   // 인기 급상승 레일 (engagement 상위, 히어로 제외)
   const hot=base.filter(p=>p.id!==heroId).slice().sort((a,b)=>(b.like+b.cmtCount*2)-(a.like+a.cmtCount*2)).slice(0,4);
-  const hotRail=hot.length>=2?`<div class="hotsec"><div class="hothead"><h2>🔥 ${t('hotNow')}</h2></div><div class="hotrow">${hot.map((p,i)=>{const has=p.imgs&&p.imgs.length;const ac=CATAC[p.cat]||'#6D4346';return `<div class="hotcard ${has?'':'np'}" style="--ac:${ac}" onclick="openPost(${jsId(p.id)})"><span class="hotrank">${i+1}</span>${has?`<div class="hotimg" style="background-image:url('${p.imgs[0]}')"></div>`:`<div class="hotimg np"><i class="ti ti-message-2"></i></div>`}<div class="hotbody"><span class="hotcat">${catL(p.cat)}</span><div class="hottitle">${esc(p.title)}</div>${has?'':`<div class="hotexc">${esc(bodyOf(p))}</div>`}<div class="hotmeta">♥ ${p.like} · 💬 ${p.cmtCount||0}</div></div></div>`;}).join('')}</div></div>`:'';
+  const hotRail=hot.length>=2?`<div class="hotsec"><div class="hothead"><h2>🔥 ${t('hotNow')}</h2></div><div class="hotrow">${hot.map((p,i)=>{const has=p.imgs&&p.imgs.length;const ac=CATAC[p.cat]||'#6D4346';return `<div class="hotcard ${has?'':'np'}" style="--ac:${ac}" onclick="openPost(${jsId(p.id)})"><span class="hotrank">${i+1}</span>${has?`<div class="hotimg" style="background-image:url('${p.imgs[0]}')"></div>`:`<div class="hotimg np"><i class="ti ti-message-2"></i></div>`}<div class="hotbody"><span class="hotcat">${catL(p.cat)}</span><div class="hottitle">${esc(p.title)}</div>${has?'':`<div class="hotexc">${esc(bodyOf(p))}</div>`}<div class="hotmeta">♥ ${(p.like||0).toLocaleString()} · 💬 ${(p.cmtCount||0).toLocaleString()} · 👁 ${(p.views||0).toLocaleString()}</div></div></div>`;}).join('')}</div></div>`:'';
   // 최신 글 카드 그리드
   const recent=base.slice().sort((a,b)=>b.t-a.t).slice(0,18);
   const head=`<div class="boardhead"><h1><i class="ti ti-clock"></i> ${t('new')}</h1><span class="c tnum">${base.length}${t('count')}</span></div>`;
