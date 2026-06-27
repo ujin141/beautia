@@ -64,7 +64,7 @@ ${jsonld.map(j=>`<script type="application/ld+json">${JSON.stringify(j)}</script
 <header class="hdr"><div class="hwrap">
   <a class="logo" href="../community.html"><img src="../logo-trim.png" alt="Beautia"></a>
   <nav class="gnav"><a href="../community.html">커뮤니티</a><a href="../info.html">지역 정보</a><a href="../shop.html">입점 샵</a><a href="../landing.html">서비스 소개</a></nav>
-  <a class="btn btn-primary hcta" href="https://pf.kakao.com/_xhxhixfX/chat" target="_blank">카톡 예약</a>
+  <a class="btn btn-primary hcta" href="https://pf.kakao.com/_xhxhixfX/chat" target="_blank" rel="noopener noreferrer">카톡 예약</a>
 </div></header>`;
 const FOOT=`<footer><div class="fwrap">
   <a href="../community.html">커뮤니티</a><a href="../info.html">지역 정보</a><a href="../landing.html">서비스 소개</a>
@@ -104,7 +104,7 @@ function shopPage(s){
       <div class="shopmeta"><span class="stars">${stars(s.rating)}<b>${s.rating}</b></span><span class="dot"></span><span>후기 ${s.nrev}</span><span class="dot"></span><span>📍 ${esc(s.area)} · ${esc(s.region)}</span></div>
       <div class="shopchips">${s.svc.map(v=>`<span class="c">${esc(v)}</span>`).join('')}</div>
       <div class="shopblurb">${esc(s.blurb)}</div>
-      <div class="shopacts"><a class="btn btn-primary" href="https://pf.kakao.com/_xhxhixfX/chat" target="_blank">💬 카톡으로 예약</a></div>
+      <div class="shopacts"><a class="btn btn-primary" href="https://pf.kakao.com/_xhxhixfX/chat" target="_blank" rel="noopener noreferrer">💬 카톡으로 예약</a></div>
       <div class="sharebar">
         <button onclick="copyLink()"><i></i>🔗 링크 복사</button>
         <button onclick="window.open('https://pf.kakao.com/_xhxhixfX/chat')">💬 카카오</button>
@@ -127,7 +127,7 @@ function shopPage(s){
   <div class="ctaband">
     <h3>${esc(s.name)}, 일본어 0이어도 예약 OK</h3>
     <p>Beautia가 한국어로 ${esc(s.area)} ${svcTxt} 예약·통역까지 무료 대행해드려요. (시술비만 현장 결제)</p>
-    <div class="row"><a class="btn btn-kakao" href="https://pf.kakao.com/_xhxhixfX/chat" target="_blank">💬 카톡으로 예약 신청</a></div>
+    <div class="row"><a class="btn btn-kakao" href="https://pf.kakao.com/_xhxhixfX/chat" target="_blank" rel="noopener noreferrer">💬 카톡으로 예약 신청</a></div>
   </div>
 </div>
 <div id="lb" onclick="this.style.display='none'" style="position:fixed;inset:0;background:rgba(20,12,13,.9);display:none;align-items:center;justify-content:center;z-index:300;padding:30px;cursor:zoom-out"><img id="lbi" style="max-width:100%;max-height:100%;border-radius:10px"></div>
@@ -166,7 +166,7 @@ function indexPage(){
 <header class="hdr"><div class="hwrap">
   <a class="logo" href="community.html"><img src="logo-trim.png" alt="Beautia"></a>
   <nav class="gnav"><a href="community.html">커뮤니티</a><a href="info.html">지역 정보</a><a href="landing.html">서비스 소개</a></nav>
-  <a class="btn btn-primary hcta" href="https://pf.kakao.com/_xhxhixfX/chat" target="_blank">카톡 예약</a>
+  <a class="btn btn-primary hcta" href="https://pf.kakao.com/_xhxhixfX/chat" target="_blank" rel="noopener noreferrer">카톡 예약</a>
 </div></header>
 <div class="wrap">
   <div class="hero"><span class="kicker">입점 샵</span><h1>Beautia 입점 샵</h1>

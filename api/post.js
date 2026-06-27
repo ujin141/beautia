@@ -110,7 +110,7 @@ ${ld.map(j => `<script type="application/ld+json">${JSON.stringify(j).replace(/<
     ${tagsHtml}
     <div class="pcta">
       <a class="btn btn-primary" href="/community?post=${id}">💬 댓글 보기·쓰기 (Beautia)</a>
-      <a class="btn btn-kakao" href="https://pf.kakao.com/_xhxhixfX/chat" target="_blank">카톡으로 예약</a>
+      <a class="btn btn-kakao" href="https://pf.kakao.com/_xhxhixfX/chat" target="_blank" rel="noopener noreferrer">카톡으로 예약</a>
     </div>
   </article>
   <section class="psec"><h2>댓글 ${comments.length}</h2>${cmtHtml}</section>

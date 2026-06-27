@@ -766,7 +766,7 @@ function renderRight(){
       ${[1,2,3,4].map(n=>`<div class="rule"><span class="rn">${n}</span><span>${t('r'+n)}</span></div>`).join('')}
     </div></div>
     <div class="panel"><div class="panel-h">${t('popular')}</div><div class="hot" id="hot"></div></div>
-    <div class="ctabox"><h4>${t('ctaTitle')}</h4><p>${t('ctaDesc')}</p><a class="btn btn-kakao" href="https://pf.kakao.com/_xhxhixfX/chat" target="_blank">💬 ${t('ctaBtn')}</a></div>`;
+    <div class="ctabox"><h4>${t('ctaTitle')}</h4><p>${t('ctaDesc')}</p><a class="btn btn-kakao" href="https://pf.kakao.com/_xhxhixfX/chat" target="_blank" rel="noopener noreferrer">💬 ${t('ctaBtn')}</a></div>`;
   const hot=DB.posts.slice().sort((a,b)=>(b.like+b.scrap*2)-(a.like+a.scrap*2)).slice(0,5);
   $('hot').innerHTML=hot.map((p,i)=>`<div class="hotitem" onclick="openPost(${jsId(p.id)})"><span class="rk">${i+1}</span><div><div class="ht">${esc(p.title)}</div><div class="hm tnum">♥ ${p.like} · ${t('comments')} ${p.cmtCount||0}</div></div></div>`).join('');
 }
@@ -882,13 +882,13 @@ function openMemberCard(id){const p=CURPROS.find(x=>''+x.id===''+id);if(!p)retur
   rows.push(`<div class="mrow"><span class="ml">${t('regionLabel')}</span><span>${regFlag(p.region)} ${esc(regL(p.region||'전체'))}${s.locDetail?' · '+esc(s.locDetail):''}</span></div>`);
   if(s.hours)rows.push(`<div class="mrow"><span class="ml">${t('hoursL').replace(' (선택)','').replace('（任意）','')}</span><span>${esc(s.hours)}</span></div>`);
   rows.push(`<div class="mrow"><span class="ml">${t('koOKL')}</span><span>${s.koOK?'✅':'Beautia '+'통역'}</span></div>`);
-  if(s.insta)rows.push(`<div class="mrow"><span class="ml">SNS</span><a href="${instaUrl(s.insta)}" target="_blank" style="color:var(--plum);font-weight:700"><i class="ti ti-brand-instagram"></i> ${esc(s.insta)}</a></div>`);
+  if(s.insta)rows.push(`<div class="mrow"><span class="ml">SNS</span><a href="${esc(instaUrl(s.insta))}" target="_blank" rel="noopener noreferrer" style="color:var(--plum);font-weight:700"><i class="ti ti-brand-instagram"></i> ${esc(s.insta)}</a></div>`);
   $('memBody').innerHTML=`${gal}
     <div class="mhead"><div class="mn">${esc(p.nickname||s.name||'')} ${roleBadge(p.role)}${s.koOK?` <span class="badge-ko">${t('koBadge')}</span>`:''}</div></div>
     ${svc.length?`<div class="chipset" style="margin-top:12px">${svc.map(x=>`<span class="c">${svcL(x)}</span>`).join('')}</div>`:''}
     ${(p.bio||s.shopDesc)?`<div class="mbio">${esc(p.bio||s.shopDesc)}</div>`:''}
     <div class="minfo">${rows.join('')}</div>
-    <a class="btn btn-kakao" style="width:100%;justify-content:center;margin-top:18px;padding:13px" href="https://pf.kakao.com/_xhxhixfX/chat" target="_blank">💬 ${t('bookPro')}</a>`;
+    <a class="btn btn-kakao" style="width:100%;justify-content:center;margin-top:18px;padding:13px" href="https://pf.kakao.com/_xhxhixfX/chat" target="_blank" rel="noopener noreferrer">💬 ${t('bookPro')}</a>`;
   $('memberModal').classList.add('on');}
 const jsId=id=>typeof id==='string'?`'${id}'`:id;
 function postRow(p){const thumb=(p.imgs&&p.imgs.length)?`<div class="prth" style="background-image:url('${p.imgs[0]}')"></div>`:'';
@@ -1184,8 +1184,8 @@ function renderProfileForm(first){
   h+=`<div class="wlabel">${t('instaL')}</div><input class="field" id="pfInsta" maxlength="60" placeholder="${t('instaPh')}" value="${esc(instaVal)}" style="margin-top:8px">`;
   if(pfMode==='profile'){
     h+=`<div class="wlabel">${t('agreements')} <span style="color:var(--rose)">*</span></div>
-      <label class="agree"><input type="checkbox" id="agTerms" ${pfAgreeTerms?'checked':''} onchange="pfAgreeTerms=this.checked"><span class="req">[${t('req')}]</span> ${t('agreeTerms')}<a href="terms.html" target="_blank" onclick="event.stopPropagation()">${t('view')}</a></label>
-      <label class="agree"><input type="checkbox" id="agPriv" ${pfAgreePrivacy?'checked':''} onchange="pfAgreePrivacy=this.checked"><span class="req">[${t('req')}]</span> ${t('agreePrivacy')}<a href="privacy.html" target="_blank" onclick="event.stopPropagation()">${t('view')}</a></label>
+      <label class="agree"><input type="checkbox" id="agTerms" ${pfAgreeTerms?'checked':''} onchange="pfAgreeTerms=this.checked"><span class="req">[${t('req')}]</span> ${t('agreeTerms')}<a href="terms.html" target="_blank" rel="noopener noreferrer" onclick="event.stopPropagation()">${t('view')}</a></label>
+      <label class="agree"><input type="checkbox" id="agPriv" ${pfAgreePrivacy?'checked':''} onchange="pfAgreePrivacy=this.checked"><span class="req">[${t('req')}]</span> ${t('agreePrivacy')}<a href="privacy.html" target="_blank" rel="noopener noreferrer" onclick="event.stopPropagation()">${t('view')}</a></label>
       <label class="agree"><input type="checkbox" id="agMktg" ${pfAgreeMktg?'checked':''} onchange="pfAgreeMktg=this.checked"> ${t('agreeMktg')}</label>`;
   }
   $('pfBody').innerHTML=h;
@@ -1304,7 +1304,7 @@ function renderMypage(){
     <div class="back" onclick="backFeed()" style="margin-bottom:14px"><i class="ti ti-chevron-left"></i> ${t('back')}</div>
     <div class="profhead">${avHtml(ME.nick,ME.avatar)}
       <div style="flex:1;min-width:0"><div class="pn">${esc(ME.nick)} ${roleBadge(ME.role)}${ME.verified?`<span class="vchip"><i class="ti ti-rosette-discount-check-filled"></i> ${t('verifiedMember')}</span>`:''}</div>
-      <div class="pm">${ME.region&&ME.region!=='전체'?regFlag(ME.region)+' '+esc(regL(ME.region))+' · ':''}${t('joinedOn')} ${days}${t('daysAgo')} · 🔥 ${ME.visit.streak}${t('dayUnit')}${(S.insta)?` · <a href="${instaUrl(S.insta)}" target="_blank" style="color:var(--plum);font-weight:700"><i class="ti ti-brand-instagram"></i> ${esc(S.insta.replace(/^https?:\/\/(www\.)?instagram\.com\//,'@').replace(/\/$/,''))}</a>`:''}</div>
+      <div class="pm">${ME.region&&ME.region!=='전체'?regFlag(ME.region)+' '+esc(regL(ME.region))+' · ':''}${t('joinedOn')} ${days}${t('daysAgo')} · 🔥 ${ME.visit.streak}${t('dayUnit')}${(S.insta)?` · <a href="${esc(instaUrl(S.insta))}" target="_blank" rel="noopener noreferrer" style="color:var(--plum);font-weight:700"><i class="ti ti-brand-instagram"></i> ${esc(S.insta.replace(/^https?:\/\/(www\.)?instagram\.com\//,'@').replace(/\/$/,''))}</a>`:''}</div>
       ${ME.bio?`<div class="pbio">${esc(ME.bio)}</div>`:''}</div>
       <div class="pact"><button class="btn btn-ghost btn-sm" onclick="openEditProfile()"><i class="ti ti-edit"></i> ${t('editProfile')}</button><button class="btn btn-ghost btn-sm" onclick="logout()"><i class="ti ti-logout"></i> ${t('logout')}</button></div></div>
     <div class="pstats">

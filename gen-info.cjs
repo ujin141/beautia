@@ -93,13 +93,13 @@ ${jsonld.map(j=>`<script type="application/ld+json">${JSON.stringify(j)}</script
 <header class="hdr"><div class="hwrap">
   <a class="logo" href="../community.html"><img src="../logo-trim.png" alt="Beautia"></a>
   <nav class="gnav"><a href="../community.html">커뮤니티</a><a href="../info.html">지역 정보</a><a href="../shop.html">입점 샵</a><a href="../landing.html">서비스 소개</a></nav>
-  <a class="btn btn-primary hcta" href="https://pf.kakao.com/_xhxhixfX/chat" target="_blank">카톡 예약</a>
+  <a class="btn btn-primary hcta" href="https://pf.kakao.com/_xhxhixfX/chat" target="_blank" rel="noopener noreferrer">카톡 예약</a>
 </div></header>`;
 
 const FOOT = `<footer><div class="fwrap">
   <a href="../community.html">커뮤니티</a><a href="../landing.html">서비스 소개</a><a href="../info.html">지역 정보</a>
   <a href="../apply.html">입점 신청</a><a href="../privacy.html">개인정보</a><a href="../terms.html">약관</a>
-  <a href="https://instagram.com/beautia.japan" target="_blank">Instagram</a>
+  <a href="https://instagram.com/beautia.japan" target="_blank" rel="noopener noreferrer">Instagram</a>
   <span class="cp">© 2026 Beautia</span>
 </div></footer></body></html>`;
 
@@ -155,7 +155,7 @@ function page(area, svc){
     <p class="lead">${svc.intro(A)}</p>
     <p class="lead" lang="ja" style="font-size:13.5px;color:var(--sub);margin-top:8px">${jaIntro}</p>
     <div class="meta"><span class="hpill">한국어 예약·통역</span><span class="hpill">예약 대행 무료</span><span class="hpill">시술비 현장 결제</span></div>
-    <div class="acts"><a class="btn btn-primary" href="https://pf.kakao.com/_xhxhixfX/chat" target="_blank">💬 카톡으로 ${S} 예약</a><a class="btn btn-ghost" href="#reviews">후기 보기</a></div>
+    <div class="acts"><a class="btn btn-primary" href="https://pf.kakao.com/_xhxhixfX/chat" target="_blank" rel="noopener noreferrer">💬 카톡으로 ${S} 예약</a><a class="btn btn-ghost" href="#reviews">후기 보기</a></div>
   </div>
 </div>
 
@@ -187,7 +187,7 @@ function page(area, svc){
     <div class="rankbox">
       <h3>이번 주 ${A} ${S} TOP 랭킹 — 곧 공개</h3>
       <p>한국인이 가장 많이 예약·재방문한 ${A} ${S} 샵 랭킹을 준비하고 있어요. 입점을 원하는 사장님은 프로필을 무료로 만들어드립니다.</p>
-      <a class="btn btn-ghost" href="https://pf.kakao.com/_xhxhixfX/chat" target="_blank">사장님 입점 문의</a>
+      <a class="btn btn-ghost" href="https://pf.kakao.com/_xhxhixfX/chat" target="_blank" rel="noopener noreferrer">사장님 입점 문의</a>
     </div>
   </section>
 
@@ -199,7 +199,7 @@ function page(area, svc){
   <div class="ctaband">
     <h3>${A}에서 ${S}, 일본어 0이어도 OK</h3>
     <p>마음에 드는 곳을 찾았다면 Beautia가 ${A}의 검증된 매장에 한국어로 예약·통역까지 대행해드려요. (예약 대행 무료 · 시술비만 현장 결제)</p>
-    <div class="row"><a class="btn btn-kakao" href="https://pf.kakao.com/_xhxhixfX/chat" target="_blank">💬 카톡으로 예약 신청</a><a class="btn btn-ghost" href="https://instagram.com/beautia.japan" target="_blank">인스타 DM</a></div>
+    <div class="row"><a class="btn btn-kakao" href="https://pf.kakao.com/_xhxhixfX/chat" target="_blank" rel="noopener noreferrer">💬 카톡으로 예약 신청</a><a class="btn btn-ghost" href="https://instagram.com/beautia.japan" target="_blank" rel="noopener noreferrer">인스타 DM</a></div>
   </div>
 
   <section style="border-bottom:none">
@@ -247,7 +247,7 @@ ${jsonld.map(j=>`<script type="application/ld+json">${JSON.stringify(j)}</script
 <header class="hdr"><div class="hwrap">
   <a class="logo" href="community.html"><img src="logo-trim.png" alt="Beautia"></a>
   <nav class="gnav"><a href="community.html">커뮤니티</a><a href="landing.html">서비스 소개</a><a href="info.html">지역 정보</a></nav>
-  <a class="btn btn-primary hcta" href="https://pf.kakao.com/_xhxhixfX/chat" target="_blank">카톡 예약</a>
+  <a class="btn btn-primary hcta" href="https://pf.kakao.com/_xhxhixfX/chat" target="_blank" rel="noopener noreferrer">카톡 예약</a>
 </div></header>
 <div class="wrap">
   <div class="hero"><span class="kicker">지역 정보</span><h1>일본 뷰티, 지역으로 찾기</h1>
