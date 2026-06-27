@@ -679,7 +679,7 @@ function award(amount,reason,key){
   const av=$('navPts');if(av)av.textContent='✦ '+ME.points.toLocaleString()+'P';
   toast('+'+amount.toLocaleString()+'P · '+reason);
 }
-function mapPost(r){const pm=PROFMAP[r.author]||{};const anon=(r.nickname==='익명'||r.nickname==='匿名');return{id:r.id,cat:r.cat||'자유',region:r.region||'전체',lang:r.lang||'ko',title:r.title||'',content:r.content||'',tags:r.tags||[],imgs:r.imgs||[],pinned:!!r.pinned,hidden:!!r.hidden,like:r.like_count||0,scrap:0,t:r.created_at?new Date(r.created_at).getTime():Date.now(),author:r.author,nick:anon?r.nickname:(pm.nick||r.nickname||'익명'),role:anon?'guest':(pm.role||'guest'),avatar:anon?'':(pm.avatar||''),cmtCount:(r.comments&&r.comments[0])?r.comments[0].count:0,cmts:[],mine:!!(ME.uid&&r.author===ME.uid)};}
+function mapPost(r){const pm=PROFMAP[r.author]||{};const anon=(r.nickname==='익명'||r.nickname==='匿名');return{id:r.id,cat:r.cat||'자유',region:r.region||'전체',lang:r.lang||'ko',title:r.title||'',content:r.content||'',tags:r.tags||[],imgs:r.imgs||[],pinned:!!r.pinned,hidden:!!r.hidden,like:r.like_count||0,scrap:0,views:r.views||0,t:r.created_at?new Date(r.created_at).getTime():Date.now(),author:r.author,nick:anon?r.nickname:(pm.nick||r.nickname||'익명'),role:anon?'guest':(pm.role||'guest'),avatar:anon?'':(pm.avatar||''),cmtCount:(r.comments&&r.comments[0])?r.comments[0].count:0,cmts:[],mine:!!(ME.uid&&r.author===ME.uid)};}
 async function loadPosts(){
   try{
     const {data:profs}=await SB.from('profiles').select('*');PROFMAP={};(profs||[]).forEach(p=>PROFMAP[p.id]={nick:p.nickname,role:p.role,avatar:(p.shop&&p.shop.avatar)||''});PROFILES=profs||[];DB.blocked=(profs||[]).filter(p=>p.blocked).map(p=>p.nickname);
@@ -779,7 +779,7 @@ function coverHtml(p){const imgs=p.imgs||[];const has=imgs.length;const tone=pos
   const img=has?`<img src="${imgs[0]}" loading="lazy" alt="" onerror="coverFail(this)">`:'';
   return `<div class="cover ${has?'':'poster'}" style="background:${tone}"><div class="ptext">${esc(p.title)}</div>${img}<div class="scrim"></div>${chips}</div>`;}
 function cardMeta(p){return `<div class="chead">${roleBadge(p.role)}<span class="dot"></span><span>${esc(p.nick)}</span>${p.region&&p.region!=='전체'?`<span class="dot"></span><span>${regFlag(p.region)} ${esc(regL(p.region))}</span>`:''}<span class="dot"></span><span>${timeago(p.t)}</span></div>`;}
-function cardActs(p){return `<div class="cact"><span class="a"><i class="ti ti-heart"></i> ${p.like}</span><span class="a"><i class="ti ti-message-circle"></i> ${p.cmtCount||0}</span><span class="a"><i class="ti ti-eye"></i> ${(p.like*7+p.scrap*3+13)}</span></div>`;}
+function cardActs(p){return `<div class="cact"><span class="a"><i class="ti ti-heart"></i> ${p.like}</span><span class="a"><i class="ti ti-message-circle"></i> ${p.cmtCount||0}</span><span class="a"><i class="ti ti-eye"></i> ${p.views||0}</span></div>`;}
 function cardHtml(p,i,lead){
   const has=p.imgs&&p.imgs.length;const tone=posterTone(p);
   if(lead){
@@ -935,6 +935,7 @@ function renderMain(){
   startPromo();
 }
 async function openPost(id){if(!ME.registered){openLogin();toast(t('needLoginView'));return;}openId=id;if(!ME.read.includes(id)){ME.read.push(id);saveMe();}view='detail';renderDetail();scrollTo({top:0});
+  {const p0=DB.posts.find(x=>x.id===id);if(p0){p0.views=(p0.views||0)+1;}try{SB.rpc('bump_view',{pid:id});}catch(e){}}
   const {data}=await SB.from('comments').select('*').eq('post_id',id).order('created_at',{ascending:true});
   const p=DB.posts.find(x=>x.id===id);if(p){p.cmts=(data||[]).map(c=>{const useNick=(c.nickname==='익명'||c.nickname==='匿名')?c.nickname:((PROFMAP[c.author]&&PROFMAP[c.author].nick)||c.nickname||'익명');const anon=(c.nickname==='익명'||c.nickname==='匿名');return {id:c.id,parentId:c.parent_id||null,nick:useNick,role:anon?'guest':((PROFMAP[c.author]&&PROFMAP[c.author].role)||'guest'),avatar:anon?'':((PROFMAP[c.author]&&PROFMAP[c.author].avatar)||''),t:c.content,d:c.created_at?new Date(c.created_at).getTime():Date.now(),author:c.author,mine:!!(ME.uid&&c.author===ME.uid)};});p.cmtCount=p.cmts.length;}
   if(view==='detail'&&openId===id)renderDetail();}
@@ -949,7 +950,7 @@ function renderDetail(){
     <div class="back" onclick="backFeed()"><i class="ti ti-chevron-left"></i> ${t('back')}</div>
     <div class="dhead">${avHtml(p.nick,p.avatar)}<div><div class="dhn">${esc(p.nick)} ${roleBadge(p.role)}</div><div class="dhm"><span style="color:var(--rose);font-weight:700;">${catL(p.cat)}</span>${p.region&&p.region!=='전체'?' · '+regFlag(p.region)+' '+esc(regL(p.region)):''} · ${timeago(p.t)}</div></div></div>
     <div class="dtitle">${esc(p.title)}</div>
-    <div class="dmeta"><span class="a"><i class="ti ti-heart"></i> ${p.like}</span><span class="a"><i class="ti ti-message-circle"></i> ${p.cmtCount||0}</span><span class="a"><i class="ti ti-eye"></i> ${(p.like*7+p.scrap*3+13)} ${t('views')}</span></div>
+    <div class="dmeta"><span class="a"><i class="ti ti-heart"></i> ${p.like}</span><span class="a"><i class="ti ti-message-circle"></i> ${p.cmtCount||0}</span><span class="a"><i class="ti ti-eye"></i> ${p.views||0} ${t('views')}</span></div>
     <div class="dcontent">${esc(main)}</div>
     <div style="margin-top:12px"><span class="tg" onclick="trDetail(this)"><i class="ti ti-language"></i> ${t('gptT')}</span></div>
     <div class="transbox" id="trDetailBox" style="display:none;margin-top:10px"></div>

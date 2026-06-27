@@ -65,6 +65,14 @@ alter table public.posts    add column if not exists imgs       text[] default '
 alter table public.posts    add column if not exists like_count integer default 0;
 alter table public.posts    add column if not exists nickname   text;
 alter table public.posts    add column if not exists lang       text default 'ko';
+alter table public.posts    add column if not exists views      integer default 0;
+
+-- 조회수 증가 (비로그인 포함 누구나 1 증가 — RLS update 우회를 위해 security definer)
+create or replace function public.bump_view(pid uuid)
+returns void language sql security definer set search_path = public as $bv$
+  update public.posts set views = coalesce(views,0) + 1 where id = pid;
+$bv$;
+grant execute on function public.bump_view(uuid) to anon, authenticated;
 
 -- 4) 인덱스
 create index if not exists posts_created_idx  on public.posts (created_at desc);
