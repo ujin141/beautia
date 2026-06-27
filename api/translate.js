@@ -2,10 +2,26 @@
 // 환경변수 OPENAI_API_KEY 필요 (Vercel → Settings → Environment Variables)
 // 요청: POST /api/translate  { text:"...", target:"ko" | "ja" }
 // 응답: { translated:"..." }
+// 비용 남용 방지: 워밍된 인스턴스 동안 IP별 호출 제한(베스트에포트) + 오리진 제한
+const RL = globalThis.__btTransRL || (globalThis.__btTransRL = new Map());
+function rateLimited(ip) {
+  const now = Date.now(), WIN = 60000, MAX = 15; // 분당 15회
+  const arr = (RL.get(ip) || []).filter(t => now - t < WIN);
+  if (arr.length >= MAX) return true;
+  arr.push(now); RL.set(ip, arr); return false;
+}
+function originAllowed(req) {
+  const o = (req.headers.origin || '') + ' ' + (req.headers.referer || '');
+  if (/https?:\/\/(beautia\.io|[a-z0-9-]+\.vercel\.app|localhost(:\d+)?)/i.test(o)) return true;
+  return !req.headers.origin && !req.headers.referer; // 동일출처 일부 환경 허용
+}
 export default async function handler(req, res) {
   if (req.method === 'OPTIONS') { res.status(200).end(); return; }
   if (req.method !== 'POST') { res.status(405).json({ error: 'POST only' }); return; }
   try {
+    if (!originAllowed(req)) { res.status(403).json({ error: 'forbidden' }); return; }
+    const ip = ((req.headers['x-forwarded-for'] || '').split(',')[0] || 'x').trim();
+    if (rateLimited(ip)) { res.status(429).json({ error: 'too many requests' }); return; }
     let body = req.body;
     if (typeof body === 'string') { try { body = JSON.parse(body); } catch (e) { body = {}; } }
     const text = (body && body.text || '').toString().slice(0, 4000);
