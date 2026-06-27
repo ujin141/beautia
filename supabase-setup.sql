@@ -116,8 +116,42 @@ create policy comments_delete_own   on public.comments for delete using (auth.ui
 drop policy if exists comments_admin_delete on public.comments;
 create policy comments_admin_delete on public.comments for delete using (public.is_admin());
 
+-- 8) 좋아요 (공용 — 여러 사람이 누른 게 합산/동기화)
+create table if not exists public.post_likes (
+  post_id    uuid references public.posts(id) on delete cascade,
+  user_id    uuid references auth.users(id)  on delete cascade,
+  created_at timestamptz default now(),
+  primary key (post_id, user_id)
+);
+create index if not exists post_likes_user_idx on public.post_likes (user_id);
+alter table public.post_likes enable row level security;
+drop policy if exists post_likes_read        on public.post_likes;
+create policy post_likes_read        on public.post_likes for select using (true);
+drop policy if exists post_likes_insert_self on public.post_likes;
+create policy post_likes_insert_self on public.post_likes for insert with check (auth.uid() = user_id);
+drop policy if exists post_likes_delete_self on public.post_likes;
+create policy post_likes_delete_self on public.post_likes for delete using (auth.uid() = user_id);
+
+-- 좋아요 시 posts.like_count 자동 증감 (security definer: 글 작성자가 아니어도 카운트 갱신)
+create or replace function public.sync_like_count()
+returns trigger language plpgsql security definer set search_path = public as $fn$
+begin
+  if (TG_OP = 'INSERT') then
+    update public.posts set like_count = coalesce(like_count,0) + 1 where id = NEW.post_id;
+    return NEW;
+  elsif (TG_OP = 'DELETE') then
+    update public.posts set like_count = greatest(coalesce(like_count,0) - 1, 0) where id = OLD.post_id;
+    return OLD;
+  end if;
+  return null;
+end; $fn$;
+drop trigger if exists trg_sync_like_count on public.post_likes;
+create trigger trg_sync_like_count
+  after insert or delete on public.post_likes
+  for each row execute function public.sync_like_count();
+
 -- ============================================================
--- 8) 본인을 관리자로 지정  ← 이메일을 본인 가입 이메일로 교체!
+-- 9) 본인을 관리자로 지정  ← 이메일을 본인 가입 이메일로 교체!
 --    (먼저 커뮤니티에서 회원가입을 끝낸 뒤 실행하세요)
 -- ============================================================
 update public.profiles set is_admin = true
