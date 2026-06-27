@@ -63,6 +63,8 @@ for n, (reg, title, content, tags, ik) in enumerate(P):
     rows.append("('Beautia','정보','%s','ja',E'%s',E'%s',%s,ARRAY['%s']::text[], now() - interval '%d hours')"
                 % (reg, e(title), e(content), arr(tags), IMG[ik], n*8+5))
 sql = ("-- Beautia 정보글 일본어판 시드 (lang='ja') — 일본어 모드에서만 노출\n"
+       "-- lang 컬럼이 없으면 자동 추가 (이 파일만 실행해도 됨)\n"
+       "alter table public.posts add column if not exists lang text default 'ko';\n\n"
        "insert into public.posts (nickname,cat,region,lang,title,content,tags,imgs,created_at) values\n"
        + ",\n".join(rows) + ";\n")
 open('seed-info-ja.sql', 'w', encoding='utf-8').write(sql)

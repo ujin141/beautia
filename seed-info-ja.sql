@@ -1,4 +1,7 @@
 -- Beautia 정보글 일본어판 시드 (lang='ja') — 일본어 모드에서만 노출
+-- lang 컬럼이 없으면 자동 추가 (이 파일만 실행해도 됨)
+alter table public.posts add column if not exists lang text default 'ko';
+
 insert into public.posts (nickname,cat,region,lang,title,content,tags,imgs,created_at) values
 ('Beautia','정보','전체','ja',E'ホットペッパービューティーで予約するコツ',E'サロン予約はホットペッパービューティーが定番です。\n\n・希望のスタイルは写真を保存して見せるのが一番伝わります\n・人気店・指名は埋まりやすいので早めの予約を\n・クーポンや初回メニューもチェック\n\nBeautiaは韓国のお客様の予約・通訳も代行しています。',ARRAY['予約','ホットペッパー','美容室']::text[],ARRAY['https://images.unsplash.com/photo-1521590832167-7bcbfaa6381f?auto=format&fit=crop&w=720&q=70']::text[], now() - interval '5 hours'),
 ('Beautia','정보','전체','ja',E'ジェルネイルの最新トレンド',E'日本のネイルはデザインの繊細さが魅力です。\n\n・マグネット・オーロラ・ミラー(ガラス)ネイルが人気\n・シンプルなワンカラーから派手めアートまで幅広い\n・やりたいデザインは写真を2〜3枚保存しておくとスムーズ\n\n地域・料金の目安は beautia.io/info で。',ARRAY['ネイル','ジェルネイル','トレンド']::text[],ARRAY['https://images.unsplash.com/photo-1604654894610-df63bc536371?auto=format&fit=crop&w=720&q=70']::text[], now() - interval '13 hours'),
