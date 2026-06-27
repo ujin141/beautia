@@ -295,18 +295,26 @@ a{color:inherit;text-decoration:none;}
 .procard .pcm{font-size:11px;color:var(--sub);margin-top:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
 .procard .pctags{display:flex;gap:5px;flex-wrap:wrap;margin-top:7px;}
 .procard .pctags span{font-size:10.5px;font-weight:600;color:var(--plum);background:var(--plumbg);padding:3px 8px;border-radius:999px;}
-/* home category sections */
-.homesec{margin-bottom:30px;}
-.homesec .hh{display:flex;align-items:baseline;justify-content:space-between;gap:10px;margin-bottom:12px;padding-bottom:9px;border-bottom:1px solid var(--line);}
-.homesec .hh h2{font-size:17px;font-weight:800;letter-spacing:-.025em;display:flex;align-items:center;gap:7px;}
-.homesec .hh h2 .ti{font-size:18px;color:var(--accent);}
-.homesec .hh h2 .c{font-size:12px;color:var(--sub);font-weight:600;margin-left:2px;}
-.homesec .hh a{font-size:12.5px;color:var(--accent);font-weight:600;cursor:pointer;white-space:nowrap;}
+/* home category sections (compact, 한눈에) */
+.homesec{margin-bottom:18px;}
+.homesec .hh{display:flex;align-items:baseline;justify-content:space-between;gap:10px;margin-bottom:9px;padding-bottom:6px;border-bottom:1px solid var(--line);}
+.homesec .hh h2{font-size:15px;font-weight:800;letter-spacing:-.025em;display:flex;align-items:center;gap:6px;}
+.homesec .hh h2 .ti{font-size:16px;color:var(--accent);}
+.homesec .hh h2 .c{font-size:11.5px;color:var(--sub);font-weight:600;margin-left:2px;}
+.homesec .hh a{font-size:12px;color:var(--accent);font-weight:600;cursor:pointer;white-space:nowrap;}
 .homesec .hh a:hover{text-decoration:underline;}
-.homesec .hrow{display:flex;gap:16px;overflow-x:auto;padding-bottom:6px;scroll-snap-type:x proximity;}
+.homesec .hrow{display:flex;gap:13px;overflow-x:auto;padding-bottom:5px;scroll-snap-type:x proximity;}
 .homesec .hrow::-webkit-scrollbar{height:0;}
-.homesec .scard{flex:0 0 196px;scroll-snap-align:start;}
-@media(max-width:560px){.homesec .scard{flex-basis:160px;}}
+.homesec .scard{flex:0 0 158px;scroll-snap-align:start;}
+.homesec .scard .cover{aspect-ratio:16/10;border-radius:10px;}
+.homesec .scard .ctitle{font-size:13px;margin-top:0;-webkit-line-clamp:2;}
+.homesec .scard .cbody{padding:7px 1px 0;}
+.homesec .scard .chead{margin-top:5px;font-size:10.5px;}
+.homesec .scard .cact{margin-top:5px;gap:11px;font-size:11px;}
+/* pro(전문가) section cards compact */
+.homesec.pro .procard{flex:0 0 150px;}
+.homesec.pro .procard .pcimg{width:150px;height:130px;}
+@media(max-width:560px){.homesec .scard{flex-basis:150px;}.homesec.pro .procard{flex-basis:140px;}.homesec.pro .procard .pcimg{width:140px;height:120px;}}
 /* member modal */
 .mgal{display:flex;gap:8px;overflow-x:auto;margin:-6px -6px 6px;padding:0 0 4px;}
 .mgal::-webkit-scrollbar{height:0;}
@@ -707,11 +715,11 @@ function proCard(p){const s=p.shop||{};const img=avatarOf(p);const svc=(p.role==
       <div class="pcm">${regFlag(p.region)} ${esc(regL(p.region||'전체'))}${(p.role==='designer'&&s.career)?' · '+esc(s.career):''}</div>
       ${svc.length?`<div class="pctags">${svc.slice(0,3).map(x=>`<span>${svcL(x)}</span>`).join('')}</div>`:''}</div></div>`;}
 function renderShowcase(){const el=$('proSec');if(!el)return;const pros=getPros();CURPROS=pros;
-  if(!pros.length){el.innerHTML='';return;}
-  let list=pros;if(curPro==='owner')list=pros.filter(p=>p.role==='owner');else if(curPro==='designer')list=pros.filter(p=>p.role==='designer');
-  const tab=(k,l)=>`<span class="protab ${curPro===k?'on':''}" onclick="setPro('${k}')">${l}</span>`;
-  el.innerHTML=`<div class="prosec"><div class="ih"><h3>${t('proTitle')}</h3><span class="protabs">${tab('all',t('proAll'))}${tab('owner',t('proOwner'))}${tab('designer',t('proDesigner'))}</span></div>
-    <div class="proscroll">${list.map(proCard).join('')}</div></div>`;}
+  const groups=[['owner','ti-building-store',t('proOwner')],['designer','ti-scissors',t('proDesigner')]];
+  el.innerHTML=groups.map(([role,ic,label])=>{
+    const list=pros.filter(p=>p.role===role);if(!list.length)return'';
+    return `<section class="homesec pro"><div class="hh"><h2><i class="ti ${ic}"></i> ${label} <span class="c tnum">${list.length}</span></h2></div><div class="hrow">${list.map(proCard).join('')}</div></section>`;
+  }).join('');}
 function openMemberCard(id){const p=CURPROS.find(x=>''+x.id===''+id);if(!p)return;const s=p.shop||{};
   const imgs=[];if(s.avatar)imgs.push(s.avatar);(s.photos||[]).forEach(x=>{if(x!==s.avatar)imgs.push(x);});
   const svc=(p.role==='owner'?(s.services||[]):(s.specialties||[]));
