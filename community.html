@@ -295,13 +295,23 @@ a{color:inherit;text-decoration:none;}
 .procard .pcm{font-size:11px;color:var(--sub);margin-top:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
 .procard .pctags{display:flex;gap:5px;flex-wrap:wrap;margin-top:7px;}
 .procard .pctags span{font-size:10.5px;font-weight:600;color:var(--plum);background:var(--plumbg);padding:3px 8px;border-radius:999px;}
-/* home — 카테고리 패널 그리드 (한눈에) */
+/* home — 피처 히어로 */
+.hero{position:relative;border-radius:16px;overflow:hidden;margin-bottom:14px;cursor:pointer;aspect-ratio:21/8;background:var(--soft);}
+.hero .heroimg{position:absolute;inset:0;background-size:cover;background-position:center;transition:transform .6s cubic-bezier(.2,.6,.2,1);}
+.hero:hover .heroimg{transform:scale(1.05);}
+.hero .heroov{position:absolute;left:0;right:0;bottom:0;z-index:2;padding:22px 26px;color:#fff;background:linear-gradient(transparent,rgba(15,11,10,.32) 40%,rgba(15,11,10,.78));}
+.hero .heroeb{font-size:11px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;opacity:.95;}
+.hero .herot{font-size:23px;font-weight:800;letter-spacing:-.03em;line-height:1.2;margin-top:8px;max-width:80%;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;}
+.hero .herom{font-size:12px;opacity:.85;margin-top:8px;}
+@media(max-width:560px){.hero{aspect-ratio:16/10;}.hero .herot{font-size:18px;max-width:100%;}}
+/* home — 카테고리 패널 그리드 (한눈에 + 색 포인트) */
 .homegrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;}
 @media(max-width:640px){.homegrid{grid-template-columns:1fr;}}
-.hp{border:1px solid var(--line);border-radius:12px;padding:12px 15px 6px;background:#fff;}
+.hp{border:1px solid var(--line);border-top:3px solid var(--ac,var(--accent));border-radius:12px;padding:12px 15px 6px;background:#fff;}
+.hp.expert{background:var(--tint);}
 .hp .ph{display:flex;align-items:center;justify-content:space-between;gap:8px;padding-bottom:8px;border-bottom:1px solid var(--line2);}
 .hp .ph h3{font-size:14px;font-weight:800;letter-spacing:-.02em;display:flex;align-items:center;gap:6px;}
-.hp .ph h3 .ti{font-size:16px;color:var(--accent);}
+.hp .ph h3 .ti{font-size:16px;color:var(--ac,var(--accent));}
 .hp .ph h3 .c{font-size:11px;color:var(--sub);font-weight:600;}
 .hp .ph a{font-size:11.5px;color:var(--accent);font-weight:600;cursor:pointer;white-space:nowrap;}
 .hp .ph a:hover{text-decoration:underline;}
@@ -379,6 +389,7 @@ a{color:inherit;text-decoration:none;}
 .cmt{display:flex;gap:12px;padding:18px 0;border-top:1px solid var(--line2);}
 .cmt .av{width:36px;height:36px;font-size:14px;}.cmt .cn{font-size:13px;font-weight:700;display:flex;align-items:center;gap:6px;}
 .cmt .ct{font-size:14px;margin-top:5px;line-height:1.65;white-space:pre-wrap;word-break:break-word;color:var(--ink2);}.cmt .cd{font-size:11.5px;color:var(--sub);margin-top:6px;}
+.cmt .ctr{font-size:13.5px;line-height:1.6;color:var(--ink);background:var(--soft);border-left:2px solid var(--accent);border-radius:8px;padding:8px 11px;margin-top:7px;white-space:pre-wrap;}
 
 /* modal */
 .modal{position:fixed;inset:0;background:rgba(23,19,17,.5);backdrop-filter:blur(3px);display:none;align-items:center;justify-content:center;z-index:100;padding:20px;}
@@ -459,7 +470,7 @@ const T={ko:{
  popular:'인기 글',ctaTitle:'일본 뷰티, 예약까지',ctaDesc:'마음에 드는 곳 찾았다면? 일본어 0이어도 Beautia가 예약·통역 대행 (무료).',ctaBtn:'카톡으로 예약 신청',
  back:'목록으로',likeBtn:'좋아요',shareBtn:'공유',scrapBtn:'스크랩',comments:'댓글',cmtPh:'댓글을 남겨보세요…',submit:'등록',views:'조회',
  makeCard:'카드 만들기',cardTitle:'공유 카드 만들기',dlCard:'이미지 저장',copyCap:'캡션 복사',capCopied:'캡션이 복사됐어요',cardHint:'저장해서 인스타·릴스/쇼츠에 올려보세요. 영상 마지막엔 "후기는 Beautia에서"!',linkCopied:'링크가 복사됐어요',cardReview:'REVIEW',
- firstCmt:'첫 댓글을 남겨보세요!',emptyFeed:'아직 글이 없어요. 첫 글을 남겨보세요 ✏️',transBy:'Beautia 번역됨',viewOrigJa:'원문(日本語) 보기 ▾',viewOrigKo:'번역(한국어) 보기 ▾',foldOrig:'접기 ▴',
+ firstCmt:'첫 댓글을 남겨보세요!',emptyFeed:'아직 글이 없어요. 첫 글을 남겨보세요 ✏️',transBy:'Beautia 번역됨',gptT:'번역',gptTing:'번역 중…',gptShowOrig:'원문 보기',gptShowTr:'번역 보기',gptFail:'번역에 실패했어요',viewOrigJa:'원문(日本語) 보기 ▾',viewOrigKo:'번역(한국어) 보기 ▾',foldOrig:'접기 ▴',
  wHead:'글쓰기',category:'카테고리',regionOpt:'지역 (선택)',noRegion:'지역무관',titlePh:'제목을 입력하세요',contentPh:'한국·일본 뷰티 사장님·손님 누구나! 질문, 후기, 정보, 수다 환영해요. (욕설·광고·개인정보 X)',photo:'사진 (최대 4장)',register:'등록하기',
  profile:'프로필',nickPh:'닉네임',iam:'나는…',save:'저장',saved:'저장됐어요',posted:'글이 등록됐어요 ✨',scrapped:'스크랩했어요',copied:'링크가 복사됐어요 (데모)',needTC:'제목과 내용을 입력하세요',
  infoTitle:'일본·한국 뷰티 정보',seeAll:'전체보기',tags:'태그 (선택)',tagsPh:'쉼표로 구분 · 예: 도쿄, 펌, 한국어OK',
@@ -485,7 +496,7 @@ const T={ko:{
  popular:'人気の投稿',ctaTitle:'日本ビューティー、予約まで',ctaDesc:'気に入ったお店が見つかったら？日本語が分からなくてもBeautiaが予約・通訳を代行（無料）。',ctaBtn:'カカオトークで予約',
  back:'一覧へ',likeBtn:'いいね',shareBtn:'シェア',scrapBtn:'保存',comments:'コメント',cmtPh:'コメントを残す…',submit:'登録',views:'閲覧',
  makeCard:'カード作成',cardTitle:'シェアカードを作成',dlCard:'画像を保存',copyCap:'キャプションをコピー',capCopied:'キャプションをコピーしました',cardHint:'保存してインスタ・リール/ショートに。動画の最後は「レビューはBeautiaで」！',linkCopied:'リンクをコピーしました',cardReview:'REVIEW',
- firstCmt:'最初のコメントを残しましょう！',emptyFeed:'まだ投稿がありません。最初の投稿をどうぞ ✏️',transBy:'Beautia 翻訳',viewOrigJa:'原文(日本語)を見る ▾',viewOrigKo:'翻訳(韓国語)を見る ▾',foldOrig:'閉じる ▴',
+ firstCmt:'最初のコメントを残しましょう！',emptyFeed:'まだ投稿がありません。最初の投稿をどうぞ ✏️',transBy:'Beautia 翻訳',gptT:'翻訳',gptTing:'翻訳中…',gptShowOrig:'原文を見る',gptShowTr:'翻訳を見る',gptFail:'翻訳に失敗しました',viewOrigJa:'原文(日本語)を見る ▾',viewOrigKo:'翻訳(韓国語)を見る ▾',foldOrig:'閉じる ▴',
  wHead:'投稿',category:'カテゴリー',regionOpt:'地域（任意）',noRegion:'地域問わず',titlePh:'タイトルを入力',contentPh:'韓国・日本のビューティーオーナー・お客様どなたでも！質問・レビュー・情報・雑談歓迎。（暴言・広告・個人情報X）',photo:'写真（最大4枚）',register:'投稿する',
  profile:'プロフィール',nickPh:'ニックネーム',iam:'わたしは…',save:'保存',saved:'保存しました',posted:'投稿しました ✨',scrapped:'保存しました',copied:'リンクをコピーしました（デモ）',needTC:'タイトルと本文を入力してください',
  infoTitle:'日本・韓国ビューティー情報',seeAll:'すべて見る',tags:'タグ（任意）',tagsPh:'カンマ区切り · 例：東京, パーマ, 韓国語OK',
@@ -743,17 +754,21 @@ function postRow(p){const thumb=(p.imgs&&p.imgs.length)?`<div class="prth" style
   return `<div class="prw" onclick="openPost(${jsId(p.id)})">${thumb}<div class="prc"><div class="prt">${p.pinned?'📌 ':''}${esc(p.title)}</div><div class="prm">${esc(p.nick)} · ${timeago(p.t)}${p.cmtCount?' · 💬'+p.cmtCount:''}${isNew(p)?' <span class="newdot">NEW</span>':''}</div></div></div>`;}
 function proRow(pr){const s=pr.shop||{};const img=avatarOf(pr);
   return `<div class="prw" onclick="openMemberCard('${pr.id}')"><div class="prth rnd" style="background-image:url('${img}')"></div><div class="prc"><div class="prt">${esc(pr.nickname||s.name||'')}${s.koOK?' <span class="kotag">한국어</span>':''}</div><div class="prm">${regFlag(pr.region)} ${esc(regL(pr.region||'전체'))}${(pr.role==='designer'&&s.career)?' · '+esc(s.career):''}</div></div></div>`;}
-function hPanel(title,ic,count,more,rows){return `<div class="hp"><div class="ph"><h3><i class="ti ${ic}"></i> ${title} <span class="c tnum">${count}</span></h3>${more?`<a onclick="${more}">${t('seeAll')} ›</a>`:''}</div><div class="pl">${rows}</div></div>`;}
+const CATAC={'질문':'#3E7C7B','후기':'#A24A56','정보':'#9A7A3A','모델모집':'#7E5A9E','자유':'#4A6FA5','사장님':'#6D4346','구인구직':'#B5683C'};
+function hPanel(title,ic,count,more,rows,accent,cls){return `<div class="hp ${cls||''}"${accent?` style="--ac:${accent}"`:''}><div class="ph"><h3><i class="ti ${ic}"></i> ${title} <span class="c tnum">${count}</span></h3>${more?`<a onclick="${more}">${t('seeAll')} ›</a>`:''}</div><div class="pl">${rows}</div></div>`;}
+function featuredHtml(){const base=DB.posts.filter(p=>!p.hidden&&!blocked(p.nick)&&p.imgs&&p.imgs.length);if(!base.length)return'';
+  const p=base.slice().sort((a,b)=>(b.like+ (isNew(b)?100:0))-(a.like+(isNew(a)?100:0)))[0];
+  return `<div class="hero" onclick="openPost(${jsId(p.id)})"><div class="heroimg" style="background-image:url('${p.imgs[0]}')"></div><div class="heroov"><span class="heroeb">${catL(p.cat)}${p.region&&p.region!=='전체'?' · '+regFlag(p.region)+' '+esc(regL(p.region)):''}</span><div class="herot">${esc(p.title)}</div><div class="herom">${esc(p.nick)} · ${timeago(p.t)} · ♥ ${p.like} · 💬 ${p.cmtCount||0}</div></div></div>`;}
 function homeGridHtml(){
   const base=DB.posts.filter(p=>!p.hidden&&!blocked(p.nick));
   const pros=getPros();CURPROS=pros;
   const owners=pros.filter(p=>p.role==='owner'),designers=pros.filter(p=>p.role==='designer');
   let panels=[];
-  if(owners.length)panels.push(hPanel(t('proOwner'),'ti-building-store',owners.length,'',owners.slice(0,3).map(proRow).join('')));
-  if(designers.length)panels.push(hPanel(t('proDesigner'),'ti-scissors',designers.length,'',designers.slice(0,3).map(proRow).join('')));
+  if(owners.length)panels.push(hPanel(t('proOwner'),'ti-building-store',owners.length,'',owners.slice(0,3).map(proRow).join(''),'#6D4346','expert'));
+  if(designers.length)panels.push(hPanel(t('proDesigner'),'ti-scissors',designers.length,'',designers.slice(0,3).map(proRow).join(''),'#3E7C7B','expert'));
   CATS.filter(c=>c[0]!=='전체').forEach(([c,ic])=>{const all=base.filter(p=>p.cat===c);if(!all.length)return;
-    panels.push(hPanel(catL(c),ic,all.length,`setCat('${c}')`,all.slice().sort((a,b)=>b.t-a.t).slice(0,3).map(postRow).join('')));});
-  return `<div class="homegrid">${panels.join('')}</div>`;
+    panels.push(hPanel(catL(c),ic,all.length,`setCat('${c}')`,all.slice().sort((a,b)=>b.t-a.t).slice(0,3).map(postRow).join(''),CATAC[c]||'#6D4346'));});
+  return featuredHtml()+`<div class="homegrid">${panels.join('')}</div>`;
 }
 function renderMain(){
   if(view==='detail'){renderDetail();return;}
@@ -795,6 +810,8 @@ function renderDetail(){
     <div class="dtitle">${esc(p.title)}</div>
     <div class="dmeta"><span class="a"><i class="ti ti-heart"></i> ${p.like}</span><span class="a"><i class="ti ti-message-circle"></i> ${p.cmtCount||0}</span><span class="a"><i class="ti ti-eye"></i> ${(p.like*7+p.scrap*3+13)} ${t('views')}</span></div>
     <div class="dcontent">${esc(main)}</div>
+    <div style="margin-top:12px"><span class="tg" onclick="trDetail(this)"><i class="ti ti-language"></i> ${t('gptT')}</span></div>
+    <div class="transbox" id="trDetailBox" style="display:none;margin-top:10px"></div>
     ${gallery}
     ${(p.tags&&p.tags.length)?`<div class="dtags">${p.tags.map(tg=>`<span class="dtag">#${esc(tg)}</span>`).join('')}</div>`:''}
     ${alt?`<div class="transbox"><div class="lbl"><i class="ti ti-language"></i> ${t('transBy')}</div><div class="orig" id="origText">${esc(alt)}</div><span class="tg" onclick="toggleOrig(event)">${altLbl}</span></div>`:''}
@@ -806,7 +823,7 @@ function renderDetail(){
     </div>
     <div class="csec"><h4>${t('comments')} ${p.cmts.filter(c=>!blocked(c.nick)).length}</h4>
       <div class="cwrite"><input id="cInput" placeholder="${t('cmtPh')}" maxlength="500" onkeydown="if(event.key==='Enter')addComment()"><button class="btn btn-primary" onclick="addComment()">${t('submit')}</button></div>
-      ${p.cmts.filter(c=>!blocked(c.nick)).length?p.cmts.filter(c=>!blocked(c.nick)).map(c=>`<div class="cmt">${avHtml(c.nick,c.avatar)}<div><div class="cn">${esc(c.nick)} ${roleBadge(c.role)}</div><div class="ct">${esc(c.t)}</div><div class="cd">${timeago(c.d)}</div></div></div>`).join(''):`<div class="empty" style="border:none;padding:24px 0;">${t('firstCmt')}</div>`}
+      ${p.cmts.filter(c=>!blocked(c.nick)).length?p.cmts.filter(c=>!blocked(c.nick)).map(c=>`<div class="cmt">${avHtml(c.nick,c.avatar)}<div style="flex:1;min-width:0"><div class="cn">${esc(c.nick)} ${roleBadge(c.role)}</div><div class="ct">${esc(c.t)}</div><div class="ctr" style="display:none"></div><div class="cd">${timeago(c.d)} · <span class="tg" style="font-size:11.5px" onclick="trCmt(this)">${t('gptT')}</span></div></div></div>`).join(''):`<div class="empty" style="border:none;padding:24px 0;">${t('firstCmt')}</div>`}
     </div>
     ${relatedHtml(p)}
     </div>`;
@@ -962,6 +979,21 @@ async function saveProfile(){
 async function reloadAll(){const {data:{session}}=await SB.auth.getSession();await refreshProfile(session);await loadPosts();renderHeader();renderShell();if(view==='profile')renderMypage();else if(view==='detail')renderDetail();else renderMain();}
 async function logout(){if(!confirm(t('logoutConfirm')))return;await SB.auth.signOut();}
 function copyRef(){const el=$('refIn');if(!el)return;el.select();try{navigator.clipboard.writeText(el.value);}catch(e){document.execCommand('copy');}toast(t('refCopied'));}
+/* ===== ChatGPT 번역 ===== */
+const _trCache={};
+async function gptTranslate(text){const k=LANG+'::'+text;if(_trCache[k])return _trCache[k];
+  const r=await fetch('/api/translate',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({text:text,target:LANG})});
+  if(!r.ok)throw new Error('http '+r.status);const j=await r.json();if(!j.translated)throw new Error(j.error||'no');_trCache[k]=j.translated;return j.translated;}
+async function trDetail(el){const p=DB.posts.find(x=>x.id===openId);if(!p)return;const box=$('trDetailBox');if(!box)return;
+  if(box.dataset.done==='1'){const sh=box.style.display==='none';box.style.display=sh?'block':'none';el.innerHTML='<i class="ti ti-language"></i> '+(sh?t('gptShowOrig'):t('gptT'));return;}
+  el.innerHTML='<i class="ti ti-language"></i> '+t('gptTing');
+  try{const tr=await gptTranslate(bodyOf(p));box.textContent=tr;box.style.display='block';box.dataset.done='1';el.innerHTML='<i class="ti ti-language"></i> '+t('gptShowOrig');}
+  catch(e){toast(t('gptFail'));el.innerHTML='<i class="ti ti-language"></i> '+t('gptT');}}
+async function trCmt(el){const wrap=el.closest('.cmt');if(!wrap)return;const ct=wrap.querySelector('.ct'),box=wrap.querySelector('.ctr');if(!ct||!box)return;
+  if(box.dataset.done==='1'){const sh=box.style.display==='none';box.style.display=sh?'block':'none';el.textContent=sh?t('gptShowOrig'):t('gptT');return;}
+  el.textContent=t('gptTing');
+  try{const tr=await gptTranslate(ct.textContent);box.textContent=tr;box.style.display='block';box.dataset.done='1';el.textContent=t('gptShowOrig');}
+  catch(e){toast(t('gptFail'));el.textContent=t('gptT');}}
 /* ===== 공유 + 후기 카드 메이커 (콘텐츠 공장) ===== */
 function shareLink(id){const url=location.href;try{if(navigator.share){navigator.share({title:'Beautia',url:url});return;}}catch(e){}try{navigator.clipboard.writeText(url);}catch(e){}toast(t('linkCopied'));}
 let cardPid=null,cardRatio='45';
@@ -1034,8 +1066,20 @@ document.querySelectorAll('.modal').forEach(m=>m.addEventListener('click',e=>{if
 
 document.documentElement.lang=LANG;
 window.addEventListener('scroll',()=>{$('fab').classList.toggle('on',window.scrollY>500);});
+async function geoAutoLang(){
+  try{
+    var q=new URLSearchParams(location.search).get('lang');
+    if(q==='ja'||q==='ko')return;                       // URL이 우선
+    if(localStorage.getItem('beautia_lang'))return;      // 사용자가 고른 적 있으면 유지
+    const r=await fetch('https://ipwho.is/?fields=country_code');const j=await r.json();
+    const cc=(j&&j.country_code)||'';
+    const lang=(cc==='JP')?'ja':'ko';                    // 일본이면 일본어, 그 외 한국어
+    localStorage.setItem('beautia_lang',lang);LANG=lang;document.documentElement.lang=lang;
+  }catch(e){}
+}
 async function boot(){
   loadLocal();
+  await geoAutoLang();
   const {data:{session}}=await SB.auth.getSession();
   await refreshProfile(session);
   await loadPosts();
