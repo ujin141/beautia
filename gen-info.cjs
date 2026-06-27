@@ -98,7 +98,7 @@ ${jsonld.map(j=>`<script type="application/ld+json">${JSON.stringify(j)}</script
 
 const FOOT = `<footer><div class="fwrap">
   <a href="../community.html">커뮤니티</a><a href="../landing.html">서비스 소개</a><a href="../info.html">지역 정보</a>
-  <a href="../privacy.html">개인정보</a><a href="../terms.html">약관</a>
+  <a href="../apply.html">입점 신청</a><a href="../privacy.html">개인정보</a><a href="../terms.html">약관</a>
   <a href="https://instagram.com/beautia.japan" target="_blank">Instagram</a>
   <span class="cp">© 2026 Beautia</span>
 </div></footer></body></html>`;

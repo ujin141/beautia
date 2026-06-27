@@ -181,6 +181,30 @@ create policy "beautia_update" on storage.objects for update to authenticated us
 drop policy if exists "beautia_delete" on storage.objects;
 create policy "beautia_delete" on storage.objects for delete to authenticated using (bucket_id = 'beautia' and owner = auth.uid());
 
+-- 10b) 제휴 살롱·디자이너 입점 신청 (apply.html → 어드민 검토)
+create table if not exists public.applications (
+  id         bigint generated always as identity primary key,
+  role       text,            -- owner / designer
+  name       text,
+  region     text,
+  loc        text,
+  services   text[] default '{}',
+  career     text,
+  ko_ok      boolean default false,
+  contact    text,
+  intro      text,
+  photos     text[] default '{}',
+  status     text default 'new',  -- new / done
+  created_at timestamptz default now()
+);
+alter table public.applications enable row level security;
+drop policy if exists applications_insert_any on public.applications;
+create policy applications_insert_any on public.applications for insert with check (true);
+drop policy if exists applications_admin_read on public.applications;
+create policy applications_admin_read on public.applications for select using (public.is_admin());
+drop policy if exists applications_admin_update on public.applications;
+create policy applications_admin_update on public.applications for update using (public.is_admin());
+
 -- ============================================================
 -- 11) 본인을 관리자로 지정  ← 이메일을 본인 가입 이메일로 교체!
 --    (먼저 커뮤니티에서 회원가입을 끝낸 뒤 실행하세요)

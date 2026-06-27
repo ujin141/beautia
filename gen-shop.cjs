@@ -67,7 +67,7 @@ ${jsonld.map(j=>`<script type="application/ld+json">${JSON.stringify(j)}</script
 </div></header>`;
 const FOOT=`<footer><div class="fwrap">
   <a href="../community.html">커뮤니티</a><a href="../info.html">지역 정보</a><a href="../landing.html">서비스 소개</a>
-  <a href="../privacy.html">개인정보</a><a href="../terms.html">약관</a>
+  <a href="../apply.html">입점 신청</a><a href="../privacy.html">개인정보</a><a href="../terms.html">약관</a>
   <span class="cp">© 2026 Beautia</span></div></footer>`;
 
 function shopPage(s){
@@ -171,7 +171,7 @@ function indexPage(){
   <div class="hero"><span class="kicker">입점 샵</span><h1>Beautia 입점 샵</h1>
   <p class="lead">Beautia가 한국어로 예약·통역을 도와드리는 일본 미용실·네일·속눈썹 샵이에요. 마음에 드는 곳을 찾았다면 카톡으로 예약하세요.</p></div>
   <div class="revgrid" style="margin-top:22px">${cards}</div>
-  <div class="rankbox" style="margin-top:28px"><h3>사장님이신가요?</h3><p>한국 손님을 받고 싶은 한·일 미용실·네일·속눈썹 사장님께 <b>전용 프로필 페이지를 무료로</b> 만들어드려요. 인스타에 공유할 수 있는 링크와 QR을 드립니다.</p><a class="btn btn-primary" href="https://pf.kakao.com/_xhxhixfX/chat" target="_blank">입점 문의하기</a></div>
+  <div class="rankbox" style="margin-top:28px"><h3>사장님·디자이너이신가요?</h3><p>한국 손님을 받고 싶은 한·일 미용실·네일·속눈썹·디자이너께 <b>전용 프로필 페이지를 무료로</b> 만들어드려요. 인스타에 공유할 링크와 QR 제공. 예약·통역은 Beautia가 대행해요.</p><a class="btn btn-primary" href="apply.html">입점 신청하기 ›</a></div>
   <div style="height:40px"></div>
 </div>${FOOT.replace(/\.\.\//g,'')}</body></html>`;
   return head;

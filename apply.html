@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Beautia 입점 신청 · サロン登録申請 — 한국 손님 무료 연결</title>
+<meta name="description" content="일본 미용실·네일·속눈썹 사장님·디자이너 입점 신청. 한국 손님 예약·통역을 Beautia가 무료로 대행하고, 공유용 프로필·QR을 만들어드려요. ／ 韓国のお客様を韓国語で予約・通訳代行（無料）。">
+<meta name="robots" content="index,follow">
+<link rel="canonical" href="https://beautia.io/apply">
+<link rel="icon" type="image/png" href="logo-icon.png"><meta name="theme-color" content="#6D4346">
+<meta name="naver-site-verification" content="bec0ee3bfd015beb74d81bfea16300eb57e61afd">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&display=swap">
+<link rel="stylesheet" href="info.css">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+.form{max-width:600px;margin:0 auto;padding:0 22px 70px;}
+.flabel{font-size:12px;font-weight:800;letter-spacing:.3px;color:var(--ink);margin-top:22px;display:block;}
+.flabel .req{color:var(--plum);}
+.fin{width:100%;border:1px solid var(--line);border-radius:12px;padding:13px 15px;font-family:inherit;font-size:15px;outline:none;margin-top:8px;background:var(--soft);}
+.fin:focus{background:#fff;border-color:var(--plum);}
+textarea.fin{min-height:90px;resize:vertical;line-height:1.6;}
+.roles{display:flex;gap:10px;margin-top:8px;}
+.rolec{flex:1;border:1.5px solid var(--line);border-radius:14px;padding:16px 12px;text-align:center;cursor:pointer;transition:.13s;}
+.rolec.on{border-color:var(--plum);background:var(--plumbg);}
+.rolec .ti{font-size:26px;color:var(--plum);}.rolec .t{font-weight:800;margin-top:6px;}.rolec .d{font-size:11.5px;color:var(--sub);margin-top:3px;}
+.chips{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px;}
+.chip{font-size:13px;font-weight:600;color:var(--ink2);background:var(--soft);border:1px solid transparent;padding:9px 15px;border-radius:999px;cursor:pointer;}
+.chip.on{background:var(--plum);color:#fff;}
+.ck{display:flex;align-items:center;gap:9px;margin-top:14px;font-size:14px;cursor:pointer;}
+.ck input{width:18px;height:18px;accent-color:var(--plum);}
+.ptiles{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px;}
+.ptile{width:72px;height:72px;border-radius:12px;background-size:cover;background-position:center;position:relative;border:1px solid var(--line);}
+.ptile .x{position:absolute;top:-6px;right:-6px;width:20px;height:20px;border-radius:50%;background:var(--ink);color:#fff;font-size:13px;display:flex;align-items:center;justify-content:center;cursor:pointer;}
+.ptile.add{display:flex;align-items:center;justify-content:center;color:var(--sub);background:var(--soft);border:1px dashed var(--line);cursor:pointer;font-size:24px;}
+.submit{width:100%;justify-content:center;padding:15px;font-size:16px;margin-top:26px;}
+.benefits{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-top:18px;}
+.bf{background:var(--soft);border-radius:14px;padding:16px 14px;}
+.bf .ti{font-size:22px;color:var(--plum);}.bf h4{font-size:13.5px;font-weight:800;margin-top:7px;}.bf p{font-size:12px;color:var(--ink2);margin-top:4px;line-height:1.5;}
+@media(max-width:560px){.benefits{grid-template-columns:1fr;}}
+.done{max-width:520px;margin:60px auto;text-align:center;background:#fff;border:1px solid var(--line);border-radius:18px;padding:40px 28px;}
+.done .ic{font-size:42px;}.done h2{font-size:22px;font-weight:800;margin-top:10px;}.done p{color:var(--ink2);margin-top:10px;line-height:1.7;}
+.hide{display:none!important;}
+.toast{position:fixed;left:50%;bottom:28px;transform:translateX(-50%) translateY(10px);background:var(--ink);color:#fff;font-size:14px;font-weight:600;padding:12px 22px;border-radius:999px;opacity:0;transition:.25s;z-index:90;}
+.toast.on{opacity:1;transform:translateX(-50%);}
+</style>
+</head>
+<body>
+<header class="hdr"><div class="hwrap">
+  <a class="logo" href="community.html"><img src="logo-trim.png" alt="Beautia"></a>
+  <nav class="gnav"><a href="community.html">커뮤니티</a><a href="info.html">지역 정보</a><a href="shop.html">입점 샵</a></nav>
+  <a class="btn btn-primary hcta" href="https://pf.kakao.com/_xhxhixfX/chat" target="_blank">카톡 문의</a>
+</div></header>
+
+<div class="form" id="formWrap">
+  <div class="hero">
+    <span class="kicker">サロン登録 · 입점 신청</span>
+    <h1>한국 손님, 무료로 연결해드려요</h1>
+    <p class="lead">일본 미용실·네일·속눈썹 <b>사장님·디자이너</b>를 위한 무료 입점. 한국어를 못하는 손님도 Beautia가 <b>한국어로 예약·통역을 대행</b>하고, 공유용 프로필·QR을 만들어드려요. ／ <span lang="ja" style="color:var(--sub)">韓国のお客様を韓国語で予約・通訳代行（無料）。</span></p>
+    <div class="benefits">
+      <div class="bf"><i class="ti ti-language"></i><h4>예약·통역 무료 대행</h4><p>일본어 못하는 한국 손님도 OK</p></div>
+      <div class="bf"><i class="ti ti-qrcode"></i><h4>프로필·QR 제공</h4><p>인스타에 공유할 링크/QR</p></div>
+      <div class="bf"><i class="ti ti-flame"></i><h4>홈·검색 노출</h4><p>커뮤니티 전문가 섹션 + 지역 검색</p></div>
+    </div>
+  </div>
+
+  <label class="flabel">어떤 분이세요? <span class="req">*</span></label>
+  <div class="roles">
+    <div class="rolec" data-role="owner" onclick="pickRole('owner')"><i class="ti ti-building-store"></i><div class="t">사장님 (샵)</div><div class="d">미용실·네일·속눈썹 운영</div></div>
+    <div class="rolec" data-role="designer" onclick="pickRole('designer')"><i class="ti ti-scissors"></i><div class="t">디자이너</div><div class="d">시술 담당 뷰티 디자이너</div></div>
+  </div>
+
+  <label class="flabel">가게 / 활동명 <span class="req">*</span></label>
+  <input class="fin" id="fName" maxlength="40" placeholder="예: 시부야 헤어룸 / 미카">
+
+  <label class="flabel">지역 <span class="req">*</span></label>
+  <select class="fin" id="fRegion">
+    <option value="">선택하세요</option>
+    <optgroup label="🇯🇵 일본"><option>도쿄</option><option>오사카</option><option>교토</option><option>후쿠오카</option><option>삿포로</option><option>나고야</option><option>일본 기타</option></optgroup>
+    <optgroup label="🇰🇷 한국"><option>서울</option><option>부산</option><option>대구</option><option>인천</option><option>한국 기타</option></optgroup>
+  </select>
+
+  <label class="flabel">세부 위치 (선택)</label>
+  <input class="fin" id="fLoc" maxlength="60" placeholder="예: 시부야역 3번 출구 도보 3분">
+
+  <label class="flabel">시술 분야 <span class="req">*</span></label>
+  <div class="chips" id="fSvc"></div>
+
+  <label class="flabel">경력 (디자이너, 선택)</label>
+  <input class="fin" id="fCareer" maxlength="60" placeholder="예: 헤어 디자이너 5년차 · 도쿄 3년">
+
+  <label class="ck"><input type="checkbox" id="fKo"> 한국어 응대 가능</label>
+
+  <label class="flabel">연락처 (인스타 또는 카톡) <span class="req">*</span></label>
+  <input class="fin" id="fContact" maxlength="80" placeholder="예: @beautia.japan / 카카오 ID">
+
+  <label class="flabel">소개 (선택)</label>
+  <textarea class="fin" id="fIntro" maxlength="300" placeholder="가게 분위기·강점·한국 손님 환영 메시지 등"></textarea>
+
+  <label class="flabel">사진 (선택, 최대 5장)</label>
+  <input type="file" id="fFile" accept="image/*" multiple style="display:none" onchange="onPick(event)">
+  <div class="ptiles" id="ptiles"></div>
+
+  <button class="btn btn-primary submit" id="submitBtn" onclick="submitApp()">입점 신청하기</button>
+  <p style="font-size:12px;color:var(--sub);margin-top:12px;line-height:1.6">신청 후 Beautia가 검토하고 연락드려요. 입점·예약 대행은 <b>무료</b>이며, 시술비는 손님이 현장에서 결제합니다. 허위 정보는 등록이 거절될 수 있어요.</p>
+</div>
+
+<div class="done hide" id="doneWrap">
+  <div class="ic">🎉</div>
+  <h2>입점 신청이 접수됐어요!</h2>
+  <p>Beautia가 검토 후 입력하신 연락처로 안내드릴게요.<br>빠른 진행을 원하시면 카톡으로 바로 문의 주세요.</p>
+  <a class="btn btn-kakao" style="margin-top:18px;display:inline-flex;padding:13px 22px" href="https://pf.kakao.com/_xhxhixfX/chat" target="_blank">💬 카톡으로 바로 문의</a>
+  <div style="margin-top:14px"><a class="btn btn-ghost" href="community.html">커뮤니티 둘러보기</a></div>
+</div>
+
+<footer><div class="fwrap"><a href="community.html">커뮤니티</a><a href="info.html">지역 정보</a><a href="shop.html">입점 샵</a><a href="privacy.html">개인정보</a><a href="terms.html">약관</a><span class="cp">© 2026 Beautia</span></div></footer>
+<div class="toast" id="toast"></div>
+
+<script>
+const SB_URL="https://pzbxcktaljhesrfnqwzq.supabase.co";
+const SB_KEY="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InB6Ynhja3RhbGpoZXNyZm5xd3pxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjgxNjc1MjYsImV4cCI6MjA4Mzc0MzUyNn0.aUZbTgfWbjEISNr1-cu9YJnOGj1lzjXeRVifHygAplc";
+const SB=supabase.createClient(SB_URL,SB_KEY);
+const $=id=>document.getElementById(id);
+const SVC=['헤어컷','펌','염색','다운펌','네일','속눈썹','제모','메이크업'];
+let role='',svc=[],photos=[];
+function toast(m){const e=$('toast');e.textContent=m;e.classList.add('on');clearTimeout(e._);e._=setTimeout(()=>e.classList.remove('on'),2200);}
+$('fSvc').innerHTML=SVC.map(s=>`<span class="chip" onclick="toggleSvc('${s}',this)">${s}</span>`).join('');
+function pickRole(r){role=r;document.querySelectorAll('.rolec').forEach(e=>e.classList.toggle('on',e.dataset.role===r));}
+function toggleSvc(s,el){const i=svc.indexOf(s);if(i<0){svc.push(s);el.classList.add('on');}else{svc.splice(i,1);el.classList.remove('on');}}
+function onPick(e){const files=[...e.target.files].slice(0,5-photos.length);files.forEach(f=>downscale(f,u=>{photos.push(u);renderTiles();}));e.target.value='';}
+function downscale(file,cb){const r=new FileReader();r.onload=ev=>{const img=new Image();img.onload=()=>{const m=1000;let w=img.width,h=img.height;if(w>m||h>m){if(w>h){h=Math.round(h*m/w);w=m;}else{w=Math.round(w*m/h);h=m;}}const cv=document.createElement('canvas');cv.width=w;cv.height=h;cv.getContext('2d').drawImage(img,0,0,w,h);cb(cv.toDataURL('image/jpeg',0.8));};img.src=ev.target.result;};r.readAsDataURL(file);}
+function renderTiles(){let h=photos.map((s,i)=>`<div class="ptile" style="background-image:url('${s}')"><div class="x" onclick="rm(${i})">×</div></div>`).join('');if(photos.length<5)h+=`<div class="ptile add" onclick="$('fFile').click()">+</div>`;$('ptiles').innerHTML=h;}
+function rm(i){photos.splice(i,1);renderTiles();}
+renderTiles();
+async function submitApp(){
+  const name=$('fName').value.trim(),region=$('fRegion').value,contact=$('fContact').value.trim();
+  if(!role){toast('어떤 분인지 선택해주세요');return;}
+  if(!name){toast('가게/활동명을 입력해주세요');return;}
+  if(!region){toast('지역을 선택해주세요');return;}
+  if(!svc.length){toast('시술 분야를 1개 이상 선택해주세요');return;}
+  if(!contact){toast('연락처(인스타/카톡)를 입력해주세요');return;}
+  $('submitBtn').textContent='신청 중…';$('submitBtn').disabled=true;
+  const payload={role,name,region,loc:$('fLoc').value.trim(),services:svc.slice(),career:$('fCareer').value.trim(),ko_ok:$('fKo').checked,contact,intro:$('fIntro').value.trim(),photos:photos.slice()};
+  const {error}=await SB.from('applications').insert(payload);
+  if(error){$('submitBtn').textContent='입점 신청하기';$('submitBtn').disabled=false;alert('신청 실패\\n\\n'+(error.message||'')+'\\n\\ncode: '+(error.code||'')+'\\n\\n(applications 테이블 SQL을 실행했는지 확인해주세요)');return;}
+  $('formWrap').classList.add('hide');$('doneWrap').classList.remove('hide');window.scrollTo({top:0});
+}
+</script>
+</body>
+</html>
