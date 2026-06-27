@@ -71,6 +71,7 @@ const esc = (s)=>(''+s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;'
 const HEAD = (title,desc,canon,kw,jsonld)=>`<!DOCTYPE html><html lang="ko"><head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="google-site-verification" content="toAtwGl-Up9Adn-xXY-y8V-ch6IBoowrYxmMXg4ZMUs">
+<meta name="naver-site-verification" content="bec0ee3bfd015beb74d81bfea16300eb57e61afd">
 <title>${esc(title)}</title>
 <meta name="description" content="${esc(desc)}">
 <meta name="keywords" content="${esc(kw)}">
@@ -236,6 +237,7 @@ function indexPage(){
 <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
 <title>${esc(title)}</title><meta name="description" content="${esc(desc)}">
 <meta name="robots" content="index,follow"><link rel="canonical" href="${canon}">
+<meta name="naver-site-verification" content="bec0ee3bfd015beb74d81bfea16300eb57e61afd">
 <link rel="icon" type="image/png" href="logo-icon.png"><meta name="theme-color" content="#6D4346">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&display=swap">

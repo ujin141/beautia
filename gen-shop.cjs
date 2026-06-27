@@ -53,6 +53,7 @@ const HEAD=(title,desc,canon,kw,jsonld)=>`<!DOCTYPE html><html lang="ko"><head>
 <meta property="og:type" content="business.business"><meta property="og:site_name" content="Beautia">
 <meta property="og:title" content="${esc(title)}"><meta property="og:description" content="${esc(desc)}">
 <meta property="og:url" content="${canon}">
+<meta name="naver-site-verification" content="bec0ee3bfd015beb74d81bfea16300eb57e61afd">
 <link rel="icon" type="image/png" href="../logo-icon.png"><meta name="theme-color" content="#6D4346">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&display=swap">
@@ -157,7 +158,7 @@ function indexPage(){
   const head=`<!DOCTYPE html><html lang="ko"><head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
 <title>${esc(title)}</title><meta name="description" content="${esc(desc)}"><meta name="robots" content="index,follow">
-<link rel="canonical" href="${canon}"><link rel="icon" type="image/png" href="logo-icon.png"><meta name="theme-color" content="#6D4346">
+<link rel="canonical" href="${canon}"><meta name="naver-site-verification" content="bec0ee3bfd015beb74d81bfea16300eb57e61afd"><link rel="icon" type="image/png" href="logo-icon.png"><meta name="theme-color" content="#6D4346">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&display=swap">
 <link rel="stylesheet" href="info.css"></head><body>
