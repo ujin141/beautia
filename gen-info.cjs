@@ -5,7 +5,7 @@ const path = require('path');
 const SITE = 'https://beautia.io';
 const SB_URL = 'https://pzbxcktaljhesrfnqwzq.supabase.co';
 const SB_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InB6Ynhja3RhbGpoZXNyZm5xd3pxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjgxNjc1MjYsImV4cCI6MjA4Mzc0MzUyNn0.aUZbTgfWbjEISNr1-cu9YJnOGj1lzjXeRVifHygAplc';
-const RATE = 9.3; // ¥1 ≈ 9.3원 (엔저)
+const RATE = 9.5; // ¥1 ≈ 9.5원 (100엔≈950원, 2026.6)
 
 const AREAS = [
  {slug:'tokyo', ko:'도쿄', ja:'東京', region:'도쿄'},
@@ -19,6 +19,11 @@ const AREAS = [
  {slug:'fukuoka', ko:'후쿠오카', ja:'福岡', region:'후쿠오카'},
  {slug:'sapporo', ko:'삿포로', ja:'札幌', region:'삿포로'},
  {slug:'nagoya', ko:'나고야', ja:'名古屋', region:'나고야'},
+ // 소도시 × 뷰티 (2026 트렌드: 도쿄·오사카 → 소도시 이동, 저경쟁 선점)
+ {slug:'okinawa', ko:'오키나와', ja:'沖縄', region:'오키나와'},
+ {slug:'kobe', ko:'고베', ja:'神戸', region:'고베'},
+ {slug:'yokohama', ko:'요코하마', ja:'横浜', region:'요코하마'},
+ {slug:'kanazawa', ko:'가나자와', ja:'金沢', region:'가나자와'},
 ];
 
 const SERVICES = [
