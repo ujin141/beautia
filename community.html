@@ -707,7 +707,7 @@ function renderRight(){
     <div class="panel"><div class="panel-h">${t('popular')}</div><div class="hot" id="hot"></div></div>
     <div class="ctabox"><h4>${t('ctaTitle')}</h4><p>${t('ctaDesc')}</p><a class="btn btn-kakao" href="https://pf.kakao.com/_xhxhixfX/chat" target="_blank">💬 ${t('ctaBtn')}</a></div>`;
   const hot=DB.posts.slice().sort((a,b)=>(b.like+b.scrap*2)-(a.like+a.scrap*2)).slice(0,5);
-  $('hot').innerHTML=hot.map((p,i)=>`<div class="hotitem" onclick="openPost(${p.id})"><span class="rk">${i+1}</span><div><div class="ht">${esc(p.title)}</div><div class="hm tnum">♥ ${p.like} · ${t('comments')} ${p.cmtCount||0}</div></div></div>`).join('');
+  $('hot').innerHTML=hot.map((p,i)=>`<div class="hotitem" onclick="openPost(${jsId(p.id)})"><span class="rk">${i+1}</span><div><div class="ht">${esc(p.title)}</div><div class="hm tnum">♥ ${p.like} · ${t('comments')} ${p.cmtCount||0}</div></div></div>`).join('');
 }
 function renderShell(){
   let nav=`<div class="lh">${t('board')}</div>`;
@@ -753,13 +753,13 @@ function cardActs(p){return `<div class="cact"><span class="a"><i class="ti ti-h
 function cardHtml(p,i,lead){
   const has=p.imgs&&p.imgs.length;const tone=posterTone(p);
   if(lead){
-    return `<div class="card lead ${ME.read.includes(p.id)?'read':''}" onclick="openPost(${p.id})">
+    return `<div class="card lead ${ME.read.includes(p.id)?'read':''}" onclick="openPost(${jsId(p.id)})">
       <div class="cover ${has?'':'poster'}" style="background:${tone}">
         ${has?`<img src="${p.imgs[0]}" loading="lazy" alt="" onerror="coverFail(this)">`:''}<div class="scrim"></div>
         <div class="leadtext"><span class="lead-cat">${catL(p.cat)}</span><div class="lead-title">${p.pinned?'📌 ':''}${esc(p.title)}</div><div class="lead-exc">${esc(bodyOf(p))}</div></div>
         ${isNew(p)?`<span class="newchip">NEW</span>`:''}</div></div>`;
   }
-  return `<div class="card ${has?'':'nophoto'} ${ME.read.includes(p.id)?'read':''}" onclick="openPost(${p.id})">
+  return `<div class="card ${has?'':'nophoto'} ${ME.read.includes(p.id)?'read':''}" onclick="openPost(${jsId(p.id)})">
     ${coverHtml(p)}
     <div class="cbody">
       <div class="ctitle">${p.pinned?'📌 ':''}${esc(p.title)}</div>
@@ -773,7 +773,7 @@ function showPromo(){const sl=document.querySelectorAll('.promo .slide'),dt=docu
 function startPromo(){clearInterval(promoTimer);if(document.querySelectorAll('.promo .slide').length<2)return;promoTimer=setInterval(()=>{promoIdx=(promoIdx+1)%BANNERS.length;showPromo();},4500);}
 function promoGo(i){promoIdx=i;showPromo();startPromo();}
 function infoStripHtml(){const info=DB.posts.filter(p=>p.cat==='정보').sort((a,b)=>b.t-a.t).slice(0,8);if(!info.length)return'';
-  return `<div class="infosec"><div class="ih"><h3>${t('infoTitle')}</h3><a onclick="setCat('정보')">${t('seeAll')} ›</a></div><div class="iscroll">${info.map(p=>{const has=p.imgs&&p.imgs.length;return `<div class="icard${has?' hasimg':''}" onclick="openPost(${p.id})"><div class="ith" style="${has?`background-image:url('${p.imgs[0]}')`:''}"></div><div class="ib"><div class="iflag">${p.region&&p.region!=='전체'?regFlag(p.region)+' '+esc(regL(p.region)):catL('정보')}</div><div class="it">${esc(p.title)}</div></div></div>`;}).join('')}</div></div>`;}
+  return `<div class="infosec"><div class="ih"><h3>${t('infoTitle')}</h3><a onclick="setCat('정보')">${t('seeAll')} ›</a></div><div class="iscroll">${info.map(p=>{const has=p.imgs&&p.imgs.length;return `<div class="icard${has?' hasimg':''}" onclick="openPost(${jsId(p.id)})"><div class="ith" style="${has?`background-image:url('${p.imgs[0]}')`:''}"></div><div class="ib"><div class="iflag">${p.region&&p.region!=='전체'?regFlag(p.region)+' '+esc(regL(p.region)):catL('정보')}</div><div class="it">${esc(p.title)}</div></div></div>`;}).join('')}</div></div>`;}
 /* ===== 전문가(사장님·디자이너) 쇼케이스 ===== */
 const PU=(id)=>`https://images.unsplash.com/photo-${id}?auto=format&fit=crop&w=600&q=70`;
 const SEED_PROS=[
@@ -907,11 +907,11 @@ function renderDetail(){
     ${(p.tags&&p.tags.length)?`<div class="dtags">${p.tags.map(tg=>`<span class="dtag">#${esc(tg)}</span>`).join('')}</div>`:''}
     ${alt?`<div class="transbox"><div class="lbl"><i class="ti ti-language"></i> ${t('transBy')}</div><div class="orig" id="origText">${esc(alt)}</div><span class="tg" onclick="toggleOrig(event)">${altLbl}</span></div>`:''}
     <div class="proof">
-      <div class="pf ${liked?'on':''}" onclick="toggleLike(${p.id})"><i class="ti ti-heart${liked?'-filled':''}"></i> ${t('likeBtn')} <span class="tnum">${p.like}</span></div>
-      <div class="pf scrap ${scrapped?'on':''}" onclick="toggleScrap(${p.id})"><i class="ti ti-bookmark${scrapped?'-filled':''}"></i> ${t('scrapBtn')} <span class="tnum">${p.scrap}</span></div>
-      <div class="pf" onclick="openShare(${p.id})"><i class="ti ti-share-2"></i> ${t('shareBtn')}</div>
-      <div class="pf" onclick="openCardMaker(${p.id})"><i class="ti ti-photo"></i> ${t('makeCard')}</div>
-      ${p.mine?`<div class="pf" onclick="openEditPost(${p.id})"><i class="ti ti-pencil"></i> ${t('editPost')}</div><div class="pf pfdel" onclick="delMyPost(${p.id})"><i class="ti ti-trash"></i> ${t('delPost')}</div>`:''}
+      <div class="pf ${liked?'on':''}" onclick="toggleLike(${jsId(p.id)})"><i class="ti ti-heart${liked?'-filled':''}"></i> ${t('likeBtn')} <span class="tnum">${p.like}</span></div>
+      <div class="pf scrap ${scrapped?'on':''}" onclick="toggleScrap(${jsId(p.id)})"><i class="ti ti-bookmark${scrapped?'-filled':''}"></i> ${t('scrapBtn')} <span class="tnum">${p.scrap}</span></div>
+      <div class="pf" onclick="openShare(${jsId(p.id)})"><i class="ti ti-share-2"></i> ${t('shareBtn')}</div>
+      <div class="pf" onclick="openCardMaker(${jsId(p.id)})"><i class="ti ti-photo"></i> ${t('makeCard')}</div>
+      ${p.mine?`<div class="pf" onclick="openEditPost(${jsId(p.id)})"><i class="ti ti-pencil"></i> ${t('editPost')}</div><div class="pf pfdel" onclick="delMyPost(${jsId(p.id)})"><i class="ti ti-trash"></i> ${t('delPost')}</div>`:''}
     </div>
     <div class="csec"><h4>${t('comments')} ${p.cmts.filter(c=>!blocked(c.nick)).length}</h4>
       <div class="cwrite"><input id="cInput" placeholder="${t('cmtPh')}" maxlength="500" onkeydown="if(event.key==='Enter')addComment()"><button class="btn btn-primary" onclick="addComment()">${t('submit')}</button></div>
@@ -924,7 +924,7 @@ function relatedHtml(p){
   const same=DB.posts.filter(x=>x.id!==p.id&&x.cat===p.cat);
   const more=DB.posts.filter(x=>x.id!==p.id&&x.cat!==p.cat).sort((a,b)=>(b.like+b.scrap*2)-(a.like+a.scrap*2));
   const list=[...same,...more].slice(0,4);if(!list.length)return'';
-  return `<div class="related"><h4>${t('related')}</h4>${list.map(r=>`<div class="rel" onclick="openPost(${r.id})"><div style="flex:1;min-width:0"><div class="rt">${esc(r.title)}</div><div class="rm">${catL(r.cat)}${r.region&&r.region!=='전체'?' · '+regFlag(r.region)+' '+esc(regL(r.region)):''} · 💬 ${r.cmts.length}</div></div><div class="rc">❤ ${r.like}</div></div>`).join('')}</div>`;
+  return `<div class="related"><h4>${t('related')}</h4>${list.map(r=>`<div class="rel" onclick="openPost(${jsId(r.id)})"><div style="flex:1;min-width:0"><div class="rt">${esc(r.title)}</div><div class="rm">${catL(r.cat)}${r.region&&r.region!=='전체'?' · '+regFlag(r.region)+' '+esc(regL(r.region)):''} · 💬 ${r.cmts.length}</div></div><div class="rc">❤ ${r.like}</div></div>`).join('')}</div>`;
 }
 function backFeed(){view='feed';renderMain();scrollTo({top:0});}
 function toggleOrig(e){const o=$('origText');const sh=o.style.display!=='block';o.style.display=sh?'block':'none';e.target.textContent=sh?t('foldOrig'):(LANG==='ja'?t('viewOrigKo'):t('viewOrigJa'));}
@@ -1190,7 +1190,7 @@ function renderMypage(){
   const interests=(ME.role==='guest')?((S.situation||(ME.interests&&ME.interests.length))?`<div class="shopcard"><h4><i class="ti ti-user-heart"></i> ${roleL('guest')}</h4>${S.situation?`<div class="row"><b>${t('situationL')}</b> · ${esc(situL(S.situation))}</div>`:''}${(ME.interests&&ME.interests.length)?`<div class="chipset">${ME.interests.map(s=>`<span class="c">${svcL(s)}</span>`).join('')}</div>`:''}</div>`:''):'';
   const designer=(ME.role==='designer')?`<div class="shopcard"><h4><i class="ti ti-scissors"></i> ${roleL('designer')}</h4>${(ME.shop&&ME.shop.career)?`<div class="row"><b>${t('careerBadge')}</b> · ${esc(ME.shop.career)}</div>`:''}${(ME.shop&&ME.shop.name)?`<div class="row"><i class="ti ti-building-store" style="font-size:14px"></i> ${esc(ME.shop.name)}</div>`:''}${(ME.shop&&ME.shop.specialties&&ME.shop.specialties.length)?`<div class="chipset">${ME.shop.specialties.map(s=>`<span class="c">${svcL(s)}</span>`).join('')}</div>`:''}</div>`:'';
   let listHtml;
-  if(myTab==='comments'){const cs=[];DB.posts.forEach(p=>p.cmts.forEach(c=>{if(c.nick===ME.nick)cs.push({p,c});}));cs.sort((a,b)=>b.c.d-a.c.d);listHtml=cs.length?cs.map(({p,c})=>`<div class="rel" onclick="openPost(${p.id})"><div style="flex:1;min-width:0"><div class="rt">${esc(c.t)}</div><div class="rm">↳ ${esc(p.title)} · ${timeago(c.d)}</div></div></div>`).join(''):`<div class="empty" style="border:none">${t('noComments')}</div>`;}
+  if(myTab==='comments'){const cs=[];DB.posts.forEach(p=>p.cmts.forEach(c=>{if(c.nick===ME.nick)cs.push({p,c});}));cs.sort((a,b)=>b.c.d-a.c.d);listHtml=cs.length?cs.map(({p,c})=>`<div class="rel" onclick="openPost(${jsId(p.id)})"><div style="flex:1;min-width:0"><div class="rt">${esc(c.t)}</div><div class="rm">↳ ${esc(p.title)} · ${timeago(c.d)}</div></div></div>`).join(''):`<div class="empty" style="border:none">${t('noComments')}</div>`;}
   else{const L=myTab==='posts'?mine:scraps;listHtml=L.length?`<div class="feedgrid">${L.map((p,i)=>cardHtml(p,i,false)).join('')}</div>`:`<div class="empty" style="border:none">${myTab==='posts'?t('noPosts'):t('noScraps')}</div>`;}
   const refLink=location.origin+location.pathname+'?ref='+ME.ref;
   const histHtml=(ME.pointLog&&ME.pointLog.length)?ME.pointLog.slice(0,8).map(e=>`<div class="phrow"><span class="pr2">${esc(e.r)}</span><span style="display:flex;gap:12px;align-items:center"><span class="pd">${timeago(e.t)}</span><span class="pa">+${e.a.toLocaleString()}P</span></span></div>`).join(''):`<div class="empty" style="border:none;padding:24px">${t('noPoints')}</div>`;
