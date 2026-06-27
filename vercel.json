@@ -3,5 +3,9 @@
   "trailingSlash": false,
   "redirects": [
     { "source": "/", "destination": "/community", "permanent": false }
+  ],
+  "rewrites": [
+    { "source": "/p/:id", "destination": "/api/post?id=:id" },
+    { "source": "/sitemap-posts.xml", "destination": "/api/sitemap-posts" }
   ]
 }

@@ -1050,7 +1050,7 @@ async function shareCardBlob(p){if(typeof html2canvas==='undefined')return null;
   try{const cv=await html2canvas(tmp.firstChild,{scale:2,useCORS:true,backgroundColor:null});return await new Promise(r=>cv.toBlob(r,'image/png'));}
   catch(e){return null;}finally{tmp.remove();}}
 let sharePid=null;
-function postUrl(id){return location.origin+location.pathname+'?post='+id;}
+function postUrl(id){return (typeof id==='string')?(location.origin+'/p/'+id):(location.origin+location.pathname+'?post='+id);}
 function shareText(p){const ex=(bodyOf(p)||'').replace(/\s+/g,' ').trim().slice(0,110);return p.title+'\n\n'+ex+(ex.length>=110?'…':'')+'\n\nBeautia 커뮤니티 · 일본 뷰티 후기';}
 function openShare(id){const p=DB.posts.find(x=>x.id===id);if(!p)return;sharePid=id;
   $('shareHd').textContent=t('shareTitle');$('shareUrl').value=postUrl(id);$('shareCopyBtn').textContent=t('copyLink');

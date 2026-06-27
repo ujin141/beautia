@@ -29,3 +29,4 @@ User-agent: Yeti
 Allow: /
 
 Sitemap: https://beautia.io/sitemap.xml
+Sitemap: https://beautia.io/sitemap-posts.xml
