@@ -150,8 +150,34 @@ create trigger trg_sync_like_count
   after insert or delete on public.post_likes
   for each row execute function public.sync_like_count();
 
+-- 9) 스크랩 (북마크 — 개인용, 기기 간 동기화)
+create table if not exists public.post_scraps (
+  post_id    uuid references public.posts(id) on delete cascade,
+  user_id    uuid references auth.users(id)  on delete cascade,
+  created_at timestamptz default now(),
+  primary key (post_id, user_id)
+);
+create index if not exists post_scraps_user_idx on public.post_scraps (user_id);
+alter table public.post_scraps enable row level security;
+drop policy if exists post_scraps_own on public.post_scraps;
+create policy post_scraps_own on public.post_scraps for all to authenticated
+  using (auth.uid() = user_id) with check (auth.uid() = user_id);
+
+-- 10) 이미지 Storage (글 사진·프로필·가게/작업 사진을 base64 대신 파일로)
+insert into storage.buckets (id, name, public)
+  values ('beautia', 'beautia', true)
+  on conflict (id) do update set public = true;
+drop policy if exists "beautia_read"   on storage.objects;
+create policy "beautia_read"   on storage.objects for select using (bucket_id = 'beautia');
+drop policy if exists "beautia_insert" on storage.objects;
+create policy "beautia_insert" on storage.objects for insert to authenticated with check (bucket_id = 'beautia');
+drop policy if exists "beautia_update" on storage.objects;
+create policy "beautia_update" on storage.objects for update to authenticated using (bucket_id = 'beautia' and owner = auth.uid());
+drop policy if exists "beautia_delete" on storage.objects;
+create policy "beautia_delete" on storage.objects for delete to authenticated using (bucket_id = 'beautia' and owner = auth.uid());
+
 -- ============================================================
--- 9) 본인을 관리자로 지정  ← 이메일을 본인 가입 이메일로 교체!
+-- 11) 본인을 관리자로 지정  ← 이메일을 본인 가입 이메일로 교체!
 --    (먼저 커뮤니티에서 회원가입을 끝낸 뒤 실행하세요)
 -- ============================================================
 update public.profiles set is_admin = true

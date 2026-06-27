@@ -558,7 +558,7 @@ async function loadPosts(){
     const {data:posts,error}=await SB.from('posts').select('*, comments(count)').order('created_at',{ascending:false});
     if(error)throw error;DB.posts=(posts||[]).map(mapPost);
     if(!DB.posts.length)DB.posts=seed();
-    if(ME.uid){try{const {data:likes}=await SB.from('post_likes').select('post_id').eq('user_id',ME.uid);if(likes)ME.likes=likes.map(l=>l.post_id);}catch(e){}}
+    if(ME.uid){try{const [lk,sc]=await Promise.all([SB.from('post_likes').select('post_id').eq('user_id',ME.uid),SB.from('post_scraps').select('post_id').eq('user_id',ME.uid)]);if(lk.data)ME.likes=lk.data.map(l=>l.post_id);if(sc.data)ME.scraps=sc.data.map(s=>s.post_id);}catch(e){}}
   }catch(e){console.warn('loadPosts',e);DB.posts=(DB.posts&&DB.posts.length)?DB.posts:seed();}
 }
 async function refreshProfile(session){
@@ -785,7 +785,12 @@ async function toggleLike(id){const p=DB.posts.find(x=>x.id===id);if(!p)return;
   if(liked){ME.likes=ME.likes.filter(x=>x!==id);p.like=Math.max(0,p.like-1);}else{ME.likes.push(id);p.like++;}
   saveMe();if(view==='detail')renderDetail();else renderMain();renderRight();
   if(typeof id==='string'){try{if(liked){await SB.from('post_likes').delete().eq('post_id',id).eq('user_id',ME.uid);}else{await SB.from('post_likes').insert({post_id:id,user_id:ME.uid});}}catch(e){console.warn('like',e);}}}
-function toggleScrap(id){const p=DB.posts.find(x=>x.id===id);const i=ME.scraps.indexOf(id);if(i<0){ME.scraps.push(id);p.scrap++;toast(t('scrapped'));}else{ME.scraps.splice(i,1);p.scrap--;}saveMe();save();if(view==='detail')renderDetail();}
+async function toggleScrap(id){const p=DB.posts.find(x=>x.id===id);if(!p)return;
+  if(!ME.registered){openLogin();toast(t('needSignup'));return;}
+  const has=ME.scraps.includes(id);
+  if(has){ME.scraps=ME.scraps.filter(x=>x!==id);p.scrap=Math.max(0,p.scrap-1);}else{ME.scraps.push(id);p.scrap++;toast(t('scrapped'));}
+  saveMe();if(view==='detail')renderDetail();else if(view==='profile')renderMypage();
+  if(typeof id==='string'){try{if(has){await SB.from('post_scraps').delete().eq('post_id',id).eq('user_id',ME.uid);}else{await SB.from('post_scraps').insert({post_id:id,user_id:ME.uid});}}catch(e){console.warn('scrap',e);}}}
 async function addComment(){if(!ME.registered){openSignup();toast(t('needSignup'));return;}const v=$('cInput').value.trim();if(!v)return;
   const {error}=await SB.from('comments').insert({post_id:openId,author:ME.uid,nickname:ME.nick,content:v});
   if(error){toast('댓글 실패: '+error.message);return;}
@@ -804,8 +809,10 @@ function renderWriteForm(){
 function wPick(k,v){if(k==='cat')wCat=v;else wRegion=v;renderWriteForm();}
 function renderPtiles(){let h=wImgs.map((s,i)=>`<div class="ptile" style="background-image:url('${s}')"><div class="rm" onclick="rmImg(${i})">×</div></div>`).join('');if(wImgs.length<4)h+=`<div class="ptile add" onclick="$('wFile').click()"><i class="ti ti-camera-plus"></i></div>`;$('ptiles').innerHTML=h;}
 function rmImg(i){wImgs.splice(i,1);renderPtiles();}
-function onPick(e){const files=[...e.target.files].slice(0,4-wImgs.length);files.forEach(f=>downscale(f,u=>{wImgs.push(u);renderPtiles();}));e.target.value='';}
+async function onPick(e){const files=[...e.target.files].slice(0,4-wImgs.length);e.target.value='';for(const f of files){const u=await uploadImg(f,1280);wImgs.push(u);renderPtiles();}}
 function downscale(file,cb,maxArg){const r=new FileReader();r.onload=ev=>{const img=new Image();img.onload=()=>{const max=maxArg||900;let w=img.width,h=img.height;if(w>max||h>max){if(w>h){h=Math.round(h*max/w);w=max;}else{w=Math.round(w*max/h);h=max;}}const cv=document.createElement('canvas');cv.width=w;cv.height=h;cv.getContext('2d').drawImage(img,0,0,w,h);cb(cv.toDataURL('image/jpeg',0.8));};img.src=ev.target.result;};r.readAsDataURL(file);}
+/* 이미지 → 축소 후 Supabase Storage 업로드, 실패 시 base64 폴백 */
+function uploadImg(file,maxArg){return new Promise(resolve=>{const r=new FileReader();r.onload=ev=>{const img=new Image();img.onload=async()=>{const max=maxArg||1200;let w=img.width,h=img.height;if(w>max||h>max){if(w>h){h=Math.round(h*max/w);w=max;}else{w=Math.round(w*max/h);h=max;}}const cv=document.createElement('canvas');cv.width=w;cv.height=h;cv.getContext('2d').drawImage(img,0,0,w,h);const dataUrl=cv.toDataURL('image/jpeg',0.82);try{if(ME.uid&&cv.toBlob){const blob=await new Promise(res=>cv.toBlob(res,'image/jpeg',0.82));if(blob){const path=ME.uid+'/'+Date.now()+'-'+Math.random().toString(36).slice(2,8)+'.jpg';const {error}=await SB.storage.from('beautia').upload(path,blob,{contentType:'image/jpeg',upsert:false});if(!error){const {data}=SB.storage.from('beautia').getPublicUrl(path);if(data&&data.publicUrl){resolve(data.publicUrl);return;}}}}}catch(e){console.warn('upload',e);}resolve(dataUrl);};img.src=ev.target.result;};r.readAsDataURL(file);});}
 async function submitWrite(){const title=$('wTitle').value.trim(),content=$('wContent').value.trim();if(!title||!content){toast(t('needTC'));return;}
   if(!ME.uid){openSignup();return;}
   const tags=$('wTags').value.split(/[,#\n]+/).map(s=>s.trim()).filter(Boolean).slice(0,6);
@@ -821,7 +828,7 @@ async function submitWrite(){const title=$('wTitle').value.trim(),content=$('wCo
 let pfMode='login',pfRole='guest',pfInterests=[],pfServices=[],pfSpec=[],pfCareer='',pfAvatar='',pfSitu='',pfKoOK=false,pfPhotos=[];
 function pickSitu(k){pfSitu=(pfSitu===k?'':k);renderProfileForm(false);}
 function pfPickPhotos(){const inp=document.getElementById('pfPhFile');if(inp)inp.click();}
-function onPfPhotos(e){const files=[...e.target.files].slice(0,6-pfPhotos.length);let n=files.length;files.forEach(f=>downscale(f,u=>{pfPhotos.push(u);if(--n<=0)renderProfileForm(false);},800));e.target.value='';}
+async function onPfPhotos(e){const files=[...e.target.files].slice(0,6-pfPhotos.length);e.target.value='';for(const f of files){const u=await uploadImg(f,1100);pfPhotos.push(u);renderProfileForm(false);}}
 function pfRmPhoto(i){pfPhotos.splice(i,1);renderProfileForm(false);}
 function pfPhotosHtml(){let h=pfPhotos.map((s,i)=>`<div class="ptile" style="background-image:url('${s}')"><div class="rm" onclick="pfRmPhoto(${i})">×</div></div>`).join('');if(pfPhotos.length<6)h+=`<div class="ptile add" onclick="pfPickPhotos()"><i class="ti ti-camera-plus"></i></div>`;return `<input type="file" id="pfPhFile" accept="image/*" multiple style="display:none" onchange="onPfPhotos(event)"><div class="ptiles">${h}</div>`;}
 let pfEmail='',pfOtpSent=false,pfAgreeTerms=false,pfAgreePrivacy=false,pfAgreeMktg=false;
@@ -836,7 +843,7 @@ function openProfileModal(){$('pHead').textContent=pfMode==='login'?t('authTitle
 function pickPfRole(k){pfRole=k;renderProfileForm(false);}
 function toggleArr(which,v){const a=which==='int'?pfInterests:(which==='spec'?pfSpec:pfServices);const i=a.indexOf(v);if(i<0)a.push(v);else a.splice(i,1);renderProfileForm(false);}
 function pickAvatar(){const inp=document.getElementById('pfAvFile');if(inp)inp.click();}
-function onPfAvatar(e){const f=e.target.files&&e.target.files[0];if(!f)return;downscale(f,u=>{pfAvatar=u;const pv=document.getElementById('pfAvPv');if(pv){pv.style.backgroundImage=`url('${u}')`;pv.textContent='';}},320);e.target.value='';}
+async function onPfAvatar(e){const f=e.target.files&&e.target.files[0];if(!f)return;e.target.value='';const pv=document.getElementById('pfAvPv');if(pv)pv.textContent='…';const u=await uploadImg(f,512);pfAvatar=u;if(pv){pv.style.backgroundImage=`url('${u}')`;pv.textContent='';}}
 function renderProfileForm(first){
   if(pfMode==='login'){
     let h=`<button class="gbtn" onclick="googleLogin()">${GSVG} ${t('googleBtn')}</button><div class="ordiv">${t('orText')}</div>`;
