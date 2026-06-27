@@ -185,27 +185,32 @@ const $=id=>document.getElementById(id);
 const esc=s=>(''+(s==null?'':s)).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 function timeago(t){t=+new Date(t);const d=(Date.now()-t)/1000;if(d<3600)return Math.floor(d/60)+'분 전';if(d<86400)return Math.floor(d/3600)+'시간 전';if(d<2592000)return Math.floor(d/86400)+'일 전';return new Date(t).toLocaleDateString('ko-KR',{month:'numeric',day:'numeric'});}
 function toast(m){const e=$('toast');e.textContent=m;e.classList.add('on');clearTimeout(e._);e._=setTimeout(()=>e.classList.remove('on'),2000);}
-const SQL=`-- Beautia 커뮤니티 어드민 최초 1회 설정 (Supabase SQL Editor에서 실행)
+const SQL=`-- Beautia 어드민 권한 설정 (Supabase SQL Editor에서 실행)
+-- 전체 스키마는 저장소의 supabase-setup.sql 참고
 alter table public.profiles add column if not exists is_admin boolean default false;
-alter table public.profiles add column if not exists blocked boolean default false;
+alter table public.profiles add column if not exists blocked  boolean default false;
 
--- 본인을 관리자로 지정 (이메일을 본인 것으로 교체)
-update public.profiles set is_admin=true
- where id=(select id from auth.users where email='YOUR@EMAIL.com');
+-- 관리자 판별 함수 (RLS 재귀 방지)
+create or replace function public.is_admin()
+returns boolean language sql security definer stable
+set search_path = public as $func$
+  select coalesce((select p.is_admin from public.profiles p where p.id = auth.uid()), false);
+$func$;
+grant execute on function public.is_admin() to anon, authenticated;
 
 -- 관리자 권한 정책
-drop policy if exists "admin_update_posts" on public.posts;
-create policy "admin_update_posts" on public.posts for update
- using (exists(select 1 from public.profiles me where me.id=auth.uid() and me.is_admin));
-drop policy if exists "admin_delete_posts" on public.posts;
-create policy "admin_delete_posts" on public.posts for delete
- using (exists(select 1 from public.profiles me where me.id=auth.uid() and me.is_admin));
-drop policy if exists "admin_delete_comments" on public.comments;
-create policy "admin_delete_comments" on public.comments for delete
- using (exists(select 1 from public.profiles me where me.id=auth.uid() and me.is_admin));
-drop policy if exists "admin_update_profiles" on public.profiles;
-create policy "admin_update_profiles" on public.profiles for update
- using (exists(select 1 from public.profiles me where me.id=auth.uid() and me.is_admin));`;
+drop policy if exists posts_admin_update on public.posts;
+create policy posts_admin_update on public.posts for update using (public.is_admin());
+drop policy if exists posts_admin_delete on public.posts;
+create policy posts_admin_delete on public.posts for delete using (public.is_admin());
+drop policy if exists comments_admin_delete on public.comments;
+create policy comments_admin_delete on public.comments for delete using (public.is_admin());
+drop policy if exists profiles_admin_update on public.profiles;
+create policy profiles_admin_update on public.profiles for update using (public.is_admin());
+
+-- 본인을 관리자로 지정 (이메일 교체! 회원가입 후 실행)
+update public.profiles set is_admin=true
+ where id=(select id from auth.users where email='YOUR@EMAIL.com');`;
 $('sqlText').textContent=SQL;$('sqlText2').textContent=SQL;
 
 /* ===== auth ===== */
