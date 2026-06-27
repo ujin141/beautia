@@ -52,7 +52,8 @@ const HEAD=(title,desc,canon,kw,jsonld)=>`<!DOCTYPE html><html lang="ko"><head>
 <link rel="canonical" href="${canon}">
 <meta property="og:type" content="business.business"><meta property="og:site_name" content="Beautia">
 <meta property="og:title" content="${esc(title)}"><meta property="og:description" content="${esc(desc)}">
-<meta property="og:url" content="${canon}">
+<meta property="og:url" content="${canon}"><meta property="og:image" content="${SITE}/og-default.png"><meta property="og:image:width" content="1200"><meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image"><meta name="twitter:title" content="${esc(title)}"><meta name="twitter:description" content="${esc(desc)}"><meta name="twitter:image" content="${SITE}/og-default.png">
 <meta name="naver-site-verification" content="bec0ee3bfd015beb74d81bfea16300eb57e61afd">
 <link rel="icon" type="image/png" href="../logo-icon.png"><meta name="theme-color" content="#6D4346">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css">
