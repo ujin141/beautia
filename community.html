@@ -332,6 +332,8 @@ a{color:inherit;text-decoration:none;}
 @media(max-width:640px){.homegrid{grid-template-columns:1fr;}}
 .hp{border:1px solid var(--line);border-top:3px solid var(--ac,var(--accent));border-radius:12px;padding:12px 15px 6px;background:#fff;}
 .hp.expert{background:var(--tint);}
+.hp.wide{grid-column:1 / -1;}
+@media(max-width:640px){.hp.wide{grid-column:auto;}}
 .hp .ph{display:flex;align-items:center;justify-content:space-between;gap:8px;padding-bottom:8px;border-bottom:1px solid var(--line2);}
 .hp .ph h3{font-size:14px;font-weight:800;letter-spacing:-.02em;display:flex;align-items:center;gap:6px;}
 .hp .ph h3 .ti{font-size:16px;color:var(--ac,var(--accent));}
@@ -855,6 +857,8 @@ function renderProsView(){
 function homeGridHtml(){
   const base=DB.posts.filter(p=>!p.hidden&&!blocked(p.nick));
   let panels=[];
+  const recent=base.slice().sort((a,b)=>b.t-a.t).slice(0,6);
+  if(recent.length)panels.push(`<div class="hp wide" style="--ac:var(--accent)"><div class="ph"><h3><i class="ti ti-clock"></i> ${t('new')} <span class="c tnum">${base.length}</span></h3></div><div class="pl">${recent.map(postRow).join('')}</div></div>`);
   CATS.filter(c=>c[0]!=='전체').forEach(([c,ic])=>{const all=base.filter(p=>p.cat===c);if(!all.length)return;
     panels.push(hPanel(catL(c),ic,all.length,`setCat('${c}')`,all.slice().sort((a,b)=>b.t-a.t).slice(0,3).map(postRow).join(''),CATAC[c]||'#6D4346'));});
   return panels.length?`<div class="homegrid">${panels.join('')}</div>`:'';
