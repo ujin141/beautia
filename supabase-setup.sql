@@ -41,11 +41,14 @@ create table if not exists public.posts (
 create table if not exists public.comments (
   id         bigint generated always as identity primary key,
   post_id    uuid references public.posts(id) on delete cascade,
+  parent_id  bigint references public.comments(id) on delete cascade,
   author     uuid references auth.users(id) on delete set null,
   nickname   text,
   content    text,
   created_at timestamptz default now()
 );
+-- 대댓글(답글)용 컬럼 보강
+alter table public.comments add column if not exists parent_id bigint references public.comments(id) on delete cascade;
 
 -- 3) 기존 테이블에 누락 컬럼 보강
 alter table public.profiles add column if not exists is_admin   boolean default false;
@@ -111,6 +114,8 @@ drop policy if exists comments_read         on public.comments;
 create policy comments_read         on public.comments for select using (true);
 drop policy if exists comments_insert_auth  on public.comments;
 create policy comments_insert_auth  on public.comments for insert with check (auth.uid() = author);
+drop policy if exists comments_update_own   on public.comments;
+create policy comments_update_own   on public.comments for update using (auth.uid() = author);
 drop policy if exists comments_delete_own   on public.comments;
 create policy comments_delete_own   on public.comments for delete using (auth.uid() = author);
 drop policy if exists comments_admin_delete on public.comments;

@@ -389,6 +389,9 @@ a{color:inherit;text-decoration:none;}
 .cwrite input{flex:1;border:1px solid var(--line);background:var(--soft);border-radius:999px;padding:12px 18px;font-family:inherit;font-size:14px;outline:none;transition:.14s;}
 .cwrite input:focus{background:#fff;border-color:var(--plum);}
 .cmt{display:flex;gap:12px;padding:18px 0;border-top:1px solid var(--line2);}
+.cmt.creply{margin-left:46px;padding:13px 0 13px 14px;border-top:1px dashed var(--line2);border-left:2px solid var(--line);}
+.cmt.creply .av{width:28px;height:28px;font-size:12px;}
+@media(max-width:560px){.cmt.creply{margin-left:24px;}}
 .cmt .av{width:36px;height:36px;font-size:14px;}.cmt .cn{font-size:13px;font-weight:700;display:flex;align-items:center;gap:6px;}
 .cmt .ct{font-size:14px;margin-top:5px;line-height:1.65;white-space:pre-wrap;word-break:break-word;color:var(--ink2);}.cmt .cd{font-size:11.5px;color:var(--sub);margin-top:6px;}
 .cmt .ctr{font-size:13.5px;line-height:1.6;color:var(--ink);background:var(--soft);border-left:2px solid var(--accent);border-radius:8px;padding:8px 11px;margin-top:7px;white-space:pre-wrap;}
@@ -468,7 +471,8 @@ textarea.field{min-height:200px;resize:vertical;line-height:1.75;}
   <div class="wlabel" id="wlPhoto"></div>
   <input type="file" id="wFile" accept="image/*" multiple style="display:none" onchange="onPick(event)">
   <div class="ptiles" id="ptiles"></div>
-  <button class="btn btn-primary" id="wSubmit" style="width:100%;justify-content:center;padding:13px;margin-top:18px;font-size:15px;" onclick="submitWrite()"></button>
+  <label class="agree" id="wAnonRow" style="margin-top:16px"><input type="checkbox" id="wAnon" onchange="wAnonV=this.checked"> <span id="wAnonLbl"></span></label>
+  <button class="btn btn-primary" id="wSubmit" style="width:100%;justify-content:center;padding:13px;margin-top:14px;font-size:15px;" onclick="submitWrite()"></button>
 </div></div>
 <div class="modal" id="profModal"><div class="sheet" style="max-width:460px;">
   <span class="x" onclick="closeModal()">×</span><h3 id="pHead"></h3>
@@ -508,6 +512,7 @@ const T={ko:{
  popular:'인기 글',ctaTitle:'일본 뷰티, 예약까지',ctaDesc:'마음에 드는 곳 찾았다면? 일본어 0이어도 Beautia가 예약·통역 대행 (무료).',ctaBtn:'카톡으로 예약 신청',
  back:'목록으로',likeBtn:'좋아요',shareBtn:'공유',scrapBtn:'스크랩',comments:'댓글',cmtPh:'댓글을 남겨보세요…',submit:'등록',views:'조회',
  editPost:'수정',delPost:'삭제',delConfirm:'이 글을 삭제할까요? 되돌릴 수 없어요.',deleted:'삭제했어요',edited:'수정됐어요',editHead:'글 수정',saveEdit:'수정 완료',
+ reply:'답글',replyPh:'답글을 남겨보세요…',cmtEditPrompt:'댓글 수정:',cmtDelConfirm:'이 댓글을 삭제할까요?',anonLabel:'익명으로 작성',anonNick:'익명',
  makeCard:'카드 만들기',shareTitle:'공유하기',copyLink:'링크 복사',shareCardOpt:'이미지 카드로 공유',shareApp:'다른 앱으로 공유',cardTitle:'공유 카드 만들기',dlCard:'이미지 저장',copyCap:'캡션 복사',capCopied:'캡션이 복사됐어요',cardHint:'저장해서 인스타·릴스/쇼츠에 올려보세요. 영상 마지막엔 "후기는 Beautia에서"!',linkCopied:'링크가 복사됐어요',cardReview:'REVIEW',
  firstCmt:'첫 댓글을 남겨보세요!',emptyFeed:'아직 글이 없어요. 첫 글을 남겨보세요 ✏️',transBy:'Beautia 번역됨',gptT:'번역',gptTing:'번역 중…',gptShowOrig:'원문 보기',gptShowTr:'번역 보기',gptFail:'번역에 실패했어요',viewOrigJa:'원문(日本語) 보기 ▾',viewOrigKo:'번역(한국어) 보기 ▾',foldOrig:'접기 ▴',
  wHead:'글쓰기',category:'카테고리',regionOpt:'지역 (선택)',noRegion:'지역무관',titlePh:'제목을 입력하세요',contentPh:'한국·일본 뷰티 사장님·손님 누구나! 질문, 후기, 정보, 수다 환영해요. (욕설·광고·개인정보 X)',photo:'사진 (최대 4장)',register:'등록하기',
@@ -535,6 +540,7 @@ const T={ko:{
  popular:'人気の投稿',ctaTitle:'日本ビューティー、予約まで',ctaDesc:'気に入ったお店が見つかったら？日本語が分からなくてもBeautiaが予約・通訳を代行（無料）。',ctaBtn:'カカオトークで予約',
  back:'一覧へ',likeBtn:'いいね',shareBtn:'シェア',scrapBtn:'保存',comments:'コメント',cmtPh:'コメントを残す…',submit:'登録',views:'閲覧',
  editPost:'編集',delPost:'削除',delConfirm:'この投稿を削除しますか？元に戻せません。',deleted:'削除しました',edited:'編集しました',editHead:'投稿を編集',saveEdit:'編集完了',
+ reply:'返信',replyPh:'返信を入力…',cmtEditPrompt:'コメントを編集:',cmtDelConfirm:'このコメントを削除しますか？',anonLabel:'匿名で投稿',anonNick:'匿名',
  makeCard:'カード作成',shareTitle:'シェア',copyLink:'リンクをコピー',shareCardOpt:'画像カードでシェア',shareApp:'他のアプリでシェア',cardTitle:'シェアカードを作成',dlCard:'画像を保存',copyCap:'キャプションをコピー',capCopied:'キャプションをコピーしました',cardHint:'保存してインスタ・リール/ショートに。動画の最後は「レビューはBeautiaで」！',linkCopied:'リンクをコピーしました',cardReview:'REVIEW',
  firstCmt:'最初のコメントを残しましょう！',emptyFeed:'まだ投稿がありません。最初の投稿をどうぞ ✏️',transBy:'Beautia 翻訳',gptT:'翻訳',gptTing:'翻訳中…',gptShowOrig:'原文を見る',gptShowTr:'翻訳を見る',gptFail:'翻訳に失敗しました',viewOrigJa:'原文(日本語)を見る ▾',viewOrigKo:'翻訳(韓国語)を見る ▾',foldOrig:'閉じる ▴',
  wHead:'投稿',category:'カテゴリー',regionOpt:'地域（任意）',noRegion:'地域問わず',titlePh:'タイトルを入力',contentPh:'韓国・日本のビューティーオーナー・お客様どなたでも！質問・レビュー・情報・雑談歓迎。（暴言・広告・個人情報X）',photo:'写真（最大4枚）',register:'投稿する',
@@ -622,7 +628,7 @@ function award(amount,reason,key){
   const av=$('navPts');if(av)av.textContent='✦ '+ME.points.toLocaleString()+'P';
   toast('+'+amount.toLocaleString()+'P · '+reason);
 }
-function mapPost(r){const pm=PROFMAP[r.author]||{};return{id:r.id,cat:r.cat||'자유',region:r.region||'전체',title:r.title||'',content:r.content||'',tags:r.tags||[],imgs:r.imgs||[],pinned:!!r.pinned,hidden:!!r.hidden,like:r.like_count||0,scrap:0,t:r.created_at?new Date(r.created_at).getTime():Date.now(),author:r.author,nick:pm.nick||r.nickname||'익명',role:pm.role||'guest',avatar:pm.avatar||'',cmtCount:(r.comments&&r.comments[0])?r.comments[0].count:0,cmts:[],mine:!!(ME.uid&&r.author===ME.uid)};}
+function mapPost(r){const pm=PROFMAP[r.author]||{};const anon=(r.nickname==='익명'||r.nickname==='匿名');return{id:r.id,cat:r.cat||'자유',region:r.region||'전체',title:r.title||'',content:r.content||'',tags:r.tags||[],imgs:r.imgs||[],pinned:!!r.pinned,hidden:!!r.hidden,like:r.like_count||0,scrap:0,t:r.created_at?new Date(r.created_at).getTime():Date.now(),author:r.author,nick:anon?r.nickname:(pm.nick||r.nickname||'익명'),role:anon?'guest':(pm.role||'guest'),avatar:anon?'':(pm.avatar||''),cmtCount:(r.comments&&r.comments[0])?r.comments[0].count:0,cmts:[],mine:!!(ME.uid&&r.author===ME.uid)};}
 async function loadPosts(){
   try{
     const {data:profs}=await SB.from('profiles').select('*');PROFMAP={};(profs||[]).forEach(p=>PROFMAP[p.id]={nick:p.nickname,role:p.role,avatar:(p.shop&&p.shop.avatar)||''});PROFILES=profs||[];DB.blocked=(profs||[]).filter(p=>p.blocked).map(p=>p.nickname);
@@ -835,7 +841,7 @@ function renderMain(){
 }
 async function openPost(id){if(!ME.registered){openLogin();toast(t('needLoginView'));return;}openId=id;if(!ME.read.includes(id)){ME.read.push(id);saveMe();}view='detail';renderDetail();scrollTo({top:0});
   const {data}=await SB.from('comments').select('*').eq('post_id',id).order('created_at',{ascending:true});
-  const p=DB.posts.find(x=>x.id===id);if(p){p.cmts=(data||[]).map(c=>({nick:(PROFMAP[c.author]&&PROFMAP[c.author].nick)||c.nickname||'익명',role:(PROFMAP[c.author]&&PROFMAP[c.author].role)||'guest',avatar:(PROFMAP[c.author]&&PROFMAP[c.author].avatar)||'',t:c.content,d:c.created_at?new Date(c.created_at).getTime():Date.now(),author:c.author}));p.cmtCount=p.cmts.length;}
+  const p=DB.posts.find(x=>x.id===id);if(p){p.cmts=(data||[]).map(c=>{const useNick=(c.nickname==='익명'||c.nickname==='匿名')?c.nickname:((PROFMAP[c.author]&&PROFMAP[c.author].nick)||c.nickname||'익명');const anon=(c.nickname==='익명'||c.nickname==='匿名');return {id:c.id,parentId:c.parent_id||null,nick:useNick,role:anon?'guest':((PROFMAP[c.author]&&PROFMAP[c.author].role)||'guest'),avatar:anon?'':((PROFMAP[c.author]&&PROFMAP[c.author].avatar)||''),t:c.content,d:c.created_at?new Date(c.created_at).getTime():Date.now(),author:c.author,mine:!!(ME.uid&&c.author===ME.uid)};});p.cmtCount=p.cmts.length;}
   if(view==='detail'&&openId===id)renderDetail();}
 function renderDetail(){
   clearInterval(promoTimer);
@@ -864,7 +870,7 @@ function renderDetail(){
     </div>
     <div class="csec"><h4>${t('comments')} ${p.cmts.filter(c=>!blocked(c.nick)).length}</h4>
       <div class="cwrite"><input id="cInput" placeholder="${t('cmtPh')}" maxlength="500" onkeydown="if(event.key==='Enter')addComment()"><button class="btn btn-primary" onclick="addComment()">${t('submit')}</button></div>
-      ${p.cmts.filter(c=>!blocked(c.nick)).length?p.cmts.filter(c=>!blocked(c.nick)).map(c=>`<div class="cmt">${avHtml(c.nick,c.avatar)}<div style="flex:1;min-width:0"><div class="cn">${esc(c.nick)} ${roleBadge(c.role)}</div><div class="ct">${esc(c.t)}</div><div class="ctr" style="display:none"></div><div class="cd">${timeago(c.d)} · <span class="tg" style="font-size:11.5px" onclick="trCmt(this)">${t('gptT')}</span></div></div></div>`).join(''):`<div class="empty" style="border:none;padding:24px 0;">${t('firstCmt')}</div>`}
+      ${renderCmtList(p)}
     </div>
     ${relatedHtml(p)}
     </div>`;
@@ -889,21 +895,45 @@ async function toggleScrap(id){const p=DB.posts.find(x=>x.id===id);if(!p)return;
   if(has){ME.scraps=ME.scraps.filter(x=>x!==id);p.scrap=Math.max(0,p.scrap-1);}else{ME.scraps.push(id);p.scrap++;toast(t('scrapped'));}
   saveMe();if(view==='detail')renderDetail();else if(view==='profile')renderMypage();
   if(typeof id==='string'){try{if(has){await SB.from('post_scraps').delete().eq('post_id',id).eq('user_id',ME.uid);}else{await SB.from('post_scraps').insert({post_id:id,user_id:ME.uid});}}catch(e){console.warn('scrap',e);}}}
+let replyTo=null;
+function cItem(c,reply){
+  return `<div class="cmt${reply?' creply':''}">${avHtml(c.nick,c.avatar)}<div style="flex:1;min-width:0">
+    <div class="cn">${esc(c.nick)} ${roleBadge(c.role)}</div>
+    <div class="ct">${esc(c.t)}</div><div class="ctr" style="display:none"></div>
+    <div class="cd">${timeago(c.d)} · <span class="tg" style="font-size:11.5px" onclick="trCmt(this)">${t('gptT')}</span>${!reply?` · <span class="tg" style="font-size:11.5px" onclick="startReply(${c.id})">${t('reply')}</span>`:''}${c.mine?` · <span class="tg" style="font-size:11.5px" onclick="editComment(${c.id})">${t('editPost')}</span> · <span class="tg" style="font-size:11.5px;color:#C0504D" onclick="delComment(${c.id})">${t('delPost')}</span>`:''}</div>
+    ${replyTo===c.id?`<div class="cwrite" style="margin-top:8px"><input id="replyInput" placeholder="${t('replyPh')}" maxlength="500" onkeydown="if(event.key==='Enter')addReply(${c.id})"><button class="btn btn-primary" onclick="addReply(${c.id})">${t('submit')}</button></div>`:''}
+  </div>`;}
+function renderCmtList(p){const vis=p.cmts.filter(c=>!blocked(c.nick));
+  if(!vis.length)return `<div class="empty" style="border:none;padding:24px 0;">${t('firstCmt')}</div>`;
+  const tops=vis.filter(c=>!c.parentId);
+  return tops.map(c=>cItem(c,false)+vis.filter(r=>r.parentId===c.id).map(r=>cItem(r,true)).join('')).join('');}
+function startReply(id){replyTo=(replyTo===id?null:id);renderDetail();setTimeout(()=>{const el=$('replyInput');if(el)el.focus();},30);}
 async function addComment(){if(!ME.registered){openSignup();toast(t('needSignup'));return;}const v=$('cInput').value.trim();if(!v)return;
   const {error}=await SB.from('comments').insert({post_id:openId,author:ME.uid,nickname:ME.nick,content:v});
   if(error){toast('댓글 실패: '+error.message);return;}
-  $('cInput').value='';await openPost(openId);renderRight();award(PTS.comment,t('earnComment'));}
+  $('cInput').value='';replyTo=null;await openPost(openId);renderRight();award(PTS.comment,t('earnComment'));}
+async function addReply(pid){if(!ME.registered){openSignup();toast(t('needSignup'));return;}const el=$('replyInput');const v=el?el.value.trim():'';if(!v)return;
+  const {error}=await SB.from('comments').insert({post_id:openId,parent_id:pid,author:ME.uid,nickname:ME.nick,content:v});
+  if(error){alert('답글 실패: '+(error.message||''));return;}
+  replyTo=null;await openPost(openId);renderRight();award(PTS.comment,t('earnComment'));}
+async function editComment(id){const p=DB.posts.find(x=>x.id===openId);const c=p&&p.cmts.find(x=>x.id===id);if(!c)return;
+  const v=prompt(t('cmtEditPrompt'),c.t);if(v==null)return;const nv=v.trim();if(!nv)return;
+  const {error}=await SB.from('comments').update({content:nv}).eq('id',id);if(error){alert('수정 실패: '+(error.message||''));return;}
+  await openPost(openId);}
+async function delComment(id){if(!confirm(t('cmtDelConfirm')))return;
+  const {error}=await SB.from('comments').delete().eq('id',id);if(error){alert('삭제 실패: '+(error.message||''));return;}
+  await openPost(openId);renderRight();}
 
 /* write + image upload */
-let wCat='질문',wRegion='전체',wImgs=[],wEditId=null;
+let wCat='질문',wRegion='전체',wImgs=[],wEditId=null,wAnonV=false;
 function cc(id,out,max){$(out).textContent=$(id).value.length+'/'+max;}
-function openWrite(){if(!ME.registered){openSignup();toast(t('needSignup'));return;}if(blocked(ME.nick)){toast(t('blockedMsg'));return;}wEditId=null;wCat='질문';wRegion='전체';wImgs=[];$('wHead').textContent=t('wHead');$('wlCat').textContent=t('category');$('wlReg').textContent=t('regionOpt');$('wlTags').textContent=t('tags');$('wlPhoto').textContent=t('photo');$('wTitle').placeholder=t('titlePh');$('wContent').placeholder=t('contentPh');$('wTags').placeholder=t('tagsPh');$('wSubmit').textContent=t('register');$('wTitle').value='';$('wContent').value='';$('wTags').value='';$('ccT').textContent='0/120';$('ccC').textContent='0/5000';renderWriteForm();renderPtiles();$('writeModal').classList.add('on');}
+function openWrite(){if(!ME.registered){openSignup();toast(t('needSignup'));return;}if(blocked(ME.nick)){toast(t('blockedMsg'));return;}wEditId=null;wCat='질문';wRegion='전체';wImgs=[];$('wHead').textContent=t('wHead');$('wlCat').textContent=t('category');$('wlReg').textContent=t('regionOpt');$('wlTags').textContent=t('tags');$('wlPhoto').textContent=t('photo');$('wTitle').placeholder=t('titlePh');$('wContent').placeholder=t('contentPh');$('wTags').placeholder=t('tagsPh');$('wSubmit').textContent=t('register');$('wTitle').value='';$('wContent').value='';$('wTags').value='';$('ccT').textContent='0/120';$('ccC').textContent='0/5000';wAnonV=false;$('wAnon').checked=false;$('wAnonLbl').textContent=t('anonLabel');$('wAnonRow').style.display='';renderWriteForm();renderPtiles();$('writeModal').classList.add('on');}
 function openEditPost(id){const p=DB.posts.find(x=>x.id===id);if(!p||!p.mine){toast(t('blockedMsg'));return;}
   wEditId=id;wCat=p.cat||'자유';wRegion=p.region||'전체';wImgs=(p.imgs||[]).slice();
   $('wHead').textContent=t('editHead');$('wlCat').textContent=t('category');$('wlReg').textContent=t('regionOpt');$('wlTags').textContent=t('tags');$('wlPhoto').textContent=t('photo');
   $('wTitle').value=p.title||'';$('wContent').value=p.content||'';$('wTags').value=(p.tags||[]).join(', ');
   $('ccT').textContent=($('wTitle').value.length)+'/120';$('ccC').textContent=($('wContent').value.length)+'/5000';
-  $('wSubmit').textContent=t('saveEdit');renderWriteForm();renderPtiles();$('writeModal').classList.add('on');}
+  $('wSubmit').textContent=t('saveEdit');$('wAnonRow').style.display='none';renderWriteForm();renderPtiles();$('writeModal').classList.add('on');}
 function renderWriteForm(){
   $('wcats').innerHTML=CATS.filter(([c])=>c!=='전체').map(([c])=>`<div class="wchip ${c===wCat?'on':''}" onclick="wPick('cat','${c}')">${catL(c)}</div>`).join('');
   let html=`<div class="wrow"><span class="wchip ${wRegion==='전체'?'on':''}" onclick="wPick('region','전체')">${t('noRegion')}</span></div>`;
@@ -926,7 +956,7 @@ async function submitWrite(){const title=$('wTitle').value.trim(),content=$('wCo
     if(error){console.error('edit error',error);alert('수정 실패\n\n'+(error.message||'')+'\n\ncode: '+(error.code||''));return;}
     wEditId=null;closeModal();await loadPosts();if(view==='detail'){openId=eid;renderDetail();}else renderMain();toast(t('edited'));return;
   }
-  const {error}=await SB.from('posts').insert({author:ME.uid,nickname:ME.nick,cat:wCat,region:wRegion,title,content,tags,imgs:wImgs.slice()});
+  const {error}=await SB.from('posts').insert({author:ME.uid,nickname:wAnonV?t('anonNick'):ME.nick,cat:wCat,region:wRegion,title,content,tags,imgs:wImgs.slice()});
   if(error){console.error('submitWrite error',error);alert('등록 실패\n\n'+(error.message||'')+'\n\ncode: '+(error.code||'')+'\nhint: '+(error.hint||'')+'\ndetails: '+(error.details||''));return;}
   closeModal();curCat='전체';curMenu='';curSort='new';curQ='';view='feed';await loadPosts();renderShell();renderMain();scrollTo({top:0});
   let pts=(wCat==='후기'?PTS.review:PTS.post),why=(wCat==='후기'?t('earnReview'):t('earnPost'));
