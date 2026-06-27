@@ -383,6 +383,7 @@ a{color:inherit;text-decoration:none;}
 .proof{display:flex;gap:10px;margin-top:40px;padding-top:var(--s6);border-top:1px solid var(--line);}
 .pf{display:inline-flex;align-items:center;gap:7px;border:1px solid var(--line);background:#fff;border-radius:999px;padding:10px 20px;font-size:13px;font-weight:600;color:var(--ink2);cursor:pointer;transition:.14s;}
 .pf:hover{border-color:var(--ink);color:var(--ink);}.pf.on{background:var(--accentsoft);border-color:transparent;color:var(--accent);}.pf.on.scrap{background:var(--plumbg);color:var(--plum);}.pf .ti{font-size:17px;}
+.pf.pfdel:hover{border-color:#C0504D;color:#C0504D;background:#FBEDEC;}
 .csec{margin-top:44px;}.csec h4{font-size:17px;font-weight:700;margin-bottom:10px;letter-spacing:-.02em;}
 .cwrite{display:flex;gap:9px;margin:14px 0 8px;}
 .cwrite input{flex:1;border:1px solid var(--line);background:var(--soft);border-radius:999px;padding:12px 18px;font-family:inherit;font-size:14px;outline:none;transition:.14s;}
@@ -506,6 +507,7 @@ const T={ko:{
  r1:'서로 존중하기 — 욕설·비방·차별 금지',r2:'광고·홍보성 글, 개인정보 노출 금지',r3:'후기는 솔직하게, 허위·과장 금지',r4:'한·일 사장님·손님 모두 환영해요 🤍',
  popular:'인기 글',ctaTitle:'일본 뷰티, 예약까지',ctaDesc:'마음에 드는 곳 찾았다면? 일본어 0이어도 Beautia가 예약·통역 대행 (무료).',ctaBtn:'카톡으로 예약 신청',
  back:'목록으로',likeBtn:'좋아요',shareBtn:'공유',scrapBtn:'스크랩',comments:'댓글',cmtPh:'댓글을 남겨보세요…',submit:'등록',views:'조회',
+ editPost:'수정',delPost:'삭제',delConfirm:'이 글을 삭제할까요? 되돌릴 수 없어요.',deleted:'삭제했어요',edited:'수정됐어요',editHead:'글 수정',saveEdit:'수정 완료',
  makeCard:'카드 만들기',shareTitle:'공유하기',copyLink:'링크 복사',shareCardOpt:'이미지 카드로 공유',shareApp:'다른 앱으로 공유',cardTitle:'공유 카드 만들기',dlCard:'이미지 저장',copyCap:'캡션 복사',capCopied:'캡션이 복사됐어요',cardHint:'저장해서 인스타·릴스/쇼츠에 올려보세요. 영상 마지막엔 "후기는 Beautia에서"!',linkCopied:'링크가 복사됐어요',cardReview:'REVIEW',
  firstCmt:'첫 댓글을 남겨보세요!',emptyFeed:'아직 글이 없어요. 첫 글을 남겨보세요 ✏️',transBy:'Beautia 번역됨',gptT:'번역',gptTing:'번역 중…',gptShowOrig:'원문 보기',gptShowTr:'번역 보기',gptFail:'번역에 실패했어요',viewOrigJa:'원문(日本語) 보기 ▾',viewOrigKo:'번역(한국어) 보기 ▾',foldOrig:'접기 ▴',
  wHead:'글쓰기',category:'카테고리',regionOpt:'지역 (선택)',noRegion:'지역무관',titlePh:'제목을 입력하세요',contentPh:'한국·일본 뷰티 사장님·손님 누구나! 질문, 후기, 정보, 수다 환영해요. (욕설·광고·개인정보 X)',photo:'사진 (최대 4장)',register:'등록하기',
@@ -532,6 +534,7 @@ const T={ko:{
  r1:'お互いを尊重 — 暴言・誹謗・差別禁止',r2:'広告・宣伝、個人情報の公開禁止',r3:'レビューは正直に、虚偽・誇張禁止',r4:'韓・日のオーナー・お客様みんな歓迎🤍',
  popular:'人気の投稿',ctaTitle:'日本ビューティー、予約まで',ctaDesc:'気に入ったお店が見つかったら？日本語が分からなくてもBeautiaが予約・通訳を代行（無料）。',ctaBtn:'カカオトークで予約',
  back:'一覧へ',likeBtn:'いいね',shareBtn:'シェア',scrapBtn:'保存',comments:'コメント',cmtPh:'コメントを残す…',submit:'登録',views:'閲覧',
+ editPost:'編集',delPost:'削除',delConfirm:'この投稿を削除しますか？元に戻せません。',deleted:'削除しました',edited:'編集しました',editHead:'投稿を編集',saveEdit:'編集完了',
  makeCard:'カード作成',shareTitle:'シェア',copyLink:'リンクをコピー',shareCardOpt:'画像カードでシェア',shareApp:'他のアプリでシェア',cardTitle:'シェアカードを作成',dlCard:'画像を保存',copyCap:'キャプションをコピー',capCopied:'キャプションをコピーしました',cardHint:'保存してインスタ・リール/ショートに。動画の最後は「レビューはBeautiaで」！',linkCopied:'リンクをコピーしました',cardReview:'REVIEW',
  firstCmt:'最初のコメントを残しましょう！',emptyFeed:'まだ投稿がありません。最初の投稿をどうぞ ✏️',transBy:'Beautia 翻訳',gptT:'翻訳',gptTing:'翻訳中…',gptShowOrig:'原文を見る',gptShowTr:'翻訳を見る',gptFail:'翻訳に失敗しました',viewOrigJa:'原文(日本語)を見る ▾',viewOrigKo:'翻訳(韓国語)を見る ▾',foldOrig:'閉じる ▴',
  wHead:'投稿',category:'カテゴリー',regionOpt:'地域（任意）',noRegion:'地域問わず',titlePh:'タイトルを入力',contentPh:'韓国・日本のビューティーオーナー・お客様どなたでも！質問・レビュー・情報・雑談歓迎。（暴言・広告・個人情報X）',photo:'写真（最大4枚）',register:'投稿する',
@@ -857,6 +860,7 @@ function renderDetail(){
       <div class="pf scrap ${scrapped?'on':''}" onclick="toggleScrap(${p.id})"><i class="ti ti-bookmark${scrapped?'-filled':''}"></i> ${t('scrapBtn')} <span class="tnum">${p.scrap}</span></div>
       <div class="pf" onclick="openShare(${p.id})"><i class="ti ti-share-2"></i> ${t('shareBtn')}</div>
       <div class="pf" onclick="openCardMaker(${p.id})"><i class="ti ti-photo"></i> ${t('makeCard')}</div>
+      ${p.mine?`<div class="pf" onclick="openEditPost(${p.id})"><i class="ti ti-pencil"></i> ${t('editPost')}</div><div class="pf pfdel" onclick="delMyPost(${p.id})"><i class="ti ti-trash"></i> ${t('delPost')}</div>`:''}
     </div>
     <div class="csec"><h4>${t('comments')} ${p.cmts.filter(c=>!blocked(c.nick)).length}</h4>
       <div class="cwrite"><input id="cInput" placeholder="${t('cmtPh')}" maxlength="500" onkeydown="if(event.key==='Enter')addComment()"><button class="btn btn-primary" onclick="addComment()">${t('submit')}</button></div>
@@ -891,9 +895,15 @@ async function addComment(){if(!ME.registered){openSignup();toast(t('needSignup'
   $('cInput').value='';await openPost(openId);renderRight();award(PTS.comment,t('earnComment'));}
 
 /* write + image upload */
-let wCat='질문',wRegion='전체',wImgs=[];
+let wCat='질문',wRegion='전체',wImgs=[],wEditId=null;
 function cc(id,out,max){$(out).textContent=$(id).value.length+'/'+max;}
-function openWrite(){if(!ME.registered){openSignup();toast(t('needSignup'));return;}if(blocked(ME.nick)){toast(t('blockedMsg'));return;}wCat='질문';wRegion='전체';wImgs=[];$('wHead').textContent=t('wHead');$('wlCat').textContent=t('category');$('wlReg').textContent=t('regionOpt');$('wlTags').textContent=t('tags');$('wlPhoto').textContent=t('photo');$('wTitle').placeholder=t('titlePh');$('wContent').placeholder=t('contentPh');$('wTags').placeholder=t('tagsPh');$('wSubmit').textContent=t('register');$('wTitle').value='';$('wContent').value='';$('wTags').value='';$('ccT').textContent='0/120';$('ccC').textContent='0/5000';renderWriteForm();renderPtiles();$('writeModal').classList.add('on');}
+function openWrite(){if(!ME.registered){openSignup();toast(t('needSignup'));return;}if(blocked(ME.nick)){toast(t('blockedMsg'));return;}wEditId=null;wCat='질문';wRegion='전체';wImgs=[];$('wHead').textContent=t('wHead');$('wlCat').textContent=t('category');$('wlReg').textContent=t('regionOpt');$('wlTags').textContent=t('tags');$('wlPhoto').textContent=t('photo');$('wTitle').placeholder=t('titlePh');$('wContent').placeholder=t('contentPh');$('wTags').placeholder=t('tagsPh');$('wSubmit').textContent=t('register');$('wTitle').value='';$('wContent').value='';$('wTags').value='';$('ccT').textContent='0/120';$('ccC').textContent='0/5000';renderWriteForm();renderPtiles();$('writeModal').classList.add('on');}
+function openEditPost(id){const p=DB.posts.find(x=>x.id===id);if(!p||!p.mine){toast(t('blockedMsg'));return;}
+  wEditId=id;wCat=p.cat||'자유';wRegion=p.region||'전체';wImgs=(p.imgs||[]).slice();
+  $('wHead').textContent=t('editHead');$('wlCat').textContent=t('category');$('wlReg').textContent=t('regionOpt');$('wlTags').textContent=t('tags');$('wlPhoto').textContent=t('photo');
+  $('wTitle').value=p.title||'';$('wContent').value=p.content||'';$('wTags').value=(p.tags||[]).join(', ');
+  $('ccT').textContent=($('wTitle').value.length)+'/120';$('ccC').textContent=($('wContent').value.length)+'/5000';
+  $('wSubmit').textContent=t('saveEdit');renderWriteForm();renderPtiles();$('writeModal').classList.add('on');}
 function renderWriteForm(){
   $('wcats').innerHTML=CATS.filter(([c])=>c!=='전체').map(([c])=>`<div class="wchip ${c===wCat?'on':''}" onclick="wPick('cat','${c}')">${catL(c)}</div>`).join('');
   let html=`<div class="wrow"><span class="wchip ${wRegion==='전체'?'on':''}" onclick="wPick('region','전체')">${t('noRegion')}</span></div>`;
@@ -910,6 +920,12 @@ function uploadImg(file,maxArg){return new Promise(resolve=>{const r=new FileRea
 async function submitWrite(){const title=$('wTitle').value.trim(),content=$('wContent').value.trim();if(!title||!content){toast(t('needTC'));return;}
   if(!ME.uid){openSignup();return;}
   const tags=$('wTags').value.split(/[,#\n]+/).map(s=>s.trim()).filter(Boolean).slice(0,6);
+  if(wEditId){
+    const eid=wEditId;
+    const {error}=await SB.from('posts').update({cat:wCat,region:wRegion,title,content,tags,imgs:wImgs.slice()}).eq('id',eid);
+    if(error){console.error('edit error',error);alert('수정 실패\n\n'+(error.message||'')+'\n\ncode: '+(error.code||''));return;}
+    wEditId=null;closeModal();await loadPosts();if(view==='detail'){openId=eid;renderDetail();}else renderMain();toast(t('edited'));return;
+  }
   const {error}=await SB.from('posts').insert({author:ME.uid,nickname:ME.nick,cat:wCat,region:wRegion,title,content,tags,imgs:wImgs.slice()});
   if(error){console.error('submitWrite error',error);alert('등록 실패\n\n'+(error.message||'')+'\n\ncode: '+(error.code||'')+'\nhint: '+(error.hint||'')+'\ndetails: '+(error.details||''));return;}
   closeModal();curCat='전체';curMenu='';curSort='new';curQ='';view='feed';await loadPosts();renderShell();renderMain();scrollTo({top:0});
@@ -917,6 +933,11 @@ async function submitWrite(){const title=$('wTitle').value.trim(),content=$('wCo
   if(wImgs.length>=3){pts+=PTS.photo;why+=' +'+t('earnPhoto');}
   if(content.length>=300){pts+=PTS.detail;why+=' +'+t('earnDetail');}
   award(pts,why);}
+async function delMyPost(id){const p=DB.posts.find(x=>x.id===id);if(!p||!p.mine)return;
+  if(!confirm(t('delConfirm')))return;
+  const {error}=await SB.from('posts').delete().eq('id',id);
+  if(error){alert('삭제 실패\n\n'+(error.message||'')+'\n\ncode: '+(error.code||''));return;}
+  view='feed';openId=null;await loadPosts();renderShell();renderMain();scrollTo({top:0});toast(t('deleted'));}
 
 /* ===== 회원가입 / 프로필 / 마이페이지 ===== */
 let pfMode='login',pfRole='guest',pfInterests=[],pfServices=[],pfSpec=[],pfCareer='',pfAvatar='',pfSitu='',pfKoOK=false,pfPhotos=[];
