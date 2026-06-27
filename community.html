@@ -911,7 +911,7 @@ async function submitWrite(){const title=$('wTitle').value.trim(),content=$('wCo
   if(!ME.uid){openSignup();return;}
   const tags=$('wTags').value.split(/[,#\n]+/).map(s=>s.trim()).filter(Boolean).slice(0,6);
   const {error}=await SB.from('posts').insert({author:ME.uid,nickname:ME.nick,cat:wCat,region:wRegion,title,content,tags,imgs:wImgs.slice()});
-  if(error){toast('등록 실패: '+error.message);return;}
+  if(error){console.error('submitWrite error',error);alert('등록 실패\n\n'+(error.message||'')+'\n\ncode: '+(error.code||'')+'\nhint: '+(error.hint||'')+'\ndetails: '+(error.details||''));return;}
   closeModal();curCat='전체';curMenu='';curSort='new';curQ='';view='feed';await loadPosts();renderShell();renderMain();scrollTo({top:0});
   let pts=(wCat==='후기'?PTS.review:PTS.post),why=(wCat==='후기'?t('earnReview'):t('earnPost'));
   if(wImgs.length>=3){pts+=PTS.photo;why+=' +'+t('earnPhoto');}
