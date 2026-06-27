@@ -640,7 +640,7 @@ function seed(){const now=Date.now(),h=3600000,d=86400000;return[
 /* ===== render ===== */
 function renderHeader(){
   $('hwrap').innerHTML=`<a class="logo" href="community.html"><img src="logo-trim.png" alt="Beautia"></a>
-    <nav class="gnav"><a class="on">${t('community')}</a><a href="info.html">${t('areaInfo')}</a><a href="shop.html">${t('shops')}</a><a href="landing.html">${t('intro')}</a></nav>
+    <nav class="gnav"><a href="info.html">${t('areaInfo')}</a><a href="shop.html">${t('shops')}</a><a href="landing.html">${t('intro')}</a></nav>
     <div class="hsearch"><i class="ti ti-search"></i><input id="q" placeholder="${t('search')}" onkeydown="if(event.key==='Enter')doSearch()"></div>
     <div class="hright">
       <div class="langtog"><span class="${LANG==='ko'?'on':''}" onclick="setLang('ko')">한</span><span class="${LANG==='ja'?'on':''}" onclick="setLang('ja')">日</span></div>
@@ -1019,20 +1019,10 @@ async function trCmt(el){const wrap=el.closest('.cmt');if(!wrap)return;const ct=
   try{const tr=await gptTranslate(ct.textContent);box.textContent=tr;box.style.display='block';box.dataset.done='1';el.textContent=t('gptShowOrig');}
   catch(e){toast(t('gptFail'));el.textContent=t('gptT');}}
 /* ===== 공유 + 후기 카드 메이커 (콘텐츠 공장) ===== */
-function shareLink(id){const url=location.href;try{if(navigator.share){navigator.share({title:'Beautia',url:url});return;}}catch(e){}try{navigator.clipboard.writeText(url);}catch(e){}toast(t('linkCopied'));}
-let cardPid=null,cardRatio='45';
-function ratioTabsHtml(){return `<span class="${cardRatio==='45'?'on':''}" onclick="setCardRatio('45')">정사각 4:5</span><span class="${cardRatio==='916'?'on':''}" onclick="setCardRatio('916')">릴스 9:16</span>`;}
-function openCardMaker(id){cardPid=id;cardRatio='45';
-  $('cardHd').textContent=t('cardTitle');$('cardDl').textContent='⬇ '+t('dlCard');$('cardCap').textContent=t('copyCap');$('cardHint').textContent=t('cardHint');
-  $('cardDl').onclick=downloadCard;$('cardCap').onclick=copyCaption;
-  $('ratioTabs').innerHTML=ratioTabsHtml();renderCard();$('capBox').textContent=buildCaption();$('cardModal').classList.add('on');}
-function setCardRatio(r){cardRatio=r;$('ratioTabs').innerHTML=ratioTabsHtml();renderCard();}
-function renderCard(){const p=DB.posts.find(x=>x.id===cardPid);if(!p)return;
-  const fr=$('cardFrame');fr.className='cardframe'+(cardRatio==='916'?' r916':'');
+function cardInner(p){
   const img=(p.imgs&&p.imgs.length)?`<div class="cf-img"><img src="${p.imgs[0]}" crossorigin="anonymous" alt=""></div><div class="cf-scrim"></div>`:'';
-  const isRev=p.cat==='후기';
-  const reg=(p.region&&p.region!=='전체');
-  fr.innerHTML=`${img}<div class="cf-in">
+  const isRev=p.cat==='후기';const reg=(p.region&&p.region!=='전체');
+  return `${img}<div class="cf-in">
     <div class="cf-toprow"><span class="cf-badge">${esc(catL(p.cat))}</span>${reg?`<span class="cf-badge ghost">${regFlag(p.region)} ${esc(regL(p.region))}</span>`:''}${(p.imgs&&p.imgs.length>1)?`<span class="cf-badge ghost">📷 ${p.imgs.length}</span>`:''}</div>
     <div style="flex:1"></div>
     ${isRev?'<div class="cf-stars">★★★★★</div>':''}
@@ -1041,6 +1031,30 @@ function renderCard(){const p=DB.posts.find(x=>x.id===cardPid);if(!p)return;
     <div class="cf-by">${esc(p.nick||'')}${reg?' · '+regFlag(p.region)+' '+esc(regL(p.region)):''}</div>
     <div class="cf-foot"><div><div class="cf-brand">Beautia</div><div class="cf-tag">일본 미용실·네일 한국어 예약 · 韓国語予約</div></div><div class="cf-h">@beautia.japan</div></div>
   </div>`;}
+async function shareCardBlob(p){if(typeof html2canvas==='undefined')return null;
+  const tmp=document.createElement('div');tmp.style.cssText='position:fixed;left:-99999px;top:0;z-index:-1;';
+  tmp.innerHTML='<div class="cardframe">'+cardInner(p)+'</div>';document.body.appendChild(tmp);
+  try{const cv=await html2canvas(tmp.firstChild,{scale:2,useCORS:true,backgroundColor:null});return await new Promise(r=>cv.toBlob(r,'image/png'));}
+  catch(e){return null;}finally{tmp.remove();}}
+async function shareLink(id){const p=DB.posts.find(x=>x.id===id);if(!p)return;
+  const url=location.origin+location.pathname+'?post='+id;
+  const ex=(bodyOf(p)||'').replace(/\s+/g,' ').trim().slice(0,110);
+  const text=p.title+'\n\n'+ex+(ex.length>=110?'…':'')+'\n\nBeautia 커뮤니티 · 일본 뷰티 후기';
+  try{if(navigator.canShare&&p.imgs&&p.imgs.length){const blob=await shareCardBlob(p);
+    if(blob){const file=new File([blob],'beautia.png',{type:'image/png'});
+      if(navigator.canShare({files:[file]})){await navigator.share({files:[file],text:text+'\n'+url});return;}}}}catch(e){}
+  try{if(navigator.share){await navigator.share({title:p.title,text:text,url:url});return;}}catch(e){}
+  try{await navigator.clipboard.writeText(text+'\n'+url);}catch(e){}
+  toast(t('linkCopied'));}
+let cardPid=null,cardRatio='45';
+function ratioTabsHtml(){return `<span class="${cardRatio==='45'?'on':''}" onclick="setCardRatio('45')">정사각 4:5</span><span class="${cardRatio==='916'?'on':''}" onclick="setCardRatio('916')">릴스 9:16</span>`;}
+function openCardMaker(id){cardPid=id;cardRatio='45';
+  $('cardHd').textContent=t('cardTitle');$('cardDl').textContent='⬇ '+t('dlCard');$('cardCap').textContent=t('copyCap');$('cardHint').textContent=t('cardHint');
+  $('cardDl').onclick=downloadCard;$('cardCap').onclick=copyCaption;
+  $('ratioTabs').innerHTML=ratioTabsHtml();renderCard();$('capBox').textContent=buildCaption();$('cardModal').classList.add('on');}
+function setCardRatio(r){cardRatio=r;$('ratioTabs').innerHTML=ratioTabsHtml();renderCard();}
+function renderCard(){const p=DB.posts.find(x=>x.id===cardPid);if(!p)return;
+  const fr=$('cardFrame');fr.className='cardframe'+(cardRatio==='916'?' r916':'');fr.innerHTML=cardInner(p);}
 function buildCaption(){const p=DB.posts.find(x=>x.id===cardPid);if(!p)return'';
   const reg=(p.region&&p.region!=='전체')?regL(p.region):'일본';
   const tags=['#일본뷰티','#'+reg.replace(/\s/g,''),'#'+catL(p.cat),'#일본여행','#beautia','#일본미용실','#일본네일'];
