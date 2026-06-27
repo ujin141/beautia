@@ -44,6 +44,14 @@ html,body{width:1080px;height:1350px;}
 .swipe{display:inline-flex;align-items:center;gap:14px;font-size:32px;font-weight:800;color:#6D4346;background:#F7F1F2;border:2px solid #EADFE1;padding:18px 32px;border-radius:999px;}
 .cta{font-size:34px;font-weight:800;}
 .handle{font-size:30px;font-weight:700;opacity:.85;margin-top:10px;}
+/* 인스타 팔로우 카드 */
+.igcard{background:#fff;border:1px solid #EADFE1;border-radius:40px;padding:72px 56px 60px;text-align:center;box-shadow:0 44px 100px -44px rgba(40,24,28,.34);}
+.igav{width:210px;height:210px;border-radius:50%;margin:0 auto 30px;padding:7px;background:linear-gradient(45deg,#F58529,#DD2A7B,#8134AF,#515BD4);}
+.igav .inner{width:100%;height:100%;border-radius:50%;background:#fff;display:flex;align-items:center;justify-content:center;border:5px solid #fff;overflow:hidden;}
+.igav img{width:74%;height:74%;object-fit:contain;}
+.ighandle{font-size:54px;font-weight:800;letter-spacing:-.02em;color:#1A1416;}
+.igbio{font-size:32px;color:#6B6064;margin-top:16px;font-weight:600;line-height:1.4;}
+.igfollow{display:flex;align-items:center;justify-content:center;gap:14px;background:#6D4346;color:#fff;font-size:44px;font-weight:800;padding:30px;border-radius:22px;letter-spacing:-.02em;margin-top:44px;}
 </style></head>
 <body><div class="slide __MODE__">
 <div class="blob"></div>
@@ -79,9 +87,12 @@ S=[
    mid='<div class="kicker">TIP</div><div class="h1">일본어 못해도 OK ✌️<br>사진 + 이 단어면 끝</div>'
        '<div class="kv"><div>다운펌 <span>=</span> <b>ダウンパーマ</b></div><div>매직 <span>=</span> <b>縮毛矯正</b></div><div>뿌리염색 <span>=</span> <b>リタッチ</b></div></div>',
    bot='<div class="note">사진 2~3장 보여주는 게 제일 확실해요</div>'),
- dict(mode="plum",pg="7 / 7",
-   mid='<div class="kicker">BEAUTIA</div><div class="h1">예약·통역 자신 없으면?<br><span class="hl">한국어로 예약·<br>통역 대행</span>해드려요</div><div class="sub">대행 수수료 무료 · 검증된 곳만</div>',
-   bot='<div class="cta">프로필 링크 → beautia.io</div><div class="handle">@beautia.japan 🤍</div>'),
+ dict(mode="light",pg="7 / 7",
+   mid='<div class="igcard"><div class="igav"><div class="inner"><img src="../logo-icon.png" alt="Beautia"></div></div>'
+       '<div class="ighandle">@beautia.japan</div>'
+       '<div class="igbio">일본 미용실·네일을 한국어로<br>예약·통역 대행해드려요 🤍</div>'
+       '<div class="igfollow">＋ 팔로우</div></div>',
+   bot='<div class="note" style="text-align:center">👆 팔로우하면 일본 소도시 뷰티 <b style="color:#6D4346;font-weight:800">다음 편</b>을 놓치지 않아요 · beautia.io</div>'),
 ]
 
 for i,s in enumerate(S):
