@@ -656,9 +656,8 @@ async function loadPosts(){
     const {data:profs}=await SB.from('profiles').select('*');PROFMAP={};(profs||[]).forEach(p=>PROFMAP[p.id]={nick:p.nickname,role:p.role,avatar:(p.shop&&p.shop.avatar)||''});PROFILES=profs||[];DB.blocked=(profs||[]).filter(p=>p.blocked).map(p=>p.nickname);
     const {data:posts,error}=await SB.from('posts').select('*, comments(count)').order('created_at',{ascending:false});
     if(error)throw error;DB.posts=(posts||[]).map(mapPost);
-    if(!DB.posts.length)DB.posts=seed();
     if(ME.uid){try{const [lk,sc]=await Promise.all([SB.from('post_likes').select('post_id').eq('user_id',ME.uid),SB.from('post_scraps').select('post_id').eq('user_id',ME.uid)]);if(lk.data)ME.likes=lk.data.map(l=>l.post_id);if(sc.data)ME.scraps=sc.data.map(s=>s.post_id);}catch(e){}}
-  }catch(e){console.warn('loadPosts',e);DB.posts=(DB.posts&&DB.posts.length)?DB.posts:seed();}
+  }catch(e){console.warn('loadPosts',e);DB.posts=DB.posts||[];}
 }
 async function refreshProfile(session){
   if(!session){ME.uid=null;ME.registered=false;ME.role='guest';ME.needProfile=false;return;}
@@ -785,7 +784,7 @@ const SEED_PROS=[
 ];
 let curPro='all',CURPROS=[];
 function avatarOf(p){const s=p.shop||{};return s.avatar||(s.photos&&s.photos[0])||'';}
-function getPros(){const real=PROFILES.filter(p=>(p.role==='owner'||p.role==='designer')&&avatarOf(p));return real.length?real:SEED_PROS;}
+function getPros(){return PROFILES.filter(p=>(p.role==='owner'||p.role==='designer')&&avatarOf(p));}
 function setPro(k){curPro=k;renderShowcase();}
 function proCard(p){const s=p.shop||{};const img=avatarOf(p);const svc=(p.role==='owner'?(s.services||[]):(s.specialties||[]));
   const rate=s.rating?`<span class="pcrate">★ ${s.rating}${s.nrev?` <span class="n">(${s.nrev})</span>`:''}</span>`:`<span class="pcrate new">NEW</span>`;
