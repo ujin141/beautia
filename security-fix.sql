@@ -74,7 +74,7 @@ alter table public.posts    drop constraint if exists posts_len_chk;
 alter table public.posts    add  constraint posts_len_chk
   check (char_length(coalesce(title,'')) <= 200
          and char_length(coalesce(content,'')) <= 8000
-         and coalesce(array_length(imgs,1),0) <= 6
+         and coalesce(array_length(imgs,1),0) <= 10
          and coalesce(array_length(tags,1),0) <= 12) not valid;
 
 alter table public.comments drop constraint if exists comments_len_chk;
