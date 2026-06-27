@@ -591,6 +591,7 @@ const T={ko:{
  cats:{전체:'전체',질문:'질문',후기:'후기',정보:'정보',모델모집:'모델모집',자유:'자유',사장님:'사장님',구인구직:'구인구직'},
  earnReview:'후기 작성',earnPost:'글 작성',earnPhoto:'사진',earnDetail:'정성후기',earnComment:'댓글',earnSignup:'가입 축하',earnInvited:'초대로 가입',
  points:'포인트',myPoints:'내 포인트',pointHist:'적립 내역',pointRules:'적립 안내',noPoints:'아직 적립 내역이 없어요',referral:'친구 초대',refDesc:'초대 링크로 친구가 가입하면 둘 다 3,000P를 받아요.',refCopy:'초대 링크 복사',refCopied:'초대 링크가 복사됐어요',pointSoon:'적립한 포인트는 추후 예약 할인·혜택으로 사용할 수 있어요.',
+ rlPost:'글을 너무 자주 올리고 있어요. 잠시 후 다시 시도해주세요.',rlComment:'댓글을 너무 빠르게 달고 있어요. 잠시 후 다시 시도해주세요.',reservedNick:'사용할 수 없는 닉네임이에요 (공식·운영 사칭 불가).',bannedNick:'부적절한 단어가 포함된 닉네임이에요.',
  ruleReview:'후기 작성 +500P',rulePhoto:'사진 3장 이상 +100P',ruleDetail:'상세 후기(300자+) +100P',ruleComment:'댓글 +20P',ruleInvite:'친구 초대 +3,000P',
  designerDesc:'뷰티 디자이너 (시술 담당)',careerL:'경력',careerPh:'예: 헤어 디자이너 5년차 · 도쿄 3년',specialtiesL:'전문 시술',affiliationL:'소속 샵 (선택)',affiliationPh:'예: 시부야헤어룸',photoL:'프로필 사진',photoHint:'얼굴 또는 작업물 사진을 올리면 신뢰도가 올라가요',addPhoto:'사진 추가',changePhoto:'사진 변경',careerBadge:'경력',
  instaL:'인스타그램 (선택)',instaPh:'@아이디 또는 링크',situationL:'현재 상태',shopDescL:'가게 소개',shopDescPh:'가게 분위기·강점·한국 손님 환영 메시지 등',hoursL:'영업시간 (선택)',hoursPh:'예: 11:00–20:00 · 수요일 휴무',locDetailL:'세부 위치 (선택)',locDetailPh:'예: 시부야역 3번 출구 도보 3분',koOKL:'한국어 응대 가능',situations:{travel:'여행 예정',whv:'워홀·유학',jp:'일본 거주',kr:'한국 거주'},
@@ -620,6 +621,7 @@ const T={ko:{
  cats:{전체:'全体',질문:'質問',후기:'レビュー',정보:'情報',모델모집:'モデル募集',자유:'雑談',사장님:'オーナー',구인구직:'求人'},
  earnReview:'レビュー投稿',earnPost:'投稿',earnPhoto:'写真',earnDetail:'詳細レビュー',earnComment:'コメント',earnSignup:'登録特典',earnInvited:'招待で登録',
  points:'ポイント',myPoints:'マイポイント',pointHist:'獲得履歴',pointRules:'獲得方法',noPoints:'まだ獲得履歴がありません',referral:'友達招待',refDesc:'招待リンクから友達が登録すると二人とも3,000Pもらえます。',refCopy:'招待リンクをコピー',refCopied:'招待リンクをコピーしました',pointSoon:'貯めたポイントは今後、予約割引・特典に使えます。',
+ rlPost:'投稿が早すぎます。少し待ってからもう一度お試しください。',rlComment:'コメントが早すぎます。少し待ってからお試しください。',reservedNick:'使用できないニックネームです（公式・運営の偽装は不可）。',bannedNick:'不適切な単語が含まれています。',
  ruleReview:'レビュー投稿 +500P',rulePhoto:'写真3枚以上 +100P',ruleDetail:'詳細レビュー(300字+) +100P',ruleComment:'コメント +20P',ruleInvite:'友達招待 +3,000P',
  designerDesc:'ビューティーデザイナー（施術担当）',careerL:'経歴',careerPh:'例: ヘアデザイナー5年 · 東京3年',specialtiesL:'得意な施術',affiliationL:'所属サロン（任意）',affiliationPh:'例: 渋谷ヘアルーム',photoL:'プロフィール写真',photoHint:'顔または作品の写真でより信頼されます',addPhoto:'写真を追加',changePhoto:'写真を変更',careerBadge:'経歴',
  instaL:'インスタグラム（任意）',instaPh:'@IDまたはリンク',situationL:'現在の状況',shopDescL:'店舗紹介',shopDescPh:'店の雰囲気・強み・韓国のお客様歓迎メッセージなど',hoursL:'営業時間（任意）',hoursPh:'例: 11:00–20:00 · 水曜定休',locDetailL:'詳しい場所（任意）',locDetailPh:'例: 渋谷駅3番出口 徒歩3分',koOKL:'韓国語対応可能',situations:{travel:'旅行予定',whv:'ワーホリ・留学',jp:'日本在住',kr:'韓国在住'},
@@ -660,6 +662,15 @@ function roleBadge(r){const x=ROLES.find(o=>o.k===r)||ROLES[0];return `<span cla
 function regFlag(r){return RGROUPS[0][1].includes(r)?'🇰🇷':(RGROUPS[1][1].includes(r)?'🇯🇵':'');}
 function instaUrl(v){v=(v||'').trim();if(!v)return '#';if(/^https?:\/\//.test(v))return v;return 'https://instagram.com/'+v.replace(/^@/,'');}
 function isNew(p){return Date.now()-p.t<864e5;}
+// 서버측 보안 차단(레이트리밋·예약어) 에러를 친절한 안내로 변환
+function secMsg(e){const m=((e&&e.message)||'')+'';
+  if(m.indexOf('RATE_LIMIT_POST')>=0)return t('rlPost');
+  if(m.indexOf('RATE_LIMIT_COMMENT')>=0)return t('rlComment');
+  if(m.indexOf('RESERVED_NICKNAME')>=0)return t('reservedNick');
+  if(m.indexOf('BANNED_NICKNAME')>=0)return t('bannedNick');
+  return null;}
+function nickReserved(n){const low=(n||'').toLowerCase().replace(/\s/g,'');
+  return /(beautia|뷰티아|운영자|운영팀|관리자|어드민|admin|공식|official|staff|스태프|모더레이터|moderator)/.test(low);}
 function blocked(n){return (DB.blocked||[]).includes(n);}
 function toast(m){const el=$('toast');el.textContent=m;el.classList.add('on');clearTimeout(el._);el._=setTimeout(()=>el.classList.remove('on'),1900);}
 function lightbox(src){$('lbimg').src=src;$('lightbox').classList.add('on');}
@@ -1039,11 +1050,11 @@ function renderCmtList(p){const vis=p.cmts.filter(c=>!blocked(c.nick));
 function startReply(id){replyTo=(replyTo===id?null:id);renderDetail();setTimeout(()=>{const el=$('replyInput');if(el)el.focus();},30);}
 async function addComment(){if(!ME.registered){openSignup();toast(t('needSignup'));return;}const v=$('cInput').value.trim();if(!v)return;
   const {error}=await SB.from('comments').insert({post_id:openId,author:ME.uid,nickname:ME.nick,content:v});
-  if(error){toast('댓글 실패: '+error.message);return;}
+  if(error){toast(secMsg(error)||('댓글 실패: '+error.message));return;}
   $('cInput').value='';replyTo=null;await openPost(openId);renderRight();award(PTS.comment,t('earnComment'),null,'comment');}
 async function addReply(pid){if(!ME.registered){openSignup();toast(t('needSignup'));return;}const el=$('replyInput');const v=el?el.value.trim():'';if(!v)return;
   const {error}=await SB.from('comments').insert({post_id:openId,parent_id:pid,author:ME.uid,nickname:ME.nick,content:v});
-  if(error){alert('답글 실패: '+(error.message||''));return;}
+  if(error){toast(secMsg(error)||('답글 실패: '+(error.message||'')));return;}
   replyTo=null;await openPost(openId);renderRight();award(PTS.comment,t('earnComment'),null,'comment');}
 async function editComment(id){const p=DB.posts.find(x=>x.id===openId);const c=p&&p.cmts.find(x=>x.id===id);if(!c)return;
   const v=prompt(t('cmtEditPrompt'),c.t);if(v==null)return;const nv=v.trim();if(!nv)return;
@@ -1088,7 +1099,7 @@ async function submitWrite(){const title=$('wTitle').value.trim(),content=$('wCo
     wEditId=null;closeModal();await loadPosts();if(view==='detail'){openId=eid;renderDetail();}else renderMain();toast(t('edited'));return;
   }
   const {data:ins,error}=await SB.from('posts').insert({author:ME.uid,nickname:wAnonV?t('anonNick'):ME.nick,cat:wCat,region:wRegion,lang:wLang,title,content,tags,imgs:wImgs.slice()}).select('id').maybeSingle();
-  if(error){console.error('submitWrite error',error);alert('등록 실패\n\n'+(error.message||'')+'\n\ncode: '+(error.code||'')+'\nhint: '+(error.hint||'')+'\ndetails: '+(error.details||''));return;}
+  if(error){const sm=secMsg(error);if(sm){toast(sm);return;}console.error('submitWrite error',error);alert('등록 실패\n\n'+(error.message||'')+'\n\ncode: '+(error.code||'')+'\nhint: '+(error.hint||'')+'\ndetails: '+(error.details||''));return;}
   closeModal();curCat='전체';curMenu='';curSort='new';curQ='';view='feed';await loadPosts();renderShell();renderMain();scrollTo({top:0});
   const pid=ins&&ins.id,isRev=(wCat==='후기');
   award(isRev?PTS.review:PTS.post, isRev?t('earnReview'):t('earnPost'), pid?('post:'+pid):null, isRev?'review':'post');
@@ -1183,6 +1194,7 @@ async function saveProfile(){
   if(!pfRole){toast(t('needRole'));return;}
   const nf=$('pfNick');if(!nf){toast(t('needRole'));return;}
   const n=nf.value.trim();if(!n){toast(t('needTC'));return;}
+  if(nickReserved(n)){toast(t('reservedNick'));return;}
   if(pfMode==='profile'&&(!pfAgreeTerms||!pfAgreePrivacy)){toast(t('needAgree'));return;}
   if(!ME.uid){toast('로그인이 필요해요');return;}
   const area=$('pfRegionSel').value;
@@ -1193,7 +1205,7 @@ async function saveProfile(){
   else{shop.situation=pfSitu||'';}
   const payload={id:ME.uid,nickname:n,role:pfRole,region:area,bio:$('pfBio').value.trim(),interests:(pfRole==='guest')?pfInterests.slice():[],shop};
   const {error}=await SB.from('profiles').upsert(payload);
-  if(error){toast('저장 실패: '+error.message);return;}
+  if(error){toast(secMsg(error)||('저장 실패: '+error.message));return;}
   const wasJoin=(pfMode!=='edit');
   closeModal();await reloadAll();
   if(wasJoin){toast(t('joinDone'));setTimeout(()=>{award(PTS.signup,t('earnSignup'),'signup:'+ME.uid,'signup');if(ME.invitedBy){award(PTS.invite,t('earnInvited'),'invited:'+ME.uid,'invite');SB.rpc('award_referral',{inviter_code:ME.invitedBy}).then(()=>{},()=>{});}},700);}
