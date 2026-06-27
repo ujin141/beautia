@@ -686,7 +686,7 @@ function loadLocal(){
 function saveMe(){try{localStorage.setItem('beautia_comm_me',JSON.stringify({likes:ME.likes,scraps:ME.scraps,read:ME.read,viewed:ME.viewed,visit:ME.visit,nick:ME.nick,avatar:ME.avatar,points:ME.points,pointLog:ME.pointLog,awarded:ME.awarded,ref:ME.ref,invitedBy:ME.invitedBy}));}catch(e){}}
 /* ===== points (적립만, 사용처는 추후) ===== */
 const PTS={review:500,post:100,photo:100,detail:100,comment:20,signup:1000,invite:3000};
-function award(amount,reason,key){
+function award(amount,reason,key,action){
   if(key){if(ME.awarded[key])return;ME.awarded[key]=1;}
   ME.points=(ME.points||0)+amount;
   ME.pointLog=ME.pointLog||[];ME.pointLog.unshift({a:amount,r:reason,t:Date.now()});
@@ -694,8 +694,8 @@ function award(amount,reason,key){
   saveMe();
   const av=$('navPts');if(av)av.textContent='✦ '+ME.points.toLocaleString()+'P';
   toast('+'+amount.toLocaleString()+'P · '+reason);
-  // DB 실제 적립 (akey로 중복 방지, 트리거가 profiles.points 합산)
-  if(ME.uid){SB.from('point_ledger').insert({user_id:ME.uid,akey:key||null,amount:amount,reason:reason}).then(()=>{},()=>{});}
+  // DB 실제 적립 — 금액은 서버(claim_points RPC)가 정함(클라 위조 불가). akey로 중복 방지.
+  if(ME.uid&&action){SB.rpc('claim_points',{p_action:action,p_akey:key||null}).then(()=>{},()=>{});}
 }
 function mapPost(r){const pm=PROFMAP[r.author]||{};const anon=(r.nickname==='익명'||r.nickname==='匿名');return{id:r.id,cat:r.cat||'자유',region:r.region||'전체',lang:r.lang||'ko',title:r.title||'',content:r.content||'',tags:r.tags||[],imgs:r.imgs||[],pinned:!!r.pinned,hidden:!!r.hidden,like:r.like_count||0,scrap:0,views:r.views||0,t:r.created_at?new Date(r.created_at).getTime():Date.now(),author:r.author,nick:anon?r.nickname:(pm.nick||r.nickname||'익명'),role:anon?'guest':(pm.role||'guest'),avatar:anon?'':(pm.avatar||''),cmtCount:(r.comments&&r.comments[0])?r.comments[0].count:0,cmts:[],mine:!!(ME.uid&&r.author===ME.uid)};}
 async function loadPosts(){
@@ -1040,11 +1040,11 @@ function startReply(id){replyTo=(replyTo===id?null:id);renderDetail();setTimeout
 async function addComment(){if(!ME.registered){openSignup();toast(t('needSignup'));return;}const v=$('cInput').value.trim();if(!v)return;
   const {error}=await SB.from('comments').insert({post_id:openId,author:ME.uid,nickname:ME.nick,content:v});
   if(error){toast('댓글 실패: '+error.message);return;}
-  $('cInput').value='';replyTo=null;await openPost(openId);renderRight();award(PTS.comment,t('earnComment'));}
+  $('cInput').value='';replyTo=null;await openPost(openId);renderRight();award(PTS.comment,t('earnComment'),null,'comment');}
 async function addReply(pid){if(!ME.registered){openSignup();toast(t('needSignup'));return;}const el=$('replyInput');const v=el?el.value.trim():'';if(!v)return;
   const {error}=await SB.from('comments').insert({post_id:openId,parent_id:pid,author:ME.uid,nickname:ME.nick,content:v});
   if(error){alert('답글 실패: '+(error.message||''));return;}
-  replyTo=null;await openPost(openId);renderRight();award(PTS.comment,t('earnComment'));}
+  replyTo=null;await openPost(openId);renderRight();award(PTS.comment,t('earnComment'),null,'comment');}
 async function editComment(id){const p=DB.posts.find(x=>x.id===openId);const c=p&&p.cmts.find(x=>x.id===id);if(!c)return;
   const v=prompt(t('cmtEditPrompt'),c.t);if(v==null)return;const nv=v.trim();if(!nv)return;
   const {error}=await SB.from('comments').update({content:nv}).eq('id',id);if(error){alert('수정 실패: '+(error.message||''));return;}
@@ -1087,13 +1087,13 @@ async function submitWrite(){const title=$('wTitle').value.trim(),content=$('wCo
     if(error){console.error('edit error',error);alert('수정 실패\n\n'+(error.message||'')+'\n\ncode: '+(error.code||''));return;}
     wEditId=null;closeModal();await loadPosts();if(view==='detail'){openId=eid;renderDetail();}else renderMain();toast(t('edited'));return;
   }
-  const {error}=await SB.from('posts').insert({author:ME.uid,nickname:wAnonV?t('anonNick'):ME.nick,cat:wCat,region:wRegion,lang:wLang,title,content,tags,imgs:wImgs.slice()});
+  const {data:ins,error}=await SB.from('posts').insert({author:ME.uid,nickname:wAnonV?t('anonNick'):ME.nick,cat:wCat,region:wRegion,lang:wLang,title,content,tags,imgs:wImgs.slice()}).select('id').maybeSingle();
   if(error){console.error('submitWrite error',error);alert('등록 실패\n\n'+(error.message||'')+'\n\ncode: '+(error.code||'')+'\nhint: '+(error.hint||'')+'\ndetails: '+(error.details||''));return;}
   closeModal();curCat='전체';curMenu='';curSort='new';curQ='';view='feed';await loadPosts();renderShell();renderMain();scrollTo({top:0});
-  let pts=(wCat==='후기'?PTS.review:PTS.post),why=(wCat==='후기'?t('earnReview'):t('earnPost'));
-  if(wImgs.length>=3){pts+=PTS.photo;why+=' +'+t('earnPhoto');}
-  if(content.length>=300){pts+=PTS.detail;why+=' +'+t('earnDetail');}
-  award(pts,why);}
+  const pid=ins&&ins.id,isRev=(wCat==='후기');
+  award(isRev?PTS.review:PTS.post, isRev?t('earnReview'):t('earnPost'), pid?('post:'+pid):null, isRev?'review':'post');
+  if(wImgs.length>=3)award(PTS.photo,t('earnPhoto'),pid?('photo:'+pid):null,'photo');
+  if(content.length>=300)award(PTS.detail,t('earnDetail'),pid?('detail:'+pid):null,'detail');}
 async function delMyPost(id){const p=DB.posts.find(x=>x.id===id);if(!p||!p.mine)return;
   if(!confirm(t('delConfirm')))return;
   const {error}=await SB.from('posts').delete().eq('id',id);
@@ -1196,7 +1196,7 @@ async function saveProfile(){
   if(error){toast('저장 실패: '+error.message);return;}
   const wasJoin=(pfMode!=='edit');
   closeModal();await reloadAll();
-  if(wasJoin){toast(t('joinDone'));setTimeout(()=>{award(PTS.signup,t('earnSignup'),'signup:'+ME.uid);if(ME.invitedBy){award(PTS.invite,t('earnInvited'),'invited:'+ME.uid);SB.rpc('award_referral',{inviter_code:ME.invitedBy}).then(()=>{},()=>{});}},700);}
+  if(wasJoin){toast(t('joinDone'));setTimeout(()=>{award(PTS.signup,t('earnSignup'),'signup:'+ME.uid,'signup');if(ME.invitedBy){award(PTS.invite,t('earnInvited'),'invited:'+ME.uid,'invite');SB.rpc('award_referral',{inviter_code:ME.invitedBy}).then(()=>{},()=>{});}},700);}
   else toast(t('saved'));
 }
 async function reloadAll(){const {data:{session}}=await SB.auth.getSession();await refreshProfile(session);if(ME.registered)releaseGate();await loadPosts();renderHeader();renderShell();if(view==='profile')renderMypage();else if(view==='detail')renderDetail();else renderMain();}

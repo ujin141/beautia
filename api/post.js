@@ -77,7 +77,7 @@ export default async function handler(req, res) {
 <meta name="naver-site-verification" content="bec0ee3bfd015beb74d81bfea16300eb57e61afd">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css">
 <link rel="stylesheet" href="/info.css">
-${ld.map(j => `<script type="application/ld+json">${JSON.stringify(j)}</script>`).join('\n')}
+${ld.map(j => `<script type="application/ld+json">${JSON.stringify(j).replace(/</g, '\\u003c').replace(/>/g, '\\u003e').replace(/&/g, '\\u0026')}</script>`).join('\n')}
 <style>
 .pwrap{max-width:720px;margin:0 auto;padding:0 22px 70px;}
 .pmeta{font-size:13px;color:var(--sub);margin-top:14px;display:flex;gap:10px;flex-wrap:wrap;align-items:center;}
