@@ -705,8 +705,7 @@ function award(amount,reason,key,action){
   saveMe();
   const av=$('navPts');if(av)av.textContent='✦ '+ME.points.toLocaleString()+'P';
   toast('+'+amount.toLocaleString()+'P · '+reason);
-  // DB 실제 적립 — 금액은 서버(claim_points RPC)가 정함(클라 위조 불가). akey로 중복 방지.
-  if(ME.uid&&action){SB.rpc('claim_points',{p_action:action,p_akey:key||null}).then(()=>{},()=>{});}
+  // 실제 DB 적립은 서버 트리거(글/댓글/가입)가 자동 처리 → 클라는 화면 표시만(위조 불가).
 }
 function mapPost(r){const pm=PROFMAP[r.author]||{};const anon=(r.nickname==='익명'||r.nickname==='匿名');return{id:r.id,cat:r.cat||'자유',region:r.region||'전체',lang:r.lang||'ko',title:r.title||'',content:r.content||'',tags:r.tags||[],imgs:r.imgs||[],pinned:!!r.pinned,hidden:!!r.hidden,like:r.like_count||0,scrap:0,views:r.views||0,t:r.created_at?new Date(r.created_at).getTime():Date.now(),author:r.author,nick:anon?r.nickname:(pm.nick||r.nickname||'익명'),role:anon?'guest':(pm.role||'guest'),avatar:anon?'':(pm.avatar||''),cmtCount:(r.comments&&r.comments[0])?r.comments[0].count:0,cmts:[],mine:!!(ME.uid&&r.author===ME.uid)};}
 async function loadPosts(){
