@@ -28,6 +28,7 @@ create table if not exists public.posts (
   nickname   text,
   cat        text default '자유',
   region     text default '전체',
+  lang       text default 'ko',          -- ko / ja (피드 언어 분리)
   title      text,
   content    text,
   tags       text[]  default '{}',
@@ -63,6 +64,7 @@ alter table public.posts    add column if not exists tags       text[] default '
 alter table public.posts    add column if not exists imgs       text[] default '{}';
 alter table public.posts    add column if not exists like_count integer default 0;
 alter table public.posts    add column if not exists nickname   text;
+alter table public.posts    add column if not exists lang       text default 'ko';
 
 -- 4) 인덱스
 create index if not exists posts_created_idx  on public.posts (created_at desc);

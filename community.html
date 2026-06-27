@@ -652,7 +652,7 @@ function award(amount,reason,key){
   const av=$('navPts');if(av)av.textContent='✦ '+ME.points.toLocaleString()+'P';
   toast('+'+amount.toLocaleString()+'P · '+reason);
 }
-function mapPost(r){const pm=PROFMAP[r.author]||{};const anon=(r.nickname==='익명'||r.nickname==='匿名');return{id:r.id,cat:r.cat||'자유',region:r.region||'전체',title:r.title||'',content:r.content||'',tags:r.tags||[],imgs:r.imgs||[],pinned:!!r.pinned,hidden:!!r.hidden,like:r.like_count||0,scrap:0,t:r.created_at?new Date(r.created_at).getTime():Date.now(),author:r.author,nick:anon?r.nickname:(pm.nick||r.nickname||'익명'),role:anon?'guest':(pm.role||'guest'),avatar:anon?'':(pm.avatar||''),cmtCount:(r.comments&&r.comments[0])?r.comments[0].count:0,cmts:[],mine:!!(ME.uid&&r.author===ME.uid)};}
+function mapPost(r){const pm=PROFMAP[r.author]||{};const anon=(r.nickname==='익명'||r.nickname==='匿名');return{id:r.id,cat:r.cat||'자유',region:r.region||'전체',lang:r.lang||'ko',title:r.title||'',content:r.content||'',tags:r.tags||[],imgs:r.imgs||[],pinned:!!r.pinned,hidden:!!r.hidden,like:r.like_count||0,scrap:0,t:r.created_at?new Date(r.created_at).getTime():Date.now(),author:r.author,nick:anon?r.nickname:(pm.nick||r.nickname||'익명'),role:anon?'guest':(pm.role||'guest'),avatar:anon?'':(pm.avatar||''),cmtCount:(r.comments&&r.comments[0])?r.comments[0].count:0,cmts:[],mine:!!(ME.uid&&r.author===ME.uid)};}
 async function loadPosts(){
   try{
     const {data:profs}=await SB.from('profiles').select('*');PROFMAP={};(profs||[]).forEach(p=>PROFMAP[p.id]={nick:p.nickname,role:p.role,avatar:(p.shop&&p.shop.avatar)||''});PROFILES=profs||[];DB.blocked=(profs||[]).filter(p=>p.blocked).map(p=>p.nickname);
@@ -712,7 +712,7 @@ function renderRight(){
 }
 function renderShell(){
   let nav=`<div class="lh">${t('board')}</div>`;
-  const vis=DB.posts.filter(p=>!p.hidden&&!blocked(p.nick));
+  const vis=DB.posts.filter(p=>!p.hidden&&!blocked(p.nick)&&langOK(p));
   nav+=CATS.map(([c,ic])=>`<a class="${curMenu===''&&c===curCat?'on':''}" onclick="setCat('${c}')"><i class="ti ${ic}"></i>${catL(c)}<span class="cnt tnum">${c==='전체'?vis.length:vis.filter(p=>p.cat===c).length}</span></a>`).join('');
   nav+=`<div class="div"></div><div class="lh">${t('region')}</div>`;
   nav+=`<a class="${curRegion==='전체'?'on':''}" onclick="setRegion('전체')"><i class="ti ti-world"></i>${t('allRegion')}</a>`;
@@ -733,10 +733,12 @@ function setLang(l){LANG=l;localStorage.setItem('beautia_lang',l);document.docum
 function visible(){let p=DB.posts.filter(x=>!x.hidden&&!blocked(x.nick));
   if(curMenu==='mine')p=p.filter(x=>x.mine);
   else if(curMenu==='scrap')p=p.filter(x=>ME.scraps.includes(x.id));
+  if(curMenu!=='mine'&&curMenu!=='scrap')p=p.filter(langOK);
   else{if(curCat!=='전체')p=p.filter(x=>x.cat===curCat);if(curRegion!=='전체')p=p.filter(x=>x.region===curRegion||x.region==='전체');if(curQ)p=p.filter(x=>(x.title+x.content+x.nick).toLowerCase().includes(curQ.toLowerCase()));}
   if(curSort==='hot')p.sort((a,b)=>(b.like+b.scrap*2)-(a.like+a.scrap*2));else if(curSort==='cmt')p.sort((a,b)=>b.cmts.length-a.cmts.length);else p.sort((a,b)=>b.t-a.t);
   if(!curMenu){const pin=p.filter(x=>x.pinned),rest=p.filter(x=>!x.pinned);p=[...pin,...rest];}
   return p;}
+function langOK(p){return (p.lang||'ko')===LANG;}
 function bodyOf(p){return (LANG==='ja'&&p.orig)?p.orig:p.content;}
 function mediaHtml(imgs){if(!imgs||!imgs.length)return'';
   if(imgs.length===1)return `<div class="cmedia one"><div class="mi" style="background-image:url('${imgs[0]}')"></div></div>`;
@@ -773,7 +775,7 @@ function bannerHtml(){return `<div class="promo">${BANNERS.map((b,i)=>`<div clas
 function showPromo(){const sl=document.querySelectorAll('.promo .slide'),dt=document.querySelectorAll('.promo .dots i');sl.forEach((s,i)=>s.classList.toggle('on',i===promoIdx));dt.forEach((d,i)=>d.classList.toggle('on',i===promoIdx));}
 function startPromo(){clearInterval(promoTimer);if(document.querySelectorAll('.promo .slide').length<2)return;promoTimer=setInterval(()=>{promoIdx=(promoIdx+1)%BANNERS.length;showPromo();},4500);}
 function promoGo(i){promoIdx=i;showPromo();startPromo();}
-function infoStripHtml(){const info=DB.posts.filter(p=>p.cat==='정보').sort((a,b)=>b.t-a.t).slice(0,8);if(!info.length)return'';
+function infoStripHtml(){const info=DB.posts.filter(p=>p.cat==='정보'&&langOK(p)).sort((a,b)=>b.t-a.t).slice(0,8);if(!info.length)return'';
   return `<div class="infosec"><div class="ih"><h3>${t('infoTitle')}</h3><a onclick="setCat('정보')">${t('seeAll')} ›</a></div><div class="iscroll">${info.map(p=>{const has=p.imgs&&p.imgs.length;return `<div class="icard${has?' hasimg':''}" onclick="openPost(${jsId(p.id)})"><div class="ith" style="${has?`background-image:url('${p.imgs[0]}')`:''}"></div><div class="ib"><div class="iflag">${p.region&&p.region!=='전체'?regFlag(p.region)+' '+esc(regL(p.region)):catL('정보')}</div><div class="it">${esc(p.title)}</div></div></div>`;}).join('')}</div></div>`;}
 /* ===== 전문가(사장님·디자이너) 쇼케이스 ===== */
 const PU=(id)=>`https://images.unsplash.com/photo-${id}?auto=format&fit=crop&w=600&q=70`;
@@ -826,7 +828,7 @@ function proRow(pr){const s=pr.shop||{};const img=avatarOf(pr);
   return `<div class="prw" onclick="openMemberCard('${pr.id}')"><div class="prth rnd" style="background-image:url('${img}')"></div><div class="prc"><div class="prt">${esc(pr.nickname||s.name||'')}${s.koOK?' <span class="kotag">한국어</span>':''}</div><div class="prm">${regFlag(pr.region)} ${esc(regL(pr.region||'전체'))}${(pr.role==='designer'&&s.career)?' · '+esc(s.career):''}</div></div></div>`;}
 const CATAC={'질문':'#3E7C7B','후기':'#A24A56','정보':'#9A7A3A','모델모집':'#7E5A9E','자유':'#4A6FA5','사장님':'#6D4346','구인구직':'#B5683C'};
 function hPanel(title,ic,count,more,rows,accent,cls){return `<div class="hp ${cls||''}"${accent?` style="--ac:${accent}"`:''}><div class="ph"><h3><i class="ti ${ic}"></i> ${title} <span class="c tnum">${count}</span></h3>${more?`<a onclick="${more}">${t('seeAll')} ›</a>`:''}</div><div class="pl">${rows}</div></div>`;}
-function featuredHtml(){const base=DB.posts.filter(p=>!p.hidden&&!blocked(p.nick)&&p.imgs&&p.imgs.length);if(!base.length)return'';
+function featuredHtml(){const base=DB.posts.filter(p=>!p.hidden&&!blocked(p.nick)&&langOK(p)&&p.imgs&&p.imgs.length);if(!base.length)return'';
   const p=base.slice().sort((a,b)=>(b.like+ (isNew(b)?100:0))-(a.like+(isNew(a)?100:0)))[0];
   return `<div class="hero" onclick="openPost(${jsId(p.id)})"><div class="heroimg" style="background-image:url('${p.imgs[0]}')"></div><div class="heroov"><span class="heroeb">${catL(p.cat)}${p.region&&p.region!=='전체'?' · '+regFlag(p.region)+' '+esc(regL(p.region)):''}</span><div class="herot">${esc(p.title)}</div><div class="herom">${esc(p.nick)} · ${timeago(p.t)} · ♥ ${p.like} · 💬 ${p.cmtCount||0}</div></div></div>`;}
 function expertScrollHtml(){
@@ -855,7 +857,7 @@ function renderProsView(){
     ${list.length?`<div class="prosgrid">${list.map(proCard).join('')}</div>`:`<div class="empty">표시할 전문가가 없어요.</div>`}`;
 }
 function homeGridHtml(){
-  const base=DB.posts.filter(p=>!p.hidden&&!blocked(p.nick));
+  const base=DB.posts.filter(p=>!p.hidden&&!blocked(p.nick)&&langOK(p));
   let panels=[];
   const recent=base.slice().sort((a,b)=>b.t-a.t).slice(0,6);
   if(recent.length)panels.push(`<div class="hp wide" style="--ac:var(--accent)"><div class="ph"><h3><i class="ti ti-clock"></i> ${t('new')} <span class="c tnum">${base.length}</span></h3></div><div class="pl">${recent.map(postRow).join('')}</div></div>`);
@@ -924,8 +926,8 @@ function renderDetail(){
     </div>`;
 }
 function relatedHtml(p){
-  const same=DB.posts.filter(x=>x.id!==p.id&&x.cat===p.cat);
-  const more=DB.posts.filter(x=>x.id!==p.id&&x.cat!==p.cat).sort((a,b)=>(b.like+b.scrap*2)-(a.like+a.scrap*2));
+  const same=DB.posts.filter(x=>x.id!==p.id&&x.cat===p.cat&&langOK(x));
+  const more=DB.posts.filter(x=>x.id!==p.id&&x.cat!==p.cat&&langOK(x)).sort((a,b)=>(b.like+b.scrap*2)-(a.like+a.scrap*2));
   const list=[...same,...more].slice(0,4);if(!list.length)return'';
   return `<div class="related"><h4>${t('related')}</h4>${list.map(r=>`<div class="rel" onclick="openPost(${jsId(r.id)})"><div style="flex:1;min-width:0"><div class="rt">${esc(r.title)}</div><div class="rm">${catL(r.cat)}${r.region&&r.region!=='전체'?' · '+regFlag(r.region)+' '+esc(regL(r.region)):''} · 💬 ${r.cmts.length}</div></div><div class="rc">❤ ${r.like}</div></div>`).join('')}</div>`;
 }
@@ -1004,7 +1006,7 @@ async function submitWrite(){const title=$('wTitle').value.trim(),content=$('wCo
     if(error){console.error('edit error',error);alert('수정 실패\n\n'+(error.message||'')+'\n\ncode: '+(error.code||''));return;}
     wEditId=null;closeModal();await loadPosts();if(view==='detail'){openId=eid;renderDetail();}else renderMain();toast(t('edited'));return;
   }
-  const {error}=await SB.from('posts').insert({author:ME.uid,nickname:wAnonV?t('anonNick'):ME.nick,cat:wCat,region:wRegion,title,content,tags,imgs:wImgs.slice()});
+  const {error}=await SB.from('posts').insert({author:ME.uid,nickname:wAnonV?t('anonNick'):ME.nick,cat:wCat,region:wRegion,lang:LANG,title,content,tags,imgs:wImgs.slice()});
   if(error){console.error('submitWrite error',error);alert('등록 실패\n\n'+(error.message||'')+'\n\ncode: '+(error.code||'')+'\nhint: '+(error.hint||'')+'\ndetails: '+(error.details||''));return;}
   closeModal();curCat='전체';curMenu='';curSort='new';curQ='';view='feed';await loadPosts();renderShell();renderMain();scrollTo({top:0});
   let pts=(wCat==='후기'?PTS.review:PTS.post),why=(wCat==='후기'?t('earnReview'):t('earnPost'));
