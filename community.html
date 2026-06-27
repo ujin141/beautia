@@ -666,7 +666,7 @@ const SB=supabase.createClient(SB_URL,SB_KEY);
 let PROFMAP={},PROFILES=[];
 function loadLocal(){
   ME=JSON.parse(localStorage.getItem('beautia_comm_me')||'null')||{};
-  ME.likes=ME.likes||[];ME.scraps=ME.scraps||[];ME.read=ME.read||[];
+  ME.likes=ME.likes||[];ME.scraps=ME.scraps||[];ME.read=ME.read||[];ME.viewed=ME.viewed||[];
   const firstEver=!ME.visit;ME.visit=ME.visit||{last:'',streak:0};
   const today=new Date().toISOString().slice(0,10);
   const newVisit=ME.visit.last!==today;
@@ -679,7 +679,7 @@ function loadLocal(){
   saveMe();DB={posts:[],blocked:[]};
 }
 function save(){}
-function saveMe(){try{localStorage.setItem('beautia_comm_me',JSON.stringify({likes:ME.likes,scraps:ME.scraps,read:ME.read,visit:ME.visit,nick:ME.nick,avatar:ME.avatar,points:ME.points,pointLog:ME.pointLog,awarded:ME.awarded,ref:ME.ref,invitedBy:ME.invitedBy}));}catch(e){}}
+function saveMe(){try{localStorage.setItem('beautia_comm_me',JSON.stringify({likes:ME.likes,scraps:ME.scraps,read:ME.read,viewed:ME.viewed,visit:ME.visit,nick:ME.nick,avatar:ME.avatar,points:ME.points,pointLog:ME.pointLog,awarded:ME.awarded,ref:ME.ref,invitedBy:ME.invitedBy}));}catch(e){}}
 /* ===== points (적립만, 사용처는 추후) ===== */
 const PTS={review:500,post:100,photo:100,detail:100,comment:20,signup:1000,invite:3000};
 function award(amount,reason,key){
@@ -955,8 +955,11 @@ function renderMain(){
     ${list.length?`<div class="feedgrid">${list.map((p,i)=>cardHtml(p,i,false)).join('')}</div>`:`<div class="empty">${t('emptyFeed')}</div>`}`;
   startPromo();
 }
-async function openPost(id){if(!ME.registered){openLogin();toast(t('needLoginView'));return;}openId=id;if(!ME.read.includes(id)){ME.read.push(id);saveMe();}view='detail';renderDetail();scrollTo({top:0});
-  {const p0=DB.posts.find(x=>x.id===id);if(p0){p0.views=(p0.views||0)+1;}try{SB.rpc('bump_view',{pid:id});}catch(e){}}
+async function openPost(id){
+  // 조회수는 로그인 여부와 상관없이 클릭하면 먼저 +1 (한 기기당 글별 1회만)
+  {const p0=DB.posts.find(x=>x.id===id);ME.viewed=ME.viewed||[];if(p0&&ME.viewed.indexOf(id)<0){p0.views=(p0.views||0)+1;ME.viewed.push(id);saveMe();SB.rpc('bump_view',{pid:id}).then(()=>{},()=>{});}}
+  if(!ME.registered){openLogin();toast(t('needLoginView'));renderMain();return;}
+  openId=id;if(!ME.read.includes(id)){ME.read.push(id);saveMe();}view='detail';renderDetail();scrollTo({top:0});
   const {data}=await SB.from('comments').select('*').eq('post_id',id).order('created_at',{ascending:true});
   const p=DB.posts.find(x=>x.id===id);if(p){p.cmts=(data||[]).map(c=>{const useNick=(c.nickname==='익명'||c.nickname==='匿名')?c.nickname:((PROFMAP[c.author]&&PROFMAP[c.author].nick)||c.nickname||'익명');const anon=(c.nickname==='익명'||c.nickname==='匿名');return {id:c.id,parentId:c.parent_id||null,nick:useNick,role:anon?'guest':((PROFMAP[c.author]&&PROFMAP[c.author].role)||'guest'),avatar:anon?'':((PROFMAP[c.author]&&PROFMAP[c.author].avatar)||''),t:c.content,d:c.created_at?new Date(c.created_at).getTime():Date.now(),author:c.author,mine:!!(ME.uid&&c.author===ME.uid)};});p.cmtCount=p.cmts.length;}
   if(view==='detail'&&openId===id)renderDetail();}
