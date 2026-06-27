@@ -63,3 +63,9 @@ end; $gn$;
 drop trigger if exists trg_guard_nick on public.profiles;
 create trigger trg_guard_nick before insert or update on public.profiles
   for each row execute function public.guard_nickname();
+
+-- [BT-6] 스토리지 업로드 남용 차단: 이미지 5MB·이미지 타입만 ----
+update storage.buckets
+  set file_size_limit = 5242880,   -- 5MB
+      allowed_mime_types = array['image/jpeg','image/png','image/webp','image/gif','image/heic']
+  where id = 'beautia';
