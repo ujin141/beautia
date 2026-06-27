@@ -798,16 +798,16 @@ function posterTone(p){return POSTER[hash(p.title||'?')%POSTER.length];}
 function coverFail(img){img.style.display='none';const c=img.parentNode;c.classList.add('poster');const card=img.closest('.card');if(card&&!card.classList.contains('lead'))card.classList.add('nophoto');}
 function coverHtml(p){const imgs=p.imgs||[];const has=imgs.length;const tone=posterTone(p);
   const chips=`<span class="catchip">${catL(p.cat)}</span>${isNew(p)?`<span class="newchip">${t('new')==='최신'?'NEW':'NEW'}</span>`:''}${has>1?`<span class="morechip"><i class="ti ti-photo"></i>+${has-1}</span>`:''}`;
-  const img=has?`<img src="${imgs[0]}" loading="lazy" alt="" onerror="coverFail(this)">`:'';
+  const img=has?`<img src="${imgs[0]}" loading="lazy" alt="${esc(p.title)}" onerror="coverFail(this)">`:'';
   return `<div class="cover ${has?'':'poster'}" style="background:${tone}"><div class="ptext">${esc(p.title)}</div>${img}<div class="scrim"></div>${chips}</div>`;}
 function cardMeta(p){return `<div class="chead">${roleBadge(p.role)}<span class="dot"></span><span>${esc(p.nick)}</span>${p.region&&p.region!=='전체'?`<span class="dot"></span><span>${regFlag(p.region)} ${esc(regL(p.region))}</span>`:''}<span class="dot"></span><span>${timeago(p.t)}</span></div>`;}
-function cardActs(p){return `<div class="cact"><span class="a"><i class="ti ti-heart"></i> ${p.like}</span><span class="a"><i class="ti ti-message-circle"></i> ${p.cmtCount||0}</span><span class="a"><i class="ti ti-eye"></i> ${p.views||0}</span></div>`;}
+function cardActs(p){return `<div class="cact"><span class="a"><i class="ti ti-heart"></i> ${(p.like||0).toLocaleString()}</span><span class="a"><i class="ti ti-message-circle"></i> ${(p.cmtCount||0).toLocaleString()}</span><span class="a"><i class="ti ti-eye"></i> ${(p.views||0).toLocaleString()}</span></div>`;}
 function cardHtml(p,i,lead){
   const has=p.imgs&&p.imgs.length;const tone=posterTone(p);
   if(lead){
     return `<div class="card lead ${ME.read.includes(p.id)?'read':''}" onclick="openPost(${jsId(p.id)})">
       <div class="cover ${has?'':'poster'}" style="background:${tone}">
-        ${has?`<img src="${p.imgs[0]}" loading="lazy" alt="" onerror="coverFail(this)">`:''}<div class="scrim"></div>
+        ${has?`<img src="${p.imgs[0]}" loading="lazy" alt="${esc(p.title)}" onerror="coverFail(this)">`:''}<div class="scrim"></div>
         <div class="leadtext"><span class="lead-cat">${catL(p.cat)}</span><div class="lead-title">${p.pinned?'📌 ':''}${esc(p.title)}</div><div class="lead-exc">${esc(bodyOf(p))}</div></div>
         ${isNew(p)?`<span class="newchip">NEW</span>`:''}</div></div>`;
   }
@@ -983,7 +983,7 @@ function renderDetail(){
     <div class="back" onclick="backFeed()"><i class="ti ti-chevron-left"></i> ${t('back')}</div>
     <div class="dhead">${avHtml(p.nick,p.avatar)}<div><div class="dhn">${esc(p.nick)} ${roleBadge(p.role)}</div><div class="dhm"><span style="color:var(--rose);font-weight:700;">${catL(p.cat)}</span>${p.region&&p.region!=='전체'?' · '+regFlag(p.region)+' '+esc(regL(p.region)):''} · ${timeago(p.t)}</div></div></div>
     <div class="dtitle">${esc(p.title)}</div>
-    <div class="dmeta"><span class="a"><i class="ti ti-heart"></i> ${p.like}</span><span class="a"><i class="ti ti-message-circle"></i> ${p.cmtCount||0}</span><span class="a"><i class="ti ti-eye"></i> ${p.views||0} ${t('views')}</span></div>
+    <div class="dmeta"><span class="a"><i class="ti ti-heart"></i> ${(p.like||0).toLocaleString()}</span><span class="a"><i class="ti ti-message-circle"></i> ${(p.cmtCount||0).toLocaleString()}</span><span class="a"><i class="ti ti-eye"></i> ${(p.views||0).toLocaleString()} ${t('views')}</span></div>
     <div class="dcontent">${esc(main)}</div>
     <div style="margin-top:12px"><span class="tg" onclick="trDetail(this)"><i class="ti ti-language"></i> ${t('gptT')}</span></div>
     <div class="transbox" id="trDetailBox" style="display:none;margin-top:10px"></div>
@@ -1219,12 +1219,11 @@ async function trCmt(el){const wrap=el.closest('.cmt');if(!wrap)return;const ct=
   catch(e){toast(t('gptFail'));el.textContent=t('gptT');}}
 /* ===== 공유 + 후기 카드 메이커 (콘텐츠 공장) ===== */
 function cardInner(p){
-  const img=(p.imgs&&p.imgs.length)?`<div class="cf-img"><img src="${p.imgs[0]}" crossorigin="anonymous" alt=""></div><div class="cf-scrim"></div>`:'';
+  const img=(p.imgs&&p.imgs.length)?`<div class="cf-img"><img src="${p.imgs[0]}" crossorigin="anonymous" alt="${esc(p.title)}"></div><div class="cf-scrim"></div>`:'';
   const isRev=p.cat==='후기';const reg=(p.region&&p.region!=='전체');
   return `${img}<div class="cf-in">
     <div class="cf-toprow"><span class="cf-badge">${esc(catL(p.cat))}</span>${reg?`<span class="cf-badge ghost">${regFlag(p.region)} ${esc(regL(p.region))}</span>`:''}${(p.imgs&&p.imgs.length>1)?`<span class="cf-badge ghost">📷 ${p.imgs.length}</span>`:''}</div>
     <div style="flex:1"></div>
-    ${isRev?'<div class="cf-stars">★★★★★</div>':''}
     <div class="cf-title">${esc(p.title)}</div>
     <div class="cf-exc">${esc(bodyOf(p))}</div>
     <div class="cf-by">${esc(p.nick||'')}${reg?' · '+regFlag(p.region)+' '+esc(regL(p.region)):''}</div>
