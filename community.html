@@ -157,6 +157,14 @@ a{color:inherit;text-decoration:none;}
 .chead .dot{width:2.5px;height:2.5px;border-radius:50%;background:var(--sub);opacity:.55;}
 .ctitle{font-size:14px;font-weight:700;margin-top:0;letter-spacing:-.02em;line-height:1.38;transition:color .14s;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;}
 .card.nophoto .ctitle{display:none;}
+/* 사진 없는 글 = 텍스트 카드 */
+.card.nophoto .npcard{display:flex;flex-direction:column;height:100%;background:#fff;border:1px solid var(--line);border-left:3px solid var(--ac);border-radius:12px;padding:16px 16px 14px;transition:.14s;}
+.card.nophoto:hover .npcard{border-color:var(--ac);box-shadow:0 6px 18px rgba(26,20,22,.08);transform:translateY(-2px);}
+.npcat{font-size:10px;font-weight:800;letter-spacing:1px;text-transform:uppercase;color:var(--ac);}
+.nptitle{font-size:16px;font-weight:800;line-height:1.4;letter-spacing:-.02em;margin-top:8px;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden;}
+.card.nophoto.read .nptitle{color:var(--sub);}
+.npexc{font-size:13px;color:var(--ink2);line-height:1.6;margin-top:9px;flex:1;display:-webkit-box;-webkit-line-clamp:4;-webkit-box-orient:vertical;overflow:hidden;}
+.npfoot{margin-top:12px;}
 .cexc{font-size:12px;color:var(--ink2);margin-top:5px;line-height:1.5;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;}
 .card:not(.nophoto) .cexc{display:none;}
 .ctags{display:none;}
@@ -789,7 +797,16 @@ function cardHtml(p,i,lead){
         <div class="leadtext"><span class="lead-cat">${catL(p.cat)}</span><div class="lead-title">${p.pinned?'📌 ':''}${esc(p.title)}</div><div class="lead-exc">${esc(bodyOf(p))}</div></div>
         ${isNew(p)?`<span class="newchip">NEW</span>`:''}</div></div>`;
   }
-  return `<div class="card ${has?'':'nophoto'} ${ME.read.includes(p.id)?'read':''}" onclick="openPost(${jsId(p.id)})">
+  if(!has){
+    return `<div class="card nophoto ${ME.read.includes(p.id)?'read':''}" onclick="openPost(${jsId(p.id)})">
+      <div class="npcard" style="--ac:${CATAC[p.cat]||'#6D4346'}">
+        <span class="npcat">${catL(p.cat)}</span>
+        <div class="nptitle">${p.pinned?'📌 ':''}${esc(p.title)}</div>
+        <div class="npexc">${esc(bodyOf(p))}</div>
+        <div class="npfoot">${cardMeta(p)}${cardActs(p)}</div>
+      </div></div>`;
+  }
+  return `<div class="card ${ME.read.includes(p.id)?'read':''}" onclick="openPost(${jsId(p.id)})">
     ${coverHtml(p)}
     <div class="cbody">
       <div class="ctitle">${p.pinned?'📌 ':''}${esc(p.title)}</div>
