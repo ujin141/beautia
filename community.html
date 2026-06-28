@@ -324,6 +324,18 @@ body.has-dcard .fab{bottom:86px;}
 .exsec .exhh{justify-content:space-between;}
 .exmore{font-size:12px;font-weight:700;color:var(--ac,var(--accent));cursor:pointer;white-space:nowrap;}
 .exmore:hover{text-decoration:underline;}
+/* 둥근 전문가 레일 (스토리 링) */
+.exsec .exhh{border-bottom:none;padding-bottom:0;}
+.brow{display:flex;gap:15px;overflow-x:auto;padding:6px 2px 12px;-webkit-overflow-scrolling:touch;scroll-snap-type:x proximity;}
+.brow::-webkit-scrollbar{height:6px;}.brow::-webkit-scrollbar-track{background:transparent;}.brow::-webkit-scrollbar-thumb{background:var(--line);border-radius:999px;}
+.bub{flex:0 0 auto;width:82px;text-align:center;cursor:pointer;scroll-snap-align:start;}
+.bub .ring{width:76px;height:76px;border-radius:50%;padding:3px;margin:0 auto;background:conic-gradient(from 210deg,#FF9E7A,#E5849D,#7E5A9E,#3E7C7B,#FFB07A,#FF9E7A);position:relative;transition:transform .16s ease;}
+.bub:hover .ring{transform:scale(1.07) rotate(-3deg);}
+.bub .av{width:100%;height:100%;border-radius:50%;background-size:cover;background-position:center;border:2.5px solid #fff;background-color:var(--soft);}
+.bub .rb{position:absolute;right:-1px;bottom:-1px;width:25px;height:25px;border-radius:50%;background:#fff;display:flex;align-items:center;justify-content:center;font-size:13px;box-shadow:0 2px 7px -1px rgba(0,0,0,.28);}
+.bub .ko{position:absolute;left:-3px;top:-1px;font-size:10px;font-weight:800;background:var(--plum);color:#fff;border-radius:999px;padding:2px 6px;line-height:1;box-shadow:0 2px 5px -1px rgba(0,0,0,.3);}
+.bub .bn{font-size:12.5px;font-weight:700;margin-top:9px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;letter-spacing:-.02em;color:var(--ink);}
+.bub .bm{font-size:10.5px;color:var(--sub);margin-top:1px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
 .pcrate{color:#E0A93B;font-weight:800;}.pcrate .n{color:var(--sub);font-weight:600;}.pcrate.new{color:var(--plum);background:var(--plumbg);padding:1px 6px;border-radius:999px;font-size:9.5px;}
 .pcm .dotg{display:inline-block;width:2.5px;height:2.5px;border-radius:50%;background:var(--sub);opacity:.5;margin:0 5px;vertical-align:middle;}
 .prosgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:16px;}
@@ -926,18 +938,19 @@ async function refreshProfile(session){
   else{ME.registered=false;ME.needProfile=true;}
 }
 /* ===== 알림 ===== */
-function readBcasts(){try{return JSON.parse(localStorage.getItem('beautia_readbc')||'[]');}catch(e){return [];}}
-function markBcastRead(ids){try{const s=new Set(readBcasts());ids.forEach(i=>s.add(i));localStorage.setItem('beautia_readbc',JSON.stringify([...s]));}catch(e){}}
-function notifUnread(){const rb=readBcasts();return ((DB&&DB.notifs)||[]).filter(n=>n.user_id?!n.read:!rb.includes(n.id)).length;}
+function readNotifIds(){try{return JSON.parse(localStorage.getItem('beautia_readnotif')||'[]');}catch(e){return [];}}
+function markNotifIds(ids){try{const s=new Set(readNotifIds());ids.forEach(i=>s.add(i));localStorage.setItem('beautia_readnotif',JSON.stringify([...s].slice(-300)));}catch(e){}}
+function notifIsUnread(n,set){return !(set||readNotifIds()).includes(n.id) && !n.read;}
+function notifUnread(){const set=readNotifIds();return ((DB&&DB.notifs)||[]).filter(n=>notifIsUnread(n,set)).length;}
 function renderBell(){const b=$('bellBdg');if(!b)return;const n=notifUnread();b.textContent=n>99?'99+':String(n);b.classList.toggle('on',n>0);}
 async function loadNotifs(){if(!ME.uid){if(DB)DB.notifs=[];renderBell();return;}try{const {data}=await SB.from('notifications').select('*').or('user_id.eq.'+ME.uid+',user_id.is.null').order('created_at',{ascending:false}).limit(40);DB.notifs=data||[];}catch(e){DB.notifs=DB.notifs||[];}renderBell();}
 function openNotifs(){if(!ME.registered){openLogin();return;}$('notifHd').textContent=t('notifTitle');renderNotifList();$('notifModal').classList.add('on');markAllRead();}
 function renderNotifList(){
-  const rb=readBcasts(),list=(DB&&DB.notifs)||[];
+  const set=readNotifIds(),list=(DB&&DB.notifs)||[];
   $('notifAdmin').innerHTML=ME.is_admin?`<button class="btn btn-primary" style="width:100%;justify-content:center;margin-bottom:14px" onclick="sendBroadcast()"><i class="ti ti-speakerphone"></i> ${t('notifSend')}</button>`:'';
   if(!list.length){$('notifList').innerHTML=`<div class="empty" style="border:none;padding:42px">${t('notifEmpty')}</div>`;return;}
   $('notifList').innerHTML=list.map(n=>{
-    const unread=n.user_id?!n.read:!rb.includes(n.id);const isC=n.type==='comment';const ic=isC?'💬':'📢';
+    const unread=notifIsUnread(n,set);const isC=n.type==='comment';const ic=isC?'💬':'📢';
     const ttl=isC?`${esc(n.actor||'누군가')}${t('notifCommented')}`:esc(n.title||t('notifNotice'));
     const body=isC?`"${esc((n.body||'').slice(0,60))}"${n.title?' · '+esc(n.title):''}`:esc(n.body||'');
     const click=n.post_id?`onclick="openNotif('${n.post_id}')"`:'';
@@ -945,7 +958,11 @@ function renderNotifList(){
   }).join('');
 }
 function openNotif(pid){closeModal();const id=/^\d+$/.test(pid)?+pid:pid;openPost(id);}
-async function markAllRead(){const list=(DB&&DB.notifs)||[];const bcast=list.filter(n=>!n.user_id).map(n=>n.id);if(bcast.length)markBcastRead(bcast);const pu=list.filter(n=>n.user_id&&!n.read);if(pu.length){try{await SB.from('notifications').update({read:true}).eq('user_id',ME.uid).eq('read',false);}catch(e){}pu.forEach(n=>n.read=true);}renderBell();}
+async function markAllRead(){const list=(DB&&DB.notifs)||[];if(!list.length){renderBell();return;}
+  markNotifIds(list.map(n=>n.id));               // 읽은 알림 ID 저장(전체)
+  list.forEach(n=>{if(n.user_id)n.read=true;});  // 로컬 낙관적 처리
+  renderBell();                                  // 클릭 즉시 배지 사라짐
+  const pu=list.filter(n=>n.user_id);if(pu.length){try{await SB.from('notifications').update({read:true}).eq('user_id',ME.uid).eq('read',false);}catch(e){}}}
 async function sendBroadcast(){const title=prompt(t('notifSendTitle'));if(!title)return;const body=prompt(t('notifSendBody'))||'';const {error}=await SB.from('notifications').insert({user_id:null,type:'notice',title:title,body:body});if(error){toast('전송 실패: '+(error.message||''));return;}toast(t('notifSent'));await loadNotifs();renderNotifList();}
 function seed(){const now=Date.now(),h=3600000,d=86400000;return[
  {id:1,cat:'정보',region:'전체',role:'official',nick:'Beautia',title:'🎉 커뮤니티 오픈! 이런 곳이에요',content:'한국·일본 뷰티를 사랑하는 손님·사장님이 모이는 라운지예요.\n\n· 질문: "이 미용실 한국어 돼요?"\n· 후기: 다녀온 곳 솔직 후기\n· 정보: 예약 꿀팁, 화장품 추천\n· 사장님 라운지: 한국 손님 받는 노하우\n\n광고·욕설·개인정보는 삼가주세요 🤍',like:42,scrap:18,imgs:['https://images.unsplash.com/photo-1521590832167-7bcbfaa6381f?auto=format&fit=crop&w=720&q=70'],cmts:[{nick:'네일러버',role:'guest',t:'기다렸어요!! 🙌',d:now-2*h}],t:now-2*d},
@@ -1108,6 +1125,10 @@ function proCard(p){const s=p.shop||{};const img=avatarOf(p);const svc=(p.role==
     <div class="pcb"><div class="pcn">${esc(p.nickname||s.name||'')}</div>
       <div class="pcm">${rate}<span class="dotg"></span>${regFlag(p.region)} ${esc(regL(p.region||'전체'))}${(p.role==='designer'&&s.career)?' · '+esc(s.career):''}</div>
       ${svc.length?`<div class="pctags">${svc.slice(0,3).map(x=>`<span>${svcL(x)}</span>`).join('')}</div>`:''}</div></div>`;}
+/* 둥근 스토리-링 아바타 (한 줄에 많이) */
+function proBubble(p){const s=p.shop||{};const img=avatarOf(p);const reg=p.region&&p.region!=='전체'?regL(p.region):'';
+  const sub=reg+((p.role==='designer'&&s.career)?(reg?' · ':'')+esc((s.career||'').split('·')[0].trim()):'');
+  return `<div class="bub" onclick="openMemberCard('${p.id}')"><div class="ring"><div class="av" style="background-image:url('${img}')"></div><span class="rb">${p.role==='owner'?'🏪':'✂️'}</span>${s.koOK?`<span class="ko">한</span>`:''}</div><div class="bn">${esc(p.nickname||s.name||'')}</div><div class="bm">${sub}</div></div>`;}
 function renderShowcase(){const el=$('proSec');if(!el)return;const pros=getPros();CURPROS=pros;
   const groups=[['owner','ti-building-store',t('proOwner')],['designer','ti-scissors',t('proDesigner')]];
   el.innerHTML=groups.map(([role,ic,label])=>{
@@ -1144,12 +1165,10 @@ function featuredHtml(){const base=DB.posts.filter(p=>!p.hidden&&!blocked(p.nick
   const p=base.slice().sort((a,b)=>(b.like+ (isNew(b)?100:0))-(a.like+(isNew(a)?100:0)))[0];
   return `<div class="hero" onclick="openPost(${jsId(p.id)})"><div class="heroimg" style="background-image:url('${p.imgs[0]}')"></div><div class="heroov"><span class="heroeb">${catL(p.cat)}${p.region&&p.region!=='전체'?' · '+regFlag(p.region)+' '+esc(regL(p.region)):''}</span><div class="herot">${esc(p.title)}</div><div class="herom">${esc(p.nick)} · ${timeago(p.t)} · ♥ ${(p.like||0).toLocaleString()} · 💬 ${(p.cmtCount||0).toLocaleString()} · 👁 ${(p.views||0).toLocaleString()}</div></div></div>`;}
 function expertScrollHtml(){
-  const pros=getPros();CURPROS=pros;
-  const groups=[['owner','ti-building-store',t('proOwner'),'#6D4346'],['designer','ti-scissors',t('proDesigner'),'#3E7C7B']];
-  return groups.map(([role,ic,label,ac])=>{
-    const list=pros.filter(p=>p.role===role);if(!list.length)return'';
-    return `<section class="exsec" style="--ac:${ac}"><div class="exhh"><h2><i class="ti ${ic}"></i> ${label} <span class="c tnum">${list.length}</span></h2><a class="exmore" onclick="openPros('${role}')">${t('seeAll')} ›</a></div><div class="exrow">${list.map(proCard).join('')}</div></section>`;
-  }).join('');
+  const pros=getPros();CURPROS=pros;if(!pros.length)return'';
+  // 디자이너 먼저 → 한 줄 둥근 레일로 한눈에 많이
+  const sorted=pros.slice().sort((a,b)=>(a.role==='designer'?0:1)-(b.role==='designer'?0:1));
+  return `<section class="exsec"><div class="exhh"><h2>✂️ ${t('proTitle')} <span class="c tnum">${pros.length}</span></h2><a class="exmore" onclick="openPros('all')">${t('seeAll')} ›</a></div><div class="brow">${sorted.map(proBubble).join('')}</div></section>`;
 }
 let proRole='all',proRegion='전체';
 function openPros(role){proRole=role||'all';proRegion='전체';view='pros';renderProsView();scrollTo({top:0});}
@@ -1223,11 +1242,11 @@ function renderMain(){
   const showTop=curMenu===''&&!curQ;
   const home=showTop&&curCat==='전체'&&curRegion==='전체';
   if(home){
-    $('main').innerHTML=greetHtml()+bannerHtml()+featuredHtml()+idMarqueeHtml()+expertScrollHtml()+homeGridHtml();
-    startPromo();pushAds();return;
+    $('main').innerHTML=greetHtml()+featuredHtml()+idMarqueeHtml()+expertScrollHtml()+homeGridHtml();
+    pushAds();return;
   }
   const list=visible();
-  $('main').innerHTML=(showTop?bannerHtml():'')+`
+  $('main').innerHTML=`
     <div class="board-top">
       <div class="sorttabs">
         <span class="stab ${curSort==='hot'?'on':''}" onclick="setSort('hot')"><i class="ti ti-flame"></i>${t('hot')}</span>
