@@ -562,9 +562,37 @@ textarea.field{min-height:200px;resize:vertical;line-height:1.75;}
 .id-sugg{display:flex;flex-wrap:wrap;gap:6px;margin-top:9px;}
 .id-sugg span{font-size:11.5px;font-weight:700;color:var(--plum);background:var(--plumbg);padding:6px 11px;border-radius:999px;cursor:pointer;}
 /* 공개 유저 프로필 */
+.cnick{cursor:pointer;font-weight:600;}
+.cnick:hover{text-decoration:underline;color:var(--plum);}
+.pctag{display:inline-flex;align-items:center;gap:5px;font-size:12px;font-weight:700;color:var(--plum);background:var(--plumbg);padding:6px 12px;border-radius:999px;}
+.styletags{display:flex;flex-wrap:wrap;gap:6px;margin-top:12px;}
+.styletags span{font-size:12px;font-weight:700;color:var(--ink2);background:var(--soft);border:1px solid var(--line);padding:6px 11px;border-radius:999px;}
 .ugal{display:flex;flex-wrap:wrap;gap:6px;margin-top:12px;}
 .ugal img{width:74px;height:74px;border-radius:10px;object-fit:cover;cursor:zoom-in;}
 .ucta{margin-top:22px;}
+/* ID 카드 쇼케이스 마퀴 */
+.idshow{margin:4px 0 20px;}
+.idshow-h{display:flex;align-items:baseline;gap:8px;margin-bottom:11px;}
+.ish-t{font-size:15px;font-weight:800;letter-spacing:-.02em;}
+.ish-s{font-size:12px;color:var(--sub);}
+.idmarquee{overflow:hidden;position:relative;-webkit-mask-image:linear-gradient(90deg,transparent,#000 5%,#000 95%,transparent);mask-image:linear-gradient(90deg,transparent,#000 5%,#000 95%,transparent);}
+.idmarquee-track{display:flex;gap:12px;width:max-content;animation:idflow linear infinite;}
+.idmarquee:hover .idmarquee-track{animation-play-state:paused;}
+@keyframes idflow{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+.idmini{flex:none;width:128px;background:#fff;border:1px solid #ece7e3;border-radius:12px;overflow:hidden;box-shadow:0 12px 28px -16px rgba(20,12,13,.5);cursor:pointer;transition:transform .15s ease;}
+.idmini:hover{transform:translateY(-4px);}
+.idmini .mm-top{display:flex;align-items:center;justify-content:space-between;padding:8px 10px 6px;}
+.idmini .mm-wm{font-size:9px;font-weight:700;letter-spacing:.22em;color:#15110f;}
+.idmini .mm-id{font-size:7px;font-weight:700;letter-spacing:.15em;color:#bcb4af;}
+.idmini .mm-cuts{display:flex;flex-direction:column;gap:2px;padding:0 8px;}
+.idmini .mm-cut{height:52px;overflow:hidden;background:#f4f1ef;border-radius:2px;}
+.idmini .mm-cut img{width:100%;height:100%;object-fit:cover;display:block;}
+.idmini .mm-cut.mm-e{background:#efeae7;}
+.idmini .mm-foot{padding:8px 10px 11px;}
+.idmini .mm-name{font-size:12px;font-weight:700;letter-spacing:-.02em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.idmini .mm-v{display:flex;align-items:center;gap:3px;font-size:7.5px;font-weight:700;letter-spacing:.03em;color:#8a817b;margin-top:3px;text-transform:uppercase;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.idmini .mm-v .ti{font-size:10px;color:var(--plum);flex:none;}
+@media(prefers-reduced-motion:reduce){.idmarquee-track{animation:none;}}
 .capbox{width:100%;background:var(--soft);border-radius:12px;padding:13px 15px;font-size:12.5px;color:var(--ink2);line-height:1.7;margin-top:10px;white-space:pre-wrap;}
 /* 공유 시트 */
 .sharelinkrow{display:flex;gap:8px;margin-top:16px;}
@@ -646,7 +674,7 @@ const T={ko:{
  makeCard:'카드 만들기',shareTitle:'공유하기',copyLink:'링크 복사',shareCardOpt:'이미지 카드로 공유',shareApp:'다른 앱으로 공유',cardTitle:'공유 카드 만들기',dlCard:'이미지 저장',copyCap:'캡션 복사',capCopied:'캡션이 복사됐어요',cardHint:'저장해서 인스타·릴스/쇼츠에 올려보세요. 영상 마지막엔 "후기는 Beautia에서"!',linkCopied:'링크가 복사됐어요',cardReview:'REVIEW',
  dcardBtn:'내 명함 만들기',dcardTitle:'디자이너 명함',dcardHint:'저장해서 인스타 프로필·DM·오프라인 홍보에 활용하세요. 손님이 한눈에 당신을 알 수 있어요. (인스타 9:16 스토리, 4:5 피드 모두 지원)',dcardTag:'일본에서 만나는 한국어 디자이너',dcardOnly:'명함은 디자이너 회원만 만들 수 있어요',dcardSetup:'프로필에 사진·경력·전문 시술을 채우면 명함이 더 멋져져요',dcardStyA:'프로필 명함',dcardStyB:'📸 네컷',dcardStripHint:'작업 사진 4장으로 \'인생네컷\' 스타일 포트폴리오 명함! 손님이 시술 결과를 한눈에 봐요. 빈 칸은 프로필 편집에서 작업 사진을 추가해 채워보세요.',
  idCardBtn:'네컷 ID 카드',idCardTitle:'BEAUTIA ID 카드',idCardHint:'사진 4장으로 나만의 BEAUTIA ID 카드 ✨ 저장해서 인스타 스토리·라인 프로필에 올려보세요. QR을 찍으면 내 커뮤니티 프로필로 바로 연결돼요.',idPhotosL:'사진 (네컷 · 최대 4장)',idPColorL:'퍼스널 컬러 (선택)',idTagsL:'스타일 태그',idTagsPh:'#Chic #Tokyo_Mood #K_Idol_Skin',idScan:'프로필 보기',idVerified:'BEAUTIA verified',idNeedPhoto:'사진을 1장 이상 넣어주세요',tabIdCard:'📸 네컷 ID',tabProfileCard:'프로필 명함',pcolors:{spring:'봄 웜톤',summer:'여름 쿨톤',autumn:'가을 웜톤',winter:'겨울 쿨톤'},
- userNotFound:'프로필을 찾을 수 없어요',userPosts:'작성한 글',userNoPosts:'아직 작성한 글이 없어요',userCardCta:'나도 BEAUTIA ID 카드 만들기',userJoinCta:'BEAUTIA 가입하고 시작하기',viewUserProfile:'프로필 보기',
+ userNotFound:'프로필을 찾을 수 없어요',userPosts:'작성한 글',userNoPosts:'아직 작성한 글이 없어요',userCardCta:'나도 BEAUTIA ID 카드 만들기',userJoinCta:'BEAUTIA 가입하고 시작하기',viewUserProfile:'프로필 보기',userViewCard:'이 사람의 ID 카드 보기',userWish:'위시리스트',idShowTitle:'BEAUTIA ID 카드',idShowSub:'우리 멤버들의 네컷 명함 ✨',
  firstCmt:'첫 댓글을 남겨보세요!',emptyFeed:'아직 글이 없어요. 첫 글을 남겨보세요 ✏️',transBy:'Beautia 번역됨',gptT:'번역',gptTing:'번역 중…',gptShowOrig:'원문 보기',gptShowTr:'번역 보기',gptFail:'번역에 실패했어요',viewOrigJa:'원문(日本語) 보기 ▾',viewOrigKo:'번역(한국어) 보기 ▾',foldOrig:'접기 ▴',
  wHead:'글쓰기',postLang:'언어 (이 글이 보일 피드)',category:'카테고리',regionOpt:'지역 (선택)',noRegion:'지역무관',titlePh:'제목을 입력하세요',contentPh:'한국·일본 뷰티 사장님·손님 누구나! 질문, 후기, 정보, 수다 환영해요. (욕설·광고·개인정보 X)',photo:'사진 (최대 10장)',register:'등록하기',
  profile:'프로필',nickPh:'닉네임',iam:'나는…',save:'저장',saved:'저장됐어요',posted:'글이 등록됐어요 ✨',scrapped:'스크랩했어요',copied:'링크가 복사됐어요 (데모)',needTC:'제목과 내용을 입력하세요',
@@ -680,7 +708,7 @@ const T={ko:{
  makeCard:'カード作成',shareTitle:'シェア',copyLink:'リンクをコピー',shareCardOpt:'画像カードでシェア',shareApp:'他のアプリでシェア',cardTitle:'シェアカードを作成',dlCard:'画像を保存',copyCap:'キャプションをコピー',capCopied:'キャプションをコピーしました',cardHint:'保存してインスタ・リール/ショートに。動画の最後は「レビューはBeautiaで」！',linkCopied:'リンクをコピーしました',cardReview:'REVIEW',
  dcardBtn:'名刺を作る',dcardTitle:'デザイナー名刺',dcardHint:'保存してインスタのプロフィール・DM・オフライン宣伝に活用しましょう。お客様が一目であなたを知れます。（インスタ9:16ストーリー・4:5フィード対応）',dcardTag:'日本で出会う韓国語デザイナー',dcardOnly:'名刺はデザイナー会員のみ作成できます',dcardSetup:'プロフィールに写真・経歴・得意な施術を入れると名刺がより魅力的に',dcardStyA:'プロフィール名刺',dcardStyB:'📸 4カット',dcardStripHint:'作品写真4枚で“人生4カット”風のポートフォリオ名刺！施術の仕上がりが一目で伝わります。空きはプロフィール編集で作品写真を追加して埋めましょう。',
  idCardBtn:'4カットIDカード',idCardTitle:'BEAUTIA IDカード',idCardHint:'写真4枚で自分だけのBEAUTIA IDカード ✨ 保存してインスタストーリー・LINEプロフィールに。QRを読み取ると私のコミュニティプロフィールへ直接つながります。',idPhotosL:'写真（4カット・最大4枚）',idPColorL:'パーソナルカラー（任意）',idTagsL:'スタイルタグ',idTagsPh:'#Chic #Tokyo_Mood #K_Idol_Skin',idScan:'プロフィール',idVerified:'BEAUTIA verified',idNeedPhoto:'写真を1枚以上入れてください',tabIdCard:'📸 4カットID',tabProfileCard:'プロフィール名刺',pcolors:{spring:'スプリングウォーム',summer:'サマークール',autumn:'オータムウォーム',winter:'ウィンタークール'},
- userNotFound:'プロフィールが見つかりません',userPosts:'投稿',userNoPosts:'まだ投稿がありません',userCardCta:'私もBEAUTIA IDカードを作る',userJoinCta:'BEAUTIAに登録して始める',viewUserProfile:'プロフィールを見る',
+ userNotFound:'プロフィールが見つかりません',userPosts:'投稿',userNoPosts:'まだ投稿がありません',userCardCta:'私もBEAUTIA IDカードを作る',userJoinCta:'BEAUTIAに登録して始める',viewUserProfile:'プロフィールを見る',userViewCard:'この人のIDカードを見る',userWish:'ウィッシュリスト',idShowTitle:'BEAUTIA IDカード',idShowSub:'メンバーの4カット名刺 ✨',
  firstCmt:'最初のコメントを残しましょう！',emptyFeed:'まだ投稿がありません。最初の投稿をどうぞ ✏️',transBy:'Beautia 翻訳',gptT:'翻訳',gptTing:'翻訳中…',gptShowOrig:'原文を見る',gptShowTr:'翻訳を見る',gptFail:'翻訳に失敗しました',viewOrigJa:'原文(日本語)を見る ▾',viewOrigKo:'翻訳(韓国語)を見る ▾',foldOrig:'閉じる ▴',
  wHead:'投稿',postLang:'言語（表示されるフィード）',category:'カテゴリー',regionOpt:'地域（任意）',noRegion:'地域問わず',titlePh:'タイトルを入力',contentPh:'韓国・日本のビューティーオーナー・お客様どなたでも！質問・レビュー・情報・雑談歓迎。（暴言・広告・個人情報X）',photo:'写真（最大10枚）',register:'投稿する',
  profile:'プロフィール',nickPh:'ニックネーム',iam:'わたしは…',save:'保存',saved:'保存しました',posted:'投稿しました ✨',scrapped:'保存しました',copied:'リンクをコピーしました（デモ）',needTC:'タイトルと本文を入力してください',
@@ -892,7 +920,7 @@ function coverHtml(p){const imgs=p.imgs||[];const has=imgs.length;const tone=pos
   const chips=`<span class="catchip">${catL(p.cat)}</span>${isNew(p)?`<span class="newchip">${t('new')==='최신'?'NEW':'NEW'}</span>`:''}${has>1?`<span class="morechip"><i class="ti ti-photo"></i>+${has-1}</span>`:''}`;
   const img=has?`<img src="${imgs[0]}" loading="lazy" alt="${esc(p.title)}" onerror="coverFail(this)">`:'';
   return `<div class="cover ${has?'':'poster'}" style="background:${tone}"><div class="ptext">${esc(p.title)}</div>${img}<div class="scrim"></div>${chips}</div>`;}
-function cardMeta(p){return `<div class="chead">${roleBadge(p.role)}<span class="dot"></span><span>${esc(p.nick)}</span>${p.region&&p.region!=='전체'?`<span class="dot"></span><span>${regFlag(p.region)} ${esc(regL(p.region))}</span>`:''}<span class="dot"></span><span>${timeago(p.t)}</span></div>`;}
+function cardMeta(p){const clk=(p.author&&p.nick!=='익명'&&p.nick!=='匿名');const nk=clk?`<span class="cnick" onclick="event.stopPropagation();openUserProfile('${p.author}')">${esc(p.nick)}</span>`:`<span>${esc(p.nick)}</span>`;return `<div class="chead">${roleBadge(p.role)}<span class="dot"></span>${nk}${p.region&&p.region!=='전체'?`<span class="dot"></span><span>${regFlag(p.region)} ${esc(regL(p.region))}</span>`:''}<span class="dot"></span><span>${timeago(p.t)}</span></div>`;}
 function cardActs(p){return `<div class="cact"><span class="a"><i class="ti ti-heart"></i> ${(p.like||0).toLocaleString()}</span><span class="a"><i class="ti ti-message-circle"></i> ${(p.cmtCount||0).toLocaleString()}</span><span class="a"><i class="ti ti-eye"></i> ${(p.views||0).toLocaleString()}</span></div>`;}
 function cardHtml(p,i,lead){
   const has=p.imgs&&p.imgs.length;const tone=posterTone(p);
@@ -1033,6 +1061,34 @@ function homeGridHtml(){
   const grid=`<div class="feedgrid">${feedWithAds(recent.map((p,i)=>cardHtml(p,i,false)))}</div>`;
   return stat+chips+hotRail+head+grid;
 }
+/* ===== ID 카드 쇼케이스 마퀴 (좌우로 흐르는 명함들) ===== */
+function profSubject(pr){const S=pr.shop||{};
+  let photos=(S.photos||[]).slice(0,4);
+  if(photos.length<4){const imgs=DB.posts.filter(p=>p.author===pr.id&&p.imgs&&p.imgs.length).flatMap(p=>p.imgs);for(const im of imgs){if(photos.length>=4)break;if(!photos.includes(im))photos.push(im);}}
+  if(!photos.length&&S.avatar)photos=[S.avatar];
+  return {uid:pr.id,nick:pr.nickname||'',region:pr.region||'',role:pr.role||'guest',photos:photos,pcolor:S.pcolor||'',tags:(S.styleTags||[])};
+}
+function idMiniHtml(s){
+  const ph=(s.photos||[]).filter(Boolean);let cells='';
+  for(let i=0;i<4;i++){const src=ph.length?ph[i%ph.length]:'';cells+=src?`<div class="mm-cut"><img src="${src}" crossorigin="anonymous" loading="lazy" alt=""></div>`:`<div class="mm-cut mm-e"></div>`;}
+  const reg=(s.region&&s.region!=='전체')?regL(s.region):'';
+  const pc=s.pcolor?(T[LANG].pcolors[s.pcolor]||''):'';
+  const sub=[pc,reg].filter(Boolean).join(' · ');
+  return `<div class="idmini" ${s.uid?`onclick="openUserProfile('${s.uid}')"`:''}>
+    <div class="mm-top"><span class="mm-wm">BEAUTIA</span><span class="mm-id">ID</span></div>
+    <div class="mm-cuts">${cells}</div>
+    <div class="mm-foot"><div class="mm-name">${esc(s.nick)}</div><div class="mm-v"><i class="ti ti-rosette-discount-check-filled"></i> verified${sub?' · '+esc(sub):''}</div></div>
+  </div>`;
+}
+function idMarqueeHtml(){
+  const real=(PROFILES||[]).filter(p=>avatarOf(p)||DB.posts.some(x=>x.author===p.id&&x.imgs&&x.imgs.length));
+  const seen={},subs=[];real.concat(SEED_PROS).forEach(pr=>{if(seen[pr.id])return;seen[pr.id]=1;subs.push(profSubject(pr));});
+  if(subs.length<3)return'';
+  const cards=subs.map(idMiniHtml).join('');
+  const dur=Math.max(22,subs.length*4.5);
+  return `<div class="idshow"><div class="idshow-h"><span class="ish-t">📸 ${t('idShowTitle')}</span><span class="ish-s">${t('idShowSub')}</span></div>
+    <div class="idmarquee"><div class="idmarquee-track" style="animation-duration:${dur}s">${cards}${cards}</div></div></div>`;
+}
 function renderMain(){
   if(view==='detail'){renderDetail();return;}
   if(view==='profile'){renderMypage();return;}
@@ -1041,7 +1097,7 @@ function renderMain(){
   const showTop=curMenu===''&&!curQ;
   const home=showTop&&curCat==='전체'&&curRegion==='전체';
   if(home){
-    $('main').innerHTML=bannerHtml()+featuredHtml()+expertScrollHtml()+homeGridHtml();
+    $('main').innerHTML=bannerHtml()+featuredHtml()+idMarqueeHtml()+expertScrollHtml()+homeGridHtml();
     startPromo();pushAds();return;
   }
   const list=visible();
@@ -1105,7 +1161,7 @@ function relatedHtml(p){
 }
 function backFeed(){view='feed';pubUid=null;renderMain();scrollTo({top:0});}
 /* ===== 공개 유저 프로필 (QR/닉네임 → 이 페이지) ===== */
-function findProfile(uid){return (PROFILES||[]).find(p=>p.id===uid);}
+function findProfile(uid){return (PROFILES||[]).find(p=>p.id===uid)||(SEED_PROS||[]).find(p=>p.id===uid);}
 function galHtml(photos){if(!photos||!photos.length)return'';return `<div class="ugal">${photos.slice(0,6).map(s=>`<img src="${esc(s)}" loading="lazy" onclick="lightbox('${s}')">`).join('')}</div>`;}
 function openUserProfile(uid){if(!uid)return;pubUid=uid;view='user';renderUserProfile();scrollTo({top:0});}
 function renderUserProfile(){
@@ -1121,18 +1177,26 @@ function renderUserProfile(){
     info=`<div class="shopcard"><h4><i class="ti ti-scissors"></i> ${roleL('designer')}</h4>${S.career?`<div class="row"><b>${t('careerBadge')}</b> · ${esc(S.career)}</div>`:''}${S.name?`<div class="row"><i class="ti ti-building-store" style="font-size:14px"></i> ${esc(S.name)}</div>`:''}${(S.specialties&&S.specialties.length)?`<div class="chipset">${S.specialties.map(s=>`<span class="c">${svcL(s)}</span>`).join('')}</div>`:''}${galHtml(S.photos)}</div>`;
   }
   const insta=S.insta?`<a href="${esc(instaUrl(S.insta))}" target="_blank" rel="noopener noreferrer" style="color:var(--plum);font-weight:700"><i class="ti ti-brand-instagram"></i> ${esc(igHandle(S.insta))}</a>`:'';
-  const cta=ME.registered
+  const isMe=(ME.uid&&ME.uid===pubUid);
+  const pcTag=S.pcolor?`<span class="pctag">🎨 ${esc(T[LANG].pcolors[S.pcolor]||'')}</span>`:'';
+  const stTags=(S.styleTags&&S.styleTags.length)?`<div class="styletags">${S.styleTags.map(x=>`<span>#${esc(x)}</span>`).join('')}</div>`:'';
+  const styleBlock=(pcTag||stTags)?`<div style="margin:2px 0 14px">${pcTag}${stTags}</div>`:'';
+  let wish='';
+  if(isMe&&ME.scraps&&ME.scraps.length){const ws=DB.posts.filter(p=>ME.scraps.includes(p.id)&&!p.hidden);if(ws.length)wish=`<div class="pseg" style="pointer-events:none;margin-top:20px"><span class="s on">🤍 ${t('userWish')} ${ws.length}</span></div><div style="margin-top:14px"><div class="feedgrid">${ws.map((p,i)=>cardHtml(p,i,false)).join('')}</div></div>`;}
+  const cta=isMe
     ?`<button class="btn btn-primary" style="width:100%;justify-content:center" onclick="openIdCard()"><i class="ti ti-id"></i> ${t('userCardCta')}</button>`
-    :`<button class="btn btn-primary" style="width:100%;justify-content:center" onclick="openLogin()"><i class="ti ti-sparkles"></i> ${t('userJoinCta')}</button>`;
+    :`<button class="btn btn-primary" style="width:100%;justify-content:center" onclick="openIdCardView('${pubUid}')"><i class="ti ti-id"></i> ${t('userViewCard')}</button>`+(ME.registered?'':`<button class="btn btn-ghost" style="width:100%;justify-content:center;margin-top:10px" onclick="openLogin()"><i class="ti ti-sparkles"></i> ${t('userJoinCta')}</button>`);
   $('main').innerHTML=`
     <div class="back" onclick="backFeed()" style="margin-bottom:14px"><i class="ti ti-chevron-left"></i> ${t('back')}</div>
     <div class="profhead">${avHtml(nick,av)}
       <div style="flex:1;min-width:0"><div class="pn">${esc(nick)} ${roleBadge(role)}<span class="vchip"><i class="ti ti-rosette-discount-check-filled"></i> ${t('idVerified')}</span></div>
       <div class="pm">${reg?regFlag(reg)+' '+esc(regL(reg)):''}${insta?((reg?' · ':'')+insta):''}</div>
       ${pr.bio?`<div class="pbio">${esc(pr.bio)}</div>`:''}</div></div>
+    ${styleBlock}
     ${info}
     <div class="pseg" style="pointer-events:none"><span class="s on">${t('userPosts')} ${posts.length}</span></div>
     <div style="margin-top:14px">${posts.length?`<div class="feedgrid">${posts.map((p,i)=>cardHtml(p,i,false)).join('')}</div>`:`<div class="empty" style="border:none">${t('userNoPosts')}</div>`}</div>
+    ${wish}
     <div class="ucta">${cta}</div>`;
 }
 function toggleOrig(e){const o=$('origText');const sh=o.style.display!=='block';o.style.display=sh?'block':'none';e.target.textContent=sh?t('foldOrig'):(LANG==='ja'?t('viewOrigKo'):t('viewOrigJa'));}
@@ -1271,7 +1335,9 @@ async function delMyPost(id){const p=DB.posts.find(x=>x.id===id);if(!p||!p.mine)
   view='feed';openId=null;await loadPosts();renderShell();renderMain();scrollTo({top:0});toast(t('deleted'));}
 
 /* ===== 회원가입 / 프로필 / 마이페이지 ===== */
-let pfMode='login',pfRole='guest',pfInterests=[],pfServices=[],pfSpec=[],pfCareer='',pfAvatar='',pfSitu='',pfKoOK=false,pfPhotos=[];
+let pfMode='login',pfRole='guest',pfInterests=[],pfServices=[],pfSpec=[],pfCareer='',pfAvatar='',pfSitu='',pfKoOK=false,pfPhotos=[],pfPColor='',pfStyleTags='';
+function pfPickPColor(k){pfPColor=(pfPColor===k?'':k);renderProfileForm(false);}
+function pfAddTag(tag){const cur=(pfStyleTags||'').split(/[,#\s]+/).map(s=>s.trim()).filter(Boolean);if(cur.includes(tag)||cur.length>=5)return;pfStyleTags=(pfStyleTags?pfStyleTags.trim()+' ':'')+'#'+tag;renderProfileForm(false);}
 function pickSitu(k){pfSitu=(pfSitu===k?'':k);renderProfileForm(false);}
 function pfPickPhotos(){const inp=document.getElementById('pfPhFile');if(inp)inp.click();}
 async function onPfPhotos(e){const files=[...e.target.files].slice(0,6-pfPhotos.length);e.target.value='';for(const f of files){const u=await uploadImg(f,1100);pfPhotos.push(u);renderProfileForm(false);}}
@@ -1284,11 +1350,11 @@ let gateActive=false;
 function openLoginGate(){if(ME.registered)return;gateActive=true;document.body.classList.add('gated');openLogin();
   const h=$('pHead');if(h){h.textContent=t('gateTitle');if(!document.getElementById('gateNote')){const n=document.createElement('div');n.id='gateNote';n.className='gatenote';n.textContent=t('gateSub');h.insertAdjacentElement('afterend',n);}}}
 function releaseGate(){gateActive=false;document.body.classList.remove('gated');const n=document.getElementById('gateNote');if(n)n.remove();}
-function openCompleteProfile(){pfMode='profile';pfRole='';pfInterests=[];pfServices=[];pfSpec=[];pfCareer='';pfAvatar='';pfSitu='';pfKoOK=false;pfPhotos=[];pfAgreeTerms=false;pfAgreePrivacy=false;pfAgreeMktg=false;openProfileModal();}
+function openCompleteProfile(){pfMode='profile';pfRole='';pfInterests=[];pfServices=[];pfSpec=[];pfCareer='';pfAvatar='';pfSitu='';pfKoOK=false;pfPhotos=[];pfPColor='';pfStyleTags='';pfAgreeTerms=false;pfAgreePrivacy=false;pfAgreeMktg=false;openProfileModal();}
 async function googleLogin(){const {error}=await SB.auth.signInWithOAuth({provider:'google',options:{redirectTo:location.origin+location.pathname}});if(error)toast('구글 로그인 오류: '+error.message);}
 async function emailLogin(){const e=$('pfEmail')?$('pfEmail').value.trim():'';if(!e){toast(t('needContact'));return;}pfEmail=e;const {error}=await SB.auth.signInWithOtp({email:e,options:{shouldCreateUser:true,emailRedirectTo:location.origin+location.pathname}});if(error){toast('전송 실패: '+error.message);return;}pfOtpSent=true;renderProfileForm(false);toast(t('otpSent'));}
 async function verifyEmail(){const c=$('pfCode')?$('pfCode').value.trim():'';if(!c){toast(t('needContact'));return;}const {error}=await SB.auth.verifyOtp({email:pfEmail,token:c,type:'email'});if(error){toast(t('codeWrong'));return;}closeModal();}
-function openEditProfile(){pfMode='edit';pfRole=ME.role==='official'?'guest':ME.role;pfInterests=(ME.interests||[]).slice();pfServices=((ME.shop&&ME.shop.services)||[]).slice();pfSpec=((ME.shop&&ME.shop.specialties)||[]).slice();pfCareer=(ME.shop&&ME.shop.career)||'';pfAvatar=ME.avatar||'';pfSitu=(ME.shop&&ME.shop.situation)||'';pfKoOK=!!(ME.shop&&ME.shop.koOK);pfPhotos=((ME.shop&&ME.shop.photos)||[]).slice();openProfileModal();}
+function openEditProfile(){pfMode='edit';pfRole=ME.role==='official'?'guest':ME.role;pfInterests=(ME.interests||[]).slice();pfServices=((ME.shop&&ME.shop.services)||[]).slice();pfSpec=((ME.shop&&ME.shop.specialties)||[]).slice();pfCareer=(ME.shop&&ME.shop.career)||'';pfAvatar=ME.avatar||'';pfSitu=(ME.shop&&ME.shop.situation)||'';pfKoOK=!!(ME.shop&&ME.shop.koOK);pfPhotos=((ME.shop&&ME.shop.photos)||[]).slice();pfPColor=(ME.shop&&ME.shop.pcolor)||'';pfStyleTags=((ME.shop&&ME.shop.styleTags)||[]).map(x=>'#'+x).join(' ');openProfileModal();}
 function openProfileModal(){$('pHead').textContent=pfMode==='login'?t('authTitle'):(pfMode==='edit'?t('editProfile'):t('profileSetup'));$('pSave').style.display=pfMode==='login'?'none':'';$('pSave').textContent=pfMode==='edit'?t('save'):t('join');renderProfileForm(true);$('profModal').classList.add('on');}
 function pickPfRole(k){pfRole=k;renderProfileForm(false);}
 function toggleArr(which,v){const a=which==='int'?pfInterests:(which==='spec'?pfSpec:pfServices);const i=a.indexOf(v);if(i<0)a.push(v);else a.splice(i,1);renderProfileForm(false);}
@@ -1341,6 +1407,9 @@ function renderProfileForm(first){
   }
   h+=`<div class="wlabel">${t('bioL')}</div><textarea class="field" id="pfBio" maxlength="80" placeholder="${t('bioPh')}" style="margin-top:8px;min-height:58px">${esc(bioVal)}</textarea>`;
   h+=`<div class="wlabel">${t('instaL')}</div><input class="field" id="pfInsta" maxlength="60" placeholder="${t('instaPh')}" value="${esc(instaVal)}" style="margin-top:8px">`;
+  h+=`<div class="wlabel">${t('idPColorL')}</div><div class="wrow">`+PCOLORS.map(k=>`<span class="wchip ${pfPColor===k?'on':''}" onclick="pfPickPColor('${k}')">${T[LANG].pcolors[k]}</span>`).join('')+`</div>`;
+  h+=`<div class="wlabel">${t('idTagsL')}</div><input class="field" id="pfStyleTags" maxlength="80" placeholder="${esc(t('idTagsPh'))}" value="${esc(pfStyleTags)}" style="margin-top:8px" oninput="pfStyleTags=this.value">`;
+  h+=`<div class="id-sugg">`+ID_TAG_SUGG.map(s=>`<span onclick="pfAddTag('${s}')">#${s}</span>`).join('')+`</div>`;
   if(pfMode==='profile'){
     h+=`<div class="wlabel">${t('agreements')} <span style="color:var(--rose)">*</span></div>
       <label class="agree"><input type="checkbox" id="agTerms" ${pfAgreeTerms?'checked':''} onchange="pfAgreeTerms=this.checked"><span class="req">[${t('req')}]</span> ${t('agreeTerms')}<a href="terms.html" target="_blank" rel="noopener noreferrer" onclick="event.stopPropagation()">${t('view')}</a></label>
@@ -1360,6 +1429,7 @@ async function saveProfile(){
   const area=$('pfRegionSel').value;
   const gv=id=>$(id)?$(id).value.trim():'';
   let shop={avatar:pfAvatar||'',insta:gv('pfInsta')};
+  shop.pcolor=pfPColor||'';shop.styleTags=(pfStyleTags||'').split(/[,#\s]+/).map(s=>s.trim()).filter(Boolean).slice(0,5);
   if(pfRole==='owner'){shop.name=gv('pfShop');shop.area=area;shop.services=pfServices.slice();shop.locDetail=gv('pfLoc');shop.hours=gv('pfHours');shop.koOK=!!pfKoOK;shop.shopDesc=gv('pfDesc');shop.photos=pfPhotos.slice();}
   else if(pfRole==='designer'){shop.name=gv('pfShop');shop.area=area;shop.career=($('pfCareer')?gv('pfCareer'):pfCareer);shop.specialties=pfSpec.slice();shop.photos=pfPhotos.slice();}
   else{shop.situation=pfSitu||'';}
@@ -1423,11 +1493,12 @@ async function nativeShareNow(){const p=DB.posts.find(x=>x.id===sharePid);if(!p)
   try{if(navigator.share){await navigator.share({title:p.title,text:shareText(p),url:url});return;}}catch(e){return;}
   try{await navigator.clipboard.writeText(shareText(p)+'\n'+url);}catch(e){}toast(t('linkCopied'));}
 let cardPid=null,cardRatio='45',cardMode='post',cardStyle='id';
-let idPhotos=[],idPColor='',idTags='';
+let idPhotos=[],idPColor='',idTags='',idView=false,idViewProf=null;
 const PCOLORS=['spring','summer','autumn','winter'];
 const ID_TAG_SUGG=['Chic','Tokyo_Mood','K_Idol_Skin','Natural','Y2K','Clean_Girl','Osaka_Vibe'];
 function ratioTabsHtml(){
   if(cardMode==='id'){
+    if(idView)return '';
     if(ME.role==='designer')return `<span class="${cardStyle==='id'?'on':''}" onclick="setCardStyle('id')">${t('tabIdCard')}</span><span class="${cardStyle==='profile'?'on':''}" onclick="setCardStyle('profile')">${t('tabProfileCard')}</span>`;
     return '';
   }
@@ -1452,8 +1523,8 @@ function buildCaption(){if(cardMode==='id')return (cardStyle==='profile')?buildD
   const tags=['#일본뷰티','#'+reg.replace(/\s/g,''),'#'+catL(p.cat),'#일본여행','#beautia','#일본미용실','#일본네일'];
   return p.title+'\n\n📍 '+reg+' · '+catL(p.cat)+'\n일본어 0이어도 한국어로 예약·통역 대행 (무료)\n후기 더보기 → @beautia.japan\n\n'+tags.join(' ');}
 function downloadCard(){const fr=$('cardFrame');if(typeof html2canvas==='undefined'){toast('잠시 후 다시 시도해주세요');return;}
-  if(cardMode==='id'&&cardStyle==='id'&&!idPhotos.length){toast(t('idNeedPhoto'));return;}
-  const fname=cardMode==='id'?('beautia-id-'+(cardStyle==='profile'?'card':'4cut')+'-'+((ME.nick||'me').replace(/\s/g,''))+'.png'):('beautia-card-'+cardPid+'.png');
+  if(cardMode==='id'&&cardStyle==='id'&&!(cardSubject().photos||[]).length){toast(t('idNeedPhoto'));return;}
+  const fname=cardMode==='id'?('beautia-id-'+(cardStyle==='profile'?'card':'4cut')+'-'+(((cardSubject().nick)||'me').replace(/\s/g,''))+'.png'):('beautia-card-'+cardPid+'.png');
   html2canvas(fr,{scale:3,useCORS:true,backgroundColor:null}).then(cv=>{const a=document.createElement('a');a.href=cv.toDataURL('image/png');a.download=fname;document.body.appendChild(a);a.click();a.remove();}).catch(e=>{toast('이미지 저장 실패 (사진 보안 정책)');});}
 /* ===== 디자이너 명함 (마케팅 도구) ===== */
 function igHandle(v){v=(v||'').trim();if(!v)return '@beautia.japan';return '@'+v.replace(/^https?:\/\/(www\.)?instagram\.com\//,'').replace(/^@/,'').replace(/\/$/,'');}
@@ -1477,32 +1548,41 @@ function designerCardInner(){
   </div>`;}
 /* ===== BEAUTIA ID 카드 (프리미엄 네컷 · 전 회원 · QR 바이럴) ===== */
 function idTagList(){return (idTags||'').split(/[,#\s]+/).map(s=>s.trim()).filter(Boolean).slice(0,5);}
-function idCardUrl(){const code=ME.refCode||ME.ref||'';return location.origin+location.pathname+'?ref='+encodeURIComponent(code)+(ME.uid?('&u='+encodeURIComponent(ME.uid)):'');}
+/* 카드 주체: 내 카드 만들기(편집) vs 남의 카드 보기(읽기전용) 공용 */
+function cardSubject(){
+  if(idView&&idViewProf){const pr=idViewProf,S=pr.shop||{};
+    let photos=(S.photos||[]).slice(0,4);
+    if(photos.length<4){const imgs=DB.posts.filter(p=>p.author===pr.id&&p.imgs&&p.imgs.length).flatMap(p=>p.imgs);for(const im of imgs){if(photos.length>=4)break;if(!photos.includes(im))photos.push(im);}}
+    return {nick:pr.nickname||'',region:pr.region||'',role:pr.role||'guest',koOK:!!S.koOK,refCode:pr.ref_code||'',uid:pr.id,photos:photos,pcolor:S.pcolor||'',tags:(S.styleTags||[])};
+  }
+  return {nick:ME.nick||'',region:ME.region||'',role:ME.role||'guest',koOK:!!(ME.shop&&ME.shop.koOK),refCode:ME.refCode||ME.ref||'',uid:ME.uid,photos:idPhotos,pcolor:idPColor,tags:idTagList()};
+}
+function idCardUrl(){const s=cardSubject();const code=s.refCode||'';return location.origin+location.pathname+'?ref='+encodeURIComponent(code)+(s.uid?('&u='+encodeURIComponent(s.uid)):'');}
 function qrDataUrl(text){try{if(typeof qrcode==='undefined')return '';const q=qrcode(0,'M');q.addData(text||location.href);q.make();return q.createDataURL(5,6);}catch(e){return '';}}
 function idCardInner(){
-  const photos=idPhotos.slice(0,4);
+  const s=cardSubject();const photos=(s.photos||[]).slice(0,4);
   let cells='';
   for(let i=0;i<4;i++){const ph=photos[i];
     cells+= ph?`<div class="id-cut"><img src="${ph}" crossorigin="anonymous" alt=""><span class="id-no">0${i+1}</span></div>`
               :`<div class="id-cut id-empty"><i class="ti ti-camera-plus"></i></div>`;}
-  const reg=(ME.region&&ME.region!=='전체')?regL(ME.region):'';
-  const pc=idPColor?(T[LANG].pcolors[idPColor]||''):'';
+  const reg=(s.region&&s.region!=='전체')?regL(s.region):'';
+  const pc=s.pcolor?(T[LANG].pcolors[s.pcolor]||''):'';
   const meta=[pc,reg].filter(Boolean);
   const metaHtml=meta.length?`<div class="id-meta">${esc(meta.join('  ·  '))}</div>`:'';
-  const tags=idTagList().map(tg=>'#'+tg).join('  ');
+  const tags=(s.tags||[]).map(tg=>'#'+tg).join('  ');
   const tagsHtml=tags?`<div class="id-tags">${esc(tags)}</div>`:'';
   const qr=qrDataUrl(idCardUrl());
   const qrHtml=qr?`<div class="id-qrwrap"><img class="id-qr" src="${qr}" alt="QR"><div class="id-scan">${esc(t('idScan'))}</div></div>`:'';
   return `<div class="id-top"><span class="id-wm">BEAUTIA</span><span class="id-kind">ID · ${new Date().getFullYear()}</span></div>
     <div class="id-cuts">${cells}</div>
     <div class="id-foot"><div class="id-foot-main">
-      <div class="id-name">${esc(ME.nick||'')}</div>
+      <div class="id-name">${esc(s.nick)}</div>
       <div class="id-verified"><i class="ti ti-rosette-discount-check-filled"></i> ${esc(t('idVerified'))}</div>
       ${metaHtml}${tagsHtml}
     </div>${qrHtml}</div>`;}
 function renderIdControls(){
   const box=$('idControls');if(!box)return;
-  const show=(cardMode==='id'&&cardStyle==='id');box.style.display=show?'':'none';
+  const show=(cardMode==='id'&&cardStyle==='id'&&!idView);box.style.display=show?'':'none';
   if(!show){box.innerHTML='';return;}
   let ph=idPhotos.map((s,i)=>`<div class="ptile" style="background-image:url('${s}')"><div class="rm" onclick="idRmPhoto(${i})">×</div></div>`).join('');
   if(idPhotos.length<4)ph+=`<div class="ptile add" onclick="$('idFile').click()"><i class="ti ti-camera-plus"></i></div>`;
@@ -1522,11 +1602,11 @@ async function onIdPick(e){const files=[...e.target.files].slice(0,4-idPhotos.le
 function idRmPhoto(i){idPhotos.splice(i,1);idRefreshAll();}
 function idPickColor(k){idPColor=(idPColor===k?'':k);idRefreshAll();}
 function idAddTag(tag){const cur=idTagList();if(cur.includes(tag)||cur.length>=5)return;idTags=(idTags?idTags.trim()+' ':'')+'#'+tag;idRefreshAll();}
-function buildIdCaption(){const reg=(ME.region&&ME.region!=='전체')?regL(ME.region):'';
-  const pc=idPColor?(T[LANG].pcolors[idPColor]):'';
+function buildIdCaption(){const s=cardSubject();const reg=(s.region&&s.region!=='전체')?regL(s.region):'';
+  const pc=s.pcolor?(T[LANG].pcolors[s.pcolor]):'';
   const head=['My BEAUTIA ID ✶'];const sub=[pc,reg].filter(Boolean).join(' · ');if(sub)head.push(sub);
   head.push('나만의 뷰티 ID 카드 만들기 → '+idCardUrl());
-  const tags=idTagList().map(x=>'#'+x).concat(['#beautia','#뷰티네컷','#일본뷰티','#K뷰티']);
+  const tags=(s.tags||[]).map(x=>'#'+x).concat(['#beautia','#뷰티네컷','#일본뷰티','#K뷰티']);
   return head.join('\n')+'\n\n'+tags.join(' ');}
 function buildDesignerCaption(){const S=ME.shop||{};const reg=(ME.region&&ME.region!=='전체')?regL(ME.region):'일본';
   const specs=(S.specialties||[]).map(svcL).join(' · ');
@@ -1539,11 +1619,21 @@ function buildDesignerCaption(){const S=ME.shop||{};const reg=(ME.region&&ME.reg
   return lines.join('\n')+'\n\n'+tags.join(' ');}
 function openIdCard(){
   if(!ME.registered){openLogin();return;}
+  idView=false;idViewProf=null;
   cardMode='id';cardRatio='45';cardStyle='id';
-  if(!idPhotos.length){const seed=(ME.shop&&ME.shop.photos)||[];idPhotos=seed.slice(0,4);}
+  if(!idPhotos.length){let seed=((ME.shop&&ME.shop.photos)||[]).slice(0,4);
+    if(seed.length<4){const mine=DB.posts.filter(p=>p.author===ME.uid&&p.imgs&&p.imgs.length).flatMap(p=>p.imgs);for(const im of mine){if(seed.length>=4)break;if(!seed.includes(im))seed.push(im);}}
+    idPhotos=seed;}
+  if(!idPColor)idPColor=(ME.shop&&ME.shop.pcolor)||'';
+  if(!idTags){const st=(ME.shop&&ME.shop.styleTags)||[];idTags=st.map(x=>'#'+x).join(' ');}
   $('cardHd').textContent=t('idCardTitle');$('cardDl').textContent='⬇ '+t('dlCard');$('cardCap').textContent=t('copyCap');$('cardHint').textContent=t('idCardHint');
   $('cardDl').onclick=downloadCard;$('cardCap').onclick=copyCaption;
   $('ratioTabs').innerHTML=ratioTabsHtml();renderIdControls();renderCard();$('capBox').textContent=buildCaption();$('cardModal').classList.add('on');}
+function openIdCardView(uid){const pr=findProfile(uid);if(!pr){toast(t('userNotFound'));return;}
+  idView=true;idViewProf=pr;cardMode='id';cardRatio='45';cardStyle='id';
+  $('cardHd').textContent=t('idCardTitle');$('cardDl').textContent='⬇ '+t('dlCard');$('cardCap').textContent=t('copyCap');$('cardHint').textContent=t('idCardHint');
+  $('cardDl').onclick=downloadCard;$('cardCap').onclick=copyCaption;
+  $('ratioTabs').innerHTML='';renderIdControls();renderCard();$('capBox').textContent=buildCaption();$('cardModal').classList.add('on');}
 function openDesignerCard(){return openIdCard();}
 function copyCaption(){const txt=$('capBox').textContent;try{navigator.clipboard.writeText(txt);}catch(e){}toast(t('capCopied'));}
 let myTab='posts';
