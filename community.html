@@ -563,8 +563,10 @@ textarea.field{min-height:200px;resize:vertical;line-height:1.75;}
 .id-card .id-top{display:flex;align-items:center;justify-content:space-between;padding:15px 16px 11px;}
 .id-card .id-wm{font-size:13px;font-weight:700;letter-spacing:.34em;}
 .id-card .id-kind{font-size:8px;font-weight:700;letter-spacing:.2em;color:#bcb4af;}
-.id-card .id-cuts{display:flex;flex-direction:column;gap:3px;padding:0 16px;}
+.id-card .id-cuts{display:grid;grid-template-columns:1fr;gap:3px;padding:0 16px;}
+.id-card .id-cuts.cols2{grid-template-columns:1fr 1fr;}
 .id-card .id-cut{width:100%;height:150px;overflow:hidden;background:#f4f1ef center/cover no-repeat;position:relative;}
+.id-card .id-cuts.cols2 .id-cut{height:118px;}
 .id-card .id-cut img{width:100%;height:100%;object-fit:cover;display:block;}
 .id-card .id-deco{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:6;}
 .id-card .id-cut .id-no{position:absolute;left:8px;bottom:6px;font-size:8.5px;font-weight:700;letter-spacing:.12em;color:rgba(255,255,255,.95);text-shadow:0 1px 3px rgba(0,0,0,.5);}
@@ -761,7 +763,7 @@ const T={ko:{
  ruleReview:'후기 작성 +500P',rulePhoto:'사진 3장 이상 +100P',ruleDetail:'상세 후기(300자+) +100P',ruleComment:'댓글 +20P',ruleInvite:'친구 초대 +3,000P',
  designerDesc:'뷰티 디자이너 (시술 담당)',careerL:'경력',careerPh:'예: 헤어 디자이너 5년차 · 도쿄 3년',specialtiesL:'전문 시술',affiliationL:'소속 샵 (선택)',affiliationPh:'예: 시부야헤어룸',photoL:'프로필 사진',photoHint:'얼굴 또는 작업물 사진을 올리면 신뢰도가 올라가요',addPhoto:'사진 추가',changePhoto:'사진 변경',careerBadge:'경력',
  instaL:'인스타그램 (선택)',instaPh:'@아이디 또는 링크',situationL:'현재 상태',shopDescL:'가게 소개',shopDescPh:'가게 분위기·강점·한국 손님 환영 메시지 등',hoursL:'영업시간 (선택)',hoursPh:'예: 11:00–20:00 · 수요일 휴무',locDetailL:'세부 위치 (선택)',locDetailPh:'예: 시부야역 3번 출구 도보 3분',koOKL:'한국어 응대 가능',situations:{travel:'여행 예정',whv:'워홀·유학',jp:'일본 거주',kr:'한국 거주'},
- shopPhotosL:'가게 사진 (선택)',workPhotosL:'작업 사진 (선택)',photosHint:'최대 6장 · 홈 전문가 섹션에 노출돼요',portfolioL:'포트폴리오 사진',portfolioHint:'명함·네컷 ID 카드에 들어갈 사진이에요 (최대 6장)',decoFrameL:'🖼 전체 프레임 (투명 PNG · 카드 전체에 얹힘)',decoBgL:'🎨 배경 이미지 (PNG)',decoHint:'카드 전체를 덮는 프레임이에요. 한 칸씩 꾸미려면 아래 스티커를 쓰세요!',frameColorL:'카드 프레임 색',decoStkL:'스티커 (탭해서 추가 · 드래그로 이동)',decoStkHint:'이모지나 PNG를 올린 뒤 드래그로 옮기고, 선택하면 크기·회전·삭제할 수 있어요.',stkSelected:'선택됨:',sharePrep:'공유 이미지 만드는 중…',shareLinkCopied:'이미지 링크 복사됨! 붙여넣으면 네컷이 그대로 보여요',shareFallbackDl:'이미지를 저장했어요 — 공유할 때 첨부해 주세요',proTitle:'한·일 뷰티 전문가',proAll:'전체',proOwner:'사장님 샵',proDesigner:'디자이너',proMore:'전체보기',bookPro:'카톡으로 예약·문의',koBadge:'한국어 OK',
+ shopPhotosL:'가게 사진 (선택)',workPhotosL:'작업 사진 (선택)',photosHint:'최대 6장 · 홈 전문가 섹션에 노출돼요',portfolioL:'포트폴리오 사진',portfolioHint:'명함·네컷 ID 카드에 들어갈 사진이에요 (최대 6장)',decoFrameL:'🖼 테두리 프레임 (사진은 안 가려요)',decoBgL:'🎨 배경 이미지 (PNG)',decoHint:'이미지를 올리면 가운데를 비우고 카드 테두리에만 둘러요. 사진은 그대로 보여요.',frameColorL:'카드 프레임 색',frontPhotoL:'앞면 사진',layoutL:'레이아웃 (컬럼)',col1:'1열 · 세로 네컷',col2:'2열 · 2×2',decoStkL:'스티커 (탭해서 추가 · 드래그로 이동)',decoStkHint:'이모지나 PNG를 올린 뒤 드래그로 옮기고, 선택하면 크기·회전·삭제할 수 있어요.',stkSelected:'선택됨:',sharePrep:'공유 이미지 만드는 중…',shareLinkCopied:'이미지 링크 복사됨! 붙여넣으면 네컷이 그대로 보여요',shareFallbackDl:'이미지를 저장했어요 — 공유할 때 첨부해 주세요',proTitle:'한·일 뷰티 전문가',proAll:'전체',proOwner:'사장님 샵',proDesigner:'디자이너',proMore:'전체보기',bookPro:'카톡으로 예약·문의',koBadge:'한국어 OK',
  selRoleReq:'어떤 회원이신가요? (필수)',needRole:'역할을 먼저 선택해주세요',rolePickFirst:'역할을 선택하면 맞춤 정보를 입력할 수 있어요',
  roles:{guest:'손님',owner:'사장님',designer:'디자이너',official:'Beautia'},krGroup:'🇰🇷 한국',jpGroup:'🇯🇵 일본',krShort:'🇰🇷',jpShort:'🇯🇵',member:'커뮤니티 회원'
 },ja:{
@@ -795,7 +797,7 @@ const T={ko:{
  ruleReview:'レビュー投稿 +500P',rulePhoto:'写真3枚以上 +100P',ruleDetail:'詳細レビュー(300字+) +100P',ruleComment:'コメント +20P',ruleInvite:'友達招待 +3,000P',
  designerDesc:'ビューティーデザイナー（施術担当）',careerL:'経歴',careerPh:'例: ヘアデザイナー5年 · 東京3年',specialtiesL:'得意な施術',affiliationL:'所属サロン（任意）',affiliationPh:'例: 渋谷ヘアルーム',photoL:'プロフィール写真',photoHint:'顔または作品の写真でより信頼されます',addPhoto:'写真を追加',changePhoto:'写真を変更',careerBadge:'経歴',
  instaL:'インスタグラム（任意）',instaPh:'@IDまたはリンク',situationL:'現在の状況',shopDescL:'店舗紹介',shopDescPh:'店の雰囲気・強み・韓国のお客様歓迎メッセージなど',hoursL:'営業時間（任意）',hoursPh:'例: 11:00–20:00 · 水曜定休',locDetailL:'詳しい場所（任意）',locDetailPh:'例: 渋谷駅3番出口 徒歩3分',koOKL:'韓国語対応可能',situations:{travel:'旅行予定',whv:'ワーホリ・留学',jp:'日本在住',kr:'韓国在住'},
- shopPhotosL:'店舗の写真（任意）',workPhotosL:'作品の写真（任意）',photosHint:'最大6枚 · ホームの専門家セクションに表示されます',portfolioL:'ポートフォリオ写真',portfolioHint:'名刺・4カットIDカードに入る写真です（最大6枚）',decoFrameL:'🖼 全体フレーム（透明PNG・カード全体に重なる）',decoBgL:'🎨 背景画像（PNG）',decoHint:'カード全体を覆うフレームです。1コマずつ飾るなら下のステッカーを使ってください！',frameColorL:'カードのフレーム色',decoStkL:'ステッカー（タップで追加・ドラッグで移動）',decoStkHint:'絵文字やPNGを追加してドラッグで移動、選択するとサイズ・回転・削除ができます。',stkSelected:'選択中:',sharePrep:'シェア画像を作成中…',shareLinkCopied:'画像リンクをコピー！貼り付けると4カットがそのまま表示されます',shareFallbackDl:'画像を保存しました — シェア時に添付してください',proTitle:'韓・日ビューティー専門家',proAll:'すべて',proOwner:'サロン',proDesigner:'デザイナー',proMore:'すべて見る',bookPro:'カカオで予約・問い合わせ',koBadge:'韓国語OK',
+ shopPhotosL:'店舗の写真（任意）',workPhotosL:'作品の写真（任意）',photosHint:'最大6枚 · ホームの専門家セクションに表示されます',portfolioL:'ポートフォリオ写真',portfolioHint:'名刺・4カットIDカードに入る写真です（最大6枚）',decoFrameL:'🖼 縁フレーム（写真は隠れません）',decoBgL:'🎨 背景画像（PNG）',decoHint:'画像をのせると中央を空けてカードの縁だけに回ります。写真はそのまま見えます。',frameColorL:'カードのフレーム色',frontPhotoL:'表面の写真',layoutL:'レイアウト（列）',col1:'1列・縦4カット',col2:'2列・2×2',decoStkL:'ステッカー（タップで追加・ドラッグで移動）',decoStkHint:'絵文字やPNGを追加してドラッグで移動、選択するとサイズ・回転・削除ができます。',stkSelected:'選択中:',sharePrep:'シェア画像を作成中…',shareLinkCopied:'画像リンクをコピー！貼り付けると4カットがそのまま表示されます',shareFallbackDl:'画像を保存しました — シェア時に添付してください',proTitle:'韓・日ビューティー専門家',proAll:'すべて',proOwner:'サロン',proDesigner:'デザイナー',proMore:'すべて見る',bookPro:'カカオで予約・問い合わせ',koBadge:'韓国語OK',
  selRoleReq:'どちらの会員ですか？（必須）',needRole:'まず役割を選択してください',rolePickFirst:'役割を選ぶと、それに合わせた情報を入力できます',
  roles:{guest:'ゲスト',owner:'オーナー',designer:'デザイナー',official:'Beautia'},krGroup:'🇰🇷 韓国',jpGroup:'🇯🇵 日本',krShort:'🇰🇷',jpShort:'🇯🇵',member:'コミュニティ会員'
 }};
@@ -1527,7 +1529,7 @@ async function saveProfile(){
   let shop={avatar:pfAvatar||'',insta:gv('pfInsta')};
   shop.pcolor=pfPColor||'';shop.styleTags=(pfStyleTags||'').split(/[,#\s]+/).map(s=>s.trim()).filter(Boolean).slice(0,5);
   shop.decoFrame=(ME.shop&&ME.shop.decoFrame)||'';shop.decoBg=(ME.shop&&ME.shop.decoBg)||'';
-  shop.stickers=(ME.shop&&ME.shop.stickers)||[];shop.frameColor=(ME.shop&&ME.shop.frameColor)||'';shop.cardCuts=(ME.shop&&ME.shop.cardCuts)||[];
+  shop.stickers=(ME.shop&&ME.shop.stickers)||[];shop.frameColor=(ME.shop&&ME.shop.frameColor)||'';shop.cardCuts=(ME.shop&&ME.shop.cardCuts)||[];shop.frontPhoto=(ME.shop&&ME.shop.frontPhoto)||'';shop.cols=(ME.shop&&ME.shop.cols)||1;
   if(pfRole==='owner'){shop.name=gv('pfShop');shop.area=area;shop.services=pfServices.slice();shop.locDetail=gv('pfLoc');shop.hours=gv('pfHours');shop.koOK=!!pfKoOK;shop.shopDesc=gv('pfDesc');shop.photos=pfPhotos.slice();}
   else if(pfRole==='designer'){shop.name=gv('pfShop');shop.area=area;shop.career=($('pfCareer')?gv('pfCareer'):pfCareer);shop.specialties=pfSpec.slice();shop.photos=pfPhotos.slice();}
   else{shop.situation=pfSitu||'';shop.photos=pfPhotos.slice();}
@@ -1592,7 +1594,7 @@ async function nativeShareNow(){const p=DB.posts.find(x=>x.id===sharePid);if(!p)
   try{await navigator.clipboard.writeText(shareText(p)+'\n'+url);}catch(e){}toast(t('linkCopied'));}
 let cardPid=null,cardRatio='45',cardMode='post',cardStyle='id';
 let idPhotos=[],idPColor='',idTags='',idView=false,idViewProf=null,idDecoFrame='',idDecoBg='';
-let idStickers=[],idSelStk=-1,idFrameColor='',_cutIdx=-1,stkDrag=null;
+let idStickers=[],idSelStk=-1,idFrameColor='',_cutIdx=-1,stkDrag=null,idFrontPhoto='',idCols=1;
 const CARDW=244;
 const FRAME_COLORS=['#ffffff','#FBF5EE','#F7DCE4','#DDEFE8','#DCE8F5','#F7EFD2','#E7DEF3'];
 const STK_EMOJI=['✨','💖','🌷','🎀','⭐','🔥','🦋','🍓','💎','😎','🫧','🍒','💄','🌙'];
@@ -1615,7 +1617,8 @@ function setCardRatio(r){cardRatio=r;$('ratioTabs').innerHTML=ratioTabsHtml();re
 function renderCard(){const fr=$('cardFrame');fr.style.background='';
   if(cardMode==='id'){
     if(cardStyle==='front'){fr.className='cardframe front-card';fr.innerHTML=frontCardInner();}
-    else{fr.className='cardframe id-card';fr.innerHTML=idCardInner();const fc=cardSubject().frameColor;if(fc)fr.style.background=fc;}
+    else{fr.className='cardframe id-card';fr.innerHTML=idCardInner();}
+    const fc=cardSubject().frameColor;if(fc)fr.style.background=fc;
     return;
   }
   fr.className='cardframe'+(cardRatio==='916'?' r916':'');
@@ -1656,7 +1659,7 @@ function frontCardInner(){
   const pc=s.pcolor?(T[LANG].pcolors[s.pcolor]||''):'';
   const meta=[pc,reg].filter(Boolean).join('  ·  ');
   const pcDot=s.pcolor?`<span class="pc-dot" style="background:${PCOL_GRAD[s.pcolor]}"></span>`:'';
-  const hero=s.avatar||(s.photos&&s.photos[0])||'';
+  const hero=s.frontPhoto||s.avatar||(s.photos&&s.photos[0])||'';
   const av=hero?`<div class="fc-av" style="background-image:url('${hero}')"></div>`:`<div class="fc-av fc-ph" style="background:${avColor(s.nick)}">${esc((s.nick||'?')[0])}</div>`;
   const bg=s.decoBg?`<div class="fc-bg" style="background-image:url('${s.decoBg}')"></div>`:'';
   const isPro=(s.role==='designer'||s.role==='owner');
@@ -1682,10 +1685,10 @@ function cardSubject(){
   if(idView&&idViewProf){const pr=idViewProf,S=pr.shop||{};
     let photos=(S.photos||[]).slice(0,4);
     if(photos.length<4){const imgs=DB.posts.filter(p=>p.author===pr.id&&p.imgs&&p.imgs.length).flatMap(p=>p.imgs);for(const im of imgs){if(photos.length>=4)break;if(!photos.includes(im))photos.push(im);}}
-    return {nick:pr.nickname||'',region:pr.region||'',role:pr.role||'guest',koOK:!!S.koOK,refCode:pr.ref_code||'',uid:pr.id,photos:photos,pcolor:S.pcolor||'',tags:(S.styleTags||[]),avatar:S.avatar||'',insta:S.insta||'',career:S.career||'',specialties:(S.specialties||[]),shopName:S.name||'',bio:pr.bio||'',decoFrame:S.decoFrame||'',decoBg:S.decoBg||'',stickers:(S.stickers||[]),frameColor:S.frameColor||''};
+    return {nick:pr.nickname||'',region:pr.region||'',role:pr.role||'guest',koOK:!!S.koOK,refCode:pr.ref_code||'',uid:pr.id,photos:photos,pcolor:S.pcolor||'',tags:(S.styleTags||[]),avatar:S.avatar||'',insta:S.insta||'',career:S.career||'',specialties:(S.specialties||[]),shopName:S.name||'',bio:pr.bio||'',decoFrame:S.decoFrame||'',decoBg:S.decoBg||'',stickers:(S.stickers||[]),frameColor:S.frameColor||'',frontPhoto:S.frontPhoto||'',cols:S.cols||1};
   }
   const MS=ME.shop||{};
-  return {nick:ME.nick||'',region:ME.region||'',role:ME.role||'guest',koOK:!!MS.koOK,refCode:ME.refCode||ME.ref||'',uid:ME.uid,photos:idPhotos,pcolor:idPColor,tags:idTagList(),avatar:ME.avatar||'',insta:MS.insta||'',career:MS.career||'',specialties:(MS.specialties||[]),shopName:MS.name||'',bio:ME.bio||'',decoFrame:idDecoFrame,decoBg:idDecoBg,stickers:idStickers,frameColor:idFrameColor};
+  return {nick:ME.nick||'',region:ME.region||'',role:ME.role||'guest',koOK:!!MS.koOK,refCode:ME.refCode||ME.ref||'',uid:ME.uid,photos:idPhotos,pcolor:idPColor,tags:idTagList(),avatar:ME.avatar||'',insta:MS.insta||'',career:MS.career||'',specialties:(MS.specialties||[]),shopName:MS.name||'',bio:ME.bio||'',decoFrame:idDecoFrame,decoBg:idDecoBg,stickers:idStickers,frameColor:idFrameColor,frontPhoto:idFrontPhoto,cols:idCols};
 }
 /* 스티커(이모지·PNG) 레이어 — 드래그로 위치, 버튼으로 크기/회전 */
 function stkLayerHtml(s){const arr=s.stickers||[];if(!arr.length)return'';
@@ -1721,7 +1724,7 @@ function idCardInner(){
   const qr=qrSrc(idCardUrl());
   const qrHtml=qr?`<div class="id-qrwrap"><img class="id-qr" src="${qr}" crossorigin="anonymous" alt="QR"><div class="id-scan">${esc(t('idScan'))}</div></div>`:'';
   return `<div class="id-top"><span class="id-wm">BEAUTIA</span><span class="id-kind">${kind}</span></div>
-    <div class="id-cuts">${cells}</div>
+    <div class="id-cuts${(s.cols||1)===2?' cols2':''}">${cells}</div>
     <div class="id-foot"><div class="id-foot-main">
       <div class="id-who">${av}<div class="id-name">${esc(s.nick)}</div></div>
       <div class="id-verified"><i class="ti ti-rosette-discount-check-filled"></i> ${esc(t('idVerified'))}</div>
@@ -1746,7 +1749,11 @@ function renderIdControls(){
   const decoTile=curDeco
     ?`<div class="ptile" style="background-image:url('${curDeco}')"><div class="rm" onclick="idDecoRm()">×</div></div>`
     :`<div class="ptile add" onclick="$('idDecoFile').click()"><i class="ti ti-sparkles"></i></div>`;
-  box.innerHTML=`${photoBlk}
+  const frontPhotoBlk=(cardStyle==='front')?`<div class="wlabel">${t('frontPhotoL')}</div>
+    <input type="file" id="frontPhotoFile" accept="image/*" style="display:none" onchange="onFrontPhotoPick(event)">
+    <div class="ptiles">${idFrontPhoto?`<div class="ptile" style="background-image:url('${idFrontPhoto}')"><div class="rm" onclick="frontPhotoRm()">×</div></div>`:`<div class="ptile add" onclick="$('frontPhotoFile').click()"><i class="ti ti-camera-plus"></i></div>`}</div>`:'';
+  const layoutBlk=(cardStyle==='id')?`<div class="wlabel">${t('layoutL')}</div><div class="wrow"><span class="wchip ${idCols===1?'on':''}" onclick="idPickCols(1)">${t('col1')}</span><span class="wchip ${idCols===2?'on':''}" onclick="idPickCols(2)">${t('col2')}</span></div>`:'';
+  box.innerHTML=`${photoBlk}${layoutBlk}${frontPhotoBlk}
     <div class="wlabel">${t('idPColorL')}</div>${pc}
     <div class="wlabel">${t('idTagsL')}</div>
     <input class="field" id="idTagsInput" maxlength="80" placeholder="${esc(t('idTagsPh'))}" value="${esc(idTags)}" oninput="idTags=this.value;idRefresh()">
@@ -1754,7 +1761,7 @@ function renderIdControls(){
     <div class="wlabel">${decoLbl}</div><div class="s" style="font-size:11.5px;color:var(--sub);margin-top:3px">${t('decoHint')}</div>
     <input type="file" id="idDecoFile" accept="image/png,image/*" style="display:none" onchange="onIdDecoPick(event)">
     <div class="ptiles">${decoTile}</div>
-    ${cardStyle==='id'?`<div class="wlabel">${t('frameColorL')}</div><div class="pcrow">`+FRAME_COLORS.map(c=>`<div class="pcswatch ${idFrameColor===c?'on':''}" onclick="idPickFrame('${c}')"><span class="dot" style="background:${c};box-shadow:0 0 0 1px var(--line) inset"></span></div>`).join('')+`</div>`:''}
+    <div class="wlabel">${t('frameColorL')}</div><div class="pcrow">`+FRAME_COLORS.map(c=>`<div class="pcswatch ${idFrameColor===c?'on':''}" onclick="idPickFrame('${c}')"><span class="dot" style="background:${c};box-shadow:0 0 0 1px var(--line) inset"></span></div>`).join('')+`</div>
     <div class="wlabel">${t('decoStkL')}</div>
     <div class="stkpal">${STK_EMOJI.map(e=>`<span onclick="stkAddEmoji('${e}')">${e}</span>`).join('')}<span class="stkpng" onclick="$('stkPngFile').click()"><i class="ti ti-photo-plus"></i>PNG</span></div>
     ${idSelStk>=0?`<div class="stktool"><span class="sl">${t('stkSelected')}</span><button onclick="stkSize(-0.03)">－</button><button onclick="stkSize(0.03)">＋</button><button onclick="stkRotate()">↻</button><button class="del" onclick="stkDel()"><i class="ti ti-trash"></i></button></div>`:`<div class="s" style="font-size:11px;color:var(--sub);margin-top:7px">${t('decoStkHint')}</div>`}
@@ -1767,6 +1774,9 @@ async function onIdPick(e){const files=[...e.target.files].slice(0,4-idPhotos.le
 function idRmPhoto(i){idPhotos.splice(i,1);persistCuts();idRefreshAll();}
 /* 컷별 사진 직접 지정 */
 function idPickCut(i){if(idView)return;_cutIdx=i;var el=$('idCutFile');if(el)el.click();}
+async function onFrontPhotoPick(e){const f=e.target.files&&e.target.files[0];if(!f)return;e.target.value='';const u=await uploadImg(f,1100);idFrontPhoto=u;try{if(ME.uid&&typeof SB!=='undefined'){ME.shop=ME.shop||{};ME.shop.frontPhoto=u;SB.from('profiles').update({shop:ME.shop}).eq('id',ME.uid).then(()=>{},()=>{});}}catch(e){}idRefreshAll();}
+function frontPhotoRm(){idFrontPhoto='';try{if(ME.uid&&typeof SB!=='undefined'){ME.shop=ME.shop||{};ME.shop.frontPhoto='';SB.from('profiles').update({shop:ME.shop}).eq('id',ME.uid).then(()=>{},()=>{});}}catch(e){}idRefreshAll();}
+function idPickCols(n){idCols=n;try{if(ME.uid&&typeof SB!=='undefined'){ME.shop=ME.shop||{};ME.shop.cols=n;SB.from('profiles').update({shop:ME.shop}).eq('id',ME.uid).then(()=>{},()=>{});}}catch(e){}idRefreshAll();}
 async function onCutPick(e){const f=e.target.files&&e.target.files[0];if(!f||_cutIdx<0){return;}e.target.value='';const u=await uploadImg(f,1280);while(idPhotos.length<=_cutIdx)idPhotos.push('');idPhotos[_cutIdx]=u;_cutIdx=-1;persistCuts();idRefreshAll();}
 function persistCuts(){try{if(ME.uid&&typeof SB!=='undefined'){ME.shop=ME.shop||{};ME.shop.cardCuts=idPhotos.slice();SB.from('profiles').update({shop:ME.shop}).eq('id',ME.uid).then(()=>{},()=>{});}}catch(e){}}
 /* 프레임 색 */
@@ -1786,9 +1796,22 @@ function pngFromFile(file){return new Promise(resolve=>{const r=new FileReader()
 function decoSlot(){return (cardStyle==='front')?'decoBg':'decoFrame';}
 function setDeco(slot,url){if(slot==='decoBg')idDecoBg=url;else idDecoFrame=url;
   try{if(ME.uid&&typeof SB!=='undefined'){ME.shop=ME.shop||{};ME.shop[slot]=url;SB.from('profiles').update({shop:ME.shop}).eq('id',ME.uid).then(()=>{},()=>{});}}catch(e){}}
+/* 프레임: 업로드 이미지의 가운데를 투명하게 뚫어 '테두리 링'으로 가공 → 사진 안 가림 */
+function makeFrameRing(file){return new Promise(resolve=>{const r=new FileReader();r.onload=ev=>{const img=new Image();img.onload=()=>{
+  const fr=$('cardFrame');const rc=fr?fr.getBoundingClientRect():{width:244,height:610};
+  const scale=2,cw=Math.max(2,Math.round((rc.width||244)*scale)),ch=Math.max(2,Math.round((rc.height||610)*scale));
+  const cv=document.createElement('canvas');cv.width=cw;cv.height=ch;const ctx=cv.getContext('2d');
+  const ir=img.width/img.height,cr=cw/ch;let dw,dh,dx,dy;
+  if(ir>cr){dh=ch;dw=ch*ir;dx=(cw-dw)/2;dy=0;}else{dw=cw;dh=cw/ir;dx=0;dy=(ch-dh)/2;}
+  ctx.drawImage(img,dx,dy,dw,dh);
+  const bw=Math.round(Math.min(cw,ch)*0.1);
+  ctx.clearRect(bw,bw,cw-2*bw,ch-2*bw);
+  const dataUrl=cv.toDataURL('image/png');
+  if(cv.toBlob)cv.toBlob(b=>resolve({blob:b,dataUrl}),'image/png');else resolve({blob:null,dataUrl});
+};img.src=ev.target.result;};r.readAsDataURL(file);});}
 async function onIdDecoPick(e){const f=e.target.files&&e.target.files[0];if(!f)return;e.target.value='';
-  const slot=decoSlot();const {blob,dataUrl}=await pngFromFile(f);let url=dataUrl;
-  try{if(ME.uid&&typeof SB!=='undefined'&&SB.storage&&blob){const path=ME.uid+'/deco/'+slot+'-'+Date.now()+'.png';const {error}=await SB.storage.from('beautia').upload(path,blob,{contentType:'image/png',upsert:true});if(!error){const {data}=SB.storage.from('beautia').getPublicUrl(path);if(data&&data.publicUrl)url=data.publicUrl;}}}catch(e){}
+  const slot=decoSlot();const res=(slot==='decoFrame')?(await makeFrameRing(f)):(await pngFromFile(f));let url=res.dataUrl;
+  try{if(ME.uid&&typeof SB!=='undefined'&&SB.storage&&res.blob){const path=ME.uid+'/deco/'+slot+'-'+Date.now()+'.png';const {error}=await SB.storage.from('beautia').upload(path,res.blob,{contentType:'image/png',upsert:true});if(!error){const {data}=SB.storage.from('beautia').getPublicUrl(path);if(data&&data.publicUrl)url=data.publicUrl;}}}catch(e){}
   setDeco(slot,url);idRefreshAll();}
 function idDecoRm(){setDeco(decoSlot(),'');idRefreshAll();}
 async function shareCardImage(){
@@ -1798,19 +1821,18 @@ async function shareCardImage(){
   let blob;
   try{const cv=await html2canvas($('cardFrame'),{scale:3,useCORS:true,backgroundColor:null});blob=await new Promise(r=>cv.toBlob(r,'image/png'));}catch(e){toast('이미지 생성 실패 (사진 보안 정책)');return;}
   if(!blob){toast('이미지 생성 실패');return;}
-  const file=new File([blob],'beautia-id.png',{type:'image/png'});
   const cap=$('capBox')?$('capBox').textContent:'';
   const sub=cardSubject();const uid=sub.uid||ME.uid;
   // 내 카드면 OG용 대표 이미지(card.png)로 저장 → /c/uid 링크 썸네일에 네컷이 뜬다
   if(!idView&&ME.uid&&typeof SB!=='undefined'&&SB.storage){
     try{await SB.storage.from('beautia').upload(ME.uid+'/card.png',blob,{contentType:'image/png',upsert:true});}catch(e){}
   }
-  const shareUrl=uid?(location.origin+'/c/'+uid):location.href;
-  // 1) 네이티브 공유: 이미지 + 링크 동시 (카톡/라인/인스타에 네컷 그대로)
-  try{if(navigator.canShare&&navigator.canShare({files:[file]})){await navigator.share({files:[file],text:cap,url:shareUrl});return;}}catch(e){if(e&&e.name==='AbortError')return;}
-  // 2) 링크 복사 (붙여넣으면 OG 썸네일에 네컷)
+  if(!uid){downloadCard();toast(t('shareFallbackDl'));return;}
+  const shareUrl=location.origin+'/c/'+uid;
+  // 사이트 링크 공유 → 다른 플랫폼에서 네컷 썸네일(OG) + 클릭 시 프로필로 이동
+  try{if(navigator.share){await navigator.share({title:'BEAUTIA ID 카드',text:cap,url:shareUrl});return;}}catch(e){if(e&&e.name==='AbortError')return;}
+  // 폴백: 링크 복사 (붙여넣으면 OG 썸네일에 네컷)
   try{await navigator.clipboard.writeText(shareUrl);toast(t('shareLinkCopied'));return;}catch(e){}
-  // 3) 최종 폴백: 이미지 저장
   downloadCard();toast(t('shareFallbackDl'));
 }
 function idPickColor(k){idPColor=(idPColor===k?'':k);idRefreshAll();}
@@ -1841,7 +1863,7 @@ function openIdCard(){
   idPColor=(ME.shop&&ME.shop.pcolor)||'';
   {const st=(ME.shop&&ME.shop.styleTags)||[];idTags=st.map(x=>'#'+x).join(' ');}
   idDecoFrame=(ME.shop&&ME.shop.decoFrame)||'';idDecoBg=(ME.shop&&ME.shop.decoBg)||'';
-  idStickers=((ME.shop&&ME.shop.stickers)||[]).slice();idSelStk=-1;idFrameColor=(ME.shop&&ME.shop.frameColor)||'';
+  idStickers=((ME.shop&&ME.shop.stickers)||[]).slice();idSelStk=-1;idFrameColor=(ME.shop&&ME.shop.frameColor)||'';idFrontPhoto=(ME.shop&&ME.shop.frontPhoto)||'';idCols=(ME.shop&&ME.shop.cols)||1;
   $('cardHd').textContent=t('idCardTitle');$('cardDl').textContent='⬇ '+t('dlCard');$('cardCap').textContent=t('copyCap');$('cardHint').textContent=t('idCardHint');
   $('cardShare').style.display='';$('cardShare').textContent='↗ '+t('shareBtn');$('cardShare').onclick=shareCardImage;
   $('cardDl').onclick=downloadCard;$('cardCap').onclick=copyCaption;
