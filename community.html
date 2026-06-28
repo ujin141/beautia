@@ -1852,7 +1852,7 @@ async function onIdDecoPick(e){const f=e.target.files&&e.target.files[0];if(!f)r
   setDeco(slot,url);idRefreshAll();}
 function idDecoRm(){setDeco(decoSlot(),'');idRefreshAll();}
 /* OG 썸네일용: 현재 스타일과 무관하게 '네컷'을 오프스크린 렌더 → 링크 미리보기는 항상 사진 네컷 */
-async function renderNecutBlob(){
+async function renderNecutCanvas(){
   if(typeof html2canvas==='undefined')return null;
   const s=cardSubject();
   await Promise.all((s.photos||[]).filter(Boolean).map(src=>new Promise(r=>{const im=new Image();im.crossOrigin='anonymous';im.onload=im.onerror=r;im.src=src;})));
@@ -1861,8 +1861,28 @@ async function renderNecutBlob(){
   document.body.appendChild(tmp);
   const imgs=[...tmp.querySelectorAll('img')];
   await Promise.all(imgs.map(im=>im.complete?0:new Promise(r=>{im.onload=im.onerror=r;})));
-  try{const cv=await html2canvas(tmp.firstChild,{scale:4,useCORS:true,backgroundColor:null});return await new Promise(r=>cv.toBlob(r,'image/png'));}
+  try{return await html2canvas(tmp.firstChild,{scale:4,useCORS:true,backgroundColor:null});}
   catch(e){return null;}finally{tmp.remove();}
+}
+async function renderNecutBlob(){const cv=await renderNecutCanvas();return cv?await new Promise(r=>cv.toBlob(r,'image/png')):null;}
+function rrect(ctx,x,y,w,h,r){if(ctx.roundRect){ctx.beginPath();ctx.roundRect(x,y,w,h,r);return;}ctx.beginPath();ctx.moveTo(x+r,y);ctx.arcTo(x+w,y,x+w,y+h,r);ctx.arcTo(x+w,y+h,x,y+h,r);ctx.arcTo(x,y+h,x,y,r);ctx.arcTo(x,y,x+w,y,r);ctx.closePath();}
+/* OG 썸네일: 유저가 만든 네컷을 1200x630 안에 '전부 보이게' (같은 카드 블러 배경) */
+async function renderOgComposite(){
+  const card=await renderNecutCanvas();if(!card)return null;
+  const W=1200,H=630,cw=card.width,ch=card.height,cr=cw/ch;
+  const cv=document.createElement('canvas');cv.width=W;cv.height=H;const ctx=cv.getContext('2d');
+  ctx.imageSmoothingEnabled=true;ctx.imageSmoothingQuality='high';
+  // 배경: 같은 카드 cover + 블러 + 어둡게
+  const sc=Math.max(W/cw,H/ch),bw=cw*sc,bh=ch*sc;
+  try{ctx.filter='blur(34px)';}catch(e){}
+  ctx.drawImage(card,(W-bw)/2,(H-bh)/2,bw,bh);
+  ctx.filter='none';
+  ctx.fillStyle='rgba(22,13,17,0.42)';ctx.fillRect(0,0,W,H);
+  // 전경: 카드 전체가 다 보이게(높이 90%) 가운데
+  const fh=Math.round(H*0.9),fw=Math.round(fh*cr),fx=Math.round((W-fw)/2),fy=Math.round((H-fh)/2);
+  ctx.save();ctx.shadowColor='rgba(0,0,0,0.5)';ctx.shadowBlur=44;ctx.shadowOffsetY=18;rrect(ctx,fx,fy,fw,fh,16);ctx.fillStyle='#fff';ctx.fill();ctx.restore();
+  ctx.save();rrect(ctx,fx,fy,fw,fh,16);ctx.clip();ctx.drawImage(card,fx,fy,fw,fh);ctx.restore();
+  return await new Promise(r=>cv.toBlob(r,'image/png'));
 }
 async function shareCardImage(){
   if(typeof html2canvas==='undefined'){toast('잠시 후 다시 시도해주세요');return;}
@@ -1876,7 +1896,7 @@ async function shareCardImage(){
   // OG용 대표 이미지(card.png): 어느 탭에서 공유하든 '네컷(사진 카드)'로 저장 → 링크 썸네일은 항상 네컷
   if(!idView&&ME.uid&&typeof SB!=='undefined'&&SB.storage){
     let ogBlob=blob;
-    if((sub.photos||[]).filter(Boolean).length){try{const nb=await renderNecutBlob();if(nb)ogBlob=nb;}catch(e){}}
+    if((sub.photos||[]).filter(Boolean).length){try{const nb=(await renderOgComposite())||(await renderNecutBlob());if(nb)ogBlob=nb;}catch(e){}}
     try{await SB.storage.from('beautia').upload(ME.uid+'/card.png',ogBlob,{contentType:'image/png',upsert:true});}catch(e){}
   }
   if(!uid){downloadCard();toast(t('shareFallbackDl'));return;}
