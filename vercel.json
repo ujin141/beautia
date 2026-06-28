@@ -6,6 +6,7 @@
   ],
   "rewrites": [
     { "source": "/p/:id", "destination": "/api/post?id=:id" },
+    { "source": "/c/:u", "destination": "/api/card?u=:u" },
     { "source": "/sitemap-posts.xml", "destination": "/api/sitemap-posts" }
   ],
   "headers": [
