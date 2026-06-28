@@ -1166,9 +1166,12 @@ function featuredHtml(){const base=DB.posts.filter(p=>!p.hidden&&!blocked(p.nick
   return `<div class="hero" onclick="openPost(${jsId(p.id)})"><div class="heroimg" style="background-image:url('${p.imgs[0]}')"></div><div class="heroov"><span class="heroeb">${catL(p.cat)}${p.region&&p.region!=='전체'?' · '+regFlag(p.region)+' '+esc(regL(p.region)):''}</span><div class="herot">${esc(p.title)}</div><div class="herom">${esc(p.nick)} · ${timeago(p.t)} · ♥ ${(p.like||0).toLocaleString()} · 💬 ${(p.cmtCount||0).toLocaleString()} · 👁 ${(p.views||0).toLocaleString()}</div></div></div>`;}
 function expertScrollHtml(){
   const pros=getPros();CURPROS=pros;if(!pros.length)return'';
-  // 디자이너 먼저 → 한 줄 둥근 레일로 한눈에 많이
-  const sorted=pros.slice().sort((a,b)=>(a.role==='designer'?0:1)-(b.role==='designer'?0:1));
-  return `<section class="exsec"><div class="exhh"><h2>✂️ ${t('proTitle')} <span class="c tnum">${pros.length}</span></h2><a class="exmore" onclick="openPros('all')">${t('seeAll')} ›</a></div><div class="brow">${sorted.map(proBubble).join('')}</div></section>`;
+  // 역할별 둥근 레일 (디자이너면 '디자이너', 사장님이면 '사장님' 타이틀)
+  const groups=[['designer','✂️'],['owner','🏪']];
+  return groups.map(([role,emo])=>{
+    const list=pros.filter(p=>p.role===role);if(!list.length)return'';
+    return `<section class="exsec"><div class="exhh"><h2>${emo} ${roleL(role)} <span class="c tnum">${list.length}</span></h2><a class="exmore" onclick="openPros('${role}')">${t('seeAll')} ›</a></div><div class="brow">${list.map(proBubble).join('')}</div></section>`;
+  }).join('');
 }
 let proRole='all',proRegion='전체';
 function openPros(role){proRole=role||'all';proRegion='전체';view='pros';renderProsView();scrollTo({top:0});}
@@ -1242,11 +1245,11 @@ function renderMain(){
   const showTop=curMenu===''&&!curQ;
   const home=showTop&&curCat==='전체'&&curRegion==='전체';
   if(home){
-    $('main').innerHTML=greetHtml()+featuredHtml()+idMarqueeHtml()+expertScrollHtml()+homeGridHtml();
-    pushAds();return;
+    $('main').innerHTML=greetHtml()+bannerHtml()+idMarqueeHtml()+expertScrollHtml()+homeGridHtml();
+    startPromo();pushAds();return;
   }
   const list=visible();
-  $('main').innerHTML=`
+  $('main').innerHTML=(showTop?bannerHtml():'')+`
     <div class="board-top">
       <div class="sorttabs">
         <span class="stab ${curSort==='hot'?'on':''}" onclick="setSort('hot')"><i class="ti ti-flame"></i>${t('hot')}</span>
