@@ -44,6 +44,7 @@
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@400;500;600;700;900&family=Playfair+Display:ital,wght@0,500;0,700;0,800;1,500&display=swap">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/qrcode-generator@1.4.4/qrcode.js"></script>
 <style>
 :root{
  --bg:#FFFFFF;--ink:#1A1416;--ink2:#6B6064;--sub:#A99FA2;--line:#EFEAEB;--line2:#F5F1F2;--soft:#F7F1F2;--tint:#FBF7F8;--pagebg:#FFFFFF;--paper:#FFFFFF;
@@ -203,6 +204,13 @@ a{color:inherit;text-decoration:none;}
 .rel .rc{font-size:12px;color:var(--sub);white-space:nowrap;font-weight:500;}
 .fab{position:fixed;right:24px;bottom:24px;z-index:80;width:46px;height:46px;border-radius:50%;background:var(--plum);border:none;box-shadow:0 10px 28px -10px rgba(109,67,70,.6);display:none;align-items:center;justify-content:center;color:#fff;cursor:pointer;}
 .fab.on{display:flex;}.fab .ti{font-size:21px;}
+/* 디자이너 명함 플로팅 버튼 (상시 노출) */
+.dcardfab{position:fixed;right:24px;bottom:24px;z-index:81;display:none;align-items:center;gap:8px;padding:13px 19px;border-radius:999px;background:var(--plum);color:#fff;border:none;font-family:inherit;font-weight:800;font-size:13.5px;letter-spacing:-.01em;cursor:pointer;box-shadow:0 12px 30px -8px rgba(109,67,70,.7);transition:transform .14s ease, box-shadow .14s ease;}
+.dcardfab.on{display:inline-flex;}
+.dcardfab:hover{transform:translateY(-2px);box-shadow:0 16px 38px -8px rgba(109,67,70,.82);}
+.dcardfab .ti{font-size:19px;}
+body.has-dcard .fab{bottom:86px;}
+@media(max-width:640px){.dcardfab{right:16px;bottom:16px;padding:13px 16px;font-size:13px;} body.has-dcard .fab{right:16px;bottom:78px;}}
 /* member / profile */
 .rolepick{display:flex;gap:8px;margin-top:10px;}
 .rolecard{padding:15px 8px;}
@@ -507,6 +515,56 @@ textarea.field{min-height:200px;resize:vertical;line-height:1.75;}
 .cardframe .cf-brand{font-family:Georgia,serif;font-style:italic;font-weight:700;font-size:18px;line-height:1;}
 .cardframe .cf-tag{font-size:9.5px;opacity:.82;margin-top:4px;line-height:1.3;}
 .cardframe .cf-h{font-size:11px;opacity:.9;font-weight:700;white-space:nowrap;}
+/* 디자이너 명함 */
+.cardframe .dc-prof{display:flex;align-items:center;gap:12px;}
+.cardframe .dc-av{width:62px;height:62px;border-radius:50%;border:2.5px solid rgba(255,255,255,.92);object-fit:cover;flex:none;background:#eee;box-shadow:0 6px 18px -6px rgba(0,0,0,.5);}
+.cardframe .dc-name{font-size:23px;font-weight:800;letter-spacing:-.03em;line-height:1.18;overflow:hidden;text-overflow:ellipsis;}
+.cardframe .dc-career{font-size:12.5px;opacity:.93;margin-top:4px;font-weight:600;}
+.cardframe .dc-chips{display:flex;flex-wrap:wrap;gap:5px;margin-top:13px;}
+.cardframe .dc-chips span{font-size:10.5px;font-weight:700;background:rgba(255,255,255,.2);padding:4px 9px;border-radius:999px;}
+.cardframe .dc-shop{font-size:12px;opacity:.93;margin-top:11px;font-weight:600;display:flex;align-items:center;gap:5px;}
+/* 네컷 포토 포트폴리오 명함 (인생네컷 스타일) */
+.cardframe.dc-strip{width:236px;height:auto;background:#17100f;padding:0;}
+.cardframe.dc-strip .dcs-head{padding:13px 15px 9px;display:flex;align-items:baseline;justify-content:space-between;gap:6px;}
+.dcs-brand{font-family:Georgia,serif;font-style:italic;font-weight:700;font-size:20px;color:#fff;line-height:1;}
+.dcs-sub{font-size:8px;color:rgba(255,255,255,.6);letter-spacing:.02em;text-align:right;line-height:1.25;}
+.dcs-cuts{display:flex;flex-direction:column;gap:5px;padding:0 11px;}
+.dcs-cut{width:100%;height:138px;overflow:hidden;background:#241a1a;border-radius:3px;position:relative;}
+.dcs-cut img{width:100%;height:100%;object-fit:cover;display:block;}
+.dcs-cut .dcs-no{position:absolute;top:6px;left:7px;font-size:9px;font-weight:800;color:rgba(255,255,255,.85);letter-spacing:.05em;}
+.dcs-cut.dcs-empty{display:flex;align-items:center;justify-content:center;color:rgba(255,255,255,.22);font-size:26px;}
+.dcs-foot{padding:13px 15px 17px;}
+.dcs-name{font-size:13.5px;font-weight:800;color:#fff;letter-spacing:-.02em;line-height:1.3;}
+.dcs-spec{font-size:10px;color:rgba(255,255,255,.72);margin-top:4px;letter-spacing:-.01em;}
+.dcs-meta{display:flex;justify-content:space-between;align-items:center;margin-top:10px;padding-top:9px;border-top:1px solid rgba(255,255,255,.18);font-size:9.5px;color:rgba(255,255,255,.58);font-weight:600;}
+/* BEAUTIA ID 카드 — 프리미엄 미니멀 네컷 (전 회원) */
+.cardframe.id-card{width:244px;height:auto;background:#fff;color:#15110f;padding:0;border:1px solid #ece7e3;box-shadow:0 24px 60px -22px rgba(20,12,13,.55);}
+.id-card .id-top{display:flex;align-items:center;justify-content:space-between;padding:15px 16px 11px;}
+.id-card .id-wm{font-size:13px;font-weight:700;letter-spacing:.34em;}
+.id-card .id-kind{font-size:8px;font-weight:700;letter-spacing:.2em;color:#bcb4af;}
+.id-card .id-cuts{display:flex;flex-direction:column;gap:3px;padding:0 16px;}
+.id-card .id-cut{width:100%;height:150px;overflow:hidden;background:#f4f1ef;position:relative;}
+.id-card .id-cut img{width:100%;height:100%;object-fit:cover;display:block;}
+.id-card .id-cut .id-no{position:absolute;left:8px;bottom:6px;font-size:8.5px;font-weight:700;letter-spacing:.12em;color:rgba(255,255,255,.95);text-shadow:0 1px 3px rgba(0,0,0,.5);}
+.id-card .id-cut.id-empty{display:flex;align-items:center;justify-content:center;color:#cfc7c2;font-size:24px;}
+.id-card .id-foot{display:flex;align-items:flex-end;justify-content:space-between;gap:12px;padding:14px 16px 17px;}
+.id-card .id-foot-main{min-width:0;flex:1;}
+.id-card .id-name{font-size:20px;font-weight:600;letter-spacing:-.02em;line-height:1.1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.id-card .id-verified{display:flex;align-items:center;gap:3px;font-size:8px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:#8a817b;margin-top:6px;}
+.id-card .id-verified .ti{font-size:12px;color:var(--plum);}
+.id-card .id-meta{font-size:10px;color:#9a918b;margin-top:8px;font-weight:600;letter-spacing:-.01em;}
+.id-card .id-tags{font-size:10px;color:#15110f;margin-top:5px;font-weight:600;letter-spacing:-.01em;line-height:1.5;word-break:break-word;}
+.id-card .id-qrwrap{flex:none;text-align:center;}
+.id-card .id-qr{width:54px;height:54px;display:block;image-rendering:pixelated;}
+.id-card .id-scan{font-size:7px;font-weight:700;letter-spacing:.1em;color:#bcb4af;margin-top:3px;text-transform:uppercase;}
+/* ID 카드 컨트롤 (모달 입력부) */
+#idControls .wlabel{margin-top:14px;}
+.id-sugg{display:flex;flex-wrap:wrap;gap:6px;margin-top:9px;}
+.id-sugg span{font-size:11.5px;font-weight:700;color:var(--plum);background:var(--plumbg);padding:6px 11px;border-radius:999px;cursor:pointer;}
+/* 공개 유저 프로필 */
+.ugal{display:flex;flex-wrap:wrap;gap:6px;margin-top:12px;}
+.ugal img{width:74px;height:74px;border-radius:10px;object-fit:cover;cursor:zoom-in;}
+.ucta{margin-top:22px;}
 .capbox{width:100%;background:var(--soft);border-radius:12px;padding:13px 15px;font-size:12.5px;color:var(--ink2);line-height:1.7;margin-top:10px;white-space:pre-wrap;}
 /* 공유 시트 */
 .sharelinkrow{display:flex;gap:8px;margin-top:16px;}
@@ -530,9 +588,9 @@ textarea.field{min-height:200px;resize:vertical;line-height:1.75;}
 
 <div class="modal" id="writeModal"><div class="sheet">
   <span class="x" onclick="closeModal()">×</span><h3 id="wHead"></h3>
-  <div class="wlabel" id="wlLang"></div><div class="wrow" id="wlangs"></div>
   <div class="wlabel" id="wlCat"></div><div class="wrow" id="wcats"></div>
   <div class="wlabel" id="wlReg"></div><div id="wregions"></div>
+  <div id="wJobBox" style="display:none"></div>
   <input class="field" id="wTitle" maxlength="120" oninput="cc('wTitle','ccT',120)"><div class="charcount" id="ccT">0/120</div>
   <textarea class="field" id="wContent" maxlength="5000" oninput="cc('wContent','ccC',5000)"></textarea><div class="charcount" id="ccC">0/5000</div>
   <div class="wlabel" id="wlTags"></div>
@@ -551,6 +609,7 @@ textarea.field{min-height:200px;resize:vertical;line-height:1.75;}
 <div class="modal" id="cardModal"><div class="sheet" style="max-width:420px;">
   <span class="x" onclick="closeModal()">×</span><h3 id="cardHd"></h3>
   <div class="ratiotabs" id="ratioTabs"></div>
+  <div id="idControls" style="display:none"></div>
   <div class="cardstage"><div class="cardframe" id="cardFrame"></div></div>
   <div style="display:flex;gap:9px;margin-top:18px"><button class="btn btn-primary" style="flex:1;justify-content:center" id="cardDl"></button><button class="btn btn-ghost" style="flex:1;justify-content:center" id="cardCap"></button></div>
   <div class="capbox" id="capBox"></div>
@@ -567,6 +626,7 @@ textarea.field{min-height:200px;resize:vertical;line-height:1.75;}
 </div></div>
 <div class="lightbox" id="lightbox" onclick="this.classList.remove('on')"><img id="lbimg"></div>
 <div class="fab" id="fab" onclick="scrollTo({top:0,behavior:'smooth'})"><i class="ti ti-arrow-up"></i></div>
+<button class="dcardfab" id="dcardFab" onclick="openIdCard()"><i class="ti ti-id"></i> <span class="lbl"></span></button>
 <div class="toast" id="toast"></div>
 
 <script>
@@ -584,10 +644,14 @@ const T={ko:{
  editPost:'수정',delPost:'삭제',delConfirm:'이 글을 삭제할까요? 되돌릴 수 없어요.',deleted:'삭제했어요',edited:'수정됐어요',editHead:'글 수정',saveEdit:'수정 완료',
  reply:'답글',replyPh:'답글을 남겨보세요…',cmtEditPrompt:'댓글 수정:',cmtDelConfirm:'이 댓글을 삭제할까요?',anonLabel:'익명으로 작성',anonNick:'익명',
  makeCard:'카드 만들기',shareTitle:'공유하기',copyLink:'링크 복사',shareCardOpt:'이미지 카드로 공유',shareApp:'다른 앱으로 공유',cardTitle:'공유 카드 만들기',dlCard:'이미지 저장',copyCap:'캡션 복사',capCopied:'캡션이 복사됐어요',cardHint:'저장해서 인스타·릴스/쇼츠에 올려보세요. 영상 마지막엔 "후기는 Beautia에서"!',linkCopied:'링크가 복사됐어요',cardReview:'REVIEW',
+ dcardBtn:'내 명함 만들기',dcardTitle:'디자이너 명함',dcardHint:'저장해서 인스타 프로필·DM·오프라인 홍보에 활용하세요. 손님이 한눈에 당신을 알 수 있어요. (인스타 9:16 스토리, 4:5 피드 모두 지원)',dcardTag:'일본에서 만나는 한국어 디자이너',dcardOnly:'명함은 디자이너 회원만 만들 수 있어요',dcardSetup:'프로필에 사진·경력·전문 시술을 채우면 명함이 더 멋져져요',dcardStyA:'프로필 명함',dcardStyB:'📸 네컷',dcardStripHint:'작업 사진 4장으로 \'인생네컷\' 스타일 포트폴리오 명함! 손님이 시술 결과를 한눈에 봐요. 빈 칸은 프로필 편집에서 작업 사진을 추가해 채워보세요.',
+ idCardBtn:'네컷 ID 카드',idCardTitle:'BEAUTIA ID 카드',idCardHint:'사진 4장으로 나만의 BEAUTIA ID 카드 ✨ 저장해서 인스타 스토리·라인 프로필에 올려보세요. QR을 찍으면 내 커뮤니티 프로필로 바로 연결돼요.',idPhotosL:'사진 (네컷 · 최대 4장)',idPColorL:'퍼스널 컬러 (선택)',idTagsL:'스타일 태그',idTagsPh:'#Chic #Tokyo_Mood #K_Idol_Skin',idScan:'프로필 보기',idVerified:'BEAUTIA verified',idNeedPhoto:'사진을 1장 이상 넣어주세요',tabIdCard:'📸 네컷 ID',tabProfileCard:'프로필 명함',pcolors:{spring:'봄 웜톤',summer:'여름 쿨톤',autumn:'가을 웜톤',winter:'겨울 쿨톤'},
+ userNotFound:'프로필을 찾을 수 없어요',userPosts:'작성한 글',userNoPosts:'아직 작성한 글이 없어요',userCardCta:'나도 BEAUTIA ID 카드 만들기',userJoinCta:'BEAUTIA 가입하고 시작하기',viewUserProfile:'프로필 보기',
  firstCmt:'첫 댓글을 남겨보세요!',emptyFeed:'아직 글이 없어요. 첫 글을 남겨보세요 ✏️',transBy:'Beautia 번역됨',gptT:'번역',gptTing:'번역 중…',gptShowOrig:'원문 보기',gptShowTr:'번역 보기',gptFail:'번역에 실패했어요',viewOrigJa:'원문(日本語) 보기 ▾',viewOrigKo:'번역(한국어) 보기 ▾',foldOrig:'접기 ▴',
  wHead:'글쓰기',postLang:'언어 (이 글이 보일 피드)',category:'카테고리',regionOpt:'지역 (선택)',noRegion:'지역무관',titlePh:'제목을 입력하세요',contentPh:'한국·일본 뷰티 사장님·손님 누구나! 질문, 후기, 정보, 수다 환영해요. (욕설·광고·개인정보 X)',photo:'사진 (최대 10장)',register:'등록하기',
  profile:'프로필',nickPh:'닉네임',iam:'나는…',save:'저장',saved:'저장됐어요',posted:'글이 등록됐어요 ✨',scrapped:'스크랩했어요',copied:'링크가 복사됐어요 (데모)',needTC:'제목과 내용을 입력하세요',
  infoTitle:'일본·한국 뷰티 정보',seeAll:'전체보기',tags:'태그 (선택)',tagsPh:'쉼표로 구분 · 예: 도쿄, 펌, 한국어OK',
+ jobBoxTitle:'구인 상세 입력',jobHint:'항목을 채우면 깔끔한 구인공고로 자동 정리돼요. 빈 칸은 생략됩니다.',jobPosition:'모집 직무',jobPositionPh:'예: 네일리스트 / 헤어 어시스턴트 / 아이래시',jobTypeL:'고용형태',jobTypes:{fulltime:'정직원',parttime:'아르바이트',freelance:'프리랜서',intern:'인턴·연수'},jobPay:'급여·시급',jobPayPh:'예: 시급 1,200엔~ / 월급 25만엔~ (경력 우대)',jobHoursL:'근무시간·요일',jobHoursPh:'예: 10:00–19:00 · 주4일 · 협의 가능',jobPlace:'근무지',jobPlacePh:'예: 오사카 신사이바시 (지하철 도보 3분)',jobReq:'자격·우대',jobReqPh:'예: 경력 무관 · 워홀 환영 · 일본어 가능자 우대',jobWelfare:'복리후생',jobWelfarePh:'예: 교통비 · 식대 · 4대보험 · 기숙사',jobVisaL:'비자·워홀',jobVisas:{whv:'워홀 환영',support:'비자 지원',holder:'비자 보유자',any:'무관'},jobContactL:'지원·연락 방법',jobContactPh:'예: 카톡 ID / 인스타 DM / 댓글로 문의',jobDescL:'추가 설명 (선택)',jobDescPh:'가게 분위기·팀 소개·우대사항 등 자유롭게 적어주세요',needJobPos:'모집 직무를 입력해주세요',
  streakLabel:'연속 접속',streakSub:'오늘도 들러줘서 고마워요!',dayUnit:'일',related:'이런 글은 어때요?',todayNew:'오늘 새 글',welcome:'환영해요 👋 회원가입하고 시작해보세요!',
  signup:'회원가입',login:'로그인',authTitle:'로그인 · 회원가입',needLoginView:'로그인하고 글을 확인해 보세요',gateTitle:'로그인하고 모든 글을 보세요',gateSub:'한·일 뷰티 커뮤니티의 후기·정보·예약을 무료로 — 로그인(가입)하면 전체가 열려요.',logout:'로그아웃',mypage:'마이페이지',editProfile:'프로필 편집',selRole:'어떤 회원이신가요?',guestDesc:'일본 뷰티 정보·예약을 찾는 분',ownerDesc:'샵을 운영하는 사장님',nick:'닉네임',regionLabel:'주 활동 지역',shopName:'가게 이름',shopNamePh:'예: 시부야헤어룸',servicesL:'시술 분야',interestsL:'관심 시술',bioL:'한줄 소개 (선택)',bioPh:'예: 도쿄 워홀 2년차, 뷰티 정보 공유해요!',join:'가입하기',joinDone:'가입 완료! 환영해요 🎉',joinedOn:'가입',daysAgo:'일째',recvLikes:'받은 좋아요',tabPosts:'내 글',tabScraps:'스크랩',tabComments:'댓글',noPosts:'아직 쓴 글이 없어요',noScraps:'스크랩한 글이 없어요',noComments:'단 댓글이 없어요',logoutConfirm:'로그아웃 할까요? (이 기기의 활동 기록이 지워져요)',needSignup:'회원가입 후 이용할 수 있어요',guestTag:'비회원',gotoSignup:'가입하러 가기',
  botNote:'🛡️ 봇·중복 가입을 막기 위해 연락처 인증이 필요해요.',contact:'연락처 인증',contactPh:'이메일 또는 휴대폰 번호',sendCode:'인증번호 받기',resend:'재발송',codePh:'인증번호 6자리',verify:'확인',verified:'인증 완료',agreements:'약관 동의',req:'필수',agreeTerms:'이용약관 동의',agreePrivacy:'개인정보 수집·이용 동의',agreeMktg:'(선택) 마케팅·이벤트 정보 수신',view:'보기',needContact:'연락처를 입력해주세요',demoCode:'데모 인증번호:',verifiedToast:'인증되었습니다 ✅',codeWrong:'인증번호가 틀려요',needVerify:'연락처 인증을 완료해주세요',needAgree:'필수 약관에 동의해주세요',demoOnly:'데모 화면이에요',verifiedMember:'인증회원',blockedMsg:'차단된 계정이에요. 글·댓글을 남길 수 없어요.',googleBtn:'Google로 계속하기',orText:'또는 이메일로',googleToast:'Google 계정으로 인증됐어요',profileSetup:'프로필 설정',emailLabel:'이메일',emailPh:'이메일 주소',otpSent:'인증 메일을 보냈어요 (코드 또는 링크 확인)',otpNote:'메일의 6자리 코드를 입력하거나, 메일 속 링크를 클릭하세요.',
@@ -614,10 +678,14 @@ const T={ko:{
  editPost:'編集',delPost:'削除',delConfirm:'この投稿を削除しますか？元に戻せません。',deleted:'削除しました',edited:'編集しました',editHead:'投稿を編集',saveEdit:'編集完了',
  reply:'返信',replyPh:'返信を入力…',cmtEditPrompt:'コメントを編集:',cmtDelConfirm:'このコメントを削除しますか？',anonLabel:'匿名で投稿',anonNick:'匿名',
  makeCard:'カード作成',shareTitle:'シェア',copyLink:'リンクをコピー',shareCardOpt:'画像カードでシェア',shareApp:'他のアプリでシェア',cardTitle:'シェアカードを作成',dlCard:'画像を保存',copyCap:'キャプションをコピー',capCopied:'キャプションをコピーしました',cardHint:'保存してインスタ・リール/ショートに。動画の最後は「レビューはBeautiaで」！',linkCopied:'リンクをコピーしました',cardReview:'REVIEW',
+ dcardBtn:'名刺を作る',dcardTitle:'デザイナー名刺',dcardHint:'保存してインスタのプロフィール・DM・オフライン宣伝に活用しましょう。お客様が一目であなたを知れます。（インスタ9:16ストーリー・4:5フィード対応）',dcardTag:'日本で出会う韓国語デザイナー',dcardOnly:'名刺はデザイナー会員のみ作成できます',dcardSetup:'プロフィールに写真・経歴・得意な施術を入れると名刺がより魅力的に',dcardStyA:'プロフィール名刺',dcardStyB:'📸 4カット',dcardStripHint:'作品写真4枚で“人生4カット”風のポートフォリオ名刺！施術の仕上がりが一目で伝わります。空きはプロフィール編集で作品写真を追加して埋めましょう。',
+ idCardBtn:'4カットIDカード',idCardTitle:'BEAUTIA IDカード',idCardHint:'写真4枚で自分だけのBEAUTIA IDカード ✨ 保存してインスタストーリー・LINEプロフィールに。QRを読み取ると私のコミュニティプロフィールへ直接つながります。',idPhotosL:'写真（4カット・最大4枚）',idPColorL:'パーソナルカラー（任意）',idTagsL:'スタイルタグ',idTagsPh:'#Chic #Tokyo_Mood #K_Idol_Skin',idScan:'プロフィール',idVerified:'BEAUTIA verified',idNeedPhoto:'写真を1枚以上入れてください',tabIdCard:'📸 4カットID',tabProfileCard:'プロフィール名刺',pcolors:{spring:'スプリングウォーム',summer:'サマークール',autumn:'オータムウォーム',winter:'ウィンタークール'},
+ userNotFound:'プロフィールが見つかりません',userPosts:'投稿',userNoPosts:'まだ投稿がありません',userCardCta:'私もBEAUTIA IDカードを作る',userJoinCta:'BEAUTIAに登録して始める',viewUserProfile:'プロフィールを見る',
  firstCmt:'最初のコメントを残しましょう！',emptyFeed:'まだ投稿がありません。最初の投稿をどうぞ ✏️',transBy:'Beautia 翻訳',gptT:'翻訳',gptTing:'翻訳中…',gptShowOrig:'原文を見る',gptShowTr:'翻訳を見る',gptFail:'翻訳に失敗しました',viewOrigJa:'原文(日本語)を見る ▾',viewOrigKo:'翻訳(韓国語)を見る ▾',foldOrig:'閉じる ▴',
  wHead:'投稿',postLang:'言語（表示されるフィード）',category:'カテゴリー',regionOpt:'地域（任意）',noRegion:'地域問わず',titlePh:'タイトルを入力',contentPh:'韓国・日本のビューティーオーナー・お客様どなたでも！質問・レビュー・情報・雑談歓迎。（暴言・広告・個人情報X）',photo:'写真（最大10枚）',register:'投稿する',
  profile:'プロフィール',nickPh:'ニックネーム',iam:'わたしは…',save:'保存',saved:'保存しました',posted:'投稿しました ✨',scrapped:'保存しました',copied:'リンクをコピーしました（デモ）',needTC:'タイトルと本文を入力してください',
  infoTitle:'日本・韓国ビューティー情報',seeAll:'すべて見る',tags:'タグ（任意）',tagsPh:'カンマ区切り · 例：東京, パーマ, 韓国語OK',
+ jobBoxTitle:'求人の詳細入力',jobHint:'項目を埋めると、きれいな求人情報に自動整理されます。空欄は省略されます。',jobPosition:'募集職種',jobPositionPh:'例: ネイリスト / ヘアアシスタント / アイラッシュ',jobTypeL:'雇用形態',jobTypes:{fulltime:'正社員',parttime:'アルバイト',freelance:'フリーランス',intern:'インターン・研修'},jobPay:'給与・時給',jobPayPh:'例: 時給1,200円〜 / 月給25万円〜（経験者優遇）',jobHoursL:'勤務時間・曜日',jobHoursPh:'例: 10:00–19:00 · 週4日 · 応相談',jobPlace:'勤務地',jobPlacePh:'例: 大阪・心斎橋（駅から徒歩3分）',jobReq:'資格・歓迎条件',jobReqPh:'例: 未経験OK · ワーホリ歓迎 · 日本語できる方優遇',jobWelfare:'福利厚生',jobWelfarePh:'例: 交通費 · まかない · 社会保険 · 寮あり',jobVisaL:'ビザ・ワーホリ',jobVisas:{whv:'ワーホリ歓迎',support:'ビザ支援',holder:'ビザ保有者',any:'問わず'},jobContactL:'応募・連絡方法',jobContactPh:'例: カカオID / インスタDM / コメントで問い合わせ',jobDescL:'補足説明（任意）',jobDescPh:'店の雰囲気・チーム紹介・優遇事項など自由にどうぞ',needJobPos:'募集職種を入力してください',
  streakLabel:'連続アクセス',streakSub:'今日も来てくれてありがとう！',dayUnit:'日',related:'こんな投稿はいかが？',todayNew:'今日の新着',welcome:'ようこそ 👋 会員登録して始めましょう！',
  signup:'会員登録',login:'ログイン',authTitle:'ログイン・会員登録',needLoginView:'ログインして投稿をご覧ください',gateTitle:'ログインして全ての投稿を見る',gateSub:'韓国×日本ビューティーのレビュー・情報・予約を無料で。ログイン（登録）で全て解放されます。',logout:'ログアウト',mypage:'マイページ',editProfile:'プロフィール編集',selRole:'どちらの会員ですか？',guestDesc:'日本ビューティー情報・予約をお探しの方',ownerDesc:'サロンを運営するオーナー',nick:'ニックネーム',regionLabel:'主な活動地域',shopName:'店舗名',shopNamePh:'例：渋谷ヘアルーム',servicesL:'施術分野',interestsL:'関心のある施術',bioL:'ひとこと紹介（任意）',bioPh:'例：東京ワーホリ2年目、ビューティー情報を共有！',join:'登録する',joinDone:'登録完了！ようこそ 🎉',joinedOn:'登録',daysAgo:'日目',recvLikes:'もらったいいね',tabPosts:'投稿',tabScraps:'保存',tabComments:'コメント',noPosts:'まだ投稿がありません',noScraps:'保存した投稿がありません',noComments:'コメントがありません',logoutConfirm:'ログアウトしますか？（この端末の記録が消えます）',needSignup:'会員登録すると利用できます',guestTag:'ゲスト',gotoSignup:'登録する',
  botNote:'🛡️ ボット・重複登録防止のため連絡先認証が必要です。',contact:'連絡先認証',contactPh:'メール または 携帯番号',sendCode:'認証番号を送る',resend:'再送',codePh:'認証番号6桁',verify:'確認',verified:'認証完了',agreements:'規約同意',req:'必須',agreeTerms:'利用規約に同意',agreePrivacy:'個人情報の取得・利用に同意',agreeMktg:'（任意）マーケティング・イベント情報の受信',view:'見る',needContact:'連絡先を入力してください',demoCode:'デモ認証番号：',verifiedToast:'認証されました ✅',codeWrong:'認証番号が違います',needVerify:'連絡先認証を完了してください',needAgree:'必須規約に同意してください',demoOnly:'デモ画面です',verifiedMember:'認証会員',blockedMsg:'ブロックされたアカウントです。投稿・コメントできません。',googleBtn:'Googleで続ける',orText:'またはメールで',googleToast:'Googleアカウントで認証されました',profileSetup:'プロフィール設定',emailLabel:'メール',emailPh:'メールアドレス',otpSent:'認証メールを送りました（コード/リンク確認）',otpNote:'メールの6桁コードを入力、またはリンクをクリック。',
@@ -678,7 +746,7 @@ function blocked(n){return (DB.blocked||[]).includes(n);}
 function toast(m){const el=$('toast');el.textContent=m;el.classList.add('on');clearTimeout(el._);el._=setTimeout(()=>el.classList.remove('on'),1900);}
 function lightbox(src){$('lbimg').src=src;$('lightbox').classList.add('on');}
 
-let DB,ME,curCat='전체',curSort='hot',curRegion='전체',curQ='',curMenu='',view='feed',openId=null;
+let DB,ME,curCat='전체',curSort='hot',curRegion='전체',curQ='',curMenu='',view='feed',openId=null,pubUid=null;
 const SB_URL="https://pzbxcktaljhesrfnqwzq.supabase.co";
 const SB_KEY="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InB6Ynhja3RhbGpoZXNyZm5xd3pxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjgxNjc1MjYsImV4cCI6MjA4Mzc0MzUyNn0.aUZbTgfWbjEISNr1-cu9YJnOGj1lzjXeRVifHygAplc";
 const SB=supabase.createClient(SB_URL,SB_KEY);
@@ -755,7 +823,11 @@ function renderHeader(){
       ${ME.registered?`<span class="ptschip" id="navPts" onclick="openMypage()" title="${t('myPoints')}">✦ ${(ME.points||0).toLocaleString()}P</span><div class="av" id="navAv" onclick="openMypage()" title="${t('mypage')}" style="cursor:pointer"></div>`:`<button class="btn btn-ghost" onclick="openLogin()"><i class="ti ti-login-2"></i> ${t('login')}</button>`}
     </div>`;
   applyAv($('navAv'),ME.nick,ME.avatar);
+  updateDcardFab();
 }
+function updateDcardFab(){const f=$('dcardFab');if(!f)return;const show=!!ME.registered;
+  const lbl=f.querySelector('.lbl');if(lbl)lbl.textContent=t('idCardBtn');
+  f.classList.toggle('on',show);document.body.classList.toggle('has-dcard',show);}
 function renderRight(){
   $('rightcol').innerHTML=`
     <div class="streak"><span class="fire">🔥</span><div><div class="sn tnum">${ME.visit.streak}${t('dayUnit')} ${t('streakLabel')}</div><div class="sl">${t('streakSub')}</div></div></div>
@@ -807,7 +879,7 @@ function loadAds(){if(!AD_CLIENT||_adsLoaded)return;_adsLoaded=true;try{const s=
 function adSlot(){if(!AD_CLIENT||!AD_SLOT_FEED)return '';return `<div class="feedad"><span class="adlbl">AD</span><ins class="adsbygoogle" style="display:block;width:100%" data-ad-client="${AD_CLIENT}" data-ad-slot="${AD_SLOT_FEED}" data-ad-format="fluid" data-ad-layout-key="-6t+ed+2i-1n-4w"></ins></div>`;}
 function feedWithAds(cards){if(!AD_CLIENT||!AD_SLOT_FEED)return cards.join('');let out='';cards.forEach((c,i)=>{out+=c;if((i+1)%6===0&&i<cards.length-1)out+=adSlot();});return out;}
 function pushAds(){if(!AD_CLIENT||!AD_SLOT_FEED||!window.adsbygoogle)return;document.querySelectorAll('ins.adsbygoogle:not([data-adsbygoogle-status])').forEach(function(){try{(window.adsbygoogle=window.adsbygoogle||[]).push({});}catch(e){}});}
-function langOK(p){return (p.lang||'ko')===LANG;}
+function langOK(p){return true;}/* 한·일 피드 통합: 언어와 무관하게 모든 글 노출 */
 function bodyOf(p){return (LANG==='ja'&&p.orig)?p.orig:p.content;}
 function mediaHtml(imgs){if(!imgs||!imgs.length)return'';
   if(imgs.length===1)return `<div class="cmedia one"><div class="mi" style="background-image:url('${imgs[0]}')"></div></div>`;
@@ -964,6 +1036,7 @@ function homeGridHtml(){
 function renderMain(){
   if(view==='detail'){renderDetail();return;}
   if(view==='profile'){renderMypage();return;}
+  if(view==='user'){renderUserProfile();return;}
   if(view==='pros'){renderProsView();return;}
   const showTop=curMenu===''&&!curQ;
   const home=showTop&&curCat==='전체'&&curRegion==='전체';
@@ -1001,7 +1074,7 @@ function renderDetail(){
   const gallery=(p.imgs&&p.imgs.length)?`<div class="dgallery ${gcls}">${p.imgs.map(s=>`<img src="${s}" loading="lazy" onclick="lightbox('${s}')">`).join('')}</div>`:'';
   $('main').innerHTML=`<div class="detail">
     <div class="back" onclick="backFeed()"><i class="ti ti-chevron-left"></i> ${t('back')}</div>
-    <div class="dhead">${avHtml(p.nick,p.avatar)}<div><div class="dhn">${esc(p.nick)} ${roleBadge(p.role)}</div><div class="dhm"><span style="color:var(--rose);font-weight:700;">${catL(p.cat)}</span>${p.region&&p.region!=='전체'?' · '+regFlag(p.region)+' '+esc(regL(p.region)):''} · ${timeago(p.t)}</div></div></div>
+    <div class="dhead" ${(p.author&&p.nick!=='익명'&&p.nick!=='匿名')?`onclick="openUserProfile('${p.author}')" style="cursor:pointer" title="${esc(t('viewUserProfile'))}"`:''}>${avHtml(p.nick,p.avatar)}<div><div class="dhn">${esc(p.nick)} ${roleBadge(p.role)}</div><div class="dhm"><span style="color:var(--rose);font-weight:700;">${catL(p.cat)}</span>${p.region&&p.region!=='전체'?' · '+regFlag(p.region)+' '+esc(regL(p.region)):''} · ${timeago(p.t)}</div></div></div>
     <div class="dtitle">${esc(p.title)}</div>
     <div class="dmeta"><span class="a"><i class="ti ti-heart"></i> ${(p.like||0).toLocaleString()}</span><span class="a"><i class="ti ti-message-circle"></i> ${(p.cmtCount||0).toLocaleString()}</span><span class="a"><i class="ti ti-eye"></i> ${(p.views||0).toLocaleString()} ${t('views')}</span></div>
     <div class="dcontent">${esc(main)}</div>
@@ -1030,7 +1103,38 @@ function relatedHtml(p){
   const list=[...same,...more].slice(0,4);if(!list.length)return'';
   return `<div class="related"><h4>${t('related')}</h4>${list.map(r=>`<div class="rel" onclick="openPost(${jsId(r.id)})"><div style="flex:1;min-width:0"><div class="rt">${esc(r.title)}</div><div class="rm">${catL(r.cat)}${r.region&&r.region!=='전체'?' · '+regFlag(r.region)+' '+esc(regL(r.region)):''} · 💬 ${r.cmtCount||0}</div></div><div class="rc">❤ ${r.like}</div></div>`).join('')}</div>`;
 }
-function backFeed(){view='feed';renderMain();scrollTo({top:0});}
+function backFeed(){view='feed';pubUid=null;renderMain();scrollTo({top:0});}
+/* ===== 공개 유저 프로필 (QR/닉네임 → 이 페이지) ===== */
+function findProfile(uid){return (PROFILES||[]).find(p=>p.id===uid);}
+function galHtml(photos){if(!photos||!photos.length)return'';return `<div class="ugal">${photos.slice(0,6).map(s=>`<img src="${esc(s)}" loading="lazy" onclick="lightbox('${s}')">`).join('')}</div>`;}
+function openUserProfile(uid){if(!uid)return;pubUid=uid;view='user';renderUserProfile();scrollTo({top:0});}
+function renderUserProfile(){
+  const pr=findProfile(pubUid);
+  if(!pr){$('main').innerHTML=`<div class="back" onclick="backFeed()" style="margin-bottom:14px"><i class="ti ti-chevron-left"></i> ${t('back')}</div><div class="empty" style="border:none;padding:46px">${t('userNotFound')}</div>`;return;}
+  const S=pr.shop||{};const role=pr.role||'guest';const nick=pr.nickname||'';
+  const av=S.avatar||'';const reg=(pr.region&&pr.region!=='전체')?pr.region:'';
+  const posts=DB.posts.filter(p=>p.author===pubUid&&!p.hidden&&!blocked(p.nick));
+  let info='';
+  if(role==='owner'&&S.name){
+    info=`<div class="shopcard"><h4><i class="ti ti-building-store"></i> ${esc(S.name)}${S.koOK?` <span class="badge-ko">한국어 OK</span>`:''}</h4>${reg?`<div class="row">${regFlag(reg)} ${esc(regL(reg))}${S.locDetail?' · '+esc(S.locDetail):''}</div>`:(S.locDetail?`<div class="row">${esc(S.locDetail)}</div>`:'')}${S.hours?`<div class="row"><i class="ti ti-clock" style="font-size:14px"></i> ${esc(S.hours)}</div>`:''}${(S.services&&S.services.length)?`<div class="chipset">${S.services.map(s=>`<span class="c">${svcL(s)}</span>`).join('')}</div>`:''}${S.shopDesc?`<div class="row" style="margin-top:10px">${esc(S.shopDesc)}</div>`:''}${galHtml(S.photos)}</div>`;
+  }else if(role==='designer'){
+    info=`<div class="shopcard"><h4><i class="ti ti-scissors"></i> ${roleL('designer')}</h4>${S.career?`<div class="row"><b>${t('careerBadge')}</b> · ${esc(S.career)}</div>`:''}${S.name?`<div class="row"><i class="ti ti-building-store" style="font-size:14px"></i> ${esc(S.name)}</div>`:''}${(S.specialties&&S.specialties.length)?`<div class="chipset">${S.specialties.map(s=>`<span class="c">${svcL(s)}</span>`).join('')}</div>`:''}${galHtml(S.photos)}</div>`;
+  }
+  const insta=S.insta?`<a href="${esc(instaUrl(S.insta))}" target="_blank" rel="noopener noreferrer" style="color:var(--plum);font-weight:700"><i class="ti ti-brand-instagram"></i> ${esc(igHandle(S.insta))}</a>`:'';
+  const cta=ME.registered
+    ?`<button class="btn btn-primary" style="width:100%;justify-content:center" onclick="openIdCard()"><i class="ti ti-id"></i> ${t('userCardCta')}</button>`
+    :`<button class="btn btn-primary" style="width:100%;justify-content:center" onclick="openLogin()"><i class="ti ti-sparkles"></i> ${t('userJoinCta')}</button>`;
+  $('main').innerHTML=`
+    <div class="back" onclick="backFeed()" style="margin-bottom:14px"><i class="ti ti-chevron-left"></i> ${t('back')}</div>
+    <div class="profhead">${avHtml(nick,av)}
+      <div style="flex:1;min-width:0"><div class="pn">${esc(nick)} ${roleBadge(role)}<span class="vchip"><i class="ti ti-rosette-discount-check-filled"></i> ${t('idVerified')}</span></div>
+      <div class="pm">${reg?regFlag(reg)+' '+esc(regL(reg)):''}${insta?((reg?' · ':'')+insta):''}</div>
+      ${pr.bio?`<div class="pbio">${esc(pr.bio)}</div>`:''}</div></div>
+    ${info}
+    <div class="pseg" style="pointer-events:none"><span class="s on">${t('userPosts')} ${posts.length}</span></div>
+    <div style="margin-top:14px">${posts.length?`<div class="feedgrid">${posts.map((p,i)=>cardHtml(p,i,false)).join('')}</div>`:`<div class="empty" style="border:none">${t('userNoPosts')}</div>`}</div>
+    <div class="ucta">${cta}</div>`;
+}
 function toggleOrig(e){const o=$('origText');const sh=o.style.display!=='block';o.style.display=sh?'block':'none';e.target.textContent=sh?t('foldOrig'):(LANG==='ja'?t('viewOrigKo'):t('viewOrigJa'));}
 async function toggleLike(id){const p=DB.posts.find(x=>x.id===id);if(!p)return;
   if(!ME.registered){openSignup();toast(t('needSignup'));return;}
@@ -1079,30 +1183,71 @@ async function delComment(id){if(!confirm(t('cmtDelConfirm')))return;
 
 /* write + image upload */
 let wCat='질문',wRegion='전체',wImgs=[],wEditId=null,wAnonV=false,wLang='ko';
+let jobType='',jobVisa='',jobF={};
 function cc(id,out,max){$(out).textContent=$(id).value.length+'/'+max;}
-function openWrite(){if(!ME.registered){openSignup();toast(t('needSignup'));return;}if(blocked(ME.nick)){toast(t('blockedMsg'));return;}wEditId=null;wCat='질문';wRegion='전체';wImgs=[];$('wHead').textContent=t('wHead');$('wlCat').textContent=t('category');$('wlReg').textContent=t('regionOpt');$('wlTags').textContent=t('tags');$('wlPhoto').textContent=t('photo');$('wTitle').placeholder=t('titlePh');$('wContent').placeholder=t('contentPh');$('wTags').placeholder=t('tagsPh');$('wSubmit').textContent=t('register');$('wTitle').value='';$('wContent').value='';$('wTags').value='';$('ccT').textContent='0/120';$('ccC').textContent='0/5000';wAnonV=false;$('wAnon').checked=false;$('wAnonLbl').textContent=t('anonLabel');$('wAnonRow').style.display='';wLang=LANG;$('wlLang').textContent=t('postLang');renderWriteForm();renderPtiles();$('writeModal').classList.add('on');}
+function openWrite(){if(!ME.registered){openSignup();toast(t('needSignup'));return;}if(blocked(ME.nick)){toast(t('blockedMsg'));return;}wEditId=null;wCat='질문';wRegion='전체';wImgs=[];jobType='';jobVisa='';jobF={};$('wHead').textContent=t('wHead');$('wlCat').textContent=t('category');$('wlReg').textContent=t('regionOpt');$('wlTags').textContent=t('tags');$('wlPhoto').textContent=t('photo');$('wTitle').placeholder=t('titlePh');$('wContent').placeholder=t('contentPh');$('wTags').placeholder=t('tagsPh');$('wSubmit').textContent=t('register');$('wTitle').value='';$('wContent').value='';$('wTags').value='';$('ccT').textContent='0/120';$('ccC').textContent='0/5000';wAnonV=false;$('wAnon').checked=false;$('wAnonLbl').textContent=t('anonLabel');$('wAnonRow').style.display='';wLang=LANG;renderWriteForm();renderPtiles();$('writeModal').classList.add('on');}
 function openEditPost(id){const p=DB.posts.find(x=>x.id===id);if(!p||!p.mine){toast(t('blockedMsg'));return;}
   wEditId=id;wCat=p.cat||'자유';wRegion=p.region||'전체';wImgs=(p.imgs||[]).slice();
   $('wHead').textContent=t('editHead');$('wlCat').textContent=t('category');$('wlReg').textContent=t('regionOpt');$('wlTags').textContent=t('tags');$('wlPhoto').textContent=t('photo');
   $('wTitle').value=p.title||'';$('wContent').value=p.content||'';$('wTags').value=(p.tags||[]).join(', ');
   $('ccT').textContent=($('wTitle').value.length)+'/120';$('ccC').textContent=($('wContent').value.length)+'/5000';
-  wLang=p.lang||'ko';$('wlLang').textContent=t('postLang');
+  wLang=p.lang||'ko';
   $('wSubmit').textContent=t('saveEdit');$('wAnonRow').style.display='none';renderWriteForm();renderPtiles();$('writeModal').classList.add('on');}
 function renderWriteForm(){
-  $('wlangs').innerHTML=[['ko','🇰🇷 한국어'],['ja','🇯🇵 日本語']].map(([v,l])=>`<div class="wchip ${v===wLang?'on':''}" onclick="wPick('lang','${v}')">${l}</div>`).join('');
   $('wcats').innerHTML=CATS.filter(([c])=>c!=='전체').map(([c])=>`<div class="wchip ${c===wCat?'on':''}" onclick="wPick('cat','${c}')">${catL(c)}</div>`).join('');
   let html=`<div class="wrow"><span class="wchip ${wRegion==='전체'?'on':''}" onclick="wPick('region','전체')">${t('noRegion')}</span></div>`;
   html+=RGROUPS.map(g=>`<div class="wrow"><span class="wgl">${t(g[0]+'Group')}</span>`+g[1].map(r=>`<span class="wchip ${r===wRegion?'on':''}" onclick="wPick('region','${r}')">${regL(r)}</span>`).join('')+`</div>`).join('');
   $('wregions').innerHTML=html;
+  renderJobBox();
 }
-function wPick(k,v){if(k==='cat')wCat=v;else if(k==='lang')wLang=v;else wRegion=v;renderWriteForm();}
+/* 구인구직 카테고리 전용 상세 입력 */
+const JOBINP=[['pos','jobPosition','jobPositionPh'],['pay','jobPay','jobPayPh'],['hours','jobHoursL','jobHoursPh'],['place','jobPlace','jobPlacePh'],['req','jobReq','jobReqPh'],['welfare','jobWelfare','jobWelfarePh'],['contact','jobContactL','jobContactPh']];
+function readJobF(){JOBINP.forEach(([k])=>{const el=$('j_'+k);if(el)jobF[k]=el.value;});}
+function jobChipRow(picker,sel,dictKey,order){const m=T[LANG][dictKey];return `<div class="wrow">`+order.map(key=>`<span class="wchip ${sel===key?'on':''}" onclick="wPick('${picker}','${key}')">${m[key]}</span>`).join('')+`</div>`;}
+function renderJobBox(){
+  const box=$('wJobBox'),isJob=(wCat==='구인구직'&&!wEditId);
+  if(!box)return;
+  if(!isJob){box.style.display='none';if($('wContent'))$('wContent').placeholder=t('contentPh');return;}
+  readJobF();box.style.display='';
+  if($('wContent'))$('wContent').placeholder=t('jobDescPh');
+  let h=`<div class="wlabel">${t('jobBoxTitle')}</div><div class="secnote" style="margin:2px 0 8px">${t('jobHint')}</div>`;
+  h+=`<input class="field" id="j_pos" maxlength="60" placeholder="${esc(t('jobPositionPh'))}" value="${esc(jobF.pos||'')}">`;
+  h+=`<div class="wlabel">${t('jobTypeL')}</div>`+jobChipRow('jtype',jobType,'jobTypes',['fulltime','parttime','freelance','intern']);
+  h+=`<input class="field" id="j_pay" maxlength="60" placeholder="${esc(t('jobPayPh'))}" value="${esc(jobF.pay||'')}" style="margin-top:8px">`;
+  h+=`<input class="field" id="j_hours" maxlength="60" placeholder="${esc(t('jobHoursPh'))}" value="${esc(jobF.hours||'')}" style="margin-top:8px">`;
+  h+=`<input class="field" id="j_place" maxlength="60" placeholder="${esc(t('jobPlacePh'))}" value="${esc(jobF.place||'')}" style="margin-top:8px">`;
+  h+=`<input class="field" id="j_req" maxlength="100" placeholder="${esc(t('jobReqPh'))}" value="${esc(jobF.req||'')}" style="margin-top:8px">`;
+  h+=`<input class="field" id="j_welfare" maxlength="100" placeholder="${esc(t('jobWelfarePh'))}" value="${esc(jobF.welfare||'')}" style="margin-top:8px">`;
+  h+=`<div class="wlabel">${t('jobVisaL')}</div>`+jobChipRow('jvisa',jobVisa,'jobVisas',['whv','support','holder','any']);
+  h+=`<input class="field" id="j_contact" maxlength="80" placeholder="${esc(t('jobContactPh'))}" value="${esc(jobF.contact||'')}" style="margin-top:8px">`;
+  h+=`<div class="wlabel">${t('jobDescL')}</div>`;
+  box.innerHTML=h;
+}
+function composeJobContent(){
+  readJobF();const L=T[wLang],lines=[];
+  if(jobF.pos&&jobF.pos.trim())lines.push('💼 '+L.jobPosition+': '+jobF.pos.trim());
+  if(jobType)lines.push('🧾 '+L.jobTypeL+': '+L.jobTypes[jobType]);
+  if(jobF.pay&&jobF.pay.trim())lines.push('💰 '+L.jobPay+': '+jobF.pay.trim());
+  if(jobF.hours&&jobF.hours.trim())lines.push('🕒 '+L.jobHoursL+': '+jobF.hours.trim());
+  if(jobF.place&&jobF.place.trim())lines.push('📍 '+L.jobPlace+': '+jobF.place.trim());
+  if(jobF.req&&jobF.req.trim())lines.push('✅ '+L.jobReq+': '+jobF.req.trim());
+  if(jobF.welfare&&jobF.welfare.trim())lines.push('🎁 '+L.jobWelfare+': '+jobF.welfare.trim());
+  if(jobVisa)lines.push('🛂 '+L.jobVisaL+': '+L.jobVisas[jobVisa]);
+  if(jobF.contact&&jobF.contact.trim())lines.push('📞 '+L.jobContactL+': '+jobF.contact.trim());
+  let body=lines.join('\n');const desc=$('wContent')?$('wContent').value.trim():'';
+  if(desc)body+=(body?'\n\n':'')+desc;
+  return body;
+}
+function wPick(k,v){if(k==='cat')wCat=v;else if(k==='lang')wLang=v;else if(k==='jtype')jobType=(jobType===v?'':v);else if(k==='jvisa')jobVisa=(jobVisa===v?'':v);else wRegion=v;renderWriteForm();}
 function renderPtiles(){let h=wImgs.map((s,i)=>`<div class="ptile" style="background-image:url('${s}')"><div class="rm" onclick="rmImg(${i})">×</div></div>`).join('');if(wImgs.length<10)h+=`<div class="ptile add" onclick="$('wFile').click()"><i class="ti ti-camera-plus"></i></div>`;$('ptiles').innerHTML=h;}
 function rmImg(i){wImgs.splice(i,1);renderPtiles();}
 async function onPick(e){const files=[...e.target.files].slice(0,10-wImgs.length);e.target.value='';for(const f of files){const u=await uploadImg(f,1280);wImgs.push(u);renderPtiles();}}
 function downscale(file,cb,maxArg){const r=new FileReader();r.onload=ev=>{const img=new Image();img.onload=()=>{const max=maxArg||900;let w=img.width,h=img.height;if(w>max||h>max){if(w>h){h=Math.round(h*max/w);w=max;}else{w=Math.round(w*max/h);h=max;}}const cv=document.createElement('canvas');cv.width=w;cv.height=h;cv.getContext('2d').drawImage(img,0,0,w,h);cb(cv.toDataURL('image/jpeg',0.8));};img.src=ev.target.result;};r.readAsDataURL(file);}
 /* 이미지 → 축소 후 Supabase Storage 업로드, 실패 시 base64 폴백 */
 function uploadImg(file,maxArg){return new Promise(resolve=>{const r=new FileReader();r.onload=ev=>{const img=new Image();img.onload=async()=>{const max=maxArg||1200;let w=img.width,h=img.height;if(w>max||h>max){if(w>h){h=Math.round(h*max/w);w=max;}else{w=Math.round(w*max/h);h=max;}}const cv=document.createElement('canvas');cv.width=w;cv.height=h;cv.getContext('2d').drawImage(img,0,0,w,h);const dataUrl=cv.toDataURL('image/jpeg',0.82);try{if(ME.uid&&cv.toBlob){const blob=await new Promise(res=>cv.toBlob(res,'image/jpeg',0.82));if(blob){const path=ME.uid+'/'+Date.now()+'-'+Math.random().toString(36).slice(2,8)+'.jpg';const {error}=await SB.storage.from('beautia').upload(path,blob,{contentType:'image/jpeg',upsert:false});if(!error){const {data}=SB.storage.from('beautia').getPublicUrl(path);if(data&&data.publicUrl){resolve(data.publicUrl);return;}}}}}catch(e){console.warn('upload',e);}resolve(dataUrl);};img.src=ev.target.result;};r.readAsDataURL(file);});}
-async function submitWrite(){const title=$('wTitle').value.trim(),content=$('wContent').value.trim();if(!title||!content){toast(t('needTC'));return;}
+async function submitWrite(){const title=$('wTitle').value.trim();const isJob=(wCat==='구인구직'&&!wEditId);
+  if(isJob&&(!jobF.pos||!jobF.pos.trim())){readJobF();if(!jobF.pos||!jobF.pos.trim()){toast(t('needJobPos'));return;}}
+  const content=isJob?composeJobContent():$('wContent').value.trim();if(!title||!content){toast(t('needTC'));return;}
   if(!ME.uid){openSignup();return;}
   if(submitWrite._busy)return;submitWrite._busy=true;
   const tags=$('wTags').value.split(/[,#\n]+/).map(s=>s.trim()).filter(Boolean).slice(0,6);
@@ -1202,6 +1347,7 @@ function renderProfileForm(first){
       <label class="agree"><input type="checkbox" id="agPriv" ${pfAgreePrivacy?'checked':''} onchange="pfAgreePrivacy=this.checked"><span class="req">[${t('req')}]</span> ${t('agreePrivacy')}<a href="privacy.html" target="_blank" rel="noopener noreferrer" onclick="event.stopPropagation()">${t('view')}</a></label>
       <label class="agree"><input type="checkbox" id="agMktg" ${pfAgreeMktg?'checked':''} onchange="pfAgreeMktg=this.checked"> ${t('agreeMktg')}</label>`;
   }
+  if(pfMode==='edit'){h+=`<button class="btn btn-ghost" style="width:100%;justify-content:center;margin-top:18px" onclick="closeModal();openIdCard()"><i class="ti ti-id"></i> ${t('idCardBtn')}</button>`;}
   $('pfBody').innerHTML=h;
 }
 async function saveProfile(){
@@ -1276,21 +1422,129 @@ async function shareCardNow(){const p=DB.posts.find(x=>x.id===sharePid);if(!p)re
 async function nativeShareNow(){const p=DB.posts.find(x=>x.id===sharePid);if(!p)return;const url=postUrl(p.id);
   try{if(navigator.share){await navigator.share({title:p.title,text:shareText(p),url:url});return;}}catch(e){return;}
   try{await navigator.clipboard.writeText(shareText(p)+'\n'+url);}catch(e){}toast(t('linkCopied'));}
-let cardPid=null,cardRatio='45';
-function ratioTabsHtml(){return `<span class="${cardRatio==='45'?'on':''}" onclick="setCardRatio('45')">정사각 4:5</span><span class="${cardRatio==='916'?'on':''}" onclick="setCardRatio('916')">릴스 9:16</span>`;}
-function openCardMaker(id){cardPid=id;cardRatio='45';
+let cardPid=null,cardRatio='45',cardMode='post',cardStyle='id';
+let idPhotos=[],idPColor='',idTags='';
+const PCOLORS=['spring','summer','autumn','winter'];
+const ID_TAG_SUGG=['Chic','Tokyo_Mood','K_Idol_Skin','Natural','Y2K','Clean_Girl','Osaka_Vibe'];
+function ratioTabsHtml(){
+  if(cardMode==='id'){
+    if(ME.role==='designer')return `<span class="${cardStyle==='id'?'on':''}" onclick="setCardStyle('id')">${t('tabIdCard')}</span><span class="${cardStyle==='profile'?'on':''}" onclick="setCardStyle('profile')">${t('tabProfileCard')}</span>`;
+    return '';
+  }
+  return `<span class="${cardRatio==='45'?'on':''}" onclick="setCardRatio('45')">정사각 4:5</span><span class="${cardRatio==='916'?'on':''}" onclick="setCardRatio('916')">릴스 9:16</span>`;}
+function setCardStyle(s){cardStyle=s;$('ratioTabs').innerHTML=ratioTabsHtml();renderIdControls();renderCard();$('capBox').textContent=buildCaption();$('cardHint').textContent=(s==='profile')?t('dcardHint'):t('idCardHint');}
+function openCardMaker(id){cardPid=id;cardRatio='45';cardMode='post';
   $('cardHd').textContent=t('cardTitle');$('cardDl').textContent='⬇ '+t('dlCard');$('cardCap').textContent=t('copyCap');$('cardHint').textContent=t('cardHint');
   $('cardDl').onclick=downloadCard;$('cardCap').onclick=copyCaption;
   $('ratioTabs').innerHTML=ratioTabsHtml();renderCard();$('capBox').textContent=buildCaption();$('cardModal').classList.add('on');}
 function setCardRatio(r){cardRatio=r;$('ratioTabs').innerHTML=ratioTabsHtml();renderCard();}
-function renderCard(){const p=DB.posts.find(x=>x.id===cardPid);if(!p)return;
-  const fr=$('cardFrame');fr.className='cardframe'+(cardRatio==='916'?' r916':'');fr.innerHTML=cardInner(p);}
-function buildCaption(){const p=DB.posts.find(x=>x.id===cardPid);if(!p)return'';
+function renderCard(){const fr=$('cardFrame');
+  if(cardMode==='id'){
+    if(cardStyle==='profile'){fr.className='cardframe';fr.innerHTML=designerCardInner();}
+    else{fr.className='cardframe id-card';fr.innerHTML=idCardInner();}
+    return;
+  }
+  fr.className='cardframe'+(cardRatio==='916'?' r916':'');
+  const p=DB.posts.find(x=>x.id===cardPid);if(!p)return;fr.innerHTML=cardInner(p);}
+function buildCaption(){if(cardMode==='id')return (cardStyle==='profile')?buildDesignerCaption():buildIdCaption();
+  const p=DB.posts.find(x=>x.id===cardPid);if(!p)return'';
   const reg=(p.region&&p.region!=='전체')?regL(p.region):'일본';
   const tags=['#일본뷰티','#'+reg.replace(/\s/g,''),'#'+catL(p.cat),'#일본여행','#beautia','#일본미용실','#일본네일'];
   return p.title+'\n\n📍 '+reg+' · '+catL(p.cat)+'\n일본어 0이어도 한국어로 예약·통역 대행 (무료)\n후기 더보기 → @beautia.japan\n\n'+tags.join(' ');}
 function downloadCard(){const fr=$('cardFrame');if(typeof html2canvas==='undefined'){toast('잠시 후 다시 시도해주세요');return;}
-  html2canvas(fr,{scale:3,useCORS:true,backgroundColor:null}).then(cv=>{const a=document.createElement('a');a.href=cv.toDataURL('image/png');a.download='beautia-card-'+cardPid+'.png';document.body.appendChild(a);a.click();a.remove();}).catch(e=>{toast('이미지 저장 실패 (사진 보안 정책)');});}
+  if(cardMode==='id'&&cardStyle==='id'&&!idPhotos.length){toast(t('idNeedPhoto'));return;}
+  const fname=cardMode==='id'?('beautia-id-'+(cardStyle==='profile'?'card':'4cut')+'-'+((ME.nick||'me').replace(/\s/g,''))+'.png'):('beautia-card-'+cardPid+'.png');
+  html2canvas(fr,{scale:3,useCORS:true,backgroundColor:null}).then(cv=>{const a=document.createElement('a');a.href=cv.toDataURL('image/png');a.download=fname;document.body.appendChild(a);a.click();a.remove();}).catch(e=>{toast('이미지 저장 실패 (사진 보안 정책)');});}
+/* ===== 디자이너 명함 (마케팅 도구) ===== */
+function igHandle(v){v=(v||'').trim();if(!v)return '@beautia.japan';return '@'+v.replace(/^https?:\/\/(www\.)?instagram\.com\//,'').replace(/^@/,'').replace(/\/$/,'');}
+function designerCardInner(){
+  const S=ME.shop||{};
+  const photo=(S.photos&&S.photos.length)?S.photos[0]:'';
+  const img=photo?`<div class="cf-img"><img src="${photo}" crossorigin="anonymous" alt=""></div><div class="cf-scrim"></div>`:'';
+  const reg=(ME.region&&ME.region!=='전체');
+  const av=ME.avatar?`<img class="dc-av" src="${ME.avatar}" crossorigin="anonymous" alt="">`:`<div class="dc-av" style="display:flex;align-items:center;justify-content:center;font-weight:800;font-size:25px;color:#fff;background:${avColor(ME.nick)}">${esc((ME.nick||'?')[0])}</div>`;
+  const specs=(S.specialties&&S.specialties.length)?`<div class="dc-chips">${S.specialties.slice(0,5).map(s=>`<span>${esc(svcL(s))}</span>`).join('')}</div>`:'';
+  const shop=S.name?`<div class="dc-shop"><i class="ti ti-building-store" style="font-size:14px"></i> ${esc(S.name)}</div>`:'';
+  const career=S.career?`<div class="dc-career">${esc(S.career)}</div>`:'';
+  return `${img}<div class="cf-in">
+    <div class="cf-toprow"><span class="cf-badge">${esc(roleL('designer'))}</span>${reg?`<span class="cf-badge ghost">${regFlag(ME.region)} ${esc(regL(ME.region))}</span>`:''}${S.koOK?`<span class="cf-badge ghost">${t('koBadge')}</span>`:''}</div>
+    <div style="flex:1"></div>
+    <div class="dc-prof">${av}<div style="min-width:0"><div class="dc-name">${esc(ME.nick||'')}</div>${career}</div></div>
+    ${specs}
+    ${shop}
+    ${ME.bio?`<div class="cf-exc" style="margin-top:11px">${esc(ME.bio)}</div>`:''}
+    <div class="cf-foot"><div><div class="cf-brand">Beautia</div><div class="cf-tag">${t('dcardTag')}</div></div><div class="cf-h">${esc(igHandle(S.insta))}</div></div>
+  </div>`;}
+/* ===== BEAUTIA ID 카드 (프리미엄 네컷 · 전 회원 · QR 바이럴) ===== */
+function idTagList(){return (idTags||'').split(/[,#\s]+/).map(s=>s.trim()).filter(Boolean).slice(0,5);}
+function idCardUrl(){const code=ME.refCode||ME.ref||'';return location.origin+location.pathname+'?ref='+encodeURIComponent(code)+(ME.uid?('&u='+encodeURIComponent(ME.uid)):'');}
+function qrDataUrl(text){try{if(typeof qrcode==='undefined')return '';const q=qrcode(0,'M');q.addData(text||location.href);q.make();return q.createDataURL(5,6);}catch(e){return '';}}
+function idCardInner(){
+  const photos=idPhotos.slice(0,4);
+  let cells='';
+  for(let i=0;i<4;i++){const ph=photos[i];
+    cells+= ph?`<div class="id-cut"><img src="${ph}" crossorigin="anonymous" alt=""><span class="id-no">0${i+1}</span></div>`
+              :`<div class="id-cut id-empty"><i class="ti ti-camera-plus"></i></div>`;}
+  const reg=(ME.region&&ME.region!=='전체')?regL(ME.region):'';
+  const pc=idPColor?(T[LANG].pcolors[idPColor]||''):'';
+  const meta=[pc,reg].filter(Boolean);
+  const metaHtml=meta.length?`<div class="id-meta">${esc(meta.join('  ·  '))}</div>`:'';
+  const tags=idTagList().map(tg=>'#'+tg).join('  ');
+  const tagsHtml=tags?`<div class="id-tags">${esc(tags)}</div>`:'';
+  const qr=qrDataUrl(idCardUrl());
+  const qrHtml=qr?`<div class="id-qrwrap"><img class="id-qr" src="${qr}" alt="QR"><div class="id-scan">${esc(t('idScan'))}</div></div>`:'';
+  return `<div class="id-top"><span class="id-wm">BEAUTIA</span><span class="id-kind">ID · ${new Date().getFullYear()}</span></div>
+    <div class="id-cuts">${cells}</div>
+    <div class="id-foot"><div class="id-foot-main">
+      <div class="id-name">${esc(ME.nick||'')}</div>
+      <div class="id-verified"><i class="ti ti-rosette-discount-check-filled"></i> ${esc(t('idVerified'))}</div>
+      ${metaHtml}${tagsHtml}
+    </div>${qrHtml}</div>`;}
+function renderIdControls(){
+  const box=$('idControls');if(!box)return;
+  const show=(cardMode==='id'&&cardStyle==='id');box.style.display=show?'':'none';
+  if(!show){box.innerHTML='';return;}
+  let ph=idPhotos.map((s,i)=>`<div class="ptile" style="background-image:url('${s}')"><div class="rm" onclick="idRmPhoto(${i})">×</div></div>`).join('');
+  if(idPhotos.length<4)ph+=`<div class="ptile add" onclick="$('idFile').click()"><i class="ti ti-camera-plus"></i></div>`;
+  const pc=PCOLORS.map(k=>`<span class="wchip ${idPColor===k?'on':''}" onclick="idPickColor('${k}')">${T[LANG].pcolors[k]}</span>`).join('');
+  const sugg=ID_TAG_SUGG.map(s=>`<span onclick="idAddTag('${s}')">#${s}</span>`).join('');
+  box.innerHTML=`<div class="wlabel">${t('idPhotosL')}</div>
+    <input type="file" id="idFile" accept="image/*" multiple style="display:none" onchange="onIdPick(event)">
+    <div class="ptiles">${ph}</div>
+    <div class="wlabel">${t('idPColorL')}</div><div class="wrow">${pc}</div>
+    <div class="wlabel">${t('idTagsL')}</div>
+    <input class="field" id="idTagsInput" maxlength="80" placeholder="${esc(t('idTagsPh'))}" value="${esc(idTags)}" oninput="idTags=this.value;idRefresh()">
+    <div class="id-sugg">${sugg}</div>`;
+}
+function idRefresh(){renderCard();$('capBox').textContent=buildCaption();}
+function idRefreshAll(){renderIdControls();idRefresh();}
+async function onIdPick(e){const files=[...e.target.files].slice(0,4-idPhotos.length);e.target.value='';for(const f of files){const u=await uploadImg(f,1280);idPhotos.push(u);idRefreshAll();}}
+function idRmPhoto(i){idPhotos.splice(i,1);idRefreshAll();}
+function idPickColor(k){idPColor=(idPColor===k?'':k);idRefreshAll();}
+function idAddTag(tag){const cur=idTagList();if(cur.includes(tag)||cur.length>=5)return;idTags=(idTags?idTags.trim()+' ':'')+'#'+tag;idRefreshAll();}
+function buildIdCaption(){const reg=(ME.region&&ME.region!=='전체')?regL(ME.region):'';
+  const pc=idPColor?(T[LANG].pcolors[idPColor]):'';
+  const head=['My BEAUTIA ID ✶'];const sub=[pc,reg].filter(Boolean).join(' · ');if(sub)head.push(sub);
+  head.push('나만의 뷰티 ID 카드 만들기 → '+idCardUrl());
+  const tags=idTagList().map(x=>'#'+x).concat(['#beautia','#뷰티네컷','#일본뷰티','#K뷰티']);
+  return head.join('\n')+'\n\n'+tags.join(' ');}
+function buildDesignerCaption(){const S=ME.shop||{};const reg=(ME.region&&ME.region!=='전체')?regL(ME.region):'일본';
+  const specs=(S.specialties||[]).map(svcL).join(' · ');
+  const lines=[`${ME.nick||''}${S.career?' | '+S.career:''}`];
+  if(specs)lines.push('💇 '+specs);
+  lines.push('📍 '+reg+(S.name?' · '+S.name:''));
+  lines.push('일본어 0이어도 한국어로 상담·예약 OK 🇰🇷');
+  lines.push('예약·문의 → @beautia.japan');
+  const tags=['#일본미용실','#'+reg.replace(/\s/g,''),'#일본네일','#일본헤어','#한국인디자이너','#워홀','#beautia'];
+  return lines.join('\n')+'\n\n'+tags.join(' ');}
+function openIdCard(){
+  if(!ME.registered){openLogin();return;}
+  cardMode='id';cardRatio='45';cardStyle='id';
+  if(!idPhotos.length){const seed=(ME.shop&&ME.shop.photos)||[];idPhotos=seed.slice(0,4);}
+  $('cardHd').textContent=t('idCardTitle');$('cardDl').textContent='⬇ '+t('dlCard');$('cardCap').textContent=t('copyCap');$('cardHint').textContent=t('idCardHint');
+  $('cardDl').onclick=downloadCard;$('cardCap').onclick=copyCaption;
+  $('ratioTabs').innerHTML=ratioTabsHtml();renderIdControls();renderCard();$('capBox').textContent=buildCaption();$('cardModal').classList.add('on');}
+function openDesignerCard(){return openIdCard();}
 function copyCaption(){const txt=$('capBox').textContent;try{navigator.clipboard.writeText(txt);}catch(e){}toast(t('capCopied'));}
 let myTab='posts';
 function openMypage(){if(!ME.registered){openLogin();return;}view='profile';myTab='posts';renderMypage();scrollTo({top:0});}
@@ -1326,6 +1580,7 @@ function renderMypage(){
       <div class="pstat"><div class="n tnum">${myCmts}</div><div class="l">${t('tabComments')}</div></div>
       <div class="pstat"><div class="n tnum">${recvLikes}</div><div class="l">${t('recvLikes')}</div></div>
       <div class="pstat"><div class="n tnum">${ME.scraps.length}</div><div class="l">${t('scrap')}</div></div></div>
+    <button class="btn btn-primary" style="width:100%;justify-content:center;margin-top:14px" onclick="openIdCard()"><i class="ti ti-id"></i> ${t('idCardBtn')}</button>
     ${pointsHtml}
     ${shop}${designer}${interests}
     <div class="pseg"><span class="s ${myTab==='posts'?'on':''}" onclick="setMyTab('posts')">${t('tabPosts')}</span><span class="s ${myTab==='scraps'?'on':''}" onclick="setMyTab('scraps')">${t('tabScraps')}</span><span class="s ${myTab==='comments'?'on':''}" onclick="setMyTab('comments')">${t('tabComments')}</span></div>
@@ -1358,6 +1613,8 @@ async function boot(){
   renderHeader();renderShell();renderMain();
   const dpost=new URLSearchParams(location.search).get('post');
   if(dpost){const pid=/^\d+$/.test(dpost)?+dpost:dpost;if(DB.posts.some(p=>p.id===pid))openPost(pid);}
+  const duser=new URLSearchParams(location.search).get('u');
+  if(duser&&findProfile(duser))openUserProfile(duser);
   if(ME.needProfile)openCompleteProfile();
   else if(ME._newVisit&&ME.visit&&ME.visit.streak>1)setTimeout(()=>toast('🔥 '+ME.visit.streak+t('dayUnit')+' '+t('streakLabel')+'!'),800);
 }
