@@ -388,6 +388,22 @@ body.has-dcard .fab{bottom:86px;}
 .feedgrid .card:hover .cover img{transform:scale(1.05);}
 .hotcard{transition:transform .15s ease, box-shadow .18s ease;}
 .hotcard:hover{transform:translateY(-3px);box-shadow:0 14px 28px -16px rgba(20,12,13,.4);}
+/* 알림 종 버튼 + 목록 */
+.bellbtn{position:relative;width:38px;height:38px;border:1px solid var(--line);background:#fff;border-radius:50%;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;color:var(--ink2);transition:.14s;flex:none;}
+.bellbtn:hover{border-color:var(--plum);color:var(--plum);}
+.bellbtn .ti{font-size:19px;}
+.bellbtn .bdg{position:absolute;top:-5px;right:-5px;min-width:18px;height:18px;padding:0 5px;background:var(--rose,#A24A56);color:#fff;font-size:11px;font-weight:800;border-radius:999px;display:none;align-items:center;justify-content:center;line-height:1;box-shadow:0 2px 6px -1px rgba(0,0,0,.3);}
+.bellbtn .bdg.on{display:flex;}
+.nitem{display:flex;gap:12px;padding:14px 4px;border-top:1px solid var(--line);cursor:pointer;transition:.12s;}
+.nitem:first-child{border-top:none;}
+.nitem.unread{background:var(--plumbg);border-radius:12px;padding:14px 12px;border-top-color:transparent;}
+.nitem:hover{background:var(--soft);border-radius:12px;}
+.nic{width:38px;height:38px;border-radius:50%;background:var(--soft);display:flex;align-items:center;justify-content:center;font-size:18px;flex:none;}
+.nitem.unread .nic{background:#fff;}
+.ntx{flex:1;min-width:0;}
+.ntt{font-size:14px;font-weight:700;color:var(--ink);letter-spacing:-.01em;}
+.ntb{font-size:13px;color:var(--ink2);margin-top:3px;line-height:1.5;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.ntm{font-size:11.5px;color:var(--sub);margin-top:5px;}
 .hothead h2{font-size:16px;font-weight:800;margin-bottom:12px;}
 .hotrow{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;}
 .hotcard{position:relative;background:#fff;border:1px solid var(--line);border-radius:14px;overflow:hidden;cursor:pointer;transition:.14s;}
@@ -724,6 +740,11 @@ textarea.field{min-height:200px;resize:vertical;line-height:1.75;}
 <div class="modal" id="memberModal"><div class="sheet" style="max-width:480px;">
   <span class="x" onclick="closeModal()">×</span><div id="memBody"></div>
 </div></div>
+<div class="modal" id="notifModal"><div class="sheet" style="max-width:440px;">
+  <span class="x" onclick="closeModal()">×</span><h3 id="notifHd"></h3>
+  <div id="notifAdmin"></div>
+  <div id="notifList"></div>
+</div></div>
 <div class="modal" id="shareModal"><div class="sheet" style="max-width:380px;">
   <span class="x" onclick="closeModal()">×</span><h3 id="shareHd"></h3>
   <div class="sharelinkrow"><input id="shareUrl" readonly><button class="btn btn-primary" onclick="copyPostLink()" id="shareCopyBtn"></button></div>
@@ -752,7 +773,7 @@ const T={ko:{
  makeCard:'카드 만들기',shareTitle:'공유하기',copyLink:'링크 복사',shareCardOpt:'이미지 카드로 공유',shareApp:'다른 앱으로 공유',cardTitle:'공유 카드 만들기',dlCard:'이미지 저장',copyCap:'캡션 복사',capCopied:'캡션이 복사됐어요',cardHint:'저장해서 인스타·릴스/쇼츠에 올려보세요. 영상 마지막엔 "후기는 Beautia에서"!',linkCopied:'링크가 복사됐어요',cardReview:'REVIEW',
  dcardBtn:'내 명함 만들기',dcardTitle:'디자이너 명함',dcardHint:'저장해서 인스타 프로필·DM·오프라인 홍보에 활용하세요. 손님이 한눈에 당신을 알 수 있어요. (인스타 9:16 스토리, 4:5 피드 모두 지원)',dcardTag:'일본에서 만나는 한국어 디자이너',dcardOnly:'명함은 디자이너 회원만 만들 수 있어요',dcardSetup:'프로필에 사진·경력·전문 시술을 채우면 명함이 더 멋져져요',dcardStyA:'프로필 명함',dcardStyB:'📸 네컷',dcardStripHint:'작업 사진 4장으로 \'인생네컷\' 스타일 포트폴리오 명함! 손님이 시술 결과를 한눈에 봐요. 빈 칸은 프로필 편집에서 작업 사진을 추가해 채워보세요.',
  idCardBtn:'네컷 ID 카드',idCardTitle:'BEAUTIA ID 카드',idCardHint:'사진 4장으로 나만의 BEAUTIA ID 카드 ✨ 저장해서 인스타 스토리·라인 프로필에 올려보세요. QR을 찍으면 내 커뮤니티 프로필로 바로 연결돼요.',idPhotosL:'사진 (네컷 · 최대 4장)',idPColorL:'퍼스널 컬러 (선택)',idTagsL:'스타일 태그',idTagsPh:'#Chic #Tokyo_Mood #K_Idol_Skin',idScan:'프로필 보기',idVerified:'BEAUTIA verified',idNeedPhoto:'사진을 1장 이상 넣어주세요',tabIdCard:'📸 네컷',tabProfileCard:'프로필 명함',tabFrontCard:'🪪 앞면 명함',frontHint:'깔끔한 앞면 명함 — 프로필·QR이 한 장에. 카톡·라인 프로필, DM 인사에 딱이에요.',pcolors:{spring:'봄 웜톤',summer:'여름 쿨톤',autumn:'가을 웜톤',winter:'겨울 쿨톤'},
- userNotFound:'프로필을 찾을 수 없어요',userPosts:'작성한 글',userNoPosts:'아직 작성한 글이 없어요',userCardCta:'나도 BEAUTIA ID 카드 만들기',userJoinCta:'BEAUTIA 가입하고 시작하기',viewUserProfile:'프로필 보기',userViewCard:'이 사람의 ID 카드 보기',userWish:'위시리스트',tabPortfolio:'포트폴리오',noPortfolio:'아직 포트폴리오 사진이 없어요. 프로필 편집에서 추가해보세요.',idShowTitle:'BEAUTIA ID 카드',idShowSub:'우리 멤버들의 네컷 명함 ✨',giMorning:'좋은 아침이에요',giDay:'반가워요',giEvening:'좋은 저녁이에요',giNight:'편안한 밤 되세요',greetGuest:'환영해요',greetTagline:'한·일 뷰티 친구들의 라운지',newFresh:'방금 올라온 글',
+ userNotFound:'프로필을 찾을 수 없어요',userPosts:'작성한 글',userNoPosts:'아직 작성한 글이 없어요',userCardCta:'나도 BEAUTIA ID 카드 만들기',userJoinCta:'BEAUTIA 가입하고 시작하기',viewUserProfile:'프로필 보기',userViewCard:'이 사람의 ID 카드 보기',userWish:'위시리스트',tabPortfolio:'포트폴리오',noPortfolio:'아직 포트폴리오 사진이 없어요. 프로필 편집에서 추가해보세요.',notifTitle:'알림',notifEmpty:'아직 알림이 없어요',notifSend:'공지 알림 보내기',notifCommented:'님이 내 글에 댓글을 남겼어요',notifNotice:'공지',notifSendTitle:'공지 제목을 입력하세요',notifSendBody:'공지 내용을 입력하세요',notifSent:'공지를 보냈어요 📢',idShowTitle:'BEAUTIA ID 카드',idShowSub:'우리 멤버들의 네컷 명함 ✨',giMorning:'좋은 아침이에요',giDay:'반가워요',giEvening:'좋은 저녁이에요',giNight:'편안한 밤 되세요',greetGuest:'환영해요',greetTagline:'한·일 뷰티 친구들의 라운지',newFresh:'방금 올라온 글',
  firstCmt:'첫 댓글을 남겨보세요!',emptyFeed:'아직 글이 없어요. 첫 글을 남겨보세요 ✏️',transBy:'Beautia 번역됨',gptT:'번역',gptTing:'번역 중…',gptShowOrig:'원문 보기',gptShowTr:'번역 보기',gptFail:'번역에 실패했어요',viewOrigJa:'원문(日本語) 보기 ▾',viewOrigKo:'번역(한국어) 보기 ▾',foldOrig:'접기 ▴',
  wHead:'글쓰기',postLang:'언어 (이 글이 보일 피드)',category:'카테고리',regionOpt:'지역 (선택)',noRegion:'지역무관',titlePh:'제목을 입력하세요',contentPh:'한국·일본 뷰티 사장님·손님 누구나! 질문, 후기, 정보, 수다 환영해요. (욕설·광고·개인정보 X)',photo:'사진 (최대 10장)',register:'등록하기',
  profile:'프로필',nickPh:'닉네임',iam:'나는…',save:'저장',saved:'저장됐어요',posted:'글이 등록됐어요 ✨',scrapped:'스크랩했어요',copied:'링크가 복사됐어요 (데모)',needTC:'제목과 내용을 입력하세요',
@@ -786,7 +807,7 @@ const T={ko:{
  makeCard:'カード作成',shareTitle:'シェア',copyLink:'リンクをコピー',shareCardOpt:'画像カードでシェア',shareApp:'他のアプリでシェア',cardTitle:'シェアカードを作成',dlCard:'画像を保存',copyCap:'キャプションをコピー',capCopied:'キャプションをコピーしました',cardHint:'保存してインスタ・リール/ショートに。動画の最後は「レビューはBeautiaで」！',linkCopied:'リンクをコピーしました',cardReview:'REVIEW',
  dcardBtn:'名刺を作る',dcardTitle:'デザイナー名刺',dcardHint:'保存してインスタのプロフィール・DM・オフライン宣伝に活用しましょう。お客様が一目であなたを知れます。（インスタ9:16ストーリー・4:5フィード対応）',dcardTag:'日本で出会う韓国語デザイナー',dcardOnly:'名刺はデザイナー会員のみ作成できます',dcardSetup:'プロフィールに写真・経歴・得意な施術を入れると名刺がより魅力的に',dcardStyA:'プロフィール名刺',dcardStyB:'📸 4カット',dcardStripHint:'作品写真4枚で“人生4カット”風のポートフォリオ名刺！施術の仕上がりが一目で伝わります。空きはプロフィール編集で作品写真を追加して埋めましょう。',
  idCardBtn:'4カットIDカード',idCardTitle:'BEAUTIA IDカード',idCardHint:'写真4枚で自分だけのBEAUTIA IDカード ✨ 保存してインスタストーリー・LINEプロフィールに。QRを読み取ると私のコミュニティプロフィールへ直接つながります。',idPhotosL:'写真（4カット・最大4枚）',idPColorL:'パーソナルカラー（任意）',idTagsL:'スタイルタグ',idTagsPh:'#Chic #Tokyo_Mood #K_Idol_Skin',idScan:'プロフィール',idVerified:'BEAUTIA verified',idNeedPhoto:'写真を1枚以上入れてください',tabIdCard:'📸 4カット',tabProfileCard:'プロフィール名刺',tabFrontCard:'🪪 名刺(表)',frontHint:'シンプルな名刺(表面)— プロフィールとQRが一枚に。カカオ・LINEのプロフィール、DMの挨拶に最適。',pcolors:{spring:'スプリングウォーム',summer:'サマークール',autumn:'オータムウォーム',winter:'ウィンタークール'},
- userNotFound:'プロフィールが見つかりません',userPosts:'投稿',userNoPosts:'まだ投稿がありません',userCardCta:'私もBEAUTIA IDカードを作る',userJoinCta:'BEAUTIAに登録して始める',viewUserProfile:'プロフィールを見る',userViewCard:'この人のIDカードを見る',userWish:'ウィッシュリスト',tabPortfolio:'ポートフォリオ',noPortfolio:'まだポートフォリオ写真がありません。プロフィール編集で追加してみましょう。',idShowTitle:'BEAUTIA IDカード',idShowSub:'メンバーの4カット名刺 ✨',giMorning:'おはようございます',giDay:'こんにちは',giEvening:'こんばんは',giNight:'こんばんは',greetGuest:'ようこそ',greetTagline:'韓・日ビューティーのたまり場',newFresh:'新着の投稿',
+ userNotFound:'プロフィールが見つかりません',userPosts:'投稿',userNoPosts:'まだ投稿がありません',userCardCta:'私もBEAUTIA IDカードを作る',userJoinCta:'BEAUTIAに登録して始める',viewUserProfile:'プロフィールを見る',userViewCard:'この人のIDカードを見る',userWish:'ウィッシュリスト',tabPortfolio:'ポートフォリオ',noPortfolio:'まだポートフォリオ写真がありません。プロフィール編集で追加してみましょう。',notifTitle:'お知らせ',notifEmpty:'まだ通知がありません',notifSend:'お知らせを送る',notifCommented:'さんが投稿にコメントしました',notifNotice:'お知らせ',notifSendTitle:'お知らせのタイトル',notifSendBody:'お知らせの内容',notifSent:'お知らせを送りました 📢',idShowTitle:'BEAUTIA IDカード',idShowSub:'メンバーの4カット名刺 ✨',giMorning:'おはようございます',giDay:'こんにちは',giEvening:'こんばんは',giNight:'こんばんは',greetGuest:'ようこそ',greetTagline:'韓・日ビューティーのたまり場',newFresh:'新着の投稿',
  firstCmt:'最初のコメントを残しましょう！',emptyFeed:'まだ投稿がありません。最初の投稿をどうぞ ✏️',transBy:'Beautia 翻訳',gptT:'翻訳',gptTing:'翻訳中…',gptShowOrig:'原文を見る',gptShowTr:'翻訳を見る',gptFail:'翻訳に失敗しました',viewOrigJa:'原文(日本語)を見る ▾',viewOrigKo:'翻訳(韓国語)を見る ▾',foldOrig:'閉じる ▴',
  wHead:'投稿',postLang:'言語（表示されるフィード）',category:'カテゴリー',regionOpt:'地域（任意）',noRegion:'地域問わず',titlePh:'タイトルを入力',contentPh:'韓国・日本のビューティーオーナー・お客様どなたでも！質問・レビュー・情報・雑談歓迎。（暴言・広告・個人情報X）',photo:'写真（最大10枚）',register:'投稿する',
  profile:'プロフィール',nickPh:'ニックネーム',iam:'わたしは…',save:'保存',saved:'保存しました',posted:'投稿しました ✨',scrapped:'保存しました',copied:'リンクをコピーしました（デモ）',needTC:'タイトルと本文を入力してください',
@@ -904,6 +925,28 @@ async function refreshProfile(session){
     saveMe();}
   else{ME.registered=false;ME.needProfile=true;}
 }
+/* ===== 알림 ===== */
+function readBcasts(){try{return JSON.parse(localStorage.getItem('beautia_readbc')||'[]');}catch(e){return [];}}
+function markBcastRead(ids){try{const s=new Set(readBcasts());ids.forEach(i=>s.add(i));localStorage.setItem('beautia_readbc',JSON.stringify([...s]));}catch(e){}}
+function notifUnread(){const rb=readBcasts();return ((DB&&DB.notifs)||[]).filter(n=>n.user_id?!n.read:!rb.includes(n.id)).length;}
+function renderBell(){const b=$('bellBdg');if(!b)return;const n=notifUnread();b.textContent=n>99?'99+':String(n);b.classList.toggle('on',n>0);}
+async function loadNotifs(){if(!ME.uid){if(DB)DB.notifs=[];renderBell();return;}try{const {data}=await SB.from('notifications').select('*').or('user_id.eq.'+ME.uid+',user_id.is.null').order('created_at',{ascending:false}).limit(40);DB.notifs=data||[];}catch(e){DB.notifs=DB.notifs||[];}renderBell();}
+function openNotifs(){if(!ME.registered){openLogin();return;}$('notifHd').textContent=t('notifTitle');renderNotifList();$('notifModal').classList.add('on');markAllRead();}
+function renderNotifList(){
+  const rb=readBcasts(),list=(DB&&DB.notifs)||[];
+  $('notifAdmin').innerHTML=ME.is_admin?`<button class="btn btn-primary" style="width:100%;justify-content:center;margin-bottom:14px" onclick="sendBroadcast()"><i class="ti ti-speakerphone"></i> ${t('notifSend')}</button>`:'';
+  if(!list.length){$('notifList').innerHTML=`<div class="empty" style="border:none;padding:42px">${t('notifEmpty')}</div>`;return;}
+  $('notifList').innerHTML=list.map(n=>{
+    const unread=n.user_id?!n.read:!rb.includes(n.id);const isC=n.type==='comment';const ic=isC?'💬':'📢';
+    const ttl=isC?`${esc(n.actor||'누군가')}${t('notifCommented')}`:esc(n.title||t('notifNotice'));
+    const body=isC?`"${esc((n.body||'').slice(0,60))}"${n.title?' · '+esc(n.title):''}`:esc(n.body||'');
+    const click=n.post_id?`onclick="openNotif('${n.post_id}')"`:'';
+    return `<div class="nitem ${unread?'unread':''}" ${click}><div class="nic">${ic}</div><div class="ntx"><div class="ntt">${ttl}</div>${body?`<div class="ntb">${body}</div>`:''}<div class="ntm">${timeago(new Date(n.created_at).getTime())}</div></div></div>`;
+  }).join('');
+}
+function openNotif(pid){closeModal();const id=/^\d+$/.test(pid)?+pid:pid;openPost(id);}
+async function markAllRead(){const list=(DB&&DB.notifs)||[];const bcast=list.filter(n=>!n.user_id).map(n=>n.id);if(bcast.length)markBcastRead(bcast);const pu=list.filter(n=>n.user_id&&!n.read);if(pu.length){try{await SB.from('notifications').update({read:true}).eq('user_id',ME.uid).eq('read',false);}catch(e){}pu.forEach(n=>n.read=true);}renderBell();}
+async function sendBroadcast(){const title=prompt(t('notifSendTitle'));if(!title)return;const body=prompt(t('notifSendBody'))||'';const {error}=await SB.from('notifications').insert({user_id:null,type:'notice',title:title,body:body});if(error){toast('전송 실패: '+(error.message||''));return;}toast(t('notifSent'));await loadNotifs();renderNotifList();}
 function seed(){const now=Date.now(),h=3600000,d=86400000;return[
  {id:1,cat:'정보',region:'전체',role:'official',nick:'Beautia',title:'🎉 커뮤니티 오픈! 이런 곳이에요',content:'한국·일본 뷰티를 사랑하는 손님·사장님이 모이는 라운지예요.\n\n· 질문: "이 미용실 한국어 돼요?"\n· 후기: 다녀온 곳 솔직 후기\n· 정보: 예약 꿀팁, 화장품 추천\n· 사장님 라운지: 한국 손님 받는 노하우\n\n광고·욕설·개인정보는 삼가주세요 🤍',like:42,scrap:18,imgs:['https://images.unsplash.com/photo-1521590832167-7bcbfaa6381f?auto=format&fit=crop&w=720&q=70'],cmts:[{nick:'네일러버',role:'guest',t:'기다렸어요!! 🙌',d:now-2*h}],t:now-2*d},
  {id:2,cat:'질문',region:'서울',role:'guest',nick:'서울사는데',title:'서울인데 일본 가기 전에 미리 예약돼요?',content:'다음달 도쿄 여행 가는데, 한국에 있는 지금 미리 미용실 예약해두고 싶어요. 출국 전에 예약 잡아두는 거 가능할까요?',like:9,scrap:7,imgs:['https://images.unsplash.com/photo-1560066984-138dadb4c035?auto=format&fit=crop&w=720&q=70'],cmts:[{nick:'Beautia',role:'official',t:'네! 출국 전에 미리 예약·통역 대행 가능해요. 카톡으로 날짜·스타일 주세요 🙌',d:now-1*h}],t:now-3*h},
@@ -926,10 +969,10 @@ function renderHeader(){
     <div class="hright">
       <div class="langtog"><span class="${LANG==='ko'?'on':''}" onclick="setLang('ko')">한</span><span class="${LANG==='ja'?'on':''}" onclick="setLang('ja')">日</span></div>
       <button class="btn btn-primary" onclick="openWrite()"><i class="ti ti-pencil"></i> ${t('write')}</button>
-      ${ME.registered?`<span class="ptschip" id="navPts" onclick="openMypage()" title="${t('myPoints')}">✦ ${(ME.points||0).toLocaleString()}P</span><div class="av" id="navAv" onclick="openMypage()" title="${t('mypage')}" style="cursor:pointer"></div>`:`<button class="btn btn-ghost" onclick="openLogin()"><i class="ti ti-login-2"></i> ${t('login')}</button>`}
+      ${ME.registered?`<button class="bellbtn" id="navBell" onclick="openNotifs()" title="${t('notifTitle')}"><i class="ti ti-bell"></i><span class="bdg" id="bellBdg"></span></button><span class="ptschip" id="navPts" onclick="openMypage()" title="${t('myPoints')}">✦ ${(ME.points||0).toLocaleString()}P</span><div class="av" id="navAv" onclick="openMypage()" title="${t('mypage')}" style="cursor:pointer"></div>`:`<button class="btn btn-ghost" onclick="openLogin()"><i class="ti ti-login-2"></i> ${t('login')}</button>`}
     </div>`;
   applyAv($('navAv'),ME.nick,ME.avatar);
-  updateDcardFab();
+  updateDcardFab();renderBell();
 }
 function updateDcardFab(){const f=$('dcardFab');if(!f)return;const show=!!ME.registered;
   const lbl=f.querySelector('.lbl');if(lbl)lbl.textContent=t('idCardBtn');
@@ -1132,15 +1175,7 @@ function homeGridHtml(){
   // featuredHtml가 쓰는 히어로 1개는 그리드에서 제외(중복 방지)
   const withImg=base.filter(p=>p.imgs&&p.imgs.length);
   const heroId=withImg.length?withImg.slice().sort((a,b)=>(b.like+(isNew(b)?100:0))-(a.like+(isNew(a)?100:0)))[0].id:null;
-  // 활동 통계
-  const todayN=base.filter(isNew).length;
-  const regs=new Set(base.map(p=>p.region).filter(r=>r&&r!=='전체')).size;
-  const mem=(typeof PROFILES!=='undefined'&&PROFILES)?PROFILES.length:0;
-  const stat=`<div class="homestats">
-    <div class="hs"><b>${base.length}</b><span>${t('statPosts')}</span></div>
-    <div class="hs"><b style="color:var(--accent)">+${todayN}</b><span>${t('statToday')}</span></div>
-    <div class="hs"><b>${regs}</b><span>${t('statRegion')}</span></div>
-    ${mem>=3?`<div class="hs"><b>${mem}</b><span>${t('statMember')}</span></div>`:''}</div>`;
+  // 활동 통계 줄 제거됨(요청) — 작은 숫자가 오히려 휑해 보여서
   // 카테고리 빠른 이동 칩
   const chips=`<div class="homechips">`+CATS.filter(c=>c[0]!=='전체'&&base.some(p=>p.cat===c[0])).map(([c,ic])=>`<span class="hchip" style="--ac:${CATAC[c]||'#6D4346'}" onclick="setCat('${c}')"><span class="he">${CATEMO[c]||'🏷️'}</span>${catL(c)}<b>${base.filter(p=>p.cat===c).length}</b></span>`).join('')+`</div>`;
   // 인기 급상승 레일 (engagement 상위, 히어로 제외)
@@ -1150,7 +1185,7 @@ function homeGridHtml(){
   const recent=base.slice().sort((a,b)=>b.t-a.t).slice(0,18);
   const head=`<div class="boardhead"><h1>✨ ${t('newFresh')}</h1><span class="c tnum">${base.length}${t('count')}</span></div>`;
   const grid=`<div class="feedgrid">${feedWithAds(recent.map((p,i)=>cardHtml(p,i,false)))}</div>`;
-  return stat+chips+hotRail+head+grid;
+  return chips+hotRail+head+grid;
 }
 /* ===== ID 카드 쇼케이스 마퀴 (좌우로 흐르는 명함들) ===== */
 function profSubject(pr){const S=pr.shop||{};
@@ -1539,7 +1574,7 @@ async function saveProfile(){
   if(wasJoin){toast(t('joinDone'));setTimeout(()=>{award(PTS.signup,t('earnSignup'),'signup:'+ME.uid,'signup');if(ME.invitedBy){award(PTS.invite,t('earnInvited'),'invited:'+ME.uid,'invite');SB.rpc('award_referral',{inviter_code:ME.invitedBy}).then(()=>{},()=>{});}},700);}
   else toast(t('saved'));
 }
-async function reloadAll(){const {data:{session}}=await SB.auth.getSession();await refreshProfile(session);if(ME.registered)releaseGate();await loadPosts();renderHeader();renderShell();if(view==='profile')renderMypage();else if(view==='detail')renderDetail();else renderMain();}
+async function reloadAll(){const {data:{session}}=await SB.auth.getSession();await refreshProfile(session);if(ME.registered)releaseGate();await loadPosts();loadNotifs();renderHeader();renderShell();if(view==='profile')renderMypage();else if(view==='detail')renderDetail();else renderMain();}
 async function logout(){if(!confirm(t('logoutConfirm')))return;await SB.auth.signOut();}
 function copyRef(){const el=$('refIn');if(!el)return;el.select();try{navigator.clipboard.writeText(el.value);}catch(e){document.execCommand('copy');}toast(t('refCopied'));}
 /* ===== ChatGPT 번역 ===== */
@@ -1957,6 +1992,7 @@ async function boot(){
   const {data:{session}}=await SB.auth.getSession();
   await refreshProfile(session);
   await loadPosts();
+  loadNotifs();setInterval(()=>{if(ME&&ME.uid)loadNotifs();},90000);
   applyDeepLink();
   renderHeader();renderShell();renderMain();
   const dpost=new URLSearchParams(location.search).get('post');
