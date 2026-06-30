@@ -1,0 +1,51 @@
+<!-- Beautia COLLECTION · Supabase Auth → Email Templates → "Confirm signup" (and "Magic Link") · paste as-is -->
+<!-- Code-entry flow (verifyOtp), so it uses the 6-digit {{ .Token }}. -->
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#f6f1f0;margin:0;padding:32px 12px;font-family:-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif;">
+  <tr>
+    <td align="center">
+      <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="max-width:460px;background:#ffffff;border:1px solid #efeae8;border-radius:22px;overflow:hidden;">
+        <!-- brand bar -->
+        <tr>
+          <td style="padding:34px 36px 6px;text-align:center;">
+            <div style="font-family:Georgia,'Times New Roman',serif;font-size:27px;font-weight:700;color:#6E4A50;letter-spacing:.2px;">Beautia</div>
+            <div style="font-size:10px;font-weight:700;letter-spacing:5px;color:#b3a7a9;margin-top:5px;">COLLECTION</div>
+          </td>
+        </tr>
+        <!-- heading -->
+        <tr>
+          <td style="padding:22px 36px 0;text-align:center;">
+            <div style="font-size:20px;font-weight:800;color:#1c1418;">Verify your email</div>
+            <div style="font-size:14.5px;line-height:1.6;color:#6b6064;margin-top:10px;">
+              Enter the code below in the app<br>to finish signing up.
+            </div>
+          </td>
+        </tr>
+        <!-- code box -->
+        <tr>
+          <td style="padding:24px 36px 6px;">
+            <div style="background:#f6ecee;border:1px solid #ecd9dd;border-radius:16px;padding:22px 0;text-align:center;">
+              <div style="font-size:38px;font-weight:800;letter-spacing:12px;color:#B5828C;font-family:Georgia,'Times New Roman',serif;">{{ .Token }}</div>
+            </div>
+            <div style="font-size:12.5px;color:#9b9095;text-align:center;margin-top:12px;">This code is valid for about 10 minutes.</div>
+          </td>
+        </tr>
+        <!-- note -->
+        <tr>
+          <td style="padding:18px 36px 30px;">
+            <div style="border-top:1px solid #f1ecea;padding-top:18px;font-size:12.5px;line-height:1.7;color:#a59a9d;text-align:center;">
+              If you didn’t request this, you can safely ignore this email.
+            </div>
+          </td>
+        </tr>
+        <!-- footer -->
+        <tr>
+          <td style="background:#fbf8f7;padding:18px 36px;text-align:center;border-top:1px solid #f1ecea;">
+            <div style="font-family:Georgia,serif;font-size:13px;color:#8a7d80;font-weight:700;">Beautia <span style="font-family:inherit;font-weight:400;color:#b3a7a9;letter-spacing:2px;font-size:10px;">COLLECTION</span></div>
+            <div style="font-size:11px;color:#bcb2b4;margin-top:6px;">A global collection of beauty designers</div>
+          </td>
+        </tr>
+      </table>
+      <div style="font-size:11px;color:#c3babc;margin-top:16px;">© Beautia</div>
+    </td>
+  </tr>
+</table>

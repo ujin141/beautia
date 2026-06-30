@@ -1,84 +1,32 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
-        xmlns:xhtml="http://www.w3.org/1999/xhtml">
+        xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">
   <url>
     <loc>https://beautia.io/</loc>
-    <xhtml:link rel="alternate" hreflang="ko" href="https://beautia.io/?lang=ko"/>
-    <xhtml:link rel="alternate" hreflang="ja" href="https://beautia.io/?lang=ja"/>
-    <xhtml:link rel="alternate" hreflang="x-default" href="https://beautia.io/"/>
-    <changefreq>weekly</changefreq><priority>1.0</priority>
+    <lastmod>2026-07-01</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>1.0</priority>
+    <image:image>
+      <image:loc>https://beautia.io/og-cover.png</image:loc>
+      <image:title>Beautia Collection — a global collection of beauty designers</image:title>
+    </image:image>
   </url>
   <url>
     <loc>https://beautia.io/community</loc>
-    <xhtml:link rel="alternate" hreflang="ko" href="https://beautia.io/community?lang=ko"/>
-    <xhtml:link rel="alternate" hreflang="ja" href="https://beautia.io/community?lang=ja"/>
-    <xhtml:link rel="alternate" hreflang="x-default" href="https://beautia.io/community"/>
-    <changefreq>daily</changefreq><priority>0.9</priority>
+    <lastmod>2026-07-01</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.9</priority>
   </url>
   <url>
-    <loc>https://beautia.io/info</loc>
-    <changefreq>weekly</changefreq><priority>0.8</priority>
+    <loc>https://beautia.io/community?d=r2</loc>
+    <lastmod>2026-07-01</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
   </url>
-  <url><loc>https://beautia.io/info/tokyo-nail</loc><changefreq>weekly</changefreq><priority>0.7</priority></url>
-  <url><loc>https://beautia.io/info/tokyo-hair</loc><changefreq>weekly</changefreq><priority>0.7</priority></url>
-  <url><loc>https://beautia.io/info/tokyo-eyelash</loc><changefreq>weekly</changefreq><priority>0.7</priority></url>
-  <url><loc>https://beautia.io/info/tokyo-waxing</loc><changefreq>weekly</changefreq><priority>0.7</priority></url>
-  <url><loc>https://beautia.io/info/shinjuku-nail</loc><changefreq>weekly</changefreq><priority>0.7</priority></url>
-  <url><loc>https://beautia.io/info/shinjuku-hair</loc><changefreq>weekly</changefreq><priority>0.7</priority></url>
-  <url><loc>https://beautia.io/info/shinjuku-eyelash</loc><changefreq>weekly</changefreq><priority>0.7</priority></url>
-  <url><loc>https://beautia.io/info/shinjuku-waxing</loc><changefreq>weekly</changefreq><priority>0.7</priority></url>
-  <url><loc>https://beautia.io/info/shibuya-nail</loc><changefreq>weekly</changefreq><priority>0.7</priority></url>
-  <url><loc>https://beautia.io/info/shibuya-hair</loc><changefreq>weekly</changefreq><priority>0.7</priority></url>
-  <url><loc>https://beautia.io/info/shibuya-eyelash</loc><changefreq>weekly</changefreq><priority>0.7</priority></url>
-  <url><loc>https://beautia.io/info/shibuya-waxing</loc><changefreq>weekly</changefreq><priority>0.7</priority></url>
-  <url><loc>https://beautia.io/info/ginza-nail</loc><changefreq>weekly</changefreq><priority>0.7</priority></url>
-  <url><loc>https://beautia.io/info/ginza-hair</loc><changefreq>weekly</changefreq><priority>0.7</priority></url>
-  <url><loc>https://beautia.io/info/ginza-eyelash</loc><changefreq>weekly</changefreq><priority>0.7</priority></url>
-  <url><loc>https://beautia.io/info/ginza-waxing</loc><changefreq>weekly</changefreq><priority>0.7</priority></url>
-  <url><loc>https://beautia.io/info/osaka-nail</loc><changefreq>weekly</changefreq><priority>0.7</priority></url>
-  <url><loc>https://beautia.io/info/osaka-hair</loc><changefreq>weekly</changefreq><priority>0.7</priority></url>
-  <url><loc>https://beautia.io/info/osaka-eyelash</loc><changefreq>weekly</changefreq><priority>0.7</priority></url>
-  <url><loc>https://beautia.io/info/osaka-waxing</loc><changefreq>weekly</changefreq><priority>0.7</priority></url>
-  <url><loc>https://beautia.io/info/shinsaibashi-nail</loc><changefreq>weekly</changefreq><priority>0.7</priority></url>
-  <url><loc>https://beautia.io/info/shinsaibashi-hair</loc><changefreq>weekly</changefreq><priority>0.7</priority></url>
-  <url><loc>https://beautia.io/info/shinsaibashi-eyelash</loc><changefreq>weekly</changefreq><priority>0.7</priority></url>
-  <url><loc>https://beautia.io/info/shinsaibashi-waxing</loc><changefreq>weekly</changefreq><priority>0.7</priority></url>
-  <url><loc>https://beautia.io/info/namba-nail</loc><changefreq>weekly</changefreq><priority>0.7</priority></url>
-  <url><loc>https://beautia.io/info/namba-hair</loc><changefreq>weekly</changefreq><priority>0.7</priority></url>
-  <url><loc>https://beautia.io/info/namba-eyelash</loc><changefreq>weekly</changefreq><priority>0.7</priority></url>
-  <url><loc>https://beautia.io/info/namba-waxing</loc><changefreq>weekly</changefreq><priority>0.7</priority></url>
-  <url><loc>https://beautia.io/info/kyoto-nail</loc><changefreq>weekly</changefreq><priority>0.7</priority></url>
-  <url><loc>https://beautia.io/info/kyoto-hair</loc><changefreq>weekly</changefreq><priority>0.7</priority></url>
-  <url><loc>https://beautia.io/info/kyoto-eyelash</loc><changefreq>weekly</changefreq><priority>0.7</priority></url>
-  <url><loc>https://beautia.io/info/kyoto-waxing</loc><changefreq>weekly</changefreq><priority>0.7</priority></url>
-  <url><loc>https://beautia.io/info/fukuoka-nail</loc><changefreq>weekly</changefreq><priority>0.7</priority></url>
-  <url><loc>https://beautia.io/info/fukuoka-hair</loc><changefreq>weekly</changefreq><priority>0.7</priority></url>
-  <url><loc>https://beautia.io/info/fukuoka-eyelash</loc><changefreq>weekly</changefreq><priority>0.7</priority></url>
-  <url><loc>https://beautia.io/info/fukuoka-waxing</loc><changefreq>weekly</changefreq><priority>0.7</priority></url>
-  <url><loc>https://beautia.io/info/sapporo-nail</loc><changefreq>weekly</changefreq><priority>0.7</priority></url>
-  <url><loc>https://beautia.io/info/sapporo-hair</loc><changefreq>weekly</changefreq><priority>0.7</priority></url>
-  <url><loc>https://beautia.io/info/sapporo-eyelash</loc><changefreq>weekly</changefreq><priority>0.7</priority></url>
-  <url><loc>https://beautia.io/info/sapporo-waxing</loc><changefreq>weekly</changefreq><priority>0.7</priority></url>
-  <url><loc>https://beautia.io/info/nagoya-nail</loc><changefreq>weekly</changefreq><priority>0.7</priority></url>
-  <url><loc>https://beautia.io/info/nagoya-hair</loc><changefreq>weekly</changefreq><priority>0.7</priority></url>
-  <url><loc>https://beautia.io/info/nagoya-eyelash</loc><changefreq>weekly</changefreq><priority>0.7</priority></url>
-  <url><loc>https://beautia.io/info/nagoya-waxing</loc><changefreq>weekly</changefreq><priority>0.7</priority></url>
-  <url><loc>https://beautia.io/info/okinawa-nail</loc><changefreq>weekly</changefreq><priority>0.7</priority></url>
-  <url><loc>https://beautia.io/info/okinawa-hair</loc><changefreq>weekly</changefreq><priority>0.7</priority></url>
-  <url><loc>https://beautia.io/info/okinawa-eyelash</loc><changefreq>weekly</changefreq><priority>0.7</priority></url>
-  <url><loc>https://beautia.io/info/okinawa-waxing</loc><changefreq>weekly</changefreq><priority>0.7</priority></url>
-  <url><loc>https://beautia.io/info/kobe-nail</loc><changefreq>weekly</changefreq><priority>0.7</priority></url>
-  <url><loc>https://beautia.io/info/kobe-hair</loc><changefreq>weekly</changefreq><priority>0.7</priority></url>
-  <url><loc>https://beautia.io/info/kobe-eyelash</loc><changefreq>weekly</changefreq><priority>0.7</priority></url>
-  <url><loc>https://beautia.io/info/kobe-waxing</loc><changefreq>weekly</changefreq><priority>0.7</priority></url>
-  <url><loc>https://beautia.io/info/yokohama-nail</loc><changefreq>weekly</changefreq><priority>0.7</priority></url>
-  <url><loc>https://beautia.io/info/yokohama-hair</loc><changefreq>weekly</changefreq><priority>0.7</priority></url>
-  <url><loc>https://beautia.io/info/yokohama-eyelash</loc><changefreq>weekly</changefreq><priority>0.7</priority></url>
-  <url><loc>https://beautia.io/info/yokohama-waxing</loc><changefreq>weekly</changefreq><priority>0.7</priority></url>
-  <url><loc>https://beautia.io/info/kanazawa-nail</loc><changefreq>weekly</changefreq><priority>0.7</priority></url>
-  <url><loc>https://beautia.io/info/kanazawa-hair</loc><changefreq>weekly</changefreq><priority>0.7</priority></url>
-  <url><loc>https://beautia.io/info/kanazawa-eyelash</loc><changefreq>weekly</changefreq><priority>0.7</priority></url>
-  <url><loc>https://beautia.io/info/kanazawa-waxing</loc><changefreq>weekly</changefreq><priority>0.7</priority></url>
-  <url><loc>https://beautia.io/privacy</loc><changefreq>monthly</changefreq><priority>0.3</priority></url>
-  <url><loc>https://beautia.io/terms</loc><changefreq>monthly</changefreq><priority>0.3</priority></url>
+  <url>
+    <loc>https://beautia.io/community?d=r1</loc>
+    <lastmod>2026-07-01</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
 </urlset>
