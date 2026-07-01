@@ -32,6 +32,10 @@ ALTER TABLE public.profiles
   DROP CONSTRAINT IF EXISTS profiles_role_chk,
   ADD  CONSTRAINT profiles_role_chk CHECK (role IN ('designer','customer','owner','guest'));
 
+-- NOT VALID: 기존 행(예전 base64 폴백으로 shop이 비대해진 행)은 통과시키고,
+-- 앞으로의 INSERT/UPDATE부터 검사. base64 사진을 스토리지로 옮겨 정리한 뒤
+--   ALTER TABLE public.profiles VALIDATE CONSTRAINT profiles_len_chk;
+-- 로 기존 행까지 완전 검증하면 됨.
 ALTER TABLE public.profiles
   DROP CONSTRAINT IF EXISTS profiles_len_chk,
   ADD  CONSTRAINT profiles_len_chk CHECK (
@@ -39,7 +43,7 @@ ALTER TABLE public.profiles
     AND char_length(coalesce(bio,''))      <= 2000
     AND char_length(coalesce(region,''))   <= 60
     AND char_length(coalesce(shop::text,'')) <= 200000
-  );
+  ) NOT VALID;
 -- ---------------------------------------------------------------------
 
 
