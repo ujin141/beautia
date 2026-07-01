@@ -214,6 +214,8 @@ body.mlock{position:fixed;left:0;right:0;width:100%;overflow:hidden;}
 .tile .vb{position:absolute;top:13px;left:13px;font-size:11px;font-weight:800;color:#fff;background:rgba(62,124,106,.92);padding:5px 11px;border-radius:999px;display:inline-flex;align-items:center;gap:4px;opacity:0;transition:.2s;}
 .tile:hover .vb{opacity:1;}
 .tile .tpost{position:absolute;bottom:11px;left:11px;width:26px;height:26px;border-radius:8px;background:rgba(20,12,16,.5);color:#fff;display:flex;align-items:center;justify-content:center;font-size:15px;backdrop-filter:blur(3px);z-index:2;}
+.tile .tfeat{position:absolute;top:11px;left:11px;z-index:2;display:inline-flex;align-items:center;gap:4px;font-size:11px;font-weight:700;color:#fff;background:rgba(20,12,16,.55);backdrop-filter:blur(3px);padding:5px 9px;border-radius:999px;max-width:75%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.tile .tfeat i{font-size:13px;}
 .wmodal{position:fixed;inset:0;z-index:64;background:rgba(12,8,10,.85);display:none;align-items:center;justify-content:center;padding:20px;}
 .wmodal.on{display:flex;}
 .wcard{width:100%;max-width:560px;max-height:92vh;background:#fff;border-radius:22px;overflow:hidden;position:relative;display:flex;flex-direction:column;box-shadow:0 30px 80px -20px rgba(0,0,0,.6);}
@@ -222,6 +224,8 @@ body.mlock{position:fixed;left:0;right:0;width:100%;overflow:hidden;}
 .wheart{position:absolute;top:12px;left:12px;width:40px;height:40px;border-radius:50%;background:rgba(255,255,255,.92);color:#b9b1b4;font-size:20px;display:flex;align-items:center;justify-content:center;z-index:2;box-shadow:0 4px 14px -4px rgba(0,0,0,.3);}
 .wheart.on{color:var(--accent);}
 .wtext{padding:12px 16px 2px;font-size:14.5px;line-height:1.55;color:var(--ink);white-space:pre-wrap;word-break:break-word;max-height:30vh;overflow-y:auto;}
+.wclaim{padding:0 16px 14px;font-size:12px;color:var(--sub);}
+.wclaim a{color:var(--accent);font-weight:700;cursor:pointer;}
 .wbar{display:flex;align-items:center;gap:13px;padding:14px 16px;}
 .wav{width:48px;height:48px;border-radius:50%;background-size:cover;background-position:center;flex:0 0 auto;}
 .wav.mono{display:flex;align-items:center;justify-content:center;color:#fff;font-family:'Playfair Display',serif;font-weight:700;font-size:21px;}
@@ -421,10 +425,14 @@ const D=[
 function meDesigner(){if(ME&&ME.uid&&ME.works&&ME.works.length){return {id:'me',uid:ME.uid,name:ME.name||'You',ko:'',cat:(ME.spec&&ME.spec[0])||'Hair',city:ME.city||ME.country||'',area:ME.area||'',flag:ME.role==='desg'?'🎨':'✨',rating:5.0,rev:0,years:ME.career||'',ko_ok:1,ver:ME.verified?1:0,spec:(ME.spec&&ME.spec.length?ME.spec.slice():['Hair']),bio:ME.bio||'',avatar:ME.avatar||'',insta:ME.insta||'',handles:ME.sns||{},works:ME.works.slice(),ba:[ME.works[0],ME.works[Math.min(1,ME.works.length-1)]],sns:Object.keys(ME.sns||{}).filter(function(k){return ME.sns[k];}),reviews:[],isMe:1};}return null;}
 function gradFor(s){return GR[Math.abs((s||'B').charCodeAt(0))%GR.length];}
 function avHtml(d,cls){var nm=(LANG==='ko'&&d.ko)?d.ko:(d.name||'U');return d.avatar?`<div class="${cls}" style="background-image:url('${im(d.avatar,240)}')"></div>`:`<div class="${cls} mono" style="background:${gradFor(d.name)}">${esc(nm[0]||'U')}</div>`;}
-function allD(){const m=meDesigner();return m?[m].concat(D):D;}
+// ===== Featured(발견한 작업): 원작자 인스타 크레딧+링크, 사칭 X. {insta, cat, city, area, imgs:[...]} 로 채우기 =====
+const FEATURED=[
+];
+function featuredDesigners(){return FEATURED.map(function(f,i){var h=igClean(f.insta||'');var imgs=(f.imgs||[]).filter(Boolean);return {id:'f'+i,name:h?('@'+h):'Featured',ko:'',cat:f.cat||'Hair',city:f.city||'',area:f.area||'',flag:'📌',rating:0,rev:0,years:'',ko_ok:0,ver:0,featured:true,insta:h,handles:h?{instagram:h}:{},bio:'',avatar:'',works:imgs,ba:[imgs[0],imgs[Math.min(1,imgs.length-1)]],sns:h?['instagram']:[],reviews:[]};}).filter(function(d){return d.works.length;});}
+function allD(){const m=meDesigner();var base=featuredDesigners().concat(D);return m?[m].concat(base):base;}
 function dById(id){return allD().find(d=>d.id===id);}
 let TILES=[];
-function buildTiles(){TILES=[];allD().forEach(d=>d.works.forEach((w,i)=>TILES.push({wid:d.id+'_'+i,did:d.id,img:workImg(w),text:workText(w),cat:d.cat,city:d.city,area:d.area,name:d.name,flag:d.flag,rating:d.rating})));}
+function buildTiles(){TILES=[];allD().forEach(d=>d.works.forEach((w,i)=>TILES.push({wid:d.id+'_'+i,did:d.id,img:workImg(w),text:workText(w),cat:d.cat,city:d.city,area:d.area,name:d.name,flag:d.flag,rating:d.rating,featured:d.featured,insta:d.insta})));}
 
 const SNSMETA={instagram:['ti-brand-instagram','Instagram'],tiktok:['ti-brand-tiktok','TikTok'],youtube:['ti-brand-youtube','YouTube'],x:['ti-brand-x','X'],whatsapp:['ti-brand-whatsapp','WhatsApp'],line:['ti-brand-line','LINE'],kakao:['ti-message-circle','KakaoTalk']};
 
@@ -472,6 +480,7 @@ function tileHtml(t){return `<div class="tile" onclick="openWork('${t.wid}')">
  <span class="vb"><i class="ti ti-rosette-discount-check-filled"></i>${T[LANG].verified}</span>
  <button class="heart ${isSaved(t.wid)?'on':''}" onclick="toggleSave('${t.wid}',event)"><i class="ti ti-heart${isSaved(t.wid)?'-filled':''}"></i></button>
  ${t.text?'<span class="tpost"><i class="ti ti-align-left"></i></span>':''}
+ ${t.featured?`<span class="tfeat"><i class="ti ti-external-link"></i> @${esc(t.insta)}</span>`:''}
  <img src="${im(t.img,600)}" loading="lazy" alt="">
  <div class="ov"></div>
  <div class="meta"><div class="nm">${esc(t.flag)} ${esc(t.name)}</div><div class="ct"><span class="star" style="color:#C9A063">★ ${esc(t.rating)}</span> · ${esc(cl(t.cat))} · ${t.area?esc(t.area)+', ':''}${esc(t.city||'')}</div></div>
@@ -495,17 +504,17 @@ function render(){
 }
 
 let curW=null;
-function openWork(wid){const t=TILES.find(x=>x.wid===wid);if(!t)return;const d=dById(t.did);if(!d)return;curW=wid;const nm=(LANG==='ko'&&d.ko)?d.ko:d.name;
+function openWork(wid){const t=TILES.find(x=>x.wid===wid);if(!t)return;const d=dById(t.did);if(!d)return;curW=wid;const nm=(LANG==='ko'&&d.ko)?d.ko:d.name;const feat=d.featured,ig=igClean(d.insta);
  $('wcard').innerHTML=`<button class="wclose" onclick="closeWork()">×</button>
   <button class="wheart ${isSaved(t.wid)?'on':''}" onclick="toggleSave('${t.wid}',event)"><i class="ti ti-heart${isSaved(t.wid)?'-filled':''}"></i></button>
   <img class="wimg" src="${im(t.img,1200)}" alt="">
   ${t.text?`<div class="wtext">${esc(t.text)}</div>`:''}
   <div class="wbar">${avHtml(d,'wav')}
-   <div class="wbinfo"><div class="wkick"><i class="ti ti-photo"></i> ${T[LANG].byDesigner.replace('{n}',esc(nm))}</div>
-    <div class="wname">${esc(d.flag)} ${esc(nm)} ${d.ver?'<i class="ti ti-rosette-discount-check-filled" style="color:var(--green);font-size:17px"></i>':''}</div>
-    <div class="wsub">${esc(cl(t.cat))}${t.area?' · '+esc(t.area):''}${t.city?', '+esc(t.city):''}</div></div>
-   <button class="wgo" onclick="goDesigner('${d.id}')">${T[LANG].viewDesigner} <i class="ti ti-arrow-right"></i></button></div>`;
+   <div class="wbinfo">${feat?`<div class="wkick"><i class="ti ti-external-link"></i> ${T[LANG].featured} · @${esc(ig)}</div><div class="wname">@${esc(ig)}</div><div class="wsub">${esc(cl(t.cat))}${t.city?' · '+esc(t.city):''}</div>`:`<div class="wkick"><i class="ti ti-photo"></i> ${T[LANG].byDesigner.replace('{n}',esc(nm))}</div><div class="wname">${esc(d.flag)} ${esc(nm)} ${d.ver?'<i class="ti ti-rosette-discount-check-filled" style="color:var(--green);font-size:17px"></i>':''}</div><div class="wsub">${esc(cl(t.cat))}${t.area?' · '+esc(t.area):''}${t.city?', '+esc(t.city):''}</div>`}</div>
+   ${feat?`<a class="wgo" href="https://instagram.com/${ig}" target="_blank" rel="noopener"><i class="ti ti-brand-instagram"></i></a>`:`<button class="wgo" onclick="goDesigner('${d.id}')">${T[LANG].viewDesigner} <i class="ti ti-arrow-right"></i></button>`}</div>
+  ${feat?`<div class="wclaim">${T[LANG].claimQ} <a onclick="claimFeatured()">${T[LANG].claimBtn}</a> · <a href="mailto:hello@beautia.io?subject=Beautia%20removal%20request&body=%40${esc(ig)}" rel="noopener">${T[LANG].removeReq}</a></div>`:''}`;
  $('wmodal').classList.add('on');}
+function claimFeatured(){closeWork();openLogin('');toast(T[LANG].claimToast);}
 function closeWork(){$('wmodal').classList.remove('on');curW=null;}
 function goDesigner(id){closeWork();openD(id);}
 function openD(did,keep){const d=dById(did);if(!d)return;curD=did;const gi=D.indexOf(d);
@@ -593,9 +602,9 @@ function pfDownscale(dataUrl,max,cb){const img=new Image();img.onload=function()
 function addPfPhotos(e){const files=Array.prototype.slice.call(e.target.files);const room=12-(ME.works||[]).length;files.slice(0,room).forEach(function(f){if(!/^image\//.test(f.type))return;const r=new FileReader();r.onload=function(ev){pfDownscale(ev.target.result,1000,async function(d){const url=await uploadOne(d);ME.works=ME.works||[];ME.works.push({img:url,text:''});renderPf();buildTiles();render();await persistShop();});};r.readAsDataURL(f);});e.target.value='';}
 function pfSetCaption(i,val){if(!ME||!ME.works||!ME.works[i])return;var w=ME.works[i];if(typeof w!=='object')w=ME.works[i]={img:w,text:''};w.text=(val||'').slice(0,600);buildTiles();render();persistShop();}
 function delPfPhoto(i){ME.works.splice(i,1);renderPf();buildTiles();render();persistShop();}
-Object.assign(T.en,{pfHint:'Upload your best work. It appears in the gallery, your profile, and your ID card.',addPhoto:'Add photo',nearYou:'Sorted by distance from your location',photoL:'Add profile photo',changePhoto:'Change photo',byDesigner:"{n}'s portfolio",viewDesigner:'View designer',otpSentToast:'Code sent to your email ✉️',welcomeBack:'Welcome back 👋',needCode:'Enter the code',needLogin:'Please sign in',sending:'Sending…',emailPh:'you@email.com',emailL:'Email',messages:'Messages',noChats:'No conversations yet',sayHi:'Say hello to start the chat',typeMsg:'Type a message…',showOrig:'Show original',showTr:'Show translation',cantChat:'Chat is not available for this designer yet',cantChatSelf:"That's you",loginTitle:'Log in or sign up',orEmail:'or with email',loginHint:'New here? Verifying your email signs you up automatically.',myIdCard:'My ID card',columns:'Columns',color:'Color',snsL:'Social links (optional)',pfCaption:'Write a caption (optional)'});
-Object.assign(T.ko,{pfHint:'대표 작업을 올리세요. 갤러리·내 프로필·ID 카드에 바로 보여요.',addPhoto:'사진 추가',nearYou:'내 위치에서 가까운 순으로 정렬',photoL:'프로필 사진 추가',changePhoto:'사진 변경',byDesigner:'{n}님의 포트폴리오',viewDesigner:'디자이너 보기',otpSentToast:'인증 코드를 이메일로 보냈어요 ✉️',welcomeBack:'다시 오신 걸 환영해요 👋',needCode:'코드를 입력하세요',needLogin:'로그인이 필요해요',sending:'전송 중…',emailPh:'you@email.com',emailL:'이메일',messages:'메시지',noChats:'아직 대화가 없어요',sayHi:'인사를 건네 대화를 시작하세요',typeMsg:'메시지 입력…',showOrig:'원문 보기',showTr:'번역 보기',cantChat:'아직 이 디자이너와는 채팅할 수 없어요',cantChatSelf:'본인이에요',loginTitle:'로그인 또는 가입',orEmail:'또는 이메일로',loginHint:'처음이세요? 이메일 인증하면 자동으로 가입돼요.',myIdCard:'내 ID 카드',columns:'컬럼',color:'색상',snsL:'SNS 연동 (선택)',pfCaption:'설명을 적어보세요 (선택)'});
-Object.assign(T.ja,{pfHint:'代表作品をアップ。ギャラリー・プロフィール・IDカードに表示されます。',addPhoto:'写真を追加',nearYou:'現在地から近い順に表示',photoL:'プロフィール写真を追加',changePhoto:'写真を変更',byDesigner:'{n}さんのポートフォリオ',viewDesigner:'デザイナーを見る',otpSentToast:'認証コードをメールに送りました ✉️',welcomeBack:'おかえりなさい 👋',needCode:'コードを入力してください',needLogin:'ログインしてください',sending:'送信中…',emailPh:'you@email.com',emailL:'メール',messages:'メッセージ',noChats:'まだ会話がありません',sayHi:'挨拶して会話を始めましょう',typeMsg:'メッセージを入力…',showOrig:'原文を表示',showTr:'翻訳を表示',cantChat:'このデザイナーとはまだチャットできません',cantChatSelf:'ご本人です',loginTitle:'ログイン / 登録',orEmail:'またはメールで',loginHint:'初めての方はメール認証で自動的に登録されます。',myIdCard:'マイIDカード',columns:'カラム',color:'カラー',snsL:'SNSリンク（任意）',pfCaption:'キャプションを追加（任意）'});
+Object.assign(T.en,{pfHint:'Upload your best work. It appears in the gallery, your profile, and your ID card.',addPhoto:'Add photo',nearYou:'Sorted by distance from your location',photoL:'Add profile photo',changePhoto:'Change photo',byDesigner:"{n}'s portfolio",viewDesigner:'View designer',otpSentToast:'Code sent to your email ✉️',welcomeBack:'Welcome back 👋',needCode:'Enter the code',needLogin:'Please sign in',sending:'Sending…',emailPh:'you@email.com',emailL:'Email',messages:'Messages',noChats:'No conversations yet',sayHi:'Say hello to start the chat',typeMsg:'Type a message…',showOrig:'Show original',showTr:'Show translation',cantChat:'Chat is not available for this designer yet',cantChatSelf:"That's you",loginTitle:'Log in or sign up',orEmail:'or with email',loginHint:'New here? Verifying your email signs you up automatically.',myIdCard:'My ID card',columns:'Columns',color:'Color',snsL:'Social links (optional)',pfCaption:'Write a caption (optional)',featured:'Featured',claimQ:'Is this your work?',claimBtn:'Claim your profile',removeReq:'Request removal',claimToast:'Sign up to add this to your profile ✨'});
+Object.assign(T.ko,{pfHint:'대표 작업을 올리세요. 갤러리·내 프로필·ID 카드에 바로 보여요.',addPhoto:'사진 추가',nearYou:'내 위치에서 가까운 순으로 정렬',photoL:'프로필 사진 추가',changePhoto:'사진 변경',byDesigner:'{n}님의 포트폴리오',viewDesigner:'디자이너 보기',otpSentToast:'인증 코드를 이메일로 보냈어요 ✉️',welcomeBack:'다시 오신 걸 환영해요 👋',needCode:'코드를 입력하세요',needLogin:'로그인이 필요해요',sending:'전송 중…',emailPh:'you@email.com',emailL:'이메일',messages:'메시지',noChats:'아직 대화가 없어요',sayHi:'인사를 건네 대화를 시작하세요',typeMsg:'메시지 입력…',showOrig:'원문 보기',showTr:'번역 보기',cantChat:'아직 이 디자이너와는 채팅할 수 없어요',cantChatSelf:'본인이에요',loginTitle:'로그인 또는 가입',orEmail:'또는 이메일로',loginHint:'처음이세요? 이메일 인증하면 자동으로 가입돼요.',myIdCard:'내 ID 카드',columns:'컬럼',color:'색상',snsL:'SNS 연동 (선택)',pfCaption:'설명을 적어보세요 (선택)',featured:'발견',claimQ:'이 작업의 주인이신가요?',claimBtn:'내 프로필로 등록',removeReq:'삭제 요청',claimToast:'가입하면 내 프로필로 가져올 수 있어요 ✨'});
+Object.assign(T.ja,{pfHint:'代表作品をアップ。ギャラリー・プロフィール・IDカードに表示されます。',addPhoto:'写真を追加',nearYou:'現在地から近い順に表示',photoL:'プロフィール写真を追加',changePhoto:'写真を変更',byDesigner:'{n}さんのポートフォリオ',viewDesigner:'デザイナーを見る',otpSentToast:'認証コードをメールに送りました ✉️',welcomeBack:'おかえりなさい 👋',needCode:'コードを入力してください',needLogin:'ログインしてください',sending:'送信中…',emailPh:'you@email.com',emailL:'メール',messages:'メッセージ',noChats:'まだ会話がありません',sayHi:'挨拶して会話を始めましょう',typeMsg:'メッセージを入力…',showOrig:'原文を表示',showTr:'翻訳を表示',cantChat:'このデザイナーとはまだチャットできません',cantChatSelf:'ご本人です',loginTitle:'ログイン / 登録',orEmail:'またはメールで',loginHint:'初めての方はメール認証で自動的に登録されます。',myIdCard:'マイIDカード',columns:'カラム',color:'カラー',snsL:'SNSリンク（任意）',pfCaption:'キャプションを追加（任意）',featured:'ピック',claimQ:'この作品の作者ですか？',claimBtn:'プロフィールに登録',removeReq:'削除リクエスト',claimToast:'登録すると自分のプロフィールに追加できます ✨'});
 
 let iLang='ko';
 function openI(did){const d=dById(did);iLang=LANG==='en'?'ko':LANG;
