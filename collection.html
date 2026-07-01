@@ -595,10 +595,23 @@ function renderIdCanvas(){return new Promise(function(resolve,reject){
 });}
 function dlId(){if(typeof html2canvas==='undefined'){toast(T[LANG].idFail);return;}toast(T[LANG].idPrep);
  renderIdCanvas().then(function(cv){var a=document.createElement('a');a.download='beautia-id-'+idDid+'.png';a.href=cv.toDataURL('image/png');a.click();}).catch(function(){toast(T[LANG].idFail);});}
-// 내 카드일 때만 네컷 카드 PNG를 <uid>/card.png 로 저장(링크 미리보기 OG용)
+// 네컷 카드를 1200x630 OG 이미지로 합성(흐린 카드 배경 + 가운데 선명한 카드) → <uid>/card.png 저장
+function composeOgCard(cv){
+  var W=1200,H=630,c=document.createElement('canvas');c.width=W;c.height=H;var x=c.getContext('2d');
+  x.fillStyle='#EFE7E3';x.fillRect(0,0,W,H);
+  var s=Math.max(W/cv.width,H/cv.height)*1.2,bw=cv.width*s,bh=cv.height*s;
+  x.filter='blur(22px)';x.drawImage(cv,(W-bw)/2,(H-bh)/2,bw,bh);x.filter='none';
+  x.fillStyle='rgba(24,14,18,0.40)';x.fillRect(0,0,W,H);
+  var ch=H-52,cw=cv.width*(ch/cv.height),cx=(W-cw)/2,cy=26,r=18;
+  function rr(){x.beginPath();x.moveTo(cx+r,cy);x.arcTo(cx+cw,cy,cx+cw,cy+ch,r);x.arcTo(cx+cw,cy+ch,cx,cy+ch,r);x.arcTo(cx,cy+ch,cx,cy,r);x.arcTo(cx,cy,cx+cw,cy,r);x.closePath();}
+  x.save();rr();x.shadowColor='rgba(0,0,0,0.38)';x.shadowBlur=44;x.shadowOffsetY=16;x.fillStyle='#fff';x.fill();x.restore();
+  x.save();rr();x.clip();x.drawImage(cv,cx,cy,cw,ch);x.restore();
+  return c;
+}
 async function uploadIdCardPng(){try{
   if(!ME||!ME.uid)return null;var d=dById(idDid);if(!d||d.uid!==ME.uid)return null;
-  var cv=await renderIdCanvas();var blob=await new Promise(function(res){cv.toBlob(res,'image/png');});
+  var cv=await renderIdCanvas();var og=composeOgCard(cv);
+  var blob=await new Promise(function(res){og.toBlob(res,'image/png');});
   if(!blob)return null;
   var up=await SB.storage.from('beautia').upload(ME.uid+'/card.png',blob,{contentType:'image/png',upsert:true});
   if(up.error){console.warn('[beautia] card.png 업로드 실패:',up.error&&up.error.message);return null;}
