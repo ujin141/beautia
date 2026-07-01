@@ -30,7 +30,8 @@
 <script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"What is Beautia Collection?","acceptedAnswer":{"@type":"Answer","text":"Beautia Collection is a global gallery of beauty designer portfolios across hair, makeup, nail, lash, skin and bridal. Customers browse real work, save their favorites, and book or message the designer directly."}},{"@type":"Question","name":"Is it free to browse designers?","acceptedAnswer":{"@type":"Answer","text":"Yes. Browsing portfolios and saving favorites is completely free. You only reach out when you want to book or ask a question."}},{"@type":"Question","name":"How do I find a beauty designer near me?","acceptedAnswer":{"@type":"Answer","text":"Beautia automatically sorts designers by distance from your location, and you can filter by city and by category such as hair, makeup, nail, lash, skin or bridal."}},{"@type":"Question","name":"Can I book or contact a designer directly?","acceptedAnswer":{"@type":"Answer","text":"Yes. Every designer profile has a Book / Inquiry button plus their Instagram link, so you can request the exact style you saved."}},{"@type":"Question","name":"Which cities and countries does Beautia cover?","acceptedAnswer":{"@type":"Answer","text":"Beautia is a global, multilingual (English, Korean, Japanese) platform. Current designers include Seoul, South Korea and Osaka, Japan, and the collection is expanding worldwide."}}]}</script>
 <script type="application/ld+json">{"@context":"https://schema.org","@type":"ItemList","name":"Beauty designers on Beautia Collection","itemListElement":[{"@type":"ListItem","position":1,"item":{"@type":"Person","name":"soin eyelash salon","jobTitle":"Eyelash designer","image":"https://pzbxcktaljhesrfnqwzq.supabase.co/storage/v1/object/public/beautia/21a1661c-4974-477a-8d0d-f806457db5a4/1782731424179-6dzmzs.jpg","areaServed":"Osaka, Japan","knowsAbout":["Eyelash extensions","Lash perm"],"sameAs":["https://instagram.com/soin_eyelash"],"url":"https://beautia.io/community?d=r2"}},{"@type":"ListItem","position":2,"item":{"@type":"Person","name":"Woojin","jobTitle":"Hair designer","image":"https://pzbxcktaljhesrfnqwzq.supabase.co/storage/v1/object/public/beautia/e579ff23-4b1a-43c9-b9e2-49e6061668d6/1782655359147-aepfe2.jpg","areaServed":"Seoul, South Korea","knowsAbout":["Hair cut","Perm","Color"],"sameAs":["https://instagram.com/00.07.28"],"url":"https://beautia.io/community?d=r1"}}]}</script>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css" integrity="sha384-uGEvnSEpW2nM9xJFsrxrwakwrk9QdDTQIBJh0hVMu90OaVyMAMpAK1rIn0/Kh1/k" crossorigin="anonymous">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,600;0,700;1,500;1,600&display=swap">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Outfit:wght@500;600;700;800;900&display=swap">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@2.47.0/tabler-icons.min.css" integrity="sha384-PwEnNZvp50/uDLtKrd1s2D4Xe/y+fCVtEigigjik/PgHlDXUF1uJ32m7guk/XWYV" crossorigin="anonymous">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js" integrity="sha384-ZZ1pncU3bQe8y31yfZdMFdSpttDoPmOZg2wguVK9almUodir1PghgT0eY7Mrty8H" crossorigin="anonymous"></script>
 <script src="https://cdn.jsdelivr.net/npm/qrcode-generator@1.4.4/qrcode.js" integrity="sha384-8FWZA6BGMXhsfO+BLtrJK0We6gg5o1JyO8xQm6peWDEUs17ACA5ziE/NIAkl9z2k" crossorigin="anonymous"></script>
@@ -40,7 +41,7 @@
 *{margin:0;padding:0;box-sizing:border-box;}
 html,body{overflow-x:hidden;max-width:100%;}
 body{font-family:'Pretendard','Malgun Gothic',sans-serif;color:var(--ink);background:var(--bg);-webkit-font-smoothing:antialiased;}
-.serif{font-family:'Playfair Display',serif;}
+.serif{font-family:'Pretendard','Malgun Gothic',sans-serif;letter-spacing:-.03em;}
 a{color:inherit;text-decoration:none;} button{font-family:inherit;cursor:pointer;border:none;background:none;}
 img{display:block;}
 
@@ -48,7 +49,7 @@ header{position:sticky;top:0;z-index:40;background:rgba(255,255,255,.93);backdro
 .hin{max-width:1320px;margin:0 auto;display:flex;align-items:center;gap:24px;padding:16px 28px;}
 .brand{display:flex;align-items:center;gap:10px;cursor:pointer;}
 .brand .bcol{display:flex;flex-direction:column;line-height:1;}
-.brand .b1{font-family:'Playfair Display',serif;font-weight:700;font-size:22px;color:var(--plum);}
+.brand .b1{font-family:'Pretendard','Malgun Gothic',sans-serif;font-weight:700;font-size:22px;color:var(--plum);}
 .brand .blogo{height:38px;width:auto;display:block;}
 .brand .b2{font-size:9.5px;font-weight:800;letter-spacing:.38em;color:var(--sub);margin-top:5px;}
 nav.main{display:flex;gap:24px;margin-left:6px;}
@@ -68,7 +69,7 @@ nav.main a.on{color:var(--ink);border-color:var(--accent);}
 .join:hover{background:var(--plum);}
 .loginBtn{font-size:14px;font-weight:700;color:var(--ink2);padding:11px 6px;}
 .loginBtn:hover{color:var(--ink);}
-.avt{position:relative;width:40px;height:40px;border-radius:50%;background:linear-gradient(135deg,#C99,#6E4A50);color:#fff;font-weight:700;font-size:17px;display:none;align-items:center;justify-content:center;cursor:pointer;font-family:'Playfair Display',serif;}
+.avt{position:relative;width:40px;height:40px;border-radius:50%;background:linear-gradient(135deg,#C99,#6E4A50);color:#fff;font-weight:700;font-size:17px;display:none;align-items:center;justify-content:center;cursor:pointer;font-family:'Pretendard','Malgun Gothic',sans-serif;}
 .avt .unread{position:absolute;top:-2px;right:-2px;min-width:11px;height:11px;border-radius:999px;background:#e5484d;border:2px solid #fff;box-shadow:0 1px 3px rgba(0,0,0,.25);}
 .umenu a .undot{display:inline-block;width:8px;height:8px;border-radius:50%;background:#e5484d;margin-left:6px;vertical-align:middle;}
 .umenu{position:fixed;top:66px;right:28px;z-index:55;background:#fff;border:1px solid var(--line);border-radius:16px;box-shadow:0 24px 60px -18px rgba(0,0,0,.25);padding:8px;min-width:184px;display:none;}
@@ -80,7 +81,7 @@ nav.main a.on{color:var(--ink);border-color:var(--accent);}
 .lmodal{position:fixed;inset:0;z-index:75;background:rgba(20,12,16,.55);backdrop-filter:blur(4px);display:none;align-items:flex-start;justify-content:center;padding:24px;overflow-y:auto;-webkit-overflow-scrolling:touch;overscroll-behavior:contain;}
 .lmodal.on{display:flex;}
 .lcard{background:#fff;border-radius:24px;width:100%;max-width:420px;margin:auto;padding:34px 32px 30px;box-shadow:0 40px 100px -30px rgba(0,0,0,.5);position:relative;text-align:center;}
-.lbrand{font-family:'Playfair Display',serif;font-size:26px;font-weight:700;}
+.lbrand{font-family:'Pretendard','Malgun Gothic',sans-serif;font-size:26px;font-weight:700;}
 .lcard h3{font-size:17.5px;font-weight:700;color:var(--ink2);margin-top:6px;}
 .lrole{margin-top:22px;text-align:left;} .lrole .il{font-size:13px;font-weight:800;color:var(--sub);}
 .lrole .rr{display:flex;gap:8px;margin-top:8px;} .lrole .rr button{flex:1;padding:13px;border:1px solid var(--line);border-radius:12px;font-weight:700;font-size:14px;color:var(--ink2);}
@@ -119,8 +120,8 @@ nav.main a.on{color:var(--ink);border-color:var(--accent);}
 .lfoot{display:flex;gap:10px;margin-top:22px;}
 .lprev{flex:0 0 auto;background:var(--soft);color:var(--ink);border-radius:12px;padding:15px 22px;font-weight:800;font-size:15px;}
 .pmhead{display:flex;align-items:center;gap:18px;padding:30px 32px 22px;border-bottom:1px solid var(--line);position:relative;}
-.pmav{width:80px;height:80px;border-radius:50%;flex:0 0 auto;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700;font-size:32px;font-family:'Playfair Display',serif;}
-.pmn{font-family:'Playfair Display',serif;font-weight:700;font-size:26px;display:flex;align-items:center;gap:10px;flex-wrap:wrap;}
+.pmav{width:80px;height:80px;border-radius:50%;flex:0 0 auto;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700;font-size:32px;font-family:'Pretendard','Malgun Gothic',sans-serif;}
+.pmn{font-family:'Pretendard','Malgun Gothic',sans-serif;font-weight:700;font-size:26px;display:flex;align-items:center;gap:10px;flex-wrap:wrap;}
 .pmmeta{font-size:14.5px;color:var(--ink2);margin-top:4px;font-weight:600;} .pmjoin{font-size:12.5px;color:var(--sub);margin-top:3px;}
 .pmstats{display:flex;gap:34px;} .ps{text-align:center;} .ps .n{font-size:26px;font-weight:800;} .ps .l{font-size:12.5px;color:var(--sub);margin-top:2px;}
 /* 모달 잠금은 JS(스크롤 위치 보존)로 처리 */
@@ -128,7 +129,7 @@ body.mlock{position:fixed;left:0;right:0;width:100%;overflow:hidden;}
 .pfmodal{position:fixed;inset:0;z-index:76;background:rgba(20,12,16,.55);backdrop-filter:blur(4px);display:none;align-items:center;justify-content:center;padding:24px;overflow-y:auto;}
 .pfmodal.on{display:flex;}
 .pfcard{background:#fff;border-radius:24px;width:100%;max-width:520px;max-height:88vh;overflow-y:auto;padding:30px 30px 26px;box-shadow:0 40px 100px -30px rgba(0,0,0,.5);position:relative;}
-.pfcard h3{font-family:'Playfair Display',serif;font-size:24px;font-weight:700;}
+.pfcard h3{font-family:'Pretendard','Malgun Gothic',sans-serif;font-size:24px;font-weight:700;}
 .pfsub{font-size:13.5px;color:var(--sub);margin-top:6px;line-height:1.5;}
 .pfgrid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin-top:20px;}
 .pfitem{display:flex;flex-direction:column;gap:6px;}
@@ -146,29 +147,31 @@ body.mlock{position:fixed;left:0;right:0;width:100%;overflow:hidden;}
 .idmodal{position:fixed;inset:0;z-index:78;background:rgba(20,12,16,.6);backdrop-filter:blur(5px);display:none;align-items:center;justify-content:center;padding:16px;overflow:hidden;}
 .idmodal.on{display:flex;}
 .idwrap{display:flex;flex-direction:column;align-items:center;gap:14px;transform-origin:center center;}
-.idcard{width:100%;max-width:360px;background:#fff;border-radius:26px;overflow:hidden;box-shadow:0 40px 90px -30px rgba(40,20,40,.6);border:1px solid var(--line);}
-.ic-top{display:flex;align-items:center;justify-content:space-between;padding:18px 22px 2px;}
-.ic-brandwrap{display:flex;align-items:center;gap:8px;}
-.ic-top .ic-logo{height:34px;width:auto;display:block;}
-.ic-name{font-family:'Playfair Display',serif;font-weight:700;font-size:19px;color:var(--plum);}
-.ic-kind{font-family:'Outfit',sans-serif;font-size:11px;font-weight:800;letter-spacing:.22em;color:var(--sub);}
-.ic-cuts{display:grid;grid-template-columns:1fr 1fr;gap:6px;padding:14px 18px 0;}
-.ic-cut{aspect-ratio:1;background-size:cover;background-position:center;border-radius:12px;background-color:var(--soft);}
-.ic-info{padding:16px 22px 4px;}
+.idcard{width:100%;max-width:360px;background:#fff;border-radius:26px;overflow:hidden;box-shadow:0 40px 90px -30px rgba(40,20,40,.55);border:1px solid var(--line);}
+.ic-top{display:flex;align-items:center;justify-content:space-between;padding:20px 22px 13px;}
+.ic-brandwrap{display:flex;align-items:center;gap:9px;}
+.ic-top .ic-logo{height:29px;width:auto;display:block;}
+.ic-brand{font-family:'Outfit',sans-serif;font-weight:800;font-size:15px;letter-spacing:.26em;color:var(--ink);}
+.ic-kind{font-family:'Outfit',sans-serif;font-size:10px;font-weight:800;letter-spacing:.2em;padding:5px 11px;border-radius:999px;}
+.ic-rule{height:2px;margin:0 22px;border-radius:2px;}
+.ic-cuts{display:grid;grid-template-columns:1fr 1fr;gap:7px;padding:14px 18px 2px;}
+.ic-cut{aspect-ratio:1;background-size:cover;background-position:center;border-radius:13px;background-color:var(--soft);box-shadow:inset 0 0 0 1px rgba(20,12,16,.05);}
+.ic-info{padding:16px 22px 6px;}
 .ic-namerow{display:flex;align-items:center;gap:12px;}
-.ic-av{width:46px;height:46px;border-radius:50%;background-size:cover;background-position:center;flex:0 0 auto;}
-.ic-av.mono{display:flex;align-items:center;justify-content:center;color:#fff;font-family:'Playfair Display',serif;font-weight:700;font-size:20px;}
+.ic-av{width:48px;height:48px;border-radius:50%;background-size:cover;background-position:center;flex:0 0 auto;box-shadow:0 3px 10px rgba(20,12,16,.16);}
+.ic-av.mono{display:flex;align-items:center;justify-content:center;color:#fff;font-family:'Outfit','Pretendard',sans-serif;font-weight:800;font-size:20px;}
 .dav-c{width:58px;height:58px;border-radius:50%;background-size:cover;background-position:center;border:3px solid #fff;margin-bottom:9px;box-shadow:0 6px 18px rgba(0,0,0,.35);}
-.dav-c.mono{display:flex;align-items:center;justify-content:center;color:#fff;font-family:'Playfair Display',serif;font-weight:700;font-size:25px;}
-.ic-name{font-family:'Playfair Display',serif;font-weight:700;font-size:24px;display:flex;align-items:center;gap:7px;}
-.ic-meta{font-size:13px;color:var(--ink2);margin-top:3px;font-weight:600;}
-.ic-tags{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px;}
-.ic-tags span{font-size:11.5px;font-weight:700;color:var(--plum);background:var(--rosebg);padding:5px 11px;border-radius:999px;}
-.ic-foot{display:flex;align-items:center;gap:14px;padding:16px 22px 22px;margin-top:8px;border-top:1px solid var(--line);}
-.ic-qr{width:74px;height:74px;flex:0 0 auto;}
+.dav-c.mono{display:flex;align-items:center;justify-content:center;color:#fff;font-family:'Pretendard','Malgun Gothic',sans-serif;font-weight:700;font-size:25px;}
+.ic-name{font-family:'Pretendard','Malgun Gothic',sans-serif;font-weight:800;font-size:23px;letter-spacing:-.02em;display:flex;align-items:center;gap:7px;}
+.ic-meta{font-size:12.5px;color:var(--ink2);margin-top:4px;font-weight:600;letter-spacing:-.01em;}
+.ic-tags{display:flex;flex-wrap:wrap;gap:6px;margin-top:12px;}
+.ic-tags span{font-size:11.5px;font-weight:700;padding:5px 12px;border-radius:999px;}
+.ic-divider{height:1px;margin:8px 22px 0;}
+.ic-foot{display:flex;align-items:center;gap:14px;padding:15px 22px 20px;margin-top:4px;}
+.ic-qr{width:70px;height:70px;flex:0 0 auto;border-radius:11px;padding:5px;background:#fff;box-shadow:0 0 0 1px rgba(20,12,16,.06);}
 .ic-qr img{width:100%;height:100%;image-rendering:pixelated;}
-.ic-scan .s1{font-family:'Outfit',sans-serif;font-size:11px;font-weight:800;letter-spacing:.1em;color:var(--sub);}
-.ic-scan .s2{font-size:16px;font-weight:800;color:var(--ink);margin-top:3px;}
+.ic-scan .s1{font-family:'Outfit',sans-serif;font-size:10.5px;font-weight:800;letter-spacing:.14em;}
+.ic-scan .s2{font-size:15px;font-weight:800;color:var(--ink);margin-top:4px;letter-spacing:-.01em;}
 .idbtns{display:flex;gap:10px;}
 .idcfg{display:none;width:100%;max-width:360px;background:#fff;border:1px solid var(--line);border-radius:14px;padding:11px 14px;}
 .cfgrow{display:flex;align-items:center;gap:8px;margin:4px 0;}
@@ -181,8 +184,8 @@ body.mlock{position:fixed;left:0;right:0;width:100%;overflow:hidden;}
 .idbtns button.pri{background:var(--ink);color:#fff;border-color:var(--ink);}
 
 .hero{max-width:1320px;margin:0 auto;padding:44px 28px 6px;}
-.hero h1{font-family:'Playfair Display',serif;font-weight:600;font-size:44px;line-height:1.08;letter-spacing:-.01em;word-break:keep-all;text-wrap:balance;}
-.hero h1 em{font-style:italic;color:var(--accent);}
+.hero h1{font-family:'Pretendard','Malgun Gothic',sans-serif;font-weight:800;font-size:44px;line-height:1.12;letter-spacing:-.035em;word-break:keep-all;text-wrap:balance;}
+.hero h1 em{font-style:normal;color:var(--accent);font-weight:800;}
 .hero p{font-size:16.5px;color:var(--ink2);margin-top:12px;max-width:720px;word-break:keep-all;text-wrap:pretty;}
 
 .filterbar{position:sticky;top:69px;z-index:30;background:rgba(255,255,255,.93);backdrop-filter:blur(12px);border-bottom:1px solid var(--line);margin-top:22px;}
@@ -228,7 +231,7 @@ body.mlock{position:fixed;left:0;right:0;width:100%;overflow:hidden;}
 .wclaim a{color:var(--accent);font-weight:700;cursor:pointer;}
 .wbar{display:flex;align-items:center;gap:13px;padding:14px 16px;}
 .wav{width:48px;height:48px;border-radius:50%;background-size:cover;background-position:center;flex:0 0 auto;}
-.wav.mono{display:flex;align-items:center;justify-content:center;color:#fff;font-family:'Playfair Display',serif;font-weight:700;font-size:21px;}
+.wav.mono{display:flex;align-items:center;justify-content:center;color:#fff;font-family:'Pretendard','Malgun Gothic',sans-serif;font-weight:700;font-size:21px;}
 .wbinfo{flex:1;min-width:0;}
 .wkick{font-size:11.5px;font-weight:800;color:var(--accent);display:flex;align-items:center;gap:5px;}
 .wname{font-size:16.5px;font-weight:800;display:flex;align-items:center;gap:6px;margin-top:1px;}
@@ -269,7 +272,7 @@ body.mlock{position:fixed;left:0;right:0;width:100%;overflow:hidden;}
 .dhero .sc{position:absolute;inset:0;background:linear-gradient(180deg,rgba(20,12,16,.1),rgba(20,12,16,.55));}
 .dclose{position:absolute;top:18px;right:18px;width:42px;height:42px;border-radius:50%;background:rgba(255,255,255,.92);font-size:23px;color:var(--ink);z-index:3;}
 .dhcap{position:absolute;left:30px;bottom:22px;right:30px;color:#fff;z-index:2;}
-.dhcap .dn{font-family:'Playfair Display',serif;font-weight:700;font-size:34px;display:flex;align-items:center;gap:10px;flex-wrap:wrap;text-shadow:0 3px 16px rgba(0,0,0,.5);}
+.dhcap .dn{font-family:'Pretendard','Malgun Gothic',sans-serif;font-weight:700;font-size:34px;display:flex;align-items:center;gap:10px;flex-wrap:wrap;text-shadow:0 3px 16px rgba(0,0,0,.5);}
 .vbadge{font-size:13px;font-weight:800;background:var(--green);padding:6px 13px;border-radius:999px;display:inline-flex;align-items:center;gap:5px;}
 .dhcap .dmeta{font-size:15px;font-weight:600;margin-top:7px;display:flex;align-items:center;gap:14px;flex-wrap:wrap;text-shadow:0 2px 10px rgba(0,0,0,.5);}
 .dhcap .star{color:var(--gold);}
@@ -293,7 +296,7 @@ body.mlock{position:fixed;left:0;right:0;width:100%;overflow:hidden;}
 @media(max-width:640px){.dgrid{column-count:2;}.dhero{height:230px;}.dhcap .dn{font-size:26px;}}
 .dgrid img{width:100%;border-radius:12px;margin-bottom:12px;break-inside:avoid;cursor:zoom-in;}
 .rev{display:flex;gap:14px;padding:16px 0;border-bottom:1px solid var(--line);}
-.rev:last-child{border:none;} .rev .ra{width:46px;height:46px;border-radius:50%;flex:0 0 auto;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-family:'Playfair Display',serif;}
+.rev:last-child{border:none;} .rev .ra{width:46px;height:46px;border-radius:50%;flex:0 0 auto;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-family:'Pretendard','Malgun Gothic',sans-serif;}
 .rev .rn{font-weight:800;font-size:15px;} .rev .rs{color:var(--gold);font-size:13px;margin-top:2px;} .rev .rt{font-size:14.5px;color:var(--ink2);margin-top:5px;line-height:1.5;}
 .sns{display:flex;flex-wrap:wrap;gap:11px;}
 .sns a{width:54px;height:54px;border-radius:16px;background:var(--soft);border:1px solid var(--line);display:flex;align-items:center;justify-content:center;font-size:26px;color:var(--ink);transition:.15s;}
@@ -311,7 +314,7 @@ body.mlock{position:fixed;left:0;right:0;width:100%;overflow:hidden;}
 .imodal{position:fixed;inset:0;z-index:70;background:rgba(20,12,16,.55);backdrop-filter:blur(4px);display:none;align-items:center;justify-content:center;padding:24px;}
 .imodal.on{display:flex;}
 .icard{background:#fff;border-radius:22px;width:100%;max-width:460px;padding:30px;box-shadow:0 40px 100px -30px rgba(0,0,0,.5);}
-.icard h3{font-family:'Playfair Display',serif;font-size:24px;font-weight:700;}
+.icard h3{font-family:'Pretendard','Malgun Gothic',sans-serif;font-size:24px;font-weight:700;}
 .icard .il{font-size:13px;font-weight:800;color:var(--sub);margin:18px 0 8px;letter-spacing:.04em;}
 .iselrow{display:flex;gap:8px;} .iselrow button{flex:1;padding:11px;border:1px solid var(--line);border-radius:12px;font-weight:700;font-size:14px;color:var(--ink2);}
 .iselrow button.on{background:var(--ink);color:#fff;border-color:var(--ink);}
@@ -566,26 +569,34 @@ function openIdCard(did){const d=dById(did||curD);if(!d)return;idDid=d.id;
  var own=(d.id==='me')||!!(ME&&ME.uid&&d.uid&&d.uid===ME.uid);
  var cols=(own&&ME&&ME.idCols)?ME.idCols:2;
  var accent=(own&&ME&&ME.idColor)?ME.idColor:'#6E4A50';
+ var theme=(own&&ME&&ME.idTheme)?ME.idTheme:'light';
+ var tag=hexA(accent,0.12),tintCard=hexA(accent,0.055),tintTop=hexA(accent,0.12);
  var ncut=cols===1?3:(cols===3?6:4);
  const name=(LANG==='ko'&&d.ko)?d.ko:d.name;var cuts=d.works.slice(0,ncut);while(cuts.length<ncut&&d.works.length)cuts.push(d.works[cuts.length%d.works.length]);
  $('idDlT').textContent=T[LANG].idDl;$('idShT').textContent=T[LANG].idShare;
- $('idcard').innerHTML=`<div class="ic-top"><div class="ic-brandwrap"><img src="logo-mark.png" class="ic-logo" alt="Beautia"><span class="ic-name">Beautia</span></div><span class="ic-kind">ID CARD</span></div>
+ var card=$('idcard');card.style.background=theme==='tint'?tintCard:'#fff';
+ card.innerHTML=`<div class="ic-top" style="background:${theme==='tint'?tintTop:'transparent'}"><div class="ic-brandwrap"><img src="logo-mark.png" class="ic-logo" alt="Beautia"><span class="ic-brand">BEAUTIA</span></div><span class="ic-kind" style="color:${accent};background:${tag}">ID CARD</span></div>
+  <div class="ic-rule" style="background:${accent}"></div>
   <div class="ic-cuts" style="grid-template-columns:repeat(${cols},1fr)">${cuts.map(w=>`<div class="ic-cut" style="background-image:url('${im(w,500)}')"></div>`).join('')}</div>
   <div class="ic-info"><div class="ic-namerow">${avHtml(d,'ic-av')}<div><div class="ic-name" style="color:${accent}">${esc(d.flag)} ${esc(name)} ${d.ver?`<i class="ti ti-rosette-discount-check-filled" style="color:${accent};font-size:20px"></i>`:''}</div>
    <div class="ic-meta">${esc(cl(d.cat))}${d.area?' · '+esc(d.area):''}${d.city?', '+esc(d.city):''} · ★ ${esc(d.rating)}</div></div></div>
-   <div class="ic-tags">${d.spec.slice(0,3).map(s=>`<span>${esc(s)}</span>`).join('')}</div></div>
-  <div class="ic-foot"><div class="ic-qr" id="icqr"></div><div class="ic-scan"><div class="s1">SCAN TO VIEW & BOOK</div><div class="s2">@beautia.collection</div></div></div>`;
+   <div class="ic-tags">${d.spec.slice(0,3).map(s=>`<span style="color:${accent};background:${tag}">${esc(s)}</span>`).join('')}</div></div>
+  <div class="ic-divider" style="background:${theme==='tint'?tag:'var(--line)'}"></div>
+  <div class="ic-foot"><div class="ic-qr" id="icqr"></div><div class="ic-scan"><div class="s1" style="color:${accent}">SCAN TO VIEW & BOOK</div><div class="s2">@beautia.collection</div></div></div>`;
  try{var qr=qrcode(0,'M');qr.addData(idUrl(d.id));qr.make();$('icqr').innerHTML=qr.createImgTag(4,0);}catch(e){$('icqr').textContent='';}
  var cfg=$('idcfg');
- if(cfg){if(own){var COLORS=['#6E4A50','#B5828C','#C9A063','#2a2024'];
+ if(cfg){if(own){var COLORS=['#6E4A50','#9B6F7E','#B5828C','#C9A063','#6E8B7A','#2A2430'];
    cfg.innerHTML=`<div class="cfgrow"><span class="cfgl">${T[LANG].columns}</span>${[1,2,3].map(function(n){return `<button class="cfgb ${cols===n?'on':''}" onclick="setIdCols(${n})">${n}</button>`;}).join('')}</div>
-    <div class="cfgrow"><span class="cfgl">${T[LANG].color}</span>${COLORS.map(function(c){return `<button class="cfgc ${accent.toLowerCase()===c?'on':''}" style="background:${c}" onclick="setIdColor('${c}')"></button>`;}).join('')}</div>`;
+    <div class="cfgrow"><span class="cfgl">${T[LANG].cover}</span><button class="cfgb ${theme==='light'?'on':''}" style="width:auto;padding:0 13px" onclick="setIdTheme('light')">${T[LANG].coverLight}</button><button class="cfgb ${theme==='tint'?'on':''}" style="width:auto;padding:0 13px" onclick="setIdTheme('tint')">${T[LANG].coverTint}</button></div>
+    <div class="cfgrow"><span class="cfgl">${T[LANG].color}</span>${COLORS.map(function(c){return `<button class="cfgc ${accent.toLowerCase()===c.toLowerCase()?'on':''}" style="background:${c}" onclick="setIdColor('${c}')"></button>`;}).join('')}</div>`;
    cfg.style.display='block';}else cfg.style.display='none';}
  $('idmodal').classList.add('on');requestAnimationFrame(fitIdCard);setTimeout(fitIdCard,120);}
 function fitIdCard(){var iw=$('idwrap');if(!iw||!$('idmodal').classList.contains('on'))return;iw.style.transform='';var avail=window.innerHeight-24;var need=iw.offsetHeight;iw.style.transform=need>avail?'scale('+Math.max(0.45,avail/need)+')':'';}
 window.addEventListener('resize',function(){if($('idmodal')&&$('idmodal').classList.contains('on'))fitIdCard();});
 function setIdCols(n){if(!ME)return;ME.idCols=n;persistShop();openIdCard('me');}
 function setIdColor(c){if(!ME)return;ME.idColor=c;persistShop();openIdCard('me');}
+function setIdTheme(t){if(!ME)return;ME.idTheme=t;persistShop();openIdCard('me');}
+function hexA(h,a){h=String(h||'').replace('#','');if(h.length===3)h=h[0]+h[0]+h[1]+h[1]+h[2]+h[2];var n=parseInt(h||'6E4A50',16);if(isNaN(n))n=0x6E4A50;return 'rgba('+((n>>16)&255)+','+((n>>8)&255)+','+(n&255)+','+a+')';}
 function closeId(){$('idmodal').classList.remove('on');}
 // ID카드를 캔버스로 렌더(다운로드·공유 공용). scale 변환 잠깐 풀고 캡처 후 복구.
 function renderIdCanvas(){return new Promise(function(resolve,reject){
@@ -644,9 +655,9 @@ function pfDownscale(dataUrl,max,cb){const img=new Image();img.onload=function()
 function addPfPhotos(e){const files=Array.prototype.slice.call(e.target.files);const room=12-(ME.works||[]).length;files.slice(0,room).forEach(function(f){if(!/^image\//.test(f.type))return;const r=new FileReader();r.onload=function(ev){pfDownscale(ev.target.result,1000,async function(d){const url=await uploadOne(d);ME.works=ME.works||[];ME.works.push({img:url,text:''});renderPf();buildTiles();render();await persistShop();});};r.readAsDataURL(f);});e.target.value='';}
 function pfSetCaption(i,val){if(!ME||!ME.works||!ME.works[i])return;var w=ME.works[i];if(typeof w!=='object')w=ME.works[i]={img:w,text:''};w.text=(val||'').slice(0,600);buildTiles();render();persistShop();}
 function delPfPhoto(i){ME.works.splice(i,1);renderPf();buildTiles();render();persistShop();}
-Object.assign(T.en,{pfHint:'Upload your best work. It appears in the gallery, your profile, and your ID card.',addPhoto:'Add photo',nearYou:'Sorted by distance from your location',photoL:'Add profile photo',changePhoto:'Change photo',byDesigner:"{n}'s portfolio",viewDesigner:'View designer',otpSentToast:'Code sent to your email ✉️',welcomeBack:'Welcome back 👋',needCode:'Enter the code',needLogin:'Please sign in',sending:'Sending…',emailPh:'you@email.com',emailL:'Email',messages:'Messages',noChats:'No conversations yet',sayHi:'Say hello to start the chat',typeMsg:'Type a message…',showOrig:'Show original',showTr:'Show translation',cantChat:'Chat is not available for this designer yet',cantChatSelf:"That's you",loginTitle:'Log in or sign up',orEmail:'or with email',loginHint:'New here? Verifying your email signs you up automatically.',myIdCard:'My ID card',columns:'Columns',color:'Color',snsL:'Social links (optional)',pfCaption:'Write a caption (optional)',featured:'Featured',claimQ:'Is this your work?',claimBtn:'Claim your profile',removeReq:'Request removal',claimToast:'Sign up to add this to your profile ✨'});
-Object.assign(T.ko,{pfHint:'대표 작업을 올리세요. 갤러리·내 프로필·ID 카드에 바로 보여요.',addPhoto:'사진 추가',nearYou:'내 위치에서 가까운 순으로 정렬',photoL:'프로필 사진 추가',changePhoto:'사진 변경',byDesigner:'{n}님의 포트폴리오',viewDesigner:'디자이너 보기',otpSentToast:'인증 코드를 이메일로 보냈어요 ✉️',welcomeBack:'다시 오신 걸 환영해요 👋',needCode:'코드를 입력하세요',needLogin:'로그인이 필요해요',sending:'전송 중…',emailPh:'you@email.com',emailL:'이메일',messages:'메시지',noChats:'아직 대화가 없어요',sayHi:'인사를 건네 대화를 시작하세요',typeMsg:'메시지 입력…',showOrig:'원문 보기',showTr:'번역 보기',cantChat:'아직 이 디자이너와는 채팅할 수 없어요',cantChatSelf:'본인이에요',loginTitle:'로그인 또는 가입',orEmail:'또는 이메일로',loginHint:'처음이세요? 이메일 인증하면 자동으로 가입돼요.',myIdCard:'내 ID 카드',columns:'컬럼',color:'색상',snsL:'SNS 연동 (선택)',pfCaption:'설명을 적어보세요 (선택)',featured:'발견',claimQ:'이 작업의 주인이신가요?',claimBtn:'내 프로필로 등록',removeReq:'삭제 요청',claimToast:'가입하면 내 프로필로 가져올 수 있어요 ✨'});
-Object.assign(T.ja,{pfHint:'代表作品をアップ。ギャラリー・プロフィール・IDカードに表示されます。',addPhoto:'写真を追加',nearYou:'現在地から近い順に表示',photoL:'プロフィール写真を追加',changePhoto:'写真を変更',byDesigner:'{n}さんのポートフォリオ',viewDesigner:'デザイナーを見る',otpSentToast:'認証コードをメールに送りました ✉️',welcomeBack:'おかえりなさい 👋',needCode:'コードを入力してください',needLogin:'ログインしてください',sending:'送信中…',emailPh:'you@email.com',emailL:'メール',messages:'メッセージ',noChats:'まだ会話がありません',sayHi:'挨拶して会話を始めましょう',typeMsg:'メッセージを入力…',showOrig:'原文を表示',showTr:'翻訳を表示',cantChat:'このデザイナーとはまだチャットできません',cantChatSelf:'ご本人です',loginTitle:'ログイン / 登録',orEmail:'またはメールで',loginHint:'初めての方はメール認証で自動的に登録されます。',myIdCard:'マイIDカード',columns:'カラム',color:'カラー',snsL:'SNSリンク（任意）',pfCaption:'キャプションを追加（任意）',featured:'ピック',claimQ:'この作品の作者ですか？',claimBtn:'プロフィールに登録',removeReq:'削除リクエスト',claimToast:'登録すると自分のプロフィールに追加できます ✨'});
+Object.assign(T.en,{pfHint:'Upload your best work. It appears in the gallery, your profile, and your ID card.',addPhoto:'Add photo',nearYou:'Sorted by distance from your location',photoL:'Add profile photo',changePhoto:'Change photo',byDesigner:"{n}'s portfolio",viewDesigner:'View designer',otpSentToast:'Code sent to your email ✉️',welcomeBack:'Welcome back 👋',needCode:'Enter the code',needLogin:'Please sign in',sending:'Sending…',emailPh:'you@email.com',emailL:'Email',messages:'Messages',noChats:'No conversations yet',sayHi:'Say hello to start the chat',typeMsg:'Type a message…',showOrig:'Show original',showTr:'Show translation',cantChat:'Chat is not available for this designer yet',cantChatSelf:"That's you",loginTitle:'Log in or sign up',orEmail:'or with email',loginHint:'New here? Verifying your email signs you up automatically.',myIdCard:'My ID card',columns:'Columns',color:'Color',cover:'Cover',coverLight:'Light',coverTint:'Tint',snsL:'Social links (optional)',pfCaption:'Write a caption (optional)',featured:'Featured',claimQ:'Is this your work?',claimBtn:'Claim your profile',removeReq:'Request removal',claimToast:'Sign up to add this to your profile ✨'});
+Object.assign(T.ko,{pfHint:'대표 작업을 올리세요. 갤러리·내 프로필·ID 카드에 바로 보여요.',addPhoto:'사진 추가',nearYou:'내 위치에서 가까운 순으로 정렬',photoL:'프로필 사진 추가',changePhoto:'사진 변경',byDesigner:'{n}님의 포트폴리오',viewDesigner:'디자이너 보기',otpSentToast:'인증 코드를 이메일로 보냈어요 ✉️',welcomeBack:'다시 오신 걸 환영해요 👋',needCode:'코드를 입력하세요',needLogin:'로그인이 필요해요',sending:'전송 중…',emailPh:'you@email.com',emailL:'이메일',messages:'메시지',noChats:'아직 대화가 없어요',sayHi:'인사를 건네 대화를 시작하세요',typeMsg:'메시지 입력…',showOrig:'원문 보기',showTr:'번역 보기',cantChat:'아직 이 디자이너와는 채팅할 수 없어요',cantChatSelf:'본인이에요',loginTitle:'로그인 또는 가입',orEmail:'또는 이메일로',loginHint:'처음이세요? 이메일 인증하면 자동으로 가입돼요.',myIdCard:'내 ID 카드',columns:'컬럼',color:'색상',cover:'커버',coverLight:'라이트',coverTint:'틴트',snsL:'SNS 연동 (선택)',pfCaption:'설명을 적어보세요 (선택)',featured:'발견',claimQ:'이 작업의 주인이신가요?',claimBtn:'내 프로필로 등록',removeReq:'삭제 요청',claimToast:'가입하면 내 프로필로 가져올 수 있어요 ✨'});
+Object.assign(T.ja,{pfHint:'代表作品をアップ。ギャラリー・プロフィール・IDカードに表示されます。',addPhoto:'写真を追加',nearYou:'現在地から近い順に表示',photoL:'プロフィール写真を追加',changePhoto:'写真を変更',byDesigner:'{n}さんのポートフォリオ',viewDesigner:'デザイナーを見る',otpSentToast:'認証コードをメールに送りました ✉️',welcomeBack:'おかえりなさい 👋',needCode:'コードを入力してください',needLogin:'ログインしてください',sending:'送信中…',emailPh:'you@email.com',emailL:'メール',messages:'メッセージ',noChats:'まだ会話がありません',sayHi:'挨拶して会話を始めましょう',typeMsg:'メッセージを入力…',showOrig:'原文を表示',showTr:'翻訳を表示',cantChat:'このデザイナーとはまだチャットできません',cantChatSelf:'ご本人です',loginTitle:'ログイン / 登録',orEmail:'またはメールで',loginHint:'初めての方はメール認証で自動的に登録されます。',myIdCard:'マイIDカード',columns:'カラム',color:'カラー',cover:'カバー',coverLight:'ライト',coverTint:'ティント',snsL:'SNSリンク（任意）',pfCaption:'キャプションを追加（任意）',featured:'ピック',claimQ:'この作品の作者ですか？',claimBtn:'プロフィールに登録',removeReq:'削除リクエスト',claimToast:'登録すると自分のプロフィールに追加できます ✨'});
 
 let iLang='ko';
 function openI(did){const d=dById(did);iLang=LANG==='en'?'ko':LANG;
@@ -676,9 +687,9 @@ const SB_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZ
 const SB=window.supabase.createClient(SB_URL,SB_KEY,{auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:true}});
 function roleIn(r){return (r==='designer'||r==='owner'||r==='desg')?'desg':'cust';}
 function profToMe(p){const s=p.shop||{};const photos=[];(s.photos||[]).forEach(function(x){if(x&&photos.indexOf(x)<0)photos.push(x);});
- return {uid:p.id,role:roleIn(p.role),name:p.nickname||p.full_name||'',country:'',city:p.region||s.area||'',area:s.area||'',spec:(s.specialties||p.interests||[]),career:s.career||'',avatar:s.avatar||p.avatar_url||'',insta:(s.insta||'').replace(/^@/,''),sns:s.sns||(s.insta?{instagram:(s.insta||'').replace(/^@/,'')}:{}),shopName:s.name||'',bio:p.bio||'',works:photos,idCols:s.idCols||2,idColor:s.idColor||'',verified:true,provider:'email',joined:p.created_at?new Date(p.created_at).getTime():Date.now()};}
+ return {uid:p.id,role:roleIn(p.role),name:p.nickname||p.full_name||'',country:'',city:p.region||s.area||'',area:s.area||'',spec:(s.specialties||p.interests||[]),career:s.career||'',avatar:s.avatar||p.avatar_url||'',insta:(s.insta||'').replace(/^@/,''),sns:s.sns||(s.insta?{instagram:(s.insta||'').replace(/^@/,'')}:{}),shopName:s.name||'',bio:p.bio||'',works:photos,idCols:s.idCols||2,idColor:s.idColor||'',idTheme:s.idTheme||'light',verified:true,provider:'email',joined:p.created_at?new Date(p.created_at).getTime():Date.now()};}
 async function uploadOne(dataUrl){try{const sess=(await SB.auth.getSession()).data.session;if(!sess||dataUrl.indexOf('data:')!==0)return dataUrl;const uid=sess.user.id;const blob=await (await fetch(dataUrl)).blob();const path=uid+'/'+Date.now()+'-'+Math.random().toString(36).slice(2,8)+'.jpg';const up=await SB.storage.from('beautia').upload(path,blob,{contentType:'image/jpeg',upsert:false});if(up.error){console.warn('[beautia] storage upload failed → base64 fallback:',up.error&&up.error.message);return dataUrl;}const pu=SB.storage.from('beautia').getPublicUrl(path);return (pu.data&&pu.data.publicUrl)||dataUrl;}catch(e){return dataUrl;}}
-async function persistShop(){if(!ME||!ME.uid)return;try{await SB.from('profiles').update({shop:{name:ME.shopName||'',area:ME.city||'',specialties:ME.spec||[],avatar:ME.avatar||'',photos:ME.works||[],career:ME.career||'',insta:ME.insta||'',sns:ME.sns||{},idCols:ME.idCols||2,idColor:ME.idColor||''}}).eq('id',ME.uid);}catch(e){}}
+async function persistShop(){if(!ME||!ME.uid)return;try{await SB.from('profiles').update({shop:{name:ME.shopName||'',area:ME.city||'',specialties:ME.spec||[],avatar:ME.avatar||'',photos:ME.works||[],career:ME.career||'',insta:ME.insta||'',sns:ME.sns||{},idCols:ME.idCols||2,idColor:ME.idColor||'',idTheme:ME.idTheme||'light'}}).eq('id',ME.uid);}catch(e){}}
 async function onAuth(session){
  if(!session){ME=null;renderAuth();buildTiles();render();return;}
  let prof=null;try{prof=(await SB.from('profiles').select('id,nickname,role,region,bio,interests,shop,avatar_url,full_name,created_at').eq('id',session.user.id).maybeSingle()).data;}catch(e){}
