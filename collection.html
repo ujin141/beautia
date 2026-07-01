@@ -77,9 +77,9 @@ nav.main a.on{color:var(--ink);border-color:var(--accent);}
 .umenu .uh .un{font-weight:800;font-size:15px;} .umenu .uh .ur{font-size:12.5px;color:var(--sub);margin-top:2px;}
 .umenu a{display:flex;align-items:center;gap:10px;padding:12px 14px;font-size:15px;font-weight:600;color:var(--ink);border-radius:10px;cursor:pointer;}
 .umenu a:hover{background:var(--soft);} .umenu a i{font-size:19px;color:var(--sub);}
-.lmodal{position:fixed;inset:0;z-index:75;background:rgba(20,12,16,.55);backdrop-filter:blur(4px);display:none;align-items:center;justify-content:center;padding:24px;}
+.lmodal{position:fixed;inset:0;z-index:75;background:rgba(20,12,16,.55);backdrop-filter:blur(4px);display:none;align-items:flex-start;justify-content:center;padding:24px;overflow-y:auto;-webkit-overflow-scrolling:touch;overscroll-behavior:contain;}
 .lmodal.on{display:flex;}
-.lcard{background:#fff;border-radius:24px;width:100%;max-width:420px;padding:34px 32px 30px;box-shadow:0 40px 100px -30px rgba(0,0,0,.5);position:relative;text-align:center;}
+.lcard{background:#fff;border-radius:24px;width:100%;max-width:420px;margin:auto;padding:34px 32px 30px;box-shadow:0 40px 100px -30px rgba(0,0,0,.5);position:relative;text-align:center;}
 .lbrand{font-family:'Playfair Display',serif;font-size:26px;font-weight:700;}
 .lcard h3{font-size:17.5px;font-weight:700;color:var(--ink2);margin-top:6px;}
 .lrole{margin-top:22px;text-align:left;} .lrole .il{font-size:13px;font-weight:800;color:var(--sub);}

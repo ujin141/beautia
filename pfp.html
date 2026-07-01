@@ -1,0 +1,16 @@
+<!doctype html><html><head><meta charset="utf-8"><style>
+  html,body{margin:0;padding:0}
+  .stage{width:1080px;height:1080px;position:relative;overflow:hidden;
+    background:radial-gradient(circle at 50% 42%, #fbf5f0 0%, #f5e9e1 55%, #ecdad0 100%);
+    display:flex;align-items:center;justify-content:center;}
+  /* subtle inner ring so it reads as a crafted mark inside the circle crop */
+  .ring{position:absolute;inset:70px;border-radius:50%;
+    box-shadow:inset 0 0 0 2px rgba(168,107,122,0.14);}
+  .mark{height:600px;width:auto;display:block;
+    filter:drop-shadow(0 10px 28px rgba(122,74,90,0.20));}
+</style></head><body>
+  <div class="stage">
+    <div class="ring"></div>
+    <img class="mark" src="logo-mark.png" alt="Beautia">
+  </div>
+</body></html>
