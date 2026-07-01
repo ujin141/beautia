@@ -143,9 +143,9 @@ body.mlock{position:fixed;left:0;right:0;width:100%;overflow:hidden;}
 .idcardbtn{display:inline-flex;align-items:center;gap:8px;margin-top:16px;font-size:14px;font-weight:800;color:var(--plum);background:var(--rosebg);border-radius:999px;padding:11px 20px;}
 .idcardbtn:hover{background:var(--accent);color:#fff;}
 /* ID 카드 */
-.idmodal{position:fixed;inset:0;z-index:78;background:rgba(20,12,16,.6);backdrop-filter:blur(5px);display:none;align-items:flex-start;justify-content:center;padding:24px;overflow-y:auto;}
+.idmodal{position:fixed;inset:0;z-index:78;background:rgba(20,12,16,.6);backdrop-filter:blur(5px);display:none;align-items:center;justify-content:center;padding:16px;overflow:hidden;}
 .idmodal.on{display:flex;}
-.idwrap{display:flex;flex-direction:column;align-items:center;gap:16px;margin:auto;}
+.idwrap{display:flex;flex-direction:column;align-items:center;gap:14px;transform-origin:center center;}
 .idcard{width:100%;max-width:360px;background:#fff;border-radius:26px;overflow:hidden;box-shadow:0 40px 90px -30px rgba(40,20,40,.6);border:1px solid var(--line);}
 .ic-top{display:flex;align-items:center;justify-content:space-between;padding:18px 22px 2px;}
 .ic-brandwrap{display:flex;align-items:center;gap:8px;}
@@ -387,7 +387,7 @@ body.mlock{position:fixed;left:0;right:0;width:100%;overflow:hidden;}
 <div class="imodal" id="imodal" onclick="if(event.target===this)closeI()"><div class="icard" id="icard"></div></div>
 <div class="umenu" id="umenu"></div>
 <div class="lmodal" id="lmodal" onclick="if(event.target===this)closeLogin()"><div class="lcard" id="lcard"></div></div>
-<div class="idmodal" id="idmodal" onclick="if(event.target===this)closeId()"><div class="idwrap"><div class="idcard" id="idcard"></div><div class="idcfg" id="idcfg"></div><div class="idbtns"><button class="pri" onclick="dlId()"><i class="ti ti-download"></i> <span id="idDlT">Download</span></button><button onclick="shareId()"><i class="ti ti-link"></i> <span id="idShT">Share</span></button><button onclick="closeId()"><i class="ti ti-x"></i></button></div></div></div>
+<div class="idmodal" id="idmodal" onclick="if(event.target===this)closeId()"><div class="idwrap" id="idwrap"><div class="idcard" id="idcard"></div><div class="idcfg" id="idcfg"></div><div class="idbtns"><button class="pri" onclick="dlId()"><i class="ti ti-download"></i> <span id="idDlT">Download</span></button><button onclick="shareId()"><i class="ti ti-link"></i> <span id="idShT">Share</span></button><button onclick="closeId()"><i class="ti ti-x"></i></button></div></div></div>
 <div class="pfmodal" id="pfmodal" onclick="if(event.target===this)closePf()"><div class="pfcard" id="pfcard"></div></div>
 <div class="toast" id="toast"></div>
 
@@ -569,12 +569,15 @@ function openIdCard(did){const d=dById(did||curD);if(!d)return;idDid=d.id;
    cfg.innerHTML=`<div class="cfgrow"><span class="cfgl">${T[LANG].columns}</span>${[1,2,3].map(function(n){return `<button class="cfgb ${cols===n?'on':''}" onclick="setIdCols(${n})">${n}</button>`;}).join('')}</div>
     <div class="cfgrow"><span class="cfgl">${T[LANG].color}</span>${COLORS.map(function(c){return `<button class="cfgc ${accent.toLowerCase()===c?'on':''}" style="background:${c}" onclick="setIdColor('${c}')"></button>`;}).join('')}</div>`;
    cfg.style.display='block';}else cfg.style.display='none';}
- $('idmodal').classList.add('on');}
+ $('idmodal').classList.add('on');requestAnimationFrame(fitIdCard);setTimeout(fitIdCard,120);}
+function fitIdCard(){var iw=$('idwrap');if(!iw||!$('idmodal').classList.contains('on'))return;iw.style.transform='';var avail=window.innerHeight-24;var need=iw.offsetHeight;iw.style.transform=need>avail?'scale('+Math.max(0.45,avail/need)+')':'';}
+window.addEventListener('resize',function(){if($('idmodal')&&$('idmodal').classList.contains('on'))fitIdCard();});
 function setIdCols(n){if(!ME)return;ME.idCols=n;persistShop();openIdCard('me');}
 function setIdColor(c){if(!ME)return;ME.idColor=c;persistShop();openIdCard('me');}
 function closeId(){$('idmodal').classList.remove('on');}
 function dlId(){const el=$('idcard');if(typeof html2canvas==='undefined'){toast('...');return;}toast(T[LANG].idPrep);
- html2canvas(el,{useCORS:true,scale:3,backgroundColor:'#ffffff'}).then(function(cv){var a=document.createElement('a');a.download='beautia-id-'+idDid+'.png';a.href=cv.toDataURL('image/png');a.click();}).catch(function(){toast(T[LANG].idFail);});}
+ var iw=$('idwrap'),t=iw?iw.style.transform:'';if(iw)iw.style.transform='';
+ html2canvas(el,{useCORS:true,scale:3,backgroundColor:'#ffffff'}).then(function(cv){if(iw)iw.style.transform=t;var a=document.createElement('a');a.download='beautia-id-'+idDid+'.png';a.href=cv.toDataURL('image/png');a.click();}).catch(function(){if(iw)iw.style.transform=t;toast(T[LANG].idFail);});}
 function shareId(){const u=idUrl(idDid);if(navigator.share){navigator.share({title:'Beautia',url:u}).catch(function(){});return;}try{navigator.clipboard.writeText(u);toast(T[LANG].linkCopied);}catch(e){toast(u);}}
 // ===== 포트폴리오 관리 (디자이너 작업 업로드) =====
 function openPortfolio(){if(!ME){openLogin('');return;}ME.works=ME.works||[];closeD();renderPf();$('pfmodal').classList.add('on');}
