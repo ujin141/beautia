@@ -411,7 +411,7 @@ const D=[
   ba:['https://pzbxcktaljhesrfnqwzq.supabase.co/storage/v1/object/public/beautia/21a1661c-4974-477a-8d0d-f806457db5a4/1782731426098-xdb79x.jpg','https://pzbxcktaljhesrfnqwzq.supabase.co/storage/v1/object/public/beautia/21a1661c-4974-477a-8d0d-f806457db5a4/1782731424179-6dzmzs.jpg'],
   sns:['instagram'],reviews:[]},
 ];
-function meDesigner(){if(ME&&ME.role==='desg'&&ME.works&&ME.works.length){return {id:'me',uid:ME.uid,name:ME.name||'You',ko:'',cat:(ME.spec&&ME.spec[0])||'Hair',city:ME.city||ME.country||'',area:ME.area||'',flag:'🎨',rating:5.0,rev:0,years:ME.career||'',ko_ok:1,ver:ME.verified?1:0,spec:(ME.spec&&ME.spec.length?ME.spec.slice():['Hair']),bio:ME.bio||'',avatar:ME.avatar||'',insta:ME.insta||'',handles:ME.sns||{},works:ME.works.slice(),ba:[ME.works[0],ME.works[Math.min(1,ME.works.length-1)]],sns:Object.keys(ME.sns||{}).filter(function(k){return ME.sns[k];}),reviews:[],isMe:1};}return null;}
+function meDesigner(){if(ME&&ME.uid&&ME.works&&ME.works.length){return {id:'me',uid:ME.uid,name:ME.name||'You',ko:'',cat:(ME.spec&&ME.spec[0])||'Hair',city:ME.city||ME.country||'',area:ME.area||'',flag:ME.role==='desg'?'🎨':'✨',rating:5.0,rev:0,years:ME.career||'',ko_ok:1,ver:ME.verified?1:0,spec:(ME.spec&&ME.spec.length?ME.spec.slice():['Hair']),bio:ME.bio||'',avatar:ME.avatar||'',insta:ME.insta||'',handles:ME.sns||{},works:ME.works.slice(),ba:[ME.works[0],ME.works[Math.min(1,ME.works.length-1)]],sns:Object.keys(ME.sns||{}).filter(function(k){return ME.sns[k];}),reviews:[],isMe:1};}return null;}
 function gradFor(s){return GR[Math.abs((s||'B').charCodeAt(0))%GR.length];}
 function avHtml(d,cls){var nm=(LANG==='ko'&&d.ko)?d.ko:(d.name||'U');return d.avatar?`<div class="${cls}" style="background-image:url('${im(d.avatar,240)}')"></div>`:`<div class="${cls} mono" style="background:${gradFor(d.name)}">${esc(nm[0]||'U')}</div>`;}
 function allD(){const m=meDesigner();return m?[m].concat(D):D;}
@@ -568,7 +568,7 @@ function dlId(){const el=$('idcard');if(typeof html2canvas==='undefined'){toast(
  html2canvas(el,{useCORS:true,scale:3,backgroundColor:'#ffffff'}).then(function(cv){var a=document.createElement('a');a.download='beautia-id-'+idDid+'.png';a.href=cv.toDataURL('image/png');a.click();}).catch(function(){toast(T[LANG].idFail);});}
 function shareId(){const u=idUrl(idDid);if(navigator.share){navigator.share({title:'Beautia',url:u}).catch(function(){});return;}try{navigator.clipboard.writeText(u);toast(T[LANG].linkCopied);}catch(e){toast(u);}}
 // ===== 포트폴리오 관리 (디자이너 작업 업로드) =====
-function openPortfolio(){if(!ME){openLogin('desg');return;}if(ME.role!=='desg'){toast(T[LANG].needRole);return;}ME.works=ME.works||[];closeD();renderPf();$('pfmodal').classList.add('on');}
+function openPortfolio(){if(!ME){openLogin('');return;}ME.works=ME.works||[];closeD();renderPf();$('pfmodal').classList.add('on');}
 function closePf(){$('pfmodal').classList.remove('on');}
 function renderPf(){const w=ME.works||[];
  $('pfcard').innerHTML=`<button class="iclose" onclick="closePf()">×</button>
@@ -632,7 +632,7 @@ function toggleUmenu(e){if(e)e.stopPropagation();const m=$('umenu');if(m.classLi
  m.innerHTML=`<div class="uh"><div class="un">${T[LANG].hi}, ${esc(ME?ME.name:'')}</div><div class="ur">${ME?roleLabel(ME.role):''}${ME&&ME.verified?' · '+T[LANG].verifiedMember:''}</div></div>
  <a onclick="openProfile();closeUmenu()"><i class="ti ti-user"></i> ${T[LANG].profile}</a>
  <a onclick="openChat();closeUmenu()"><i class="ti ti-message-2"></i> ${T[LANG].messages}${chatUnread>0?'<span class="undot"></span>':''}</a>
- ${ME&&ME.role==='desg'?`<a onclick="closeUmenu();openIdCard('me')"><i class="ti ti-id-badge-2"></i> ${T[LANG].myIdCard}</a>`:''}
+ ${ME&&ME.works&&ME.works.length?`<a onclick="closeUmenu();openIdCard('me')"><i class="ti ti-id-badge-2"></i> ${T[LANG].myIdCard}</a>`:''}
  <a onclick="setView('saved');closeUmenu()"><i class="ti ti-heart"></i> ${T[LANG].saved}</a>
  <a onclick="logout();closeUmenu()"><i class="ti ti-logout"></i> ${T[LANG].logout}</a>`;
  m.classList.add('on');
@@ -726,9 +726,9 @@ function openProfile(){if(!ME){openLogin('');return;}const since=ME.joined?new D
    <div style="flex:1"><div class="pmn">${esc(ME.name)} ${ME.verified?`<span class="vbadge"><i class="ti ti-rosette-discount-check-filled"></i>${T[LANG].verifiedMember}</span>`:''}</div>
    <div class="pmmeta">${roleLabel(ME.role)}${ME.country?' · '+esc(ME.country):''}${ME.city?' · '+esc(ME.city):''}</div>${since?`<div class="pmjoin">${T[LANG].joined} ${esc(since)}</div>`:''}</div>
    <button class="dclose" onclick="closeD()">×</button></div>
-   <div class="dsec"><div class="pmstats"><div class="ps"><div class="n">${savedCount()}</div><div class="l">${T[LANG].saved}</div></div>${ME.role==='desg'?`<div class="ps"><div class="n">${(ME.works||[]).length}</div><div class="l">${T[LANG].portfolio}</div></div>`:''}</div></div>
+   <div class="dsec"><div class="pmstats"><div class="ps"><div class="n">${savedCount()}</div><div class="l">${T[LANG].saved}</div></div><div class="ps"><div class="n">${(ME.works||[]).length}</div><div class="l">${T[LANG].portfolio}</div></div></div></div>
    ${(ME.spec&&ME.spec.length)?`<div class="dsec"><div class="st">${ME.role==='desg'?T[LANG].specialties:T[LANG].interests}</div><div class="chips">${ME.spec.map(c=>`<span class="chip">${esc(cl(c))}</span>`).join('')}</div></div>`:''}
-   ${ME.role==='desg'?`<div class="dsec" style="border:none;display:flex;gap:8px"><button class="cbtn book" style="flex:1" onclick="openPortfolio()"><i class="ti ti-upload"></i> ${T[LANG].pfManage}</button><button class="cbtn save" style="flex:1;width:auto" onclick="closeD();openIdCard('me')"><i class="ti ti-id-badge-2"></i> <span>${T[LANG].idCard}</span></button></div>`:'<div style="height:6px"></div>'}
+   <div class="dsec" style="border:none;display:flex;gap:8px"><button class="cbtn book" style="flex:1" onclick="openPortfolio()"><i class="ti ti-upload"></i> ${T[LANG].pfManage}</button>${(ME.works&&ME.works.length)?`<button class="cbtn save" style="flex:1;width:auto" onclick="closeD();openIdCard('me')"><i class="ti ti-id-badge-2"></i> <span>${T[LANG].idCard}</span></button>`:''}</div>
   </div>
   <div class="dfoot"><button class="cbtn save" style="width:auto;flex:1" onclick="editProfile()"><i class="ti ti-pencil"></i> <span>${T[LANG].edit}</span></button><button class="cbtn book" style="flex:1" onclick="logout()"><i class="ti ti-logout"></i> ${T[LANG].logout}</button></div>`;
  $('dmodal').classList.add('on');curD=null;}
