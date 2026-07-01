@@ -387,6 +387,7 @@ body.mlock{position:fixed;left:0;right:0;width:100%;overflow:hidden;}
 <div class="modal" id="dmodal" onclick="if(event.target===this)closeD()"><div class="sheet" id="dsheet"></div></div>
 <div class="wmodal" id="wmodal" onclick="if(event.target===this)closeWork()"><div class="wcard" id="wcard"></div></div>
 <div class="chatmodal" id="chatmodal" onclick="if(event.target===this)closeChat()"><div class="chatcard" id="chatcard"></div></div>
+<div class="lmodal" id="famodal" onclick="if(event.target===this)closeFa()"><div class="lcard" id="facard" style="text-align:left"></div></div>
 
 <div class="imodal" id="imodal" onclick="if(event.target===this)closeI()"><div class="icard" id="icard"></div></div>
 <div class="umenu" id="umenu"></div>
@@ -620,7 +621,7 @@ function openI(did){const d=dById(did);iLang=LANG==='en'?'ko':LANG;
 }
 function setILang(l){iLang=l;document.querySelectorAll('#iselrow button').forEach(b=>b.classList.toggle('on',b.textContent.toLowerCase()===l));$('imsg').placeholder=T[l].inqPH;}
 function closeI(){$('imodal').classList.remove('on');}
-document.addEventListener('keydown',e=>{if(e.key==='Escape'){closeChat();closeWork();closePf();closeId();closeI();closeD();closeLogin();closeUmenu();}});
+document.addEventListener('keydown',e=>{if(e.key==='Escape'){closeFa();closeChat();closeWork();closePf();closeId();closeI();closeD();closeLogin();closeUmenu();}});
 Object.assign(T.en,{idCard:'ID Card',idDl:'Download',idShare:'Share',idPrep:'Creating image…',idFail:'Download failed (try Share)',linkCopied:'Link copied ✨'});
 Object.assign(T.ko,{idCard:'ID 카드',idDl:'다운로드',idShare:'공유',idPrep:'이미지 만드는 중…',idFail:'다운로드 실패 (공유로 시도)',linkCopied:'링크 복사됨 ✨'});
 Object.assign(T.ja,{idCard:'IDカード',idDl:'保存',idShare:'シェア',idPrep:'画像を作成中…',idFail:'保存失敗（シェアでお試し）',linkCopied:'リンクをコピー ✨'});
@@ -640,7 +641,7 @@ async function persistShop(){if(!ME||!ME.uid)return;try{await SB.from('profiles'
 async function onAuth(session){
  if(!session){ME=null;renderAuth();buildTiles();render();return;}
  let prof=null;try{prof=(await SB.from('profiles').select('id,nickname,role,region,bio,interests,shop,avatar_url,full_name,created_at').eq('id',session.user.id).maybeSingle()).data;}catch(e){}
- if(prof&&prof.nickname){ME=profToMe(prof);closeLogin();renderAuth();buildTiles();render();loadSaves();checkUnread();return;}
+ if(prof&&prof.nickname){ME=profToMe(prof);closeLogin();renderAuth();buildTiles();render();loadSaves();checkUnread();refreshOwner();return;}
  if($('lmodal')&&$('lmodal').classList.contains('on'))return;
  let pend={};try{pend=JSON.parse(localStorage.getItem('beautia_coll_pending')||'{}');}catch(e){}
  const um=session.user.user_metadata||{};
@@ -655,6 +656,7 @@ function toggleUmenu(e){if(e)e.stopPropagation();const m=$('umenu');if(m.classLi
  <a onclick="openProfile();closeUmenu()"><i class="ti ti-user"></i> ${T[LANG].profile}</a>
  <a onclick="openChat();closeUmenu()"><i class="ti ti-message-2"></i> ${T[LANG].messages}${chatUnread>0?'<span class="undot"></span>':''}</a>
  ${ME&&ME.works&&ME.works.length?`<a onclick="closeUmenu();openIdCard('me')"><i class="ti ti-id-badge-2"></i> ${T[LANG].myIdCard}</a>`:''}
+ ${ME&&ME.isOwner?`<a onclick="closeUmenu();openFeaturedAdd()"><i class="ti ti-plus"></i> Featured 추가</a>`:''}
  <a onclick="setView('saved');closeUmenu()"><i class="ti ti-heart"></i> ${T[LANG].saved}</a>
  <a onclick="logout();closeUmenu()"><i class="ti ti-logout"></i> ${T[LANG].logout}</a>`;
  m.classList.add('on');
@@ -719,7 +721,7 @@ async function suVerify(){const v=$('suCode')?$('suCode').value.trim():'';if(!v)
  const {data,error}=await SB.auth.verifyOtp({email:SU.contact,token:v,type:'email'});
  if(error){toast(T[LANG].codeWrong);return;}
  const uid=data.user.id;let prof=null;try{prof=(await SB.from('profiles').select('id,nickname,role,region,bio,interests,shop,avatar_url,full_name,created_at').eq('id',uid).maybeSingle()).data;}catch(e){}
- if(prof&&prof.nickname){ME=profToMe(prof);closeLogin();renderAuth();buildTiles();render();loadSaves();checkUnread();toast(T[LANG].welcomeBack||T[LANG].verifiedToast);return;}
+ if(prof&&prof.nickname){ME=profToMe(prof);closeLogin();renderAuth();buildTiles();render();loadSaves();checkUnread();refreshOwner();toast(T[LANG].welcomeBack||T[LANG].verifiedToast);return;}
  SU.verified=true;SU.uid=uid;renderSU();toast(T[LANG].verifiedToast);}
 async function suFinish(){const wasEdit=SU.edit;
  const sess=(await SB.auth.getSession()).data.session;
@@ -736,7 +738,7 @@ async function suFinish(){const wasEdit=SU.edit;
  if(error){toast('저장 실패: '+error.message);return;}
  let prof=(await SB.from('profiles').select('id,nickname,role,region,bio,interests,shop,avatar_url,full_name,created_at').eq('id',uid).maybeSingle()).data;
  ME=prof?profToMe(prof):null;
- loadSaves();checkUnread();
+ loadSaves();checkUnread();refreshOwner();
  try{localStorage.removeItem('beautia_coll_pending');}catch(e){}
  closeLogin();renderAuth();buildTiles();render();
  toast(wasEdit?'✅':(T[LANG].joinDone+(SU.role==='desg'?' — '+T[LANG].joinToast:'')));}
@@ -801,8 +803,26 @@ function renderSuggest(){var box=$('sugbox');if(!box)return;var q=$('q')?$('q').
 function pickSug(i){var t=CURSUG[i];if(t==null)return;$('q').value=t;render();var box=$('sugbox');if(box)box.style.display='none';}
 function hideSuggest(){setTimeout(function(){var box=$('sugbox');if(box)box.style.display='none';},160);}
 
+// ===== Featured 오너 관리 =====
+const OWNER_EMAIL='ujin141@naver.com';
+async function refreshOwner(){try{var u=(await SB.auth.getUser()).data.user;if(ME&&u){ME.email=u.email;ME.isOwner=(u.email===OWNER_EMAIL);}}catch(e){}}
+async function loadFeatured(){try{var rows=(await SB.from('featured').select('*').order('created_at',{ascending:false})).data;if(!rows)return;FEATURED.length=0;rows.forEach(function(r){FEATURED.push({insta:r.insta,cat:r.cat,city:r.city,area:r.area,imgs:r.imgs||[]});});buildTiles();render();}catch(e){}}
+function openFeaturedAdd(){if(!(ME&&ME.isOwner)){toast('오너만 사용 가능');return;}$('facard').innerHTML=`<button class="iclose" onclick="closeFa()" style="position:absolute;top:16px;right:20px;font-size:24px;color:var(--sub);z-index:2">×</button>
+  <h3 class="serif" style="margin-bottom:4px">Featured 추가</h3><div class="pfsub">원작자 인스타 크레딧으로 올라가요</div>
+  <div class="il">인스타 핸들</div><input class="linput" id="faIG" placeholder="@handle" autocomplete="off">
+  <div class="il">카테고리</div><select class="linput" id="faCat">${['Hair','Makeup','Nail','Lash','Skin','Bridal'].map(function(c){return '<option value="'+c+'">'+esc(cl(c))+'</option>';}).join('')}</select>
+  <div class="il">도시 (선택)</div><input class="linput" id="faCity" placeholder="Seoul / Osaka …" autocomplete="off">
+  <div class="il">사진 URL (한 줄에 하나)</div><textarea class="linput" id="faImgs" rows="4" style="resize:none" placeholder="https://...
+https://..."></textarea>
+  <button class="lcont" style="width:100%;margin-top:14px" onclick="submitFeatured()">추가</button>`;
+  $('famodal').classList.add('on');}
+function closeFa(){$('famodal').classList.remove('on');}
+async function submitFeatured(){var ig=igClean($('faIG')?$('faIG').value:'');var cat=$('faCat')?$('faCat').value:'Hair';var city=$('faCity')?$('faCity').value.trim():'';var imgs=($('faImgs')?$('faImgs').value:'').split(/\n+/).map(function(s){return s.trim();}).filter(function(s){return /^https?:\/\//.test(s);}).slice(0,12);if(!ig){toast('인스타 핸들을 입력하세요');return;}if(!imgs.length){toast('사진 URL을 넣으세요');return;}
+  try{var r=await SB.from('featured').insert({insta:ig,cat:cat,city:city,imgs:imgs});if(r.error){toast('저장 실패: '+r.error.message);return;}}catch(e){toast('저장 실패');return;}
+  closeFa();await loadFeatured();toast('추가됐어요 ✨');}
 buildTiles();renderCats();renderCities();applyI18n();render();renderAuth();
 SB.auth.getSession().then(function(r){onAuth(r.data.session);}).catch(function(){});
+loadFeatured();
 const _dp=new URLSearchParams(location.search).get('d');if(_dp&&dById(_dp))openD(_dp);
 fetch('https://ipapi.co/json/').then(function(r){return r.ok?r.json():null;}).then(function(j){if(!j)return;
  if(typeof j.latitude==='number'&&typeof j.longitude==='number')USERLOC={lat:j.latitude,lng:j.longitude,city:j.city||'',country:j.country_code||''};
@@ -817,7 +837,7 @@ fetch('https://ipapi.co/json/').then(function(r){return r.ok?r.json():null;}).th
    if(open&&!locked){sy=window.scrollY||window.pageYOffset||0;document.body.style.top=(-sy)+'px';document.body.classList.add('mlock');locked=true;}
    else if(!open&&locked){document.body.classList.remove('mlock');document.body.style.top='';locked=false;window.scrollTo(0,sy);}}
  var mo=new MutationObserver(sync);
- ['dmodal','wmodal','lmodal','imodal','idmodal','pfmodal','chatmodal'].forEach(function(id){var el=document.getElementById(id);if(el)mo.observe(el,{attributes:true,attributeFilter:['class']});});
+ ['dmodal','wmodal','lmodal','imodal','idmodal','pfmodal','chatmodal','famodal'].forEach(function(id){var el=document.getElementById(id);if(el)mo.observe(el,{attributes:true,attributeFilter:['class']});});
 })();
 </script>
 </body></html>
