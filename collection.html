@@ -95,6 +95,9 @@ nav.main a.on{color:var(--ink);border-color:var(--accent);}
 .suava{display:flex;align-items:center;gap:14px;margin-top:16px;}
 .suav{width:72px;height:72px;border-radius:50%;flex:0 0 auto;background:var(--soft);border:1px solid var(--line);background-size:cover;background-position:center;display:flex;align-items:center;justify-content:center;color:var(--sub);font-size:24px;cursor:pointer;}
 .suavbtn{font-size:14px;font-weight:700;color:var(--plum);background:var(--rosebg);border-radius:999px;padding:11px 20px;}
+.snsrow{display:flex;align-items:center;gap:9px;margin-top:8px;}
+.snsrow i{font-size:20px;color:var(--sub);flex:0 0 auto;width:22px;text-align:center;}
+.snsrow .linput{flex:1;}
 .ldots{display:flex;justify-content:center;gap:7px;margin-top:14px;}
 .ldots .dot{width:8px;height:8px;border-radius:50%;background:var(--line);}
 .ldots .dot.on{background:var(--accent);}
@@ -406,7 +409,7 @@ const D=[
   ba:['https://pzbxcktaljhesrfnqwzq.supabase.co/storage/v1/object/public/beautia/21a1661c-4974-477a-8d0d-f806457db5a4/1782731426098-xdb79x.jpg','https://pzbxcktaljhesrfnqwzq.supabase.co/storage/v1/object/public/beautia/21a1661c-4974-477a-8d0d-f806457db5a4/1782731424179-6dzmzs.jpg'],
   sns:['instagram'],reviews:[]},
 ];
-function meDesigner(){if(ME&&ME.role==='desg'&&ME.works&&ME.works.length){return {id:'me',uid:ME.uid,name:ME.name||'You',ko:'',cat:(ME.spec&&ME.spec[0])||'Hair',city:ME.city||ME.country||'',area:ME.area||'',flag:'🎨',rating:5.0,rev:0,years:ME.career||'',ko_ok:1,ver:ME.verified?1:0,spec:(ME.spec&&ME.spec.length?ME.spec.slice():['Hair']),bio:ME.bio||'',avatar:ME.avatar||'',works:ME.works.slice(),ba:[ME.works[0],ME.works[Math.min(1,ME.works.length-1)]],sns:[],reviews:[],isMe:1};}return null;}
+function meDesigner(){if(ME&&ME.role==='desg'&&ME.works&&ME.works.length){return {id:'me',uid:ME.uid,name:ME.name||'You',ko:'',cat:(ME.spec&&ME.spec[0])||'Hair',city:ME.city||ME.country||'',area:ME.area||'',flag:'🎨',rating:5.0,rev:0,years:ME.career||'',ko_ok:1,ver:ME.verified?1:0,spec:(ME.spec&&ME.spec.length?ME.spec.slice():['Hair']),bio:ME.bio||'',avatar:ME.avatar||'',insta:ME.insta||'',handles:ME.sns||{},works:ME.works.slice(),ba:[ME.works[0],ME.works[Math.min(1,ME.works.length-1)]],sns:Object.keys(ME.sns||{}).filter(function(k){return ME.sns[k];}),reviews:[],isMe:1};}return null;}
 function gradFor(s){return GR[Math.abs((s||'B').charCodeAt(0))%GR.length];}
 function avHtml(d,cls){var nm=(LANG==='ko'&&d.ko)?d.ko:(d.name||'U');return d.avatar?`<div class="${cls}" style="background-image:url('${im(d.avatar,240)}')"></div>`:`<div class="${cls} mono" style="background:${gradFor(d.name)}">${esc(nm[0]||'U')}</div>`;}
 function allD(){const m=meDesigner();return m?[m].concat(D):D;}
@@ -497,8 +500,9 @@ function goDesigner(id){closeWork();openD(id);}
 function openD(did,keep){const d=dById(did);if(!d)return;curD=did;const gi=D.indexOf(d);
  const fav=isSaved(d.id+'_0');
  const name=(LANG==='ko'&&d.ko)?d.ko:d.name;
- const igHandle=igClean(d.insta||(d.name||'').toLowerCase().replace(/[^a-z0-9]+/g,'.').replace(/^\.|\.$/g,''));
- const snsHtml=d.sns.map(s=>(s==='instagram'&&igHandle)?`<a href="https://instagram.com/${igHandle}" target="_blank" rel="noopener"><i class="ti ${SNSMETA[s][0]}"></i></a>`:'').join('');
+ const SNSBASE={instagram:'https://instagram.com/',tiktok:'https://tiktok.com/@',youtube:'https://youtube.com/@',x:'https://x.com/'};
+ const handles=Object.assign({},d.handles||(d.insta?{instagram:d.insta}:{}));
+ const snsHtml=Object.keys(SNSBASE).map(function(p){var h=igClean(handles[p]||'');return h?`<a href="${SNSBASE[p]}${h}" target="_blank" rel="noopener"><i class="ti ${SNSMETA[p][0]}"></i></a>`:'';}).join('');
  $('dsheet').innerHTML=`
  <div class="dbody">
   <div class="dhero" style="background-image:url('${im(d.works[0],900)}')"><div class="sc"></div>
@@ -521,7 +525,7 @@ function openD(did,keep){const d=dById(did);if(!d)return;curD=did;const gi=D.ind
   </div>
   <div class="dsec"><div class="st">${T[LANG].portfolio}</div><div class="dgrid">${d.works.map(w=>`<img src="${im(w,500)}" loading="lazy" onclick="window.open('${im(w,1200)}','_blank')">`).join('')}</div></div>
   <div class="dsec"><div class="st">${T[LANG].reviews} · ${esc(d.rev)}</div>${d.reviews.map((r,i)=>`<div class="rev"><div class="ra" style="background:${GR[(gi+i)%GR.length]}">${esc((r.n||'?')[0])}</div><div><div class="rn">${esc(r.n)}</div><div class="rs">${stars(r.s)}</div><div class="rt">${esc(r.t)}</div></div></div>`).join('')}</div>
-  <div class="dsec" style="border:none"><div class="st">${T[LANG].connect}</div><div class="sns">${snsHtml}</div></div>
+  ${snsHtml?`<div class="dsec" style="border:none"><div class="st">${T[LANG].connect}</div><div class="sns">${snsHtml}</div></div>`:''}
  </div>
  <div class="dfoot">
    <button class="cbtn save ${fav?'on':''}" onclick="toggleSave('${d.id}_0',event)"><i class="ti ti-heart${fav?'-filled':''}"></i><span>${fav?T[LANG].saved2:T[LANG].save}</span></button>
@@ -574,9 +578,9 @@ function renderPf(){const w=ME.works||[];
 function pfDownscale(dataUrl,max,cb){const img=new Image();img.onload=function(){let w=img.width,h=img.height;if(w>=h&&w>max){h=Math.round(h*max/w);w=max;}else if(h>w&&h>max){w=Math.round(w*max/h);h=max;}const c=document.createElement('canvas');c.width=w;c.height=h;c.getContext('2d').drawImage(img,0,0,w,h);try{cb(c.toDataURL('image/jpeg',0.82));}catch(e){cb(dataUrl);}};img.onerror=function(){cb(dataUrl);};img.src=dataUrl;}
 function addPfPhotos(e){const files=Array.prototype.slice.call(e.target.files);const room=12-(ME.works||[]).length;files.slice(0,room).forEach(function(f){if(!/^image\//.test(f.type))return;const r=new FileReader();r.onload=function(ev){pfDownscale(ev.target.result,1000,async function(d){const url=await uploadOne(d);ME.works=ME.works||[];ME.works.push(url);renderPf();buildTiles();render();await persistShop();});};r.readAsDataURL(f);});e.target.value='';}
 function delPfPhoto(i){ME.works.splice(i,1);renderPf();buildTiles();render();persistShop();}
-Object.assign(T.en,{pfHint:'Upload your best work. It appears in the gallery, your profile, and your ID card.',addPhoto:'Add photo',nearYou:'Sorted by distance from your location',photoL:'Add profile photo',changePhoto:'Change photo',byDesigner:"{n}'s portfolio",viewDesigner:'View designer',otpSentToast:'Code sent to your email ✉️',welcomeBack:'Welcome back 👋',needCode:'Enter the code',needLogin:'Please sign in',sending:'Sending…',emailPh:'you@email.com',emailL:'Email',messages:'Messages',noChats:'No conversations yet',sayHi:'Say hello to start the chat',typeMsg:'Type a message…',showOrig:'Show original',showTr:'Show translation',cantChat:'Chat is not available for this designer yet',cantChatSelf:"That's you",loginTitle:'Log in or sign up',orEmail:'or with email',loginHint:'New here? Verifying your email signs you up automatically.',myIdCard:'My ID card',columns:'Columns',color:'Color'});
-Object.assign(T.ko,{pfHint:'대표 작업을 올리세요. 갤러리·내 프로필·ID 카드에 바로 보여요.',addPhoto:'사진 추가',nearYou:'내 위치에서 가까운 순으로 정렬',photoL:'프로필 사진 추가',changePhoto:'사진 변경',byDesigner:'{n}님의 포트폴리오',viewDesigner:'디자이너 보기',otpSentToast:'인증 코드를 이메일로 보냈어요 ✉️',welcomeBack:'다시 오신 걸 환영해요 👋',needCode:'코드를 입력하세요',needLogin:'로그인이 필요해요',sending:'전송 중…',emailPh:'you@email.com',emailL:'이메일',messages:'메시지',noChats:'아직 대화가 없어요',sayHi:'인사를 건네 대화를 시작하세요',typeMsg:'메시지 입력…',showOrig:'원문 보기',showTr:'번역 보기',cantChat:'아직 이 디자이너와는 채팅할 수 없어요',cantChatSelf:'본인이에요',loginTitle:'로그인 또는 가입',orEmail:'또는 이메일로',loginHint:'처음이세요? 이메일 인증하면 자동으로 가입돼요.',myIdCard:'내 ID 카드',columns:'컬럼',color:'색상'});
-Object.assign(T.ja,{pfHint:'代表作品をアップ。ギャラリー・プロフィール・IDカードに表示されます。',addPhoto:'写真を追加',nearYou:'現在地から近い順に表示',photoL:'プロフィール写真を追加',changePhoto:'写真を変更',byDesigner:'{n}さんのポートフォリオ',viewDesigner:'デザイナーを見る',otpSentToast:'認証コードをメールに送りました ✉️',welcomeBack:'おかえりなさい 👋',needCode:'コードを入力してください',needLogin:'ログインしてください',sending:'送信中…',emailPh:'you@email.com',emailL:'メール',messages:'メッセージ',noChats:'まだ会話がありません',sayHi:'挨拶して会話を始めましょう',typeMsg:'メッセージを入力…',showOrig:'原文を表示',showTr:'翻訳を表示',cantChat:'このデザイナーとはまだチャットできません',cantChatSelf:'ご本人です',loginTitle:'ログイン / 登録',orEmail:'またはメールで',loginHint:'初めての方はメール認証で自動的に登録されます。',myIdCard:'マイIDカード',columns:'カラム',color:'カラー'});
+Object.assign(T.en,{pfHint:'Upload your best work. It appears in the gallery, your profile, and your ID card.',addPhoto:'Add photo',nearYou:'Sorted by distance from your location',photoL:'Add profile photo',changePhoto:'Change photo',byDesigner:"{n}'s portfolio",viewDesigner:'View designer',otpSentToast:'Code sent to your email ✉️',welcomeBack:'Welcome back 👋',needCode:'Enter the code',needLogin:'Please sign in',sending:'Sending…',emailPh:'you@email.com',emailL:'Email',messages:'Messages',noChats:'No conversations yet',sayHi:'Say hello to start the chat',typeMsg:'Type a message…',showOrig:'Show original',showTr:'Show translation',cantChat:'Chat is not available for this designer yet',cantChatSelf:"That's you",loginTitle:'Log in or sign up',orEmail:'or with email',loginHint:'New here? Verifying your email signs you up automatically.',myIdCard:'My ID card',columns:'Columns',color:'Color',snsL:'Social links (optional)'});
+Object.assign(T.ko,{pfHint:'대표 작업을 올리세요. 갤러리·내 프로필·ID 카드에 바로 보여요.',addPhoto:'사진 추가',nearYou:'내 위치에서 가까운 순으로 정렬',photoL:'프로필 사진 추가',changePhoto:'사진 변경',byDesigner:'{n}님의 포트폴리오',viewDesigner:'디자이너 보기',otpSentToast:'인증 코드를 이메일로 보냈어요 ✉️',welcomeBack:'다시 오신 걸 환영해요 👋',needCode:'코드를 입력하세요',needLogin:'로그인이 필요해요',sending:'전송 중…',emailPh:'you@email.com',emailL:'이메일',messages:'메시지',noChats:'아직 대화가 없어요',sayHi:'인사를 건네 대화를 시작하세요',typeMsg:'메시지 입력…',showOrig:'원문 보기',showTr:'번역 보기',cantChat:'아직 이 디자이너와는 채팅할 수 없어요',cantChatSelf:'본인이에요',loginTitle:'로그인 또는 가입',orEmail:'또는 이메일로',loginHint:'처음이세요? 이메일 인증하면 자동으로 가입돼요.',myIdCard:'내 ID 카드',columns:'컬럼',color:'색상',snsL:'SNS 연동 (선택)'});
+Object.assign(T.ja,{pfHint:'代表作品をアップ。ギャラリー・プロフィール・IDカードに表示されます。',addPhoto:'写真を追加',nearYou:'現在地から近い順に表示',photoL:'プロフィール写真を追加',changePhoto:'写真を変更',byDesigner:'{n}さんのポートフォリオ',viewDesigner:'デザイナーを見る',otpSentToast:'認証コードをメールに送りました ✉️',welcomeBack:'おかえりなさい 👋',needCode:'コードを入力してください',needLogin:'ログインしてください',sending:'送信中…',emailPh:'you@email.com',emailL:'メール',messages:'メッセージ',noChats:'まだ会話がありません',sayHi:'挨拶して会話を始めましょう',typeMsg:'メッセージを入力…',showOrig:'原文を表示',showTr:'翻訳を表示',cantChat:'このデザイナーとはまだチャットできません',cantChatSelf:'ご本人です',loginTitle:'ログイン / 登録',orEmail:'またはメールで',loginHint:'初めての方はメール認証で自動的に登録されます。',myIdCard:'マイIDカード',columns:'カラム',color:'カラー',snsL:'SNSリンク（任意）'});
 
 let iLang='ko';
 function openI(did){const d=dById(did);iLang=LANG==='en'?'ko':LANG;
@@ -606,9 +610,9 @@ const SB_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZ
 const SB=window.supabase.createClient(SB_URL,SB_KEY,{auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:true}});
 function roleIn(r){return (r==='designer'||r==='owner'||r==='desg')?'desg':'cust';}
 function profToMe(p){const s=p.shop||{};const photos=[];(s.photos||[]).forEach(function(x){if(x&&photos.indexOf(x)<0)photos.push(x);});
- return {uid:p.id,role:roleIn(p.role),name:p.nickname||p.full_name||'',country:'',city:p.region||s.area||'',area:s.area||'',spec:(s.specialties||p.interests||[]),career:s.career||'',avatar:s.avatar||p.avatar_url||'',insta:(s.insta||'').replace(/^@/,''),shopName:s.name||'',bio:p.bio||'',works:photos,idCols:s.idCols||2,idColor:s.idColor||'',verified:true,provider:'email',joined:p.created_at?new Date(p.created_at).getTime():Date.now()};}
+ return {uid:p.id,role:roleIn(p.role),name:p.nickname||p.full_name||'',country:'',city:p.region||s.area||'',area:s.area||'',spec:(s.specialties||p.interests||[]),career:s.career||'',avatar:s.avatar||p.avatar_url||'',insta:(s.insta||'').replace(/^@/,''),sns:s.sns||(s.insta?{instagram:(s.insta||'').replace(/^@/,'')}:{}),shopName:s.name||'',bio:p.bio||'',works:photos,idCols:s.idCols||2,idColor:s.idColor||'',verified:true,provider:'email',joined:p.created_at?new Date(p.created_at).getTime():Date.now()};}
 async function uploadOne(dataUrl){try{const sess=(await SB.auth.getSession()).data.session;if(!sess||dataUrl.indexOf('data:')!==0)return dataUrl;const uid=sess.user.id;const blob=await (await fetch(dataUrl)).blob();const path=uid+'/'+Date.now()+'-'+Math.random().toString(36).slice(2,8)+'.jpg';const up=await SB.storage.from('beautia').upload(path,blob,{contentType:'image/jpeg',upsert:false});if(up.error)return dataUrl;const pu=SB.storage.from('beautia').getPublicUrl(path);return (pu.data&&pu.data.publicUrl)||dataUrl;}catch(e){return dataUrl;}}
-async function persistShop(){if(!ME||!ME.uid)return;try{await SB.from('profiles').update({shop:{name:ME.shopName||'',area:ME.city||'',specialties:ME.spec||[],avatar:ME.avatar||'',photos:ME.works||[],career:ME.career||'',insta:ME.insta||'',idCols:ME.idCols||2,idColor:ME.idColor||''}}).eq('id',ME.uid);}catch(e){}}
+async function persistShop(){if(!ME||!ME.uid)return;try{await SB.from('profiles').update({shop:{name:ME.shopName||'',area:ME.city||'',specialties:ME.spec||[],avatar:ME.avatar||'',photos:ME.works||[],career:ME.career||'',insta:ME.insta||'',sns:ME.sns||{},idCols:ME.idCols||2,idColor:ME.idColor||''}}).eq('id',ME.uid);}catch(e){}}
 async function onAuth(session){
  if(!session){ME=null;renderAuth();buildTiles();render();return;}
  let prof=null;try{prof=(await SB.from('profiles').select('id,nickname,role,region,bio,interests,shop,avatar_url,full_name,created_at').eq('id',session.user.id).maybeSingle()).data;}catch(e){}
@@ -634,7 +638,7 @@ function toggleUmenu(e){if(e)e.stopPropagation();const m=$('umenu');if(m.classLi
  m.style.top=(r.bottom+10)+'px';m.style.right=Math.max(12,window.innerWidth-r.right)+'px';m.style.left='auto';}
 function closeUmenu(){$('umenu').classList.remove('on');}
 
-function openLogin(r){SU={role:r||'',name:'',country:'',city:'',spec:[],career:'',avatar:'',contact:'',verified:false,code:'',tos:false,priv:false,mktg:false,provider:'email',step:1,edit:false};renderSU();$('lmodal').classList.add('on');}
+function openLogin(r){SU={role:r||'',name:'',country:'',city:'',spec:[],career:'',avatar:'',sns:{},contact:'',verified:false,code:'',tos:false,priv:false,mktg:false,provider:'email',step:1,edit:false};renderSU();$('lmodal').classList.add('on');}
 function closeLogin(){$('lmodal').classList.remove('on');}
 function suSteps(){return [1,2,3];}
 function renderSU(){const steps=suSteps(),idx=steps.indexOf(SU.step);
@@ -660,13 +664,17 @@ function suBody(){
   <div class="il">${T[LANG].nick}</div><input class="linput" id="suNick" maxlength="24" placeholder="${T[LANG].nickPh}" value="${(SU.name||'').replace(/"/g,'&quot;')}">
   <div class="il">${T[LANG].country}</div><select class="linput" id="suCountry"><option value="">—</option>${COUNTRIES.map(c=>`<option ${SU.country===c?'selected':''}>${c}</option>`).join('')}</select>
   <div class="il">${T[LANG].city}</div><input class="linput" id="suCity" maxlength="40" placeholder="${T[LANG].cityPh}" value="${(SU.city||'').replace(/"/g,'&quot;')}">
-  ${SU.role==='desg'?`<div class="il">${T[LANG].specialties}</div><div class="chiprow">${CATS.slice(1).map(c=>`<span class="wchip ${SU.spec.includes(c)?'on':''}" onclick="suToggleSpec('${c}')">${cl(c)}</span>`).join('')}</div><div class="il">${T[LANG].career}</div><input class="linput" id="suCareer" placeholder="${T[LANG].careerPh}" value="${(SU.career||'').replace(/"/g,'&quot;')}">`:(SU.role==='cust'?`<div class="il">${T[LANG].interests}</div><div class="chiprow">${CATS.slice(1).map(c=>`<span class="wchip ${SU.spec.includes(c)?'on':''}" onclick="suToggleSpec('${c}')">${cl(c)}</span>`).join('')}</div>`:'')}`;
+  ${SU.role==='desg'?`<div class="il">${T[LANG].specialties}</div><div class="chiprow">${CATS.slice(1).map(c=>`<span class="wchip ${SU.spec.includes(c)?'on':''}" onclick="suToggleSpec('${c}')">${cl(c)}</span>`).join('')}</div><div class="il">${T[LANG].career}</div><input class="linput" id="suCareer" placeholder="${T[LANG].careerPh}" value="${(SU.career||'').replace(/"/g,'&quot;')}">
+  <div class="il">${T[LANG].snsL}</div>
+  <div class="snsrow"><i class="ti ti-brand-instagram"></i><input class="linput" id="suIG" placeholder="instagram — @handle" value="${((SU.sns&&SU.sns.instagram)||'').replace(/"/g,'&quot;')}"></div>
+  <div class="snsrow"><i class="ti ti-brand-tiktok"></i><input class="linput" id="suTT" placeholder="tiktok — @handle" value="${((SU.sns&&SU.sns.tiktok)||'').replace(/"/g,'&quot;')}"></div>
+  <div class="snsrow"><i class="ti ti-brand-youtube"></i><input class="linput" id="suYT" placeholder="youtube — @handle" value="${((SU.sns&&SU.sns.youtube)||'').replace(/"/g,'&quot;')}"></div>`:(SU.role==='cust'?`<div class="il">${T[LANG].interests}</div><div class="chiprow">${CATS.slice(1).map(c=>`<span class="wchip ${SU.spec.includes(c)?'on':''}" onclick="suToggleSpec('${c}')">${cl(c)}</span>`).join('')}</div>`:'')}`;
  if(SU.step===3)return `<h3>${T[LANG].agreements}</h3>
   <label class="agree"><input type="checkbox" ${SU.tos?'checked':''} onchange="SU.tos=this.checked"><span><span class="req">[${T[LANG].req}]</span> ${T[LANG].agreeTerms} <a href="terms.html" target="_blank" onclick="event.stopPropagation()">${T[LANG].view}</a></span></label>
   <label class="agree"><input type="checkbox" ${SU.priv?'checked':''} onchange="SU.priv=this.checked"><span><span class="req">[${T[LANG].req}]</span> ${T[LANG].agreePrivacy} <a href="privacy.html" target="_blank" onclick="event.stopPropagation()">${T[LANG].view}</a></span></label>
   <label class="agree"><input type="checkbox" ${SU.mktg?'checked':''} onchange="SU.mktg=this.checked"><span>${T[LANG].agreeMktg}</span></label>`;
  return '';}
-function suSnapshot(){if(SU.step===1&&$('suContact')&&!SU.code)SU.contact=$('suContact').value.trim();if(SU.step===2){if($('suNick'))SU.name=$('suNick').value.trim();if($('suCountry'))SU.country=$('suCountry').value;if($('suCity'))SU.city=$('suCity').value.trim();if($('suCareer'))SU.career=$('suCareer').value.trim();}}
+function suSnapshot(){if(SU.step===1&&$('suContact')&&!SU.code)SU.contact=$('suContact').value.trim();if(SU.step===2){if($('suNick'))SU.name=$('suNick').value.trim();if($('suCountry'))SU.country=$('suCountry').value;if($('suCity'))SU.city=$('suCity').value.trim();if($('suCareer'))SU.career=$('suCareer').value.trim();if($('suIG')||$('suTT')||$('suYT')){SU.sns={instagram:igClean($('suIG')?$('suIG').value:''),tiktok:igClean($('suTT')?$('suTT').value:''),youtube:igClean($('suYT')?$('suYT').value:'')};}}}
 function suToggleSpec(c){const i=SU.spec.indexOf(c);if(i<0)SU.spec.push(c);else SU.spec.splice(i,1);renderSU();}
 function suGo(d){suSnapshot();const steps=suSteps();let idx=Math.max(0,Math.min(steps.length-1,steps.indexOf(SU.step)+d));SU.step=steps[idx];renderSU();}
 function suNext(){suSnapshot();
@@ -696,9 +704,10 @@ async function suFinish(){const wasEdit=SU.edit;
  let avatar=SU.avatar||(wasEdit&&ME?ME.avatar:'')||'';
  if(avatar.indexOf('data:')===0)avatar=await uploadOne(avatar);
  const oldWorks=(wasEdit&&ME&&ME.works)?ME.works.slice():[];
- const insta=(SU.insta||(wasEdit&&ME?ME.insta:'')||'').replace(/^@/,'');
+ const sns=Object.assign({},(wasEdit&&ME?ME.sns:{})||{},SU.sns||{});Object.keys(sns).forEach(function(k){sns[k]=igClean(sns[k]);if(!sns[k])delete sns[k];});
+ const insta=sns.instagram||(SU.insta||(wasEdit&&ME?ME.insta:'')||'').replace(/^@/,'');if(insta)sns.instagram=igClean(insta);
  const payload={id:uid,nickname:SU.name,role:SU.role==='desg'?'designer':'customer',region:SU.city||SU.country||'',bio:SU.bio||'',
-  shop:{name:SU.shopName||(wasEdit&&ME?ME.shopName:'')||'',area:SU.city||'',specialties:(SU.spec||[]).slice(),avatar:avatar,photos:oldWorks,career:SU.career||'',insta:insta}};
+  shop:{name:SU.shopName||(wasEdit&&ME?ME.shopName:'')||'',area:SU.city||'',specialties:(SU.spec||[]).slice(),avatar:avatar,photos:oldWorks,career:SU.career||'',insta:insta,sns:sns}};
  const {error}=await SB.from('profiles').upsert(payload);
  if(error){toast('저장 실패: '+error.message);return;}
  let prof=(await SB.from('profiles').select('id,nickname,role,region,bio,interests,shop,avatar_url,full_name,created_at').eq('id',uid).maybeSingle()).data;
@@ -721,7 +730,7 @@ function openProfile(){if(!ME){openLogin('');return;}const since=ME.joined?new D
   </div>
   <div class="dfoot"><button class="cbtn save" style="width:auto;flex:1" onclick="editProfile()"><i class="ti ti-pencil"></i> <span>${T[LANG].edit}</span></button><button class="cbtn book" style="flex:1" onclick="logout()"><i class="ti ti-logout"></i> ${T[LANG].logout}</button></div>`;
  $('dmodal').classList.add('on');curD=null;}
-function editProfile(){if(!ME)return;closeD();SU={role:ME.role,name:ME.name,country:ME.country||'',city:ME.city,spec:(ME.spec||[]).slice(),career:ME.career||'',avatar:ME.avatar||'',insta:ME.insta||'',shopName:ME.shopName||'',uid:ME.uid,contact:'x',verified:true,code:'x',tos:true,priv:true,mktg:ME.mktg,provider:ME.provider,step:2,edit:true};$('lmodal').classList.add('on');renderSU();}
+function editProfile(){if(!ME)return;closeD();SU={role:ME.role,name:ME.name,country:ME.country||'',city:ME.city,spec:(ME.spec||[]).slice(),career:ME.career||'',avatar:ME.avatar||'',insta:ME.insta||'',sns:Object.assign({},ME.sns||{}),shopName:ME.shopName||'',uid:ME.uid,contact:'x',verified:true,code:'x',tos:true,priv:true,mktg:ME.mktg,provider:ME.provider,step:2,edit:true};$('lmodal').classList.add('on');renderSU();}
 function suAvatar(e){var f=e.target.files[0];if(!f||!/^image\//.test(f.type))return;var r=new FileReader();r.onload=function(ev){pfDownscale(ev.target.result,500,function(d){SU.avatar=d;renderSU();});};r.readAsDataURL(f);e.target.value='';}
 document.addEventListener('click',function(){closeUmenu();});
 
