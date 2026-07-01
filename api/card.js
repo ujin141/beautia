@@ -24,8 +24,11 @@ export default async function handler(req, res) {
   const shop = pr.shop || {};
   const nick = pr.nickname || '회원';
   const cardImg = `${SB_URL}/storage/v1/object/public/beautia/${encodeURIComponent(u)}/card.png`;
-  // 저장된 카드가 있으면 그걸, 없으면 아바타/기본 OG로 폴백
-  const og = (await exists(cardImg)) ? cardImg : (shop.avatar || `${SITE}/og-default.png`);
+  // 폴백 순서: 저장된 네컷 카드 → 첫 포트폴리오 사진(실사진) → 아바타 → 기본 OG
+  const photos = Array.isArray(shop.photos) ? shop.photos : [];
+  const firstWork = photos.map(p => (p && typeof p === 'object') ? p.img : p).find(x => typeof x === 'string' && x.startsWith('http'));
+  const av = (typeof shop.avatar === 'string' && shop.avatar.startsWith('http')) ? shop.avatar : '';
+  const og = (await exists(cardImg)) ? cardImg : (firstWork || av || `${SITE}/og-default.png`);
   const appUrl = `/community?u=${encodeURIComponent(u)}`;
   const canon = `${SITE}/c/${encodeURIComponent(u)}`;
   const title = `${nick}님의 BEAUTIA ID 카드`;
