@@ -68,7 +68,9 @@ nav.main a.on{color:var(--ink);border-color:var(--accent);}
 .join:hover{background:var(--plum);}
 .loginBtn{font-size:14px;font-weight:700;color:var(--ink2);padding:11px 6px;}
 .loginBtn:hover{color:var(--ink);}
-.avt{width:40px;height:40px;border-radius:50%;background:linear-gradient(135deg,#C99,#6E4A50);color:#fff;font-weight:700;font-size:17px;display:none;align-items:center;justify-content:center;cursor:pointer;font-family:'Playfair Display',serif;}
+.avt{position:relative;width:40px;height:40px;border-radius:50%;background:linear-gradient(135deg,#C99,#6E4A50);color:#fff;font-weight:700;font-size:17px;display:none;align-items:center;justify-content:center;cursor:pointer;font-family:'Playfair Display',serif;}
+.avt .unread{position:absolute;top:-2px;right:-2px;min-width:11px;height:11px;border-radius:999px;background:#e5484d;border:2px solid #fff;box-shadow:0 1px 3px rgba(0,0,0,.25);}
+.umenu a .undot{display:inline-block;width:8px;height:8px;border-radius:50%;background:#e5484d;margin-left:6px;vertical-align:middle;}
 .umenu{position:fixed;top:66px;right:28px;z-index:55;background:#fff;border:1px solid var(--line);border-radius:16px;box-shadow:0 24px 60px -18px rgba(0,0,0,.25);padding:8px;min-width:184px;display:none;}
 .umenu.on{display:block;}
 .umenu .uh{padding:10px 14px 12px;border-bottom:1px solid var(--line);margin-bottom:6px;}
@@ -313,7 +315,7 @@ body.mlock{position:fixed;left:0;right:0;width:100%;overflow:hidden;}
 .toast.on{opacity:1;transform:translateX(-50%);}
 
 @media(max-width:860px){
-  .hin{gap:12px;padding:13px 16px;flex-wrap:wrap;} nav.main{order:5;width:100%;margin-left:0;} .hsearch{display:none;}
+  .hin{gap:12px;padding:13px 16px;flex-wrap:wrap;} nav.main{order:5;width:100%;margin-left:0;} .hsearch{order:6;width:100%;margin-left:0;}
   .loginBtn,.avt{margin-left:auto;}
   .hero{padding:30px 16px 4px;} .hero h1{font-size:31px;}
   .filterbar{top:0;} .fin{padding:12px 16px;} .citysel{display:none;} .wrap{padding:18px 16px 80px;}
@@ -616,7 +618,7 @@ async function persistShop(){if(!ME||!ME.uid)return;try{await SB.from('profiles'
 async function onAuth(session){
  if(!session){ME=null;renderAuth();buildTiles();render();return;}
  let prof=null;try{prof=(await SB.from('profiles').select('id,nickname,role,region,bio,interests,shop,avatar_url,full_name,created_at').eq('id',session.user.id).maybeSingle()).data;}catch(e){}
- if(prof&&prof.nickname){ME=profToMe(prof);closeLogin();renderAuth();buildTiles();render();loadSaves();return;}
+ if(prof&&prof.nickname){ME=profToMe(prof);closeLogin();renderAuth();buildTiles();render();loadSaves();checkUnread();return;}
  if($('lmodal')&&$('lmodal').classList.contains('on'))return;
  let pend={};try{pend=JSON.parse(localStorage.getItem('beautia_coll_pending')||'{}');}catch(e){}
  const um=session.user.user_metadata||{};
@@ -629,7 +631,7 @@ function renderAuth(){const li=$('loginBtn'),av=$('avatar');if(ME){li.style.disp
 function toggleUmenu(e){if(e)e.stopPropagation();const m=$('umenu');if(m.classList.contains('on')){closeUmenu();return;}
  m.innerHTML=`<div class="uh"><div class="un">${T[LANG].hi}, ${esc(ME?ME.name:'')}</div><div class="ur">${ME?roleLabel(ME.role):''}${ME&&ME.verified?' · '+T[LANG].verifiedMember:''}</div></div>
  <a onclick="openProfile();closeUmenu()"><i class="ti ti-user"></i> ${T[LANG].profile}</a>
- <a onclick="openChat();closeUmenu()"><i class="ti ti-message-2"></i> ${T[LANG].messages}</a>
+ <a onclick="openChat();closeUmenu()"><i class="ti ti-message-2"></i> ${T[LANG].messages}${chatUnread>0?'<span class="undot"></span>':''}</a>
  ${ME&&ME.role==='desg'?`<a onclick="closeUmenu();openIdCard('me')"><i class="ti ti-id-badge-2"></i> ${T[LANG].myIdCard}</a>`:''}
  <a onclick="setView('saved');closeUmenu()"><i class="ti ti-heart"></i> ${T[LANG].saved}</a>
  <a onclick="logout();closeUmenu()"><i class="ti ti-logout"></i> ${T[LANG].logout}</a>`;
@@ -695,7 +697,7 @@ async function suVerify(){const v=$('suCode')?$('suCode').value.trim():'';if(!v)
  const {data,error}=await SB.auth.verifyOtp({email:SU.contact,token:v,type:'email'});
  if(error){toast(T[LANG].codeWrong);return;}
  const uid=data.user.id;let prof=null;try{prof=(await SB.from('profiles').select('id,nickname,role,region,bio,interests,shop,avatar_url,full_name,created_at').eq('id',uid).maybeSingle()).data;}catch(e){}
- if(prof&&prof.nickname){ME=profToMe(prof);closeLogin();renderAuth();buildTiles();render();loadSaves();toast(T[LANG].welcomeBack||T[LANG].verifiedToast);return;}
+ if(prof&&prof.nickname){ME=profToMe(prof);closeLogin();renderAuth();buildTiles();render();loadSaves();checkUnread();toast(T[LANG].welcomeBack||T[LANG].verifiedToast);return;}
  SU.verified=true;SU.uid=uid;renderSU();toast(T[LANG].verifiedToast);}
 async function suFinish(){const wasEdit=SU.edit;
  const sess=(await SB.auth.getSession()).data.session;
@@ -712,11 +714,11 @@ async function suFinish(){const wasEdit=SU.edit;
  if(error){toast('저장 실패: '+error.message);return;}
  let prof=(await SB.from('profiles').select('id,nickname,role,region,bio,interests,shop,avatar_url,full_name,created_at').eq('id',uid).maybeSingle()).data;
  ME=prof?profToMe(prof):null;
- loadSaves();
+ loadSaves();checkUnread();
  try{localStorage.removeItem('beautia_coll_pending');}catch(e){}
  closeLogin();renderAuth();buildTiles();render();
  toast(wasEdit?'✅':(T[LANG].joinDone+(SU.role==='desg'?' — '+T[LANG].joinToast:'')));}
-async function logout(){if($('dmodal'))$('dmodal').classList.remove('on');try{await SB.auth.signOut();}catch(e){}ME=null;SAVED=JSON.parse(localStorage.getItem('beautia_coll_saved')||'[]');renderAuth();buildTiles();render();toast(T[LANG].logoutToast);}
+async function logout(){if($('dmodal'))$('dmodal').classList.remove('on');try{await SB.auth.signOut();}catch(e){}ME=null;SAVED=JSON.parse(localStorage.getItem('beautia_coll_saved')||'[]');chatUnread=0;if(chatGlobalSub){try{SB.removeChannel(chatGlobalSub);}catch(e){}chatGlobalSub=null;}renderAuth();buildTiles();render();renderChatBadge();toast(T[LANG].logoutToast);}
 
 function openProfile(){if(!ME){openLogin('');return;}const since=ME.joined?new Date(ME.joined).toLocaleDateString():'';
  $('dsheet').innerHTML=`<div class="dbody"><div class="pmhead">
@@ -744,14 +746,22 @@ function avChip(o){return o.avatar?`<div class="cav" style="background-image:url
 function otherUid(c){return c.customer===ME.uid?c.designer:c.customer;}
 async function ensureLoginC(){if(ME&&ME.uid)return true;openLogin('');return false;}
 async function fetchProfiles(ids){var need=ids.filter(function(x){return x&&!PROFCACHE[x];});if(need.length){try{var d=(await SB.from('profiles').select('id,nickname,shop').in('id',need)).data||[];d.forEach(function(p){PROFCACHE[p.id]={name:p.nickname||(p.shop&&p.shop.name)||'User',avatar:(p.shop&&p.shop.avatar)||''};});}catch(e){}}need.forEach(function(x){if(!PROFCACHE[x])PROFCACHE[x]={name:'User',avatar:''};});}
-async function openChat(){if(!(await ensureLoginC()))return;curConv=null;await loadConvos();$('chatmodal').classList.add('on');}
+async function openChat(){if(!(await ensureLoginC()))return;curConv=null;await loadConvos();$('chatmodal').classList.add('on');markChatSeen();}
 function closeChat(){if(chatSub){try{SB.removeChannel(chatSub);}catch(e){}chatSub=null;}$('chatmodal').classList.remove('on');curConv=null;}
+// 안 읽음 배지
+let chatUnread=0,chatGlobalSub=null;
+function chatSeenTs(){return parseInt(localStorage.getItem('beautia_chat_seen')||'0',10)||0;}
+function markChatSeen(){try{localStorage.setItem('beautia_chat_seen',''+Date.now());}catch(e){}chatUnread=0;renderChatBadge();}
+function renderChatBadge(){var a=$('avatar');if(a){var b=a.querySelector('.unread');if(chatUnread>0){if(!b){b=document.createElement('span');b.className='unread';a.appendChild(b);}}else if(b){b.remove();}}}
+async function checkUnread(){if(!ME||!ME.uid){chatUnread=0;renderChatBadge();return;}try{var since=new Date(chatSeenTs()||1).toISOString();var d=(await SB.from('messages').select('id,sender').gt('created_at',since)).data||[];chatUnread=d.filter(function(m){return m.sender!==ME.uid;}).length;}catch(e){}renderChatBadge();
+ if(chatGlobalSub){try{SB.removeChannel(chatGlobalSub);}catch(e){}}
+ chatGlobalSub=SB.channel('gmsg').on('postgres_changes',{event:'INSERT',schema:'public',table:'messages'},function(p){var m=p.new;if(!m||m.sender===ME.uid)return;if(curConv&&m.conversation===curConv.id&&$('chatmodal')&&$('chatmodal').classList.contains('on')){markChatSeen();return;}chatUnread++;renderChatBadge();}).subscribe();}
 async function loadConvos(){var data=[];try{data=(await SB.from('conversations').select('*').or('customer.eq.'+ME.uid+',designer.eq.'+ME.uid).order('last_at',{ascending:false})).data||[];}catch(e){}CHATS=data;await fetchProfiles(data.map(otherUid));renderChatList();}
 function renderChatList(){var rows=CHATS.map(function(c){var o=PROFCACHE[otherUid(c)]||{name:'User'};return `<div class="cv" onclick="openConvoById('${c.id}')">${avChip(o)}<div class="cvmid"><div class="cvn">${esc(o.name)}</div></div><i class="ti ti-chevron-right" style="color:var(--sub)"></i></div>`;}).join('');$('chatcard').innerHTML=`<div class="chead"><div class="chl">${T[LANG].messages}</div><button class="cx" onclick="closeChat()">×</button></div><div class="cvlist">${rows||('<div class="cempty"><i class="ti ti-messages" style="font-size:34px;color:#d8c9cc"></i><p>'+T[LANG].noChats+'</p></div>')}</div>`;}
 function openConvoById(id){var c=CHATS.find(function(x){return x.id===id;});if(c)openConvo(c);}
 async function startConvoWith(did){var d=dById(did);if(!d||!d.uid){toast(T[LANG].cantChat);return null;}if(d.uid===ME.uid){toast(T[LANG].cantChatSelf);return null;}PROFCACHE[d.uid]={name:(LANG==='ko'&&d.ko)?d.ko:d.name,avatar:d.avatar||''};var conv=null;try{conv=(await SB.from('conversations').select('*').eq('customer',ME.uid).eq('designer',d.uid).maybeSingle()).data;}catch(e){}if(!conv){try{conv=(await SB.from('conversations').insert({customer:ME.uid,designer:d.uid}).select('*').maybeSingle()).data;}catch(e){}}return conv;}
 async function openChatWith(did){if(!(await ensureLoginC()))return;var conv=await startConvoWith(did);if(!conv){toast(T[LANG].cantChat);return;}await loadConvos();var c=CHATS.find(function(x){return x.id===conv.id;})||conv;$('chatmodal').classList.add('on');openConvo(c);}
-async function openConvo(c){curConv=c;var msgs=[];try{msgs=(await SB.from('messages').select('*').eq('conversation',c.id).order('created_at',{ascending:true})).data||[];}catch(e){}c._msgs=msgs;renderThread();if(chatSub){try{SB.removeChannel(chatSub);}catch(e){}}chatSub=SB.channel('msg-'+c.id).on('postgres_changes',{event:'INSERT',schema:'public',table:'messages',filter:'conversation=eq.'+c.id},function(p){var m=p.new;if((c._msgs||[]).some(function(x){return x.id===m.id;}))return;c._msgs.push(m);renderThread(true);}).subscribe();}
+async function openConvo(c){curConv=c;var msgs=[];try{msgs=(await SB.from('messages').select('*').eq('conversation',c.id).order('created_at',{ascending:true})).data||[];}catch(e){}c._msgs=msgs;renderThread();markChatSeen();if(chatSub){try{SB.removeChannel(chatSub);}catch(e){}}chatSub=SB.channel('msg-'+c.id).on('postgres_changes',{event:'INSERT',schema:'public',table:'messages',filter:'conversation=eq.'+c.id},function(p){var m=p.new;if((c._msgs||[]).some(function(x){return x.id===m.id;}))return;c._msgs.push(m);renderThread(true);}).subscribe();}
 function msgText(m){if(!m.lang||m.lang===LANG)return m.body;return (m.tr&&m.tr[LANG])?m.tr[LANG]:m.body;}
 function renderThread(){var c=curConv;if(!c)return;var o=PROFCACHE[otherUid(c)]||{name:'User'};var body=(c._msgs||[]).map(function(m){var mine=m.sender===ME.uid;var needTr=(m.lang&&m.lang!==LANG);return `<div class="mrow ${mine?'me':''}"><div class="mbub">${esc(msgText(m))}</div>${needTr?`<button class="morig" onclick="toggleOrig(this,'${m.id}')">${T[LANG].showOrig}</button>`:''}</div>`;}).join('');$('chatcard').innerHTML=`<div class="chead"><button class="cback" onclick="backToList()"><i class="ti ti-chevron-left"></i></button>${avChip(o)}<div class="chl2">${esc(o.name)}</div><button class="cx" onclick="closeChat()">×</button></div><div class="cthread" id="cthread">${body||('<div class="cempty"><p>'+T[LANG].sayHi+'</p></div>')}</div><div class="cinput"><input id="cmsg" maxlength="1000" placeholder="${T[LANG].typeMsg}" onkeydown="if(event.key==='Enter')sendChat()"><button onclick="sendChat()"><i class="ti ti-send"></i></button></div>`;var th=$('cthread');if(th)th.scrollTop=th.scrollHeight;(c._msgs||[]).forEach(function(m){if(m.lang&&m.lang!==LANG&&!(m.tr&&m.tr[LANG])&&m.body)translateMsg(m);});}
 function backToList(){if(chatSub){try{SB.removeChannel(chatSub);}catch(e){}chatSub=null;}curConv=null;loadConvos();}
