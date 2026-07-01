@@ -592,7 +592,8 @@ function openIdCard(did){const d=dById(did||curD);if(!d)return;idDid=d.id;
     <div class="cfgrow"><span class="cfgl">${T[LANG].cover}</span><button class="cfgb ${theme==='light'?'on':''}" style="width:auto;padding:0 13px" onclick="setIdTheme('light')">${T[LANG].coverLight}</button><button class="cfgb ${theme==='tint'?'on':''}" style="width:auto;padding:0 13px" onclick="setIdTheme('tint')">${T[LANG].coverTint}</button></div>
     <div class="cfgrow" style="flex-wrap:wrap;row-gap:8px"><span class="cfgl">${T[LANG].color}</span>${COLORS.map(function(c){return `<button class="cfgc ${accent.toLowerCase()===c.toLowerCase()?'on':''}" style="background:${c}" onclick="setIdColor('${c}')"></button>`;}).join('')}<label class="cfgc cfgc-pick ${COLORS.map(function(c){return c.toLowerCase();}).indexOf(accent.toLowerCase())<0?'on':''}" title="${T[LANG].custom}"><input type="color" value="${/^#[0-9a-fA-F]{6}$/.test(accent)?accent:'#6E4A50'}" onchange="setIdColor(this.value)"></label></div>`;
    cfg.style.display='block';}else cfg.style.display='none';}
- $('idmodal').classList.add('on');requestAnimationFrame(fitIdCard);setTimeout(fitIdCard,120);}
+ $('idmodal').classList.add('on');requestAnimationFrame(fitIdCard);setTimeout(fitIdCard,120);
+ if(own&&ME&&ME.uid)setTimeout(function(){var iw=$('idwrap');if(iw&&!iw.style.transform)uploadIdCardPng();},480);}
 function fitIdCard(){var iw=$('idwrap');if(!iw||!$('idmodal').classList.contains('on'))return;iw.style.transform='';var avail=window.innerHeight-24;var need=iw.offsetHeight;iw.style.transform=need>avail?'scale('+Math.max(0.45,avail/need)+')':'';}
 window.addEventListener('resize',function(){if($('idmodal')&&$('idmodal').classList.contains('on'))fitIdCard();});
 function setIdCols(n){if(!ME)return;ME.idCols=n;persistShop();openIdCard('me');}
@@ -627,7 +628,8 @@ async function uploadIdCardPng(){try{
   var blob=await new Promise(function(res){og.toBlob(res,'image/png');});
   if(!blob)return null;
   var up=await SB.storage.from('beautia').upload(ME.uid+'/card.png',blob,{contentType:'image/png',upsert:true});
-  if(up.error){console.warn('[beautia] card.png 업로드 실패:',up.error&&up.error.message);return null;}
+  if(up.error){console.warn('[beautia] card.png 업로드 실패:',up.error&&up.error.message);if(ME&&ME.isOwner)toast('card.png 업로드 실패: '+((up.error&&up.error.message)||'스토리지 정책 확인 필요'));return null;}
+  if(ME&&ME.isOwner)toast('카드 이미지 저장됨 ✓');
   return (SB.storage.from('beautia').getPublicUrl(ME.uid+'/card.png').data||{}).publicUrl||null;
 }catch(e){return null;}}
 function shareId(){
