@@ -616,7 +616,15 @@ function renderIdCanvas(){return new Promise(function(resolve,reject){
   html2canvas(el,{useCORS:true,scale:3,backgroundColor:'#ffffff'}).then(function(cv){if(iw)iw.style.transform=t;resolve(cv);}).catch(function(e){if(iw)iw.style.transform=t;reject(e);});
 });}
 function dlId(){if(typeof html2canvas==='undefined'){toast(T[LANG].idFail);return;}toast(T[LANG].idPrep);
- renderIdCanvas().then(function(cv){var a=document.createElement('a');a.download='beautia-id-'+idDid+'.png';a.href=cv.toDataURL('image/png');a.click();}).catch(function(){toast(T[LANG].idFail);});}
+ renderIdCanvas().then(function(cv){cv.toBlob(function(blob){
+   if(!blob){toast(T[LANG].idFail);return;}
+   var fname='beautia-id-'+idDid+'.png';var file=new File([blob],fname,{type:'image/png'});
+   var mob=/Android|iPhone|iPad|iPod/i.test(navigator.userAgent||'')||(navigator.maxTouchPoints>1&&/Macintosh/.test(navigator.userAgent||''));
+   if(mob&&navigator.canShare&&navigator.canShare({files:[file]})){   // 모바일: 공유시트에서 '이미지 저장'
+     try{navigator.share({files:[file],title:'Beautia ID'}).catch(function(){});return;}catch(e){}
+   }
+   var url=URL.createObjectURL(blob);var a=document.createElement('a');a.href=url;a.download=fname;document.body.appendChild(a);a.click();a.remove();setTimeout(function(){URL.revokeObjectURL(url);},5000);
+ },'image/png');}).catch(function(){toast(T[LANG].idFail);});}
 // 네컷 카드를 1200x630 OG 이미지로 합성(흐린 카드 배경 + 가운데 선명한 카드) → <uid>/card.png 저장
 function composeOgCard(cv){
   var W=1200,H=630,c=document.createElement('canvas');c.width=W;c.height=H;var x=c.getContext('2d');
