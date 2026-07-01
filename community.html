@@ -430,7 +430,8 @@ function avHtml(d,cls){var nm=(LANG==='ko'&&d.ko)?d.ko:(d.name||'U');return d.av
 const FEATURED=[
 ];
 function featuredDesigners(){return FEATURED.map(function(f,i){var h=igClean(f.insta||'');var imgs=(f.imgs||[]).filter(Boolean);return {id:'f'+i,name:h?('@'+h):'Featured',ko:'',cat:f.cat||'Hair',city:f.city||'',area:f.area||'',flag:'📌',rating:0,rev:0,years:'',ko_ok:0,ver:0,featured:true,insta:h,handles:h?{instagram:h}:{},bio:'',avatar:'',works:imgs,ba:[imgs[0],imgs[Math.min(1,imgs.length-1)]],sns:h?['instagram']:[],reviews:[]};}).filter(function(d){return d.works.length;});}
-function allD(){const m=meDesigner();var base=featuredDesigners().concat(D);return m?[m].concat(base):base;}
+let DUSERS=[];
+function allD(){const m=meDesigner();var others=DUSERS.filter(function(d){return !(m&&d.uid===m.uid)&&!D.some(function(x){return x.uid===d.uid;});});var base=featuredDesigners().concat(others).concat(D);return m?[m].concat(base):base;}
 function dById(id){return allD().find(d=>d.id===id);}
 let TILES=[];
 function buildTiles(){TILES=[];allD().forEach(d=>d.works.forEach((w,i)=>TILES.push({wid:d.id+'_'+i,did:d.id,img:workImg(w),text:workText(w),cat:d.cat,city:d.city,area:d.area,name:d.name,flag:d.flag,rating:d.rating,featured:d.featured,insta:d.insta})));}
@@ -636,7 +637,7 @@ const SB=window.supabase.createClient(SB_URL,SB_KEY,{auth:{persistSession:true,a
 function roleIn(r){return (r==='designer'||r==='owner'||r==='desg')?'desg':'cust';}
 function profToMe(p){const s=p.shop||{};const photos=[];(s.photos||[]).forEach(function(x){if(x&&photos.indexOf(x)<0)photos.push(x);});
  return {uid:p.id,role:roleIn(p.role),name:p.nickname||p.full_name||'',country:'',city:p.region||s.area||'',area:s.area||'',spec:(s.specialties||p.interests||[]),career:s.career||'',avatar:s.avatar||p.avatar_url||'',insta:(s.insta||'').replace(/^@/,''),sns:s.sns||(s.insta?{instagram:(s.insta||'').replace(/^@/,'')}:{}),shopName:s.name||'',bio:p.bio||'',works:photos,idCols:s.idCols||2,idColor:s.idColor||'',verified:true,provider:'email',joined:p.created_at?new Date(p.created_at).getTime():Date.now()};}
-async function uploadOne(dataUrl){try{const sess=(await SB.auth.getSession()).data.session;if(!sess||dataUrl.indexOf('data:')!==0)return dataUrl;const uid=sess.user.id;const blob=await (await fetch(dataUrl)).blob();const path=uid+'/'+Date.now()+'-'+Math.random().toString(36).slice(2,8)+'.jpg';const up=await SB.storage.from('beautia').upload(path,blob,{contentType:'image/jpeg',upsert:false});if(up.error)return dataUrl;const pu=SB.storage.from('beautia').getPublicUrl(path);return (pu.data&&pu.data.publicUrl)||dataUrl;}catch(e){return dataUrl;}}
+async function uploadOne(dataUrl){try{const sess=(await SB.auth.getSession()).data.session;if(!sess||dataUrl.indexOf('data:')!==0)return dataUrl;const uid=sess.user.id;const blob=await (await fetch(dataUrl)).blob();const path=uid+'/'+Date.now()+'-'+Math.random().toString(36).slice(2,8)+'.jpg';const up=await SB.storage.from('beautia').upload(path,blob,{contentType:'image/jpeg',upsert:false});if(up.error){console.warn('[beautia] storage upload failed → base64 fallback:',up.error&&up.error.message);return dataUrl;}const pu=SB.storage.from('beautia').getPublicUrl(path);return (pu.data&&pu.data.publicUrl)||dataUrl;}catch(e){return dataUrl;}}
 async function persistShop(){if(!ME||!ME.uid)return;try{await SB.from('profiles').update({shop:{name:ME.shopName||'',area:ME.city||'',specialties:ME.spec||[],avatar:ME.avatar||'',photos:ME.works||[],career:ME.career||'',insta:ME.insta||'',sns:ME.sns||{},idCols:ME.idCols||2,idColor:ME.idColor||''}}).eq('id',ME.uid);}catch(e){}}
 async function onAuth(session){
  if(!session){ME=null;renderAuth();buildTiles();render();return;}
@@ -807,6 +808,27 @@ function hideSuggest(){setTimeout(function(){var box=$('sugbox');if(box)box.styl
 const OWNER_EMAIL='ujin141@naver.com';
 async function refreshOwner(){try{var u=(await SB.auth.getUser()).data.user;if(ME&&u){ME.email=u.email;ME.isOwner=(u.email===OWNER_EMAIL);}}catch(e){}}
 async function loadFeatured(){try{var rows=(await SB.from('featured').select('*').order('created_at',{ascending:false})).data;if(!rows)return;FEATURED.length=0;rows.forEach(function(r){FEATURED.push({insta:r.insta,cat:r.cat,city:r.city,area:r.area,imgs:r.imgs||[]});});buildTiles();render();}catch(e){}}
+// 가입한 모든 디자이너(포트폴리오 있는 프로필)를 갤러리에 로드
+async function loadDesigners(){try{
+  var rows=(await SB.from('profiles').select('id,nickname,role,region,bio,interests,shop,avatar_url,full_name,created_at').limit(300)).data;
+  if(!rows)return;
+  var list=[];
+  rows.forEach(function(p){
+    if(D.some(function(d){return d.uid===p.id;}))return;            // 하드코딩 2명 중복 제외
+    var s=p.shop||{};var photos=(s.photos||[]).filter(Boolean);
+    if(!photos.length)return;                                       // 포폴 없는 프로필 제외
+    list.push({id:'u_'+p.id,uid:p.id,name:p.nickname||s.name||p.full_name||'Designer',ko:'',
+      cat:(s.specialties&&s.specialties[0])||(p.interests&&p.interests[0])||'Hair',
+      city:p.region||s.area||'',area:s.area||'',flag:roleIn(p.role)==='desg'?'🎨':'✨',
+      rating:5.0,rev:0,years:s.career||'',ko_ok:1,ver:1,
+      spec:(s.specialties&&s.specialties.length)?s.specialties:((p.interests&&p.interests.length)?p.interests:['Hair']),
+      bio:p.bio||'',avatar:s.avatar||p.avatar_url||'',insta:(s.insta||'').replace(/^@/,''),
+      handles:s.sns||(s.insta?{instagram:(s.insta||'').replace(/^@/,'')}:{}),
+      works:photos,ba:[photos[0],photos[Math.min(1,photos.length-1)]],
+      sns:Object.keys(s.sns||{}).filter(function(k){return (s.sns||{})[k];}),reviews:[]});
+  });
+  DUSERS=list;buildTiles();renderCities();render();
+}catch(e){}}
 function openFeaturedAdd(){if(!(ME&&ME.isOwner)){toast('오너만 사용 가능');return;}$('facard').innerHTML=`<button class="iclose" onclick="closeFa()" style="position:absolute;top:16px;right:20px;font-size:24px;color:var(--sub);z-index:2">×</button>
   <h3 class="serif" style="margin-bottom:4px">Featured 추가</h3><div class="pfsub">원작자 인스타 크레딧으로 올라가요</div>
   <div class="il">인스타 핸들</div><input class="linput" id="faIG" placeholder="@handle" autocomplete="off">
@@ -822,7 +844,7 @@ async function submitFeatured(){var ig=igClean($('faIG')?$('faIG').value:'');var
   closeFa();await loadFeatured();toast('추가됐어요 ✨');}
 buildTiles();renderCats();renderCities();applyI18n();render();renderAuth();
 SB.auth.getSession().then(function(r){onAuth(r.data.session);}).catch(function(){});
-loadFeatured();
+loadFeatured();loadDesigners();
 const _dp=new URLSearchParams(location.search).get('d');if(_dp&&dById(_dp))openD(_dp);
 fetch('https://ipapi.co/json/').then(function(r){return r.ok?r.json():null;}).then(function(j){if(!j)return;
  if(typeof j.latitude==='number'&&typeof j.longitude==='number')USERLOC={lat:j.latitude,lng:j.longitude,city:j.city||'',country:j.country_code||''};
