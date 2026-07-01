@@ -586,10 +586,27 @@ window.addEventListener('resize',function(){if($('idmodal')&&$('idmodal').classL
 function setIdCols(n){if(!ME)return;ME.idCols=n;persistShop();openIdCard('me');}
 function setIdColor(c){if(!ME)return;ME.idColor=c;persistShop();openIdCard('me');}
 function closeId(){$('idmodal').classList.remove('on');}
-function dlId(){const el=$('idcard');if(typeof html2canvas==='undefined'){toast('...');return;}toast(T[LANG].idPrep);
- var iw=$('idwrap'),t=iw?iw.style.transform:'';if(iw)iw.style.transform='';
- html2canvas(el,{useCORS:true,scale:3,backgroundColor:'#ffffff'}).then(function(cv){if(iw)iw.style.transform=t;var a=document.createElement('a');a.download='beautia-id-'+idDid+'.png';a.href=cv.toDataURL('image/png');a.click();}).catch(function(){if(iw)iw.style.transform=t;toast(T[LANG].idFail);});}
-function shareId(){const u=idUrl(idDid);if(navigator.share){navigator.share({title:'Beautia',url:u}).catch(function(){});return;}try{navigator.clipboard.writeText(u);toast(T[LANG].linkCopied);}catch(e){toast(u);}}
+// ID카드를 캔버스로 렌더(다운로드·공유 공용). scale 변환 잠깐 풀고 캡처 후 복구.
+function renderIdCanvas(){return new Promise(function(resolve,reject){
+  var el=$('idcard');if(!el||typeof html2canvas==='undefined'){reject(new Error('no'));return;}
+  var iw=$('idwrap'),t=iw?iw.style.transform:'';if(iw)iw.style.transform='';
+  html2canvas(el,{useCORS:true,scale:3,backgroundColor:'#ffffff'}).then(function(cv){if(iw)iw.style.transform=t;resolve(cv);}).catch(function(e){if(iw)iw.style.transform=t;reject(e);});
+});}
+function dlId(){if(typeof html2canvas==='undefined'){toast(T[LANG].idFail);return;}toast(T[LANG].idPrep);
+ renderIdCanvas().then(function(cv){var a=document.createElement('a');a.download='beautia-id-'+idDid+'.png';a.href=cv.toDataURL('image/png');a.click();}).catch(function(){toast(T[LANG].idFail);});}
+async function shareId(){var u=idUrl(idDid);
+ // 1순위: ID카드 이미지 자체를 공유 → 카톡/SNS 미리보기가 곧 그 카드가 됨
+ if(typeof html2canvas!=='undefined'&&navigator.canShare){
+   try{toast(T[LANG].idPrep);
+     var cv=await renderIdCanvas();
+     var blob=await new Promise(function(res){cv.toBlob(res,'image/png');});
+     if(blob){var file=new File([blob],'beautia-id-'+idDid+'.png',{type:'image/png'});
+       if(navigator.canShare({files:[file]})){await navigator.share({files:[file],title:'Beautia',text:u});return;}}
+   }catch(e){if(e&&e.name==='AbortError')return;}
+ }
+ // 2순위: URL 공유 / 복사
+ if(navigator.share){navigator.share({title:'Beautia',url:u}).catch(function(){});return;}
+ try{navigator.clipboard.writeText(u);toast(T[LANG].linkCopied);}catch(e){toast(u);}}
 // ===== 포트폴리오 관리 (디자이너 작업 업로드) =====
 function openPortfolio(){if(!ME){openLogin('');return;}ME.works=ME.works||[];closeD();renderPf();$('pfmodal').classList.add('on');}
 function closePf(){$('pfmodal').classList.remove('on');}
