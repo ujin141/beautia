@@ -178,6 +178,17 @@ body.mlock{position:fixed;left:0;right:0;width:100%;overflow:hidden;}
 .bkbtn.ok{background:var(--ink);color:#fff;} .bkbtn.warn{background:#FBE4E4;color:#9B3B3B;}
 .rvstars{display:flex;gap:6px;justify-content:center;margin:14px 0 4px;}
 .rvstars i{font-size:30px;color:#e3dcd9;cursor:pointer;} .rvstars i.on{color:#EBB662;}
+/* 모바일 앱: 스토리형 디자이너 가로 스크롤 */
+.stories{display:none;}
+@media (max-width:860px){
+  .stories{display:flex;gap:14px;overflow-x:auto;padding:12px 16px 6px;-webkit-overflow-scrolling:touch;scrollbar-width:none;}
+  .stories::-webkit-scrollbar{display:none;}
+  .stories.off{display:none;}
+  .sty{flex:0 0 auto;width:66px;text-align:center;cursor:pointer;}
+  .sty .ring{width:62px;height:62px;border-radius:50%;padding:2.5px;margin:0 auto;background:conic-gradient(from 210deg,#E8B4C4,#B5828C,#6E4A50,#C9A063,#E8B4C4);}
+  .sty .ring>div{width:100%;height:100%;border-radius:50%;border:2.5px solid #fff;background-size:cover;background-position:center;background-color:var(--soft);display:flex;align-items:center;justify-content:center;font-weight:800;color:#fff;font-size:20px;}
+  .sty .sn{font-size:10.5px;font-weight:600;color:var(--ink2);margin-top:5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+}
 /* 모바일 앱: 하단 탭바 */
 .tabbar{display:none;}
 @media (max-width:860px){
@@ -386,7 +397,7 @@ body.mlock{position:fixed;left:0;right:0;width:100%;overflow:hidden;}
   .hero{padding:30px 16px 4px;} .hero h1{font-size:31px;}
   .filterbar{top:0;} .fin{padding:12px 16px;} .citysel{display:none;} .wrap{padding:18px 16px 80px;}
   .dsec{padding:20px;} .dfoot{padding:14px 18px;}
-  .modal{padding:0;align-items:flex-end;} .sheet{max-width:100%;max-height:94vh;border-radius:22px 22px 0 0;}
+  .modal{padding:0;align-items:stretch;} .sheet{max-width:100%;width:100%;height:100dvh;max-height:100dvh;border-radius:0;}
   .join span{display:none;} .join{padding:11px 14px;} .brand .b1{font-size:20px;} .brand .blogo{height:34px;}
 }
 @media(max-width:600px){
@@ -443,6 +454,7 @@ body.mlock{position:fixed;left:0;right:0;width:100%;overflow:hidden;}
 </nav>
 
 <div class="hero" id="hero"><h1 class="serif"></h1><p data-t="tagline"></p></div>
+<div class="stories" id="stories"></div>
 
 <div class="filterbar"><div class="fin"><span class="nearby" id="nearby" style="display:none"></span><div class="cats" id="cats"></div><div class="citysel"><i class="ti ti-map-pin"></i><select id="city" onchange="render()"></select></div></div></div>
 
@@ -563,7 +575,11 @@ let USERLOC=null;
 function haversine(a,b){var R=6371,dLat=(b[0]-a[0])*Math.PI/180,dLng=(b[1]-a[1])*Math.PI/180,la1=a[0]*Math.PI/180,la2=b[0]*Math.PI/180;var x=Math.sin(dLat/2)*Math.sin(dLat/2)+Math.cos(la1)*Math.cos(la2)*Math.sin(dLng/2)*Math.sin(dLng/2);return 2*R*Math.asin(Math.sqrt(x));}
 function distOf(city){if(!USERLOC)return 0;var c=CITY_COORDS[city];if(!c)return 9e9;return haversine([USERLOC.lat,USERLOC.lng],c);}
 function updateNearby(){var el=$('nearby');if(!el)return;if(USERLOC&&USERLOC.city){el.style.display='inline-flex';el.innerHTML='<i class="ti ti-current-location"></i> '+esc(USERLOC.city);el.title=T[LANG].nearYou;}else el.style.display='none';}
-function render(){
+function renderStories(){var el=document.getElementById('stories');if(!el)return;
+ el.classList.toggle('off',VIEW!=='explore');
+ el.innerHTML=allD().map(function(d){var nm=(LANG==='ko'&&d.ko)?d.ko:d.name;var img=safeUrl(d.avatar||'')||(d.works&&d.works.length?im(d.works[0],200):'');
+  return `<div class="sty" onclick="openD('${d.id}')"><div class="ring"><div style="${img?`background-image:url('${img}')`:`background:${gradFor(nm)}`}">${img?'':esc((nm||'?')[0])}</div></div><div class="sn">${esc(nm)}</div></div>`;}).join('');}
+function render(){renderStories();
  const q=($('q').value||'').toLowerCase(),city=$('city').value;
  let list;
  if(VIEW==='saved'){list=TILES.filter(t=>isSaved(t.wid));}
@@ -626,11 +642,15 @@ function openD(did,keep){const d=dById(did);if(!d)return;curD=did;const gi=D.ind
    <button class="cbtn book" onclick="${d.uid&&!d.isMe?`openBook('${d.id}')`:`openChatWith('${d.id}')`}"><i class="ti ti-calendar-heart"></i> ${T[LANG].book}</button>
  </div>`;
  if(d.uid)loadRevsFor(d);
- if(!keep)$('dmodal').classList.add('on');
+ if(!keep){var wasOpen=$('dmodal').classList.contains('on');$('dmodal').classList.add('on');
+  try{if(wasOpen&&dHist)history.replaceState({bd:did},'','?d='+encodeURIComponent(did));else{history.pushState({bd:did},'','?d='+encodeURIComponent(did));dHist=true;}}catch(e){}}
  setSEO(name+' — '+cl(d.cat)+(d.city?' · '+d.city:'')+' | Beautia Collection',(d.bio||(name+' — beauty designer portfolio'))+' · Beautia Collection');
 }
 function baMove(v){$('baBefore').style.width=v+'%';$('baDiv').style.left=v+'%';}
-function closeD(){$('dmodal').classList.remove('on');curD=null;setSEO(SEO_TITLE,SEO_DESC);}
+let dHist=false; // 프로필 열 때 history를 쌓아 뒤로가기(제스처)로 닫히게
+function closeD(fromPop){$('dmodal').classList.remove('on');curD=null;setSEO(SEO_TITLE,SEO_DESC);
+ if(fromPop!==true&&dHist){dHist=false;try{history.back();}catch(e){}}else dHist=false;}
+window.addEventListener('popstate',function(){if($('dmodal').classList.contains('on'))closeD(true);});
 // ===== BEAUTIA ID 카드 (네컷 포트폴리오 + QR) =====
 let idDid=null;
 function idUrl(id){return location.origin+location.pathname.replace(/[^/]*$/,'community.html')+'?d='+id;}
