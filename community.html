@@ -185,6 +185,10 @@ body.mlock{position:fixed;left:0;right:0;width:100%;overflow:hidden;}
 .bkbtn.ok{background:var(--ink);color:#fff;} .bkbtn.warn{background:#FBE4E4;color:#9B3B3B;}
 .rvstars{display:flex;gap:6px;justify-content:center;margin:14px 0 4px;}
 .rvstars i{font-size:30px;color:#e3dcd9;cursor:pointer;} .rvstars i.on{color:#EBB662;}
+/* 당겨서 새로고침 */
+.ptr{position:fixed;top:10px;left:50%;transform:translateX(-50%);z-index:90;width:42px;height:42px;border-radius:50%;background:#fff;box-shadow:0 8px 24px rgba(20,12,16,.2);display:flex;align-items:center;justify-content:center;color:var(--plum);font-size:20px;opacity:0;pointer-events:none;transition:opacity .15s;}
+.ptr.spin i{animation:ptrspin .7s linear infinite;}
+@keyframes ptrspin{to{transform:rotate(360deg)}}
 /* 사이트 푸터 */
 .sitefoot{border-top:1px solid var(--line);margin-top:40px;background:var(--soft);}
 .sf-in{max-width:1320px;margin:0 auto;padding:30px 28px 34px;display:flex;flex-direction:column;gap:12px;}
@@ -794,19 +798,19 @@ function pfSetCaption(i,val){if(!ME||!ME.works||!ME.works[i])return;var w=ME.wor
 function delPfPhoto(i){ME.works.splice(i,1);renderPf();buildTiles();render();persistShop();}
 Object.assign(T.en,{pfHint:'Upload your best work. It appears in the gallery, your profile, and your ID card.',addPhoto:'Add photo',nearYou:'Sorted by distance from your location',photoL:'Add profile photo',changePhoto:'Change photo',byDesigner:"{n}'s portfolio",viewDesigner:'View designer',otpSentToast:'Code sent to your email ✉️',welcomeBack:'Welcome back 👋',needCode:'Enter the code',needLogin:'Please sign in',sending:'Sending…',emailPh:'you@email.com',emailL:'Email',messages:'Messages',noChats:'No conversations yet',sayHi:'Say hello to start the chat',typeMsg:'Type a message…',showOrig:'Show original',showTr:'Show translation',cantChat:'Chat is not available for this designer yet',cantChatSelf:"That's you",loginTitle:'Log in or sign up',orEmail:'or with email',loginHint:'New here? Verifying your email signs you up automatically.',myIdCard:'My ID card',columns:'Columns',color:'Color',cover:'Cover',coverLight:'Minimal',coverTint:'Color',custom:'Custom',snsL:'Social links (optional)',pfCaption:'Write a caption (optional)',featured:'Featured',claimQ:'Is this your work?',claimBtn:'Claim your profile',removeReq:'Request removal',claimToast:'Sign up to add this to your profile ✨',
 svcTitle:'Services & prices',svcHint:'shown on your profile',svcName:'Service (e.g. Cut + perm)',svcPrice:'Price (e.g. ₩80,000)',svcDur:'Duration',addSvc:'Add service',
-book2:'Book',bkTitle:'Request a booking',bkService:'Service',bkConsult:'Decide after consult',bkDate:'Date',bkTime:'Time',bkNote:'Note (optional)',bkNotePh:'Reference photo link, requests…',bkSend:'Send request',bkSent:'Booking request sent ✨',bkNew:'New booking request',installApp:'Install app',my:'My',footTerms:'Terms',footPrivacy:'Privacy',footContact:'Contact',delAcct:'Delete account',iosInstallHint:'Safari: Share → Add to Home Screen 📲',bkFail:'Failed',bkNeedDate:'Pick a date',
+book2:'Book',bkTitle:'Request a booking',bkService:'Service',bkConsult:'Decide after consult',bkDate:'Date',bkTime:'Time',bkNote:'Note (optional)',bkNotePh:'Reference photo link, requests…',bkSend:'Send request',bkSent:'Booking request sent ✨',bkNew:'New booking request',installApp:'Install app',notifOn:'Turn on notifications',pushOn:'Notifications on 🔔',pushDenied:'Notifications blocked in settings',pushUnsupported:'Not supported on this browser',refreshed:'Updated ✨',my:'My',footTerms:'Terms',footPrivacy:'Privacy',footContact:'Contact',delAcct:'Delete account',iosInstallHint:'Safari: Share → Add to Home Screen 📲',bkFail:'Failed',bkNeedDate:'Pick a date',
 myBookings:'Bookings',bkNone:'No bookings yet',bk_pending:'Pending',bk_accepted:'Accepted',bk_declined:'Declined',bk_done:'Completed',bk_cancelled:'Cancelled',
 bkAccept:'Accept',bkDecline:'Decline',bkComplete:'Mark completed',bkCancel:'Cancel',
 writeReview:'Write a review',rvTitle:'How was it?',rvPh:'Share your experience (optional)',rvSend:'Submit review',rvThanks:'Thanks for your review ✨'});
 Object.assign(T.ko,{pfHint:'대표 작업을 올리세요. 갤러리·내 프로필·ID 카드에 바로 보여요.',addPhoto:'사진 추가',nearYou:'내 위치에서 가까운 순으로 정렬',photoL:'프로필 사진 추가',changePhoto:'사진 변경',byDesigner:'{n}님의 포트폴리오',viewDesigner:'디자이너 보기',otpSentToast:'인증 코드를 이메일로 보냈어요 ✉️',welcomeBack:'다시 오신 걸 환영해요 👋',needCode:'코드를 입력하세요',needLogin:'로그인이 필요해요',sending:'전송 중…',emailPh:'you@email.com',emailL:'이메일',messages:'메시지',noChats:'아직 대화가 없어요',sayHi:'인사를 건네 대화를 시작하세요',typeMsg:'메시지 입력…',showOrig:'원문 보기',showTr:'번역 보기',cantChat:'아직 이 디자이너와는 채팅할 수 없어요',cantChatSelf:'본인이에요',loginTitle:'로그인 또는 가입',orEmail:'또는 이메일로',loginHint:'처음이세요? 이메일 인증하면 자동으로 가입돼요.',myIdCard:'내 ID 카드',columns:'컬럼',color:'색상',cover:'커버',coverLight:'미니멀',coverTint:'컬러',custom:'직접',snsL:'SNS 연동 (선택)',pfCaption:'설명을 적어보세요 (선택)',featured:'발견',claimQ:'이 작업의 주인이신가요?',claimBtn:'내 프로필로 등록',removeReq:'삭제 요청',claimToast:'가입하면 내 프로필로 가져올 수 있어요 ✨',
 svcTitle:'서비스·가격',svcHint:'프로필에 표시돼요',svcName:'서비스명 (예: 컷+펌)',svcPrice:'가격 (예: ₩80,000)',svcDur:'소요시간',addSvc:'서비스 추가',
-book2:'예약',bkTitle:'예약 요청',bkService:'서비스',bkConsult:'상담 후 결정',bkDate:'날짜',bkTime:'시간',bkNote:'요청사항 (선택)',bkNotePh:'참고 사진 링크, 원하는 스타일 등…',bkSend:'예약 요청 보내기',bkSent:'예약 요청을 보냈어요 ✨',bkNew:'새 예약 요청이 왔어요',installApp:'앱 설치',my:'마이',footTerms:'이용약관',footPrivacy:'개인정보처리방침',footContact:'문의하기',delAcct:'회원탈퇴',iosInstallHint:'사파리: 공유 → 홈 화면에 추가 📲',bkFail:'실패했어요',bkNeedDate:'날짜를 선택하세요',
+book2:'예약',bkTitle:'예약 요청',bkService:'서비스',bkConsult:'상담 후 결정',bkDate:'날짜',bkTime:'시간',bkNote:'요청사항 (선택)',bkNotePh:'참고 사진 링크, 원하는 스타일 등…',bkSend:'예약 요청 보내기',bkSent:'예약 요청을 보냈어요 ✨',bkNew:'새 예약 요청이 왔어요',installApp:'앱 설치',notifOn:'알림 켜기',pushOn:'알림이 켜졌어요 🔔',pushDenied:'알림이 차단돼 있어요 (설정에서 허용)',pushUnsupported:'이 브라우저에선 지원되지 않아요',refreshed:'새로고침 완료 ✨',my:'마이',footTerms:'이용약관',footPrivacy:'개인정보처리방침',footContact:'문의하기',delAcct:'회원탈퇴',iosInstallHint:'사파리: 공유 → 홈 화면에 추가 📲',bkFail:'실패했어요',bkNeedDate:'날짜를 선택하세요',
 myBookings:'예약',bkNone:'아직 예약이 없어요',bk_pending:'대기중',bk_accepted:'수락됨',bk_declined:'거절됨',bk_done:'완료',bk_cancelled:'취소됨',
 bkAccept:'수락',bkDecline:'거절',bkComplete:'완료 처리',bkCancel:'취소',
 writeReview:'리뷰 쓰기',rvTitle:'어떠셨나요?',rvPh:'경험을 들려주세요 (선택)',rvSend:'리뷰 등록',rvThanks:'리뷰 감사합니다 ✨'});
 Object.assign(T.ja,{pfHint:'代表作品をアップ。ギャラリー・プロフィール・IDカードに表示されます。',addPhoto:'写真を追加',nearYou:'現在地から近い順に表示',photoL:'プロフィール写真を追加',changePhoto:'写真を変更',byDesigner:'{n}さんのポートフォリオ',viewDesigner:'デザイナーを見る',otpSentToast:'認証コードをメールに送りました ✉️',welcomeBack:'おかえりなさい 👋',needCode:'コードを入力してください',needLogin:'ログインしてください',sending:'送信中…',emailPh:'you@email.com',emailL:'メール',messages:'メッセージ',noChats:'まだ会話がありません',sayHi:'挨拶して会話を始めましょう',typeMsg:'メッセージを入力…',showOrig:'原文を表示',showTr:'翻訳を表示',cantChat:'このデザイナーとはまだチャットできません',cantChatSelf:'ご本人です',loginTitle:'ログイン / 登録',orEmail:'またはメールで',loginHint:'初めての方はメール認証で自動的に登録されます。',myIdCard:'マイIDカード',columns:'カラム',color:'カラー',cover:'カバー',coverLight:'ミニマル',coverTint:'カラー',custom:'カスタム',snsL:'SNSリンク（任意）',pfCaption:'キャプションを追加（任意）',featured:'ピック',claimQ:'この作品の作者ですか？',claimBtn:'プロフィールに登録',removeReq:'削除リクエスト',claimToast:'登録すると自分のプロフィールに追加できます ✨',
 svcTitle:'メニュー・料金',svcHint:'プロフィールに表示されます',svcName:'メニュー名（例: カット+パーマ）',svcPrice:'料金（例: ¥8,000）',svcDur:'所要時間',addSvc:'メニュー追加',
-book2:'予約',bkTitle:'予約リクエスト',bkService:'メニュー',bkConsult:'相談して決める',bkDate:'日付',bkTime:'時間',bkNote:'ご要望（任意）',bkNotePh:'参考写真のリンク、ご希望など…',bkSend:'リクエストを送る',bkSent:'予約リクエストを送りました ✨',bkNew:'新しい予約リクエスト',installApp:'アプリを追加',my:'マイ',footTerms:'利用規約',footPrivacy:'プライバシー',footContact:'お問い合わせ',delAcct:'退会',iosInstallHint:'Safari: 共有 → ホーム画面に追加 📲',bkFail:'失敗しました',bkNeedDate:'日付を選んでください',
+book2:'予約',bkTitle:'予約リクエスト',bkService:'メニュー',bkConsult:'相談して決める',bkDate:'日付',bkTime:'時間',bkNote:'ご要望（任意）',bkNotePh:'参考写真のリンク、ご希望など…',bkSend:'リクエストを送る',bkSent:'予約リクエストを送りました ✨',bkNew:'新しい予約リクエスト',installApp:'アプリを追加',notifOn:'通知をオンにする',pushOn:'通知オン 🔔',pushDenied:'通知がブロックされています',pushUnsupported:'このブラウザでは非対応です',refreshed:'更新しました ✨',my:'マイ',footTerms:'利用規約',footPrivacy:'プライバシー',footContact:'お問い合わせ',delAcct:'退会',iosInstallHint:'Safari: 共有 → ホーム画面に追加 📲',bkFail:'失敗しました',bkNeedDate:'日付を選んでください',
 myBookings:'予約',bkNone:'まだ予約がありません',bk_pending:'承認待ち',bk_accepted:'承認済み',bk_declined:'お断り',bk_done:'完了',bk_cancelled:'キャンセル',
 bkAccept:'承認',bkDecline:'お断り',bkComplete:'完了にする',bkCancel:'キャンセル',
 writeReview:'レビューを書く',rvTitle:'いかがでしたか？',rvPh:'体験をシェアしてください（任意）',rvSend:'レビュー送信',rvThanks:'レビューありがとうございます ✨'});
@@ -863,6 +867,7 @@ function toggleUmenu(e){if(e)e.stopPropagation();const m=$('umenu');m.classList.
  ${ME&&ME.works&&ME.works.length?`<a onclick="closeUmenu();openIdCard('me')"><i class="ti ti-id-badge-2"></i> ${T[LANG].myIdCard}</a>`:''}
  ${ME&&ME.isOwner?`<a onclick="closeUmenu();openFeaturedAdd()"><i class="ti ti-plus"></i> Featured 추가</a>`:''}
  <a onclick="setView('saved');closeUmenu()"><i class="ti ti-heart"></i> ${T[LANG].saved}</a>
+ <a onclick="enablePush()"><i class="ti ti-bell-ringing"></i> ${T[LANG].notifOn}</a>
  ${window.matchMedia&&window.matchMedia('(display-mode: standalone)').matches?'':`<a onclick="installApp()"><i class="ti ti-device-mobile-plus"></i> ${T[LANG].installApp}</a>`}
  <a onclick="logout();closeUmenu()"><i class="ti ti-logout"></i> ${T[LANG].logout}</a>`;
  m.classList.add('on');
@@ -997,7 +1002,9 @@ async function openConvo(c){curConv=c;var msgs=[];try{msgs=(await SB.from('messa
 function msgText(m){if(!m.lang||m.lang===LANG)return m.body;return (m.tr&&m.tr[LANG])?m.tr[LANG]:m.body;}
 function renderThread(){var c=curConv;if(!c)return;var o=PROFCACHE[otherUid(c)]||{name:'User'};var body=(c._msgs||[]).map(function(m){var mine=m.sender===ME.uid;var needTr=(m.lang&&m.lang!==LANG);return `<div class="mrow ${mine?'me':''}"><div class="mbub">${esc(msgText(m))}</div>${needTr?`<button class="morig" onclick="toggleOrig(this,'${m.id}')">${T[LANG].showOrig}</button>`:''}</div>`;}).join('');$('chatcard').innerHTML=`<div class="chead"><button class="cback" onclick="backToList()"><i class="ti ti-chevron-left"></i></button>${avChip(o)}<div class="chl2">${esc(o.name)}</div><button class="cx" onclick="closeChat()">×</button></div><div class="cthread" id="cthread">${body||('<div class="cempty"><p>'+T[LANG].sayHi+'</p></div>')}</div><div class="cinput"><input id="cmsg" maxlength="1000" placeholder="${T[LANG].typeMsg}" onkeydown="if(event.key==='Enter')sendChat()"><button onclick="sendChat()"><i class="ti ti-send"></i></button></div>`;var th=$('cthread');if(th)th.scrollTop=th.scrollHeight;(c._msgs||[]).forEach(function(m){if(m.lang&&m.lang!==LANG&&!(m.tr&&m.tr[LANG])&&m.body)translateMsg(m);});}
 function backToList(){if(chatSub){try{SB.removeChannel(chatSub);}catch(e){}chatSub=null;}curConv=null;loadConvos();}
-async function sendChat(){var inp=$('cmsg');if(!inp||!curConv)return;var v=inp.value.trim();if(!v)return;inp.value='';curConv._msgs=curConv._msgs||[];try{var data=(await SB.from('messages').insert({conversation:curConv.id,sender:ME.uid,body:v,lang:LANG,tr:{}}).select('*').maybeSingle()).data;if(data&&!curConv._msgs.some(function(x){return x.id===data.id;}))curConv._msgs.push(data);}catch(e){}try{SB.from('conversations').update({last_at:new Date().toISOString()}).eq('id',curConv.id).then(function(){},function(){});}catch(e){}renderThread();}
+async function sendChat(){var inp=$('cmsg');if(!inp||!curConv)return;var v=inp.value.trim();if(!v)return;inp.value='';curConv._msgs=curConv._msgs||[];try{var data=(await SB.from('messages').insert({conversation:curConv.id,sender:ME.uid,body:v,lang:LANG,tr:{}}).select('*').maybeSingle()).data;if(data&&!curConv._msgs.some(function(x){return x.id===data.id;}))curConv._msgs.push(data);}catch(e){}try{SB.from('conversations').update({last_at:new Date().toISOString()}).eq('id',curConv.id).then(function(){},function(){});}catch(e){}
+ try{pushNotify(otherUid(curConv),'💬 '+(ME.name||'Beautia'),v.slice(0,80));}catch(e){}
+ renderThread();}
 async function translateMsg(m){try{var res=await SB.functions.invoke('translate',{body:{text:m.body,target:LANG}});if(res.error||!res.data||!res.data.translated)return;m.tr=m.tr||{};m.tr[LANG]=res.data.translated;try{SB.from('messages').update({tr:m.tr}).eq('id',m.id).then(function(){},function(){});}catch(e){}if(curConv)renderThread();}catch(e){}}
 function toggleOrig(btn,id){var m=((curConv&&curConv._msgs)||[]).find(function(x){return x.id===id;});if(!m)return;var bub=btn.parentNode.querySelector('.mbub');if(btn.dataset.o){bub.textContent=msgText(m);btn.textContent=T[LANG].showOrig;btn.dataset.o='';}else{bub.textContent=m.body;btn.textContent=T[LANG].showTr;btn.dataset.o='1';}}
 
@@ -1074,6 +1081,7 @@ async function submitBooking(did){const d=dById(did);if(!d||!d.uid||!ME||!ME.uid
   if(r.error){toast(T[LANG].bkFail+': '+r.error.message);return;}
  }catch(e){toast(T[LANG].bkFail);return;}
  bkNotifyConv(ME.uid,d.uid,'📅 '+T[LANG].bkTitle+': '+svc.n+(svc.p?' ('+svc.p+')':'')+' · '+date+' '+time+(note?'\n'+note:''));
+ pushNotify(d.uid,'📅 '+T[LANG].bkNew,(ME.name||'')+' · '+svc.n+' · '+date+' '+time);
  closeBk();toast(T[LANG].bkSent);}
 // 예약 이벤트를 기존 채팅으로 알림 (대화 없으면 고객 쪽에서만 생성 가능 — conversations RLS)
 async function bkNotifyConv(customerUid,designerUid,text){try{
@@ -1107,7 +1115,7 @@ async function openBookings(){if(!(ME&&ME.uid)){openLogin('');return;}
     <div class="bkacts">${acts}</div></div>`;
  }).join('');}
 async function setBk(id,status,cu,de){try{var r=await SB.from('bookings').update({status:status}).eq('id',id);if(r.error){toast(T[LANG].bkFail);return;}}catch(e){toast(T[LANG].bkFail);return;}
- if(cu&&de)bkNotifyConv(cu,de,'📅 '+bkStatusLabel(status));
+ if(cu&&de){bkNotifyConv(cu,de,'📅 '+bkStatusLabel(status));pushNotify(ME.uid===cu?de:cu,'📅 Beautia',bkStatusLabel(status));}
  toast(bkStatusLabel(status)+' ✓');loadBkBadge();openBookings();}
 function openReview(bid,designer){rvStars=5;
  $('bkcard').innerHTML=`<button class="iclose" onclick="openBookings()" style="position:absolute;top:16px;right:20px;font-size:24px;color:var(--sub);z-index:2">×</button>
@@ -1149,7 +1157,36 @@ buildTiles();renderCats();renderCities();applyI18n();render();renderAuth();
 let pwaPrompt=null;
 if('serviceWorker' in navigator){try{navigator.serviceWorker.register('/sw.js');}catch(e){}}
 window.addEventListener('beforeinstallprompt',function(e){e.preventDefault();pwaPrompt=e;});
+// 당겨서 새로고침 (모바일, 스크롤 최상단에서만)
+(function(){
+ if(!('ontouchstart' in window))return;
+ var el=document.createElement('div');el.className='ptr';el.innerHTML='<i class="ti ti-refresh"></i>';document.body.appendChild(el);
+ var sy=0,pull=0,active=false,busy=false;
+ window.addEventListener('touchstart',function(e){if(busy||window.scrollY>0||document.body.style.overflow==='hidden')return;sy=e.touches[0].clientY;active=true;pull=0;},{passive:true});
+ window.addEventListener('touchmove',function(e){if(!active||busy)return;pull=e.touches[0].clientY-sy;
+  if(pull>0&&window.scrollY<=0){var p=Math.min(pull,150);el.style.transform='translateX(-50%) translateY('+(p*0.5)+'px) rotate('+(p*1.8)+'deg)';el.style.opacity=Math.min(1,p/70);}},{passive:true});
+ window.addEventListener('touchend',async function(){if(!active)return;active=false;
+  if(pull>90&&window.scrollY<=0&&!busy){busy=true;el.classList.add('spin');
+   try{await Promise.all([loadDesigners(),loadFeatured()]);if(ME&&ME.uid){loadSaves();checkUnread();loadBkBadge();}}catch(e){}
+   el.classList.remove('spin');busy=false;toast(T[LANG].refreshed);}
+  el.style.transform='translateX(-50%) translateY(0)';el.style.opacity=0;pull=0;});
+})();
 function installApp(){closeUmenu();if(pwaPrompt){pwaPrompt.prompt();pwaPrompt=null;return;}toast(T[LANG].iosInstallHint);}
+// 웹푸시: 구독(알림 켜기) + 발송 헬퍼
+const VAPID_PUB='BEqmwrpTXryFvloIrotb9c9Mg3Q0NIXf4Oftc-OOCIlEHc3JQE8oFrqUGyzhcH6ZojZt_gf-RWw_M6Jz3LCx57M';
+function urlB64ToU8(s){var p='='.repeat((4-s.length%4)%4),b=atob((s+p).replace(/-/g,'+').replace(/_/g,'/')),a=new Uint8Array(b.length);for(var i=0;i<b.length;i++)a[i]=b.charCodeAt(i);return a;}
+async function enablePush(){closeUmenu();
+ if(!(ME&&ME.uid)){openLogin('');return;}
+ if(!('serviceWorker' in navigator)||!('PushManager' in window)||!('Notification' in window)){toast(T[LANG].pushUnsupported);return;}
+ try{
+  var perm=await Notification.requestPermission();if(perm!=='granted'){toast(T[LANG].pushDenied);return;}
+  var reg=await navigator.serviceWorker.ready;
+  var sub=await reg.pushManager.subscribe({userVisibleOnly:true,applicationServerKey:urlB64ToU8(VAPID_PUB)});
+  var r=await SB.from('push_subs').upsert({user_id:ME.uid,endpoint:sub.endpoint,sub:sub.toJSON()},{onConflict:'endpoint'});
+  if(r.error){toast(T[LANG].bkFail+': '+r.error.message);return;}
+  toast(T[LANG].pushOn);
+ }catch(e){toast(T[LANG].pushUnsupported);}}
+function pushNotify(to,title,body,url){if(!to)return;try{SB.functions.invoke('notify',{body:{to:to,title:title,body:body,url:url||'/community'}}).then(function(){},function(){});}catch(e){}}
 SB.auth.getSession().then(function(r){onAuth(r.data.session);}).catch(function(){});
 loadFeatured();loadDesigners();
 const _dp=new URLSearchParams(location.search).get('d');if(_dp&&dById(_dp))openD(_dp);
