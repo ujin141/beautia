@@ -150,6 +150,30 @@ body.mlock{position:fixed;left:0;right:0;width:100%;overflow:hidden;}
 .idsave-h{color:#fff;font-weight:700;font-size:15px;text-align:center;line-height:1.5;}
 .idsave-img{max-width:88%;max-height:72vh;border-radius:16px;box-shadow:0 20px 60px rgba(0,0,0,.5);}
 .idsave-x{background:#fff;color:var(--ink);border:none;border-radius:999px;padding:12px 30px;font-weight:800;font-size:15px;cursor:pointer;}
+/* 마켓플레이스: 서비스·예약·리뷰 */
+.svc{display:flex;align-items:center;gap:12px;padding:12px 0;border-bottom:1px dashed var(--line);}
+.svc:last-child{border-bottom:none;}
+.svci{flex:1;min-width:0;}
+.svcn{font-weight:700;font-size:15px;color:var(--ink);}
+.svcm{font-size:13px;color:var(--ink2);margin-top:2px;} .svcm b{color:var(--plum);}
+.svcbk{flex:0 0 auto;background:var(--rosebg);color:var(--plum);border:none;border-radius:999px;padding:9px 16px;font-weight:800;font-size:13px;cursor:pointer;}
+.svcbk:hover{background:var(--plum);color:#fff;}
+.svcrow{display:flex;gap:7px;margin-top:8px;} .svcrow .linput{padding:11px 12px;font-size:14px;}
+.svcrow .sn{flex:2.2;} .svcrow .sp{flex:1.4;} .svcrow .sd{flex:1;}
+.svcdel{flex:0 0 auto;width:38px;border:1px solid var(--line);border-radius:10px;background:#fff;color:var(--sub);font-size:16px;cursor:pointer;}
+.bkcard{border:1px solid var(--line);border-radius:16px;padding:14px 16px;margin-top:10px;text-align:left;}
+.bkhead{display:flex;align-items:center;justify-content:space-between;gap:8px;}
+.bkwho{font-weight:800;font-size:15px;color:var(--ink);}
+.bkst{font-size:11.5px;font-weight:800;padding:4px 11px;border-radius:999px;letter-spacing:.02em;flex:0 0 auto;}
+.bkst.pending{background:#FFF3D6;color:#9A6B00;} .bkst.accepted{background:#E3F2EA;color:#22684F;}
+.bkst.declined{background:#FBE4E4;color:#9B3B3B;} .bkst.done{background:#EAE6F5;color:#5A4A8A;} .bkst.cancelled{background:var(--soft);color:var(--sub);}
+.bkmeta{font-size:13.5px;color:var(--ink2);margin-top:7px;line-height:1.55;}
+.bknote{font-size:13px;color:var(--sub);margin-top:5px;white-space:pre-wrap;}
+.bkacts{display:flex;gap:8px;margin-top:11px;}
+.bkbtn{flex:1;border:none;border-radius:11px;padding:11px;font-weight:800;font-size:13.5px;cursor:pointer;background:var(--soft);color:var(--ink2);}
+.bkbtn.ok{background:var(--ink);color:#fff;} .bkbtn.warn{background:#FBE4E4;color:#9B3B3B;}
+.rvstars{display:flex;gap:6px;justify-content:center;margin:14px 0 4px;}
+.rvstars i{font-size:30px;color:#e3dcd9;cursor:pointer;} .rvstars i.on{color:#EBB662;}
 .idwrap{display:flex;flex-direction:column;align-items:center;gap:14px;transform-origin:center center;}
 .idcard{width:100%;max-width:360px;background:#fff;border-radius:26px;overflow:hidden;box-shadow:0 40px 90px -30px rgba(40,20,40,.55);border:1px solid var(--line);}
 .ic-top{display:flex;align-items:center;justify-content:space-between;padding:20px 22px 13px;}
@@ -404,6 +428,7 @@ body.mlock{position:fixed;left:0;right:0;width:100%;overflow:hidden;}
 <div class="wmodal" id="wmodal" onclick="if(event.target===this)closeWork()"><div class="wcard" id="wcard"></div></div>
 <div class="chatmodal" id="chatmodal" onclick="if(event.target===this)closeChat()"><div class="chatcard" id="chatcard"></div></div>
 <div class="lmodal" id="famodal" onclick="if(event.target===this)closeFa()"><div class="lcard" id="facard" style="text-align:left"></div></div>
+<div class="lmodal" id="bkmodal" onclick="if(event.target===this)closeBk()"><div class="lcard" id="bkcard" style="text-align:left"></div></div>
 
 <div class="imodal" id="imodal" onclick="if(event.target===this)closeI()"><div class="icard" id="icard"></div></div>
 <div class="umenu" id="umenu"></div>
@@ -439,7 +464,7 @@ const D=[
   ba:['https://pzbxcktaljhesrfnqwzq.supabase.co/storage/v1/object/public/beautia/21a1661c-4974-477a-8d0d-f806457db5a4/1782731426098-xdb79x.jpg','https://pzbxcktaljhesrfnqwzq.supabase.co/storage/v1/object/public/beautia/21a1661c-4974-477a-8d0d-f806457db5a4/1782731424179-6dzmzs.jpg'],
   sns:['instagram'],reviews:[]},
 ];
-function meDesigner(){if(ME&&ME.uid&&ME.works&&ME.works.length){return {id:'me',uid:ME.uid,name:ME.name||'You',ko:'',cat:(ME.spec&&ME.spec[0])||'Hair',city:ME.city||ME.country||'',area:ME.area||'',flag:ME.role==='desg'?'🎨':'✨',rating:5.0,rev:0,years:ME.career||'',ko_ok:1,ver:ME.verified?1:0,spec:(ME.spec&&ME.spec.length?ME.spec.slice():['Hair']),bio:ME.bio||'',avatar:ME.avatar||'',insta:ME.insta||'',handles:ME.sns||{},works:ME.works.slice(),ba:[ME.works[0],ME.works[Math.min(1,ME.works.length-1)]],sns:Object.keys(ME.sns||{}).filter(function(k){return ME.sns[k];}),reviews:[],isMe:1};}return null;}
+function meDesigner(){if(ME&&ME.uid&&ME.works&&ME.works.length){return {id:'me',uid:ME.uid,name:ME.name||'You',ko:'',cat:(ME.spec&&ME.spec[0])||'Hair',city:ME.city||ME.country||'',area:ME.area||'',flag:ME.role==='desg'?'🎨':'✨',rating:5.0,rev:0,years:ME.career||'',ko_ok:1,ver:ME.verified?1:0,spec:(ME.spec&&ME.spec.length?ME.spec.slice():['Hair']),bio:ME.bio||'',avatar:ME.avatar||'',insta:ME.insta||'',handles:ME.sns||{},works:ME.works.slice(),ba:[ME.works[0],ME.works[Math.min(1,ME.works.length-1)]],sns:Object.keys(ME.sns||{}).filter(function(k){return ME.sns[k];}),services:(ME.services||[]).slice(),reviews:[],isMe:1};}return null;}
 function gradFor(s){return GR[Math.abs((s||'B').charCodeAt(0))%GR.length];}
 function avHtml(d,cls){var nm=(LANG==='ko'&&d.ko)?d.ko:(d.name||'U');return d.avatar?`<div class="${cls}" style="background-image:url('${im(d.avatar,240)}')"></div>`:`<div class="${cls} mono" style="background:${gradFor(d.name)}">${esc(nm[0]||'U')}</div>`;}
 // ===== Featured(발견한 작업): 원작자 인스타 크레딧+링크, 사칭 X. {insta, cat, city, area, imgs:[...]} 로 채우기 =====
@@ -562,14 +587,17 @@ function openD(did,keep){const d=dById(did);if(!d)return;curD=did;const gi=D.ind
      <input type="range" min="0" max="100" value="50" oninput="baMove(this.value)">
    </div>
   </div>
+  ${(d.services&&d.services.length)?`<div class="dsec"><div class="st">${T[LANG].svcTitle}</div>${d.services.map((s,i)=>`<div class="svc"><div class="svci"><div class="svcn">${esc(s.n)}</div><div class="svcm">${s.du?esc(s.du)+' · ':''}<b>${esc(s.p)}</b></div></div>${d.uid&&!d.isMe?`<button class="svcbk" onclick="openBook('${d.id}',${i})">${T[LANG].book2}</button>`:''}</div>`).join('')}</div>`:''}
   <div class="dsec"><div class="st">${T[LANG].portfolio}</div><div class="dgrid">${d.works.map(w=>`<img src="${im(w,500)}" loading="lazy" onclick="window.open('${im(w,1200)}','_blank')">`).join('')}</div></div>
-  <div class="dsec"><div class="st">${T[LANG].reviews} · ${esc(d.rev)}</div>${d.reviews.map((r,i)=>`<div class="rev"><div class="ra" style="background:${GR[(gi+i)%GR.length]}">${esc((r.n||'?')[0])}</div><div><div class="rn">${esc(r.n)}</div><div class="rs">${stars(r.s)}</div><div class="rt">${esc(r.t)}</div></div></div>`).join('')}</div>
+  <div class="dsec" id="revsec"><div class="st">${T[LANG].reviews} · ${esc(d.rev)}</div>${d.reviews.map((r,i)=>`<div class="rev"><div class="ra" style="background:${GR[(gi+i)%GR.length]}">${esc((r.n||'?')[0])}</div><div><div class="rn">${esc(r.n)}</div><div class="rs">${stars(r.s)}</div><div class="rt">${esc(r.t)}</div></div></div>`).join('')}</div>
   ${snsHtml?`<div class="dsec" style="border:none"><div class="st">${T[LANG].connect}</div><div class="sns">${snsHtml}</div></div>`:''}
  </div>
  <div class="dfoot">
    <button class="cbtn save ${fav?'on':''}" onclick="toggleSave('${d.id}_0',event)"><i class="ti ti-heart${fav?'-filled':''}"></i><span>${fav?T[LANG].saved2:T[LANG].save}</span></button>
-   <button class="cbtn book" onclick="openChatWith('${d.id}')"><i class="ti ti-calendar-heart"></i> ${T[LANG].book}</button>
+   ${d.uid&&!d.isMe?`<button class="cbtn" style="flex:0 0 auto;padding:0 16px" onclick="openChatWith('${d.id}')" title="${T[LANG].messages}"><i class="ti ti-message-2"></i></button>`:''}
+   <button class="cbtn book" onclick="${d.uid&&!d.isMe?`openBook('${d.id}')`:`openChatWith('${d.id}')`}"><i class="ti ti-calendar-heart"></i> ${T[LANG].book}</button>
  </div>`;
+ if(d.uid)loadRevsFor(d);
  if(!keep)$('dmodal').classList.add('on');
  setSEO(name+' — '+cl(d.cat)+(d.city?' · '+d.city:'')+' | Beautia Collection',(d.bio||(name+' — beauty designer portfolio'))+' · Beautia Collection');
 }
@@ -677,14 +705,35 @@ function renderPf(){const w=ME.works||[];
   <input type="file" id="pfFile" accept="image/*" multiple style="display:none" onchange="addPfPhotos(event)">
   <div class="pfgrid">${w.map((s,i)=>`<div class="pfitem"><div class="pft" style="background-image:url('${im(s,400)}')"><button class="pfdel" onclick="delPfPhoto(${i})">×</button></div><textarea class="pfcap" rows="2" maxlength="600" placeholder="${T[LANG].pfCaption}" onchange="pfSetCaption(${i},this.value)">${esc(workText(s))}</textarea></div>`).join('')}${w.length<12?`<div class="pfitem"><div class="pfadd" onclick="document.getElementById('pfFile').click()"><i class="ti ti-camera-plus"></i><span>${T[LANG].addPhoto}</span></div></div>`:''}</div>
   <div class="pfcount">${w.length}/12</div>
+  <div class="il" style="margin-top:18px">${T[LANG].svcTitle} <span style="font-weight:600;color:var(--sub)">· ${T[LANG].svcHint}</span></div>
+  <div id="svclist">${(ME.services||[]).map((s,i)=>`<div class="svcrow"><input class="linput sn" value="${esc(s.n||'')}" placeholder="${T[LANG].svcName}" onchange="svcSet(${i},'n',this.value)"><input class="linput sp" value="${esc(s.p||'')}" placeholder="${T[LANG].svcPrice}" onchange="svcSet(${i},'p',this.value)"><input class="linput sd" value="${esc(s.du||'')}" placeholder="${T[LANG].svcDur}" onchange="svcSet(${i},'du',this.value)"><button class="svcdel" onclick="svcDel(${i})">×</button></div>`).join('')}</div>
+  ${(ME.services||[]).length<10?`<button class="svcbk" style="margin-top:10px" onclick="svcAdd()">＋ ${T[LANG].addSvc}</button>`:''}
   ${w.length?`<button class="lcont" style="width:100%;margin-top:14px" onclick="closePf();openIdCard('me')"><i class="ti ti-id-badge-2"></i> ${T[LANG].idCard}</button>`:''}`;}
+function svcAdd(){ME.services=ME.services||[];ME.services.push({n:'',p:'',du:''});renderPf();}
+function svcSet(i,k,v){if(!ME.services||!ME.services[i])return;ME.services[i][k]=(v||'').slice(0,80);persistShop();buildTiles();}
+function svcDel(i){ME.services.splice(i,1);renderPf();persistShop();}
 function pfDownscale(dataUrl,max,cb){const img=new Image();img.onload=function(){let w=img.width,h=img.height;if(w>=h&&w>max){h=Math.round(h*max/w);w=max;}else if(h>w&&h>max){w=Math.round(w*max/h);h=max;}const c=document.createElement('canvas');c.width=w;c.height=h;c.getContext('2d').drawImage(img,0,0,w,h);try{cb(c.toDataURL('image/jpeg',0.82));}catch(e){cb(dataUrl);}};img.onerror=function(){cb(dataUrl);};img.src=dataUrl;}
 function addPfPhotos(e){const files=Array.prototype.slice.call(e.target.files);const room=12-(ME.works||[]).length;files.slice(0,room).forEach(function(f){if(!/^image\//.test(f.type))return;const r=new FileReader();r.onload=function(ev){pfDownscale(ev.target.result,1000,async function(d){const url=await uploadOne(d);ME.works=ME.works||[];ME.works.push({img:url,text:''});renderPf();buildTiles();render();await persistShop();});};r.readAsDataURL(f);});e.target.value='';}
 function pfSetCaption(i,val){if(!ME||!ME.works||!ME.works[i])return;var w=ME.works[i];if(typeof w!=='object')w=ME.works[i]={img:w,text:''};w.text=(val||'').slice(0,600);buildTiles();render();persistShop();}
 function delPfPhoto(i){ME.works.splice(i,1);renderPf();buildTiles();render();persistShop();}
-Object.assign(T.en,{pfHint:'Upload your best work. It appears in the gallery, your profile, and your ID card.',addPhoto:'Add photo',nearYou:'Sorted by distance from your location',photoL:'Add profile photo',changePhoto:'Change photo',byDesigner:"{n}'s portfolio",viewDesigner:'View designer',otpSentToast:'Code sent to your email ✉️',welcomeBack:'Welcome back 👋',needCode:'Enter the code',needLogin:'Please sign in',sending:'Sending…',emailPh:'you@email.com',emailL:'Email',messages:'Messages',noChats:'No conversations yet',sayHi:'Say hello to start the chat',typeMsg:'Type a message…',showOrig:'Show original',showTr:'Show translation',cantChat:'Chat is not available for this designer yet',cantChatSelf:"That's you",loginTitle:'Log in or sign up',orEmail:'or with email',loginHint:'New here? Verifying your email signs you up automatically.',myIdCard:'My ID card',columns:'Columns',color:'Color',cover:'Cover',coverLight:'Minimal',coverTint:'Color',custom:'Custom',snsL:'Social links (optional)',pfCaption:'Write a caption (optional)',featured:'Featured',claimQ:'Is this your work?',claimBtn:'Claim your profile',removeReq:'Request removal',claimToast:'Sign up to add this to your profile ✨'});
-Object.assign(T.ko,{pfHint:'대표 작업을 올리세요. 갤러리·내 프로필·ID 카드에 바로 보여요.',addPhoto:'사진 추가',nearYou:'내 위치에서 가까운 순으로 정렬',photoL:'프로필 사진 추가',changePhoto:'사진 변경',byDesigner:'{n}님의 포트폴리오',viewDesigner:'디자이너 보기',otpSentToast:'인증 코드를 이메일로 보냈어요 ✉️',welcomeBack:'다시 오신 걸 환영해요 👋',needCode:'코드를 입력하세요',needLogin:'로그인이 필요해요',sending:'전송 중…',emailPh:'you@email.com',emailL:'이메일',messages:'메시지',noChats:'아직 대화가 없어요',sayHi:'인사를 건네 대화를 시작하세요',typeMsg:'메시지 입력…',showOrig:'원문 보기',showTr:'번역 보기',cantChat:'아직 이 디자이너와는 채팅할 수 없어요',cantChatSelf:'본인이에요',loginTitle:'로그인 또는 가입',orEmail:'또는 이메일로',loginHint:'처음이세요? 이메일 인증하면 자동으로 가입돼요.',myIdCard:'내 ID 카드',columns:'컬럼',color:'색상',cover:'커버',coverLight:'미니멀',coverTint:'컬러',custom:'직접',snsL:'SNS 연동 (선택)',pfCaption:'설명을 적어보세요 (선택)',featured:'발견',claimQ:'이 작업의 주인이신가요?',claimBtn:'내 프로필로 등록',removeReq:'삭제 요청',claimToast:'가입하면 내 프로필로 가져올 수 있어요 ✨'});
-Object.assign(T.ja,{pfHint:'代表作品をアップ。ギャラリー・プロフィール・IDカードに表示されます。',addPhoto:'写真を追加',nearYou:'現在地から近い順に表示',photoL:'プロフィール写真を追加',changePhoto:'写真を変更',byDesigner:'{n}さんのポートフォリオ',viewDesigner:'デザイナーを見る',otpSentToast:'認証コードをメールに送りました ✉️',welcomeBack:'おかえりなさい 👋',needCode:'コードを入力してください',needLogin:'ログインしてください',sending:'送信中…',emailPh:'you@email.com',emailL:'メール',messages:'メッセージ',noChats:'まだ会話がありません',sayHi:'挨拶して会話を始めましょう',typeMsg:'メッセージを入力…',showOrig:'原文を表示',showTr:'翻訳を表示',cantChat:'このデザイナーとはまだチャットできません',cantChatSelf:'ご本人です',loginTitle:'ログイン / 登録',orEmail:'またはメールで',loginHint:'初めての方はメール認証で自動的に登録されます。',myIdCard:'マイIDカード',columns:'カラム',color:'カラー',cover:'カバー',coverLight:'ミニマル',coverTint:'カラー',custom:'カスタム',snsL:'SNSリンク（任意）',pfCaption:'キャプションを追加（任意）',featured:'ピック',claimQ:'この作品の作者ですか？',claimBtn:'プロフィールに登録',removeReq:'削除リクエスト',claimToast:'登録すると自分のプロフィールに追加できます ✨'});
+Object.assign(T.en,{pfHint:'Upload your best work. It appears in the gallery, your profile, and your ID card.',addPhoto:'Add photo',nearYou:'Sorted by distance from your location',photoL:'Add profile photo',changePhoto:'Change photo',byDesigner:"{n}'s portfolio",viewDesigner:'View designer',otpSentToast:'Code sent to your email ✉️',welcomeBack:'Welcome back 👋',needCode:'Enter the code',needLogin:'Please sign in',sending:'Sending…',emailPh:'you@email.com',emailL:'Email',messages:'Messages',noChats:'No conversations yet',sayHi:'Say hello to start the chat',typeMsg:'Type a message…',showOrig:'Show original',showTr:'Show translation',cantChat:'Chat is not available for this designer yet',cantChatSelf:"That's you",loginTitle:'Log in or sign up',orEmail:'or with email',loginHint:'New here? Verifying your email signs you up automatically.',myIdCard:'My ID card',columns:'Columns',color:'Color',cover:'Cover',coverLight:'Minimal',coverTint:'Color',custom:'Custom',snsL:'Social links (optional)',pfCaption:'Write a caption (optional)',featured:'Featured',claimQ:'Is this your work?',claimBtn:'Claim your profile',removeReq:'Request removal',claimToast:'Sign up to add this to your profile ✨',
+svcTitle:'Services & prices',svcHint:'shown on your profile',svcName:'Service (e.g. Cut + perm)',svcPrice:'Price (e.g. ₩80,000)',svcDur:'Duration',addSvc:'Add service',
+book2:'Book',bkTitle:'Request a booking',bkService:'Service',bkConsult:'Decide after consult',bkDate:'Date',bkTime:'Time',bkNote:'Note (optional)',bkNotePh:'Reference photo link, requests…',bkSend:'Send request',bkSent:'Booking request sent ✨',bkFail:'Failed',bkNeedDate:'Pick a date',
+myBookings:'Bookings',bkNone:'No bookings yet',bk_pending:'Pending',bk_accepted:'Accepted',bk_declined:'Declined',bk_done:'Completed',bk_cancelled:'Cancelled',
+bkAccept:'Accept',bkDecline:'Decline',bkComplete:'Mark completed',bkCancel:'Cancel',
+writeReview:'Write a review',rvTitle:'How was it?',rvPh:'Share your experience (optional)',rvSend:'Submit review',rvThanks:'Thanks for your review ✨'});
+Object.assign(T.ko,{pfHint:'대표 작업을 올리세요. 갤러리·내 프로필·ID 카드에 바로 보여요.',addPhoto:'사진 추가',nearYou:'내 위치에서 가까운 순으로 정렬',photoL:'프로필 사진 추가',changePhoto:'사진 변경',byDesigner:'{n}님의 포트폴리오',viewDesigner:'디자이너 보기',otpSentToast:'인증 코드를 이메일로 보냈어요 ✉️',welcomeBack:'다시 오신 걸 환영해요 👋',needCode:'코드를 입력하세요',needLogin:'로그인이 필요해요',sending:'전송 중…',emailPh:'you@email.com',emailL:'이메일',messages:'메시지',noChats:'아직 대화가 없어요',sayHi:'인사를 건네 대화를 시작하세요',typeMsg:'메시지 입력…',showOrig:'원문 보기',showTr:'번역 보기',cantChat:'아직 이 디자이너와는 채팅할 수 없어요',cantChatSelf:'본인이에요',loginTitle:'로그인 또는 가입',orEmail:'또는 이메일로',loginHint:'처음이세요? 이메일 인증하면 자동으로 가입돼요.',myIdCard:'내 ID 카드',columns:'컬럼',color:'색상',cover:'커버',coverLight:'미니멀',coverTint:'컬러',custom:'직접',snsL:'SNS 연동 (선택)',pfCaption:'설명을 적어보세요 (선택)',featured:'발견',claimQ:'이 작업의 주인이신가요?',claimBtn:'내 프로필로 등록',removeReq:'삭제 요청',claimToast:'가입하면 내 프로필로 가져올 수 있어요 ✨',
+svcTitle:'서비스·가격',svcHint:'프로필에 표시돼요',svcName:'서비스명 (예: 컷+펌)',svcPrice:'가격 (예: ₩80,000)',svcDur:'소요시간',addSvc:'서비스 추가',
+book2:'예약',bkTitle:'예약 요청',bkService:'서비스',bkConsult:'상담 후 결정',bkDate:'날짜',bkTime:'시간',bkNote:'요청사항 (선택)',bkNotePh:'참고 사진 링크, 원하는 스타일 등…',bkSend:'예약 요청 보내기',bkSent:'예약 요청을 보냈어요 ✨',bkFail:'실패했어요',bkNeedDate:'날짜를 선택하세요',
+myBookings:'예약',bkNone:'아직 예약이 없어요',bk_pending:'대기중',bk_accepted:'수락됨',bk_declined:'거절됨',bk_done:'완료',bk_cancelled:'취소됨',
+bkAccept:'수락',bkDecline:'거절',bkComplete:'완료 처리',bkCancel:'취소',
+writeReview:'리뷰 쓰기',rvTitle:'어떠셨나요?',rvPh:'경험을 들려주세요 (선택)',rvSend:'리뷰 등록',rvThanks:'리뷰 감사합니다 ✨'});
+Object.assign(T.ja,{pfHint:'代表作品をアップ。ギャラリー・プロフィール・IDカードに表示されます。',addPhoto:'写真を追加',nearYou:'現在地から近い順に表示',photoL:'プロフィール写真を追加',changePhoto:'写真を変更',byDesigner:'{n}さんのポートフォリオ',viewDesigner:'デザイナーを見る',otpSentToast:'認証コードをメールに送りました ✉️',welcomeBack:'おかえりなさい 👋',needCode:'コードを入力してください',needLogin:'ログインしてください',sending:'送信中…',emailPh:'you@email.com',emailL:'メール',messages:'メッセージ',noChats:'まだ会話がありません',sayHi:'挨拶して会話を始めましょう',typeMsg:'メッセージを入力…',showOrig:'原文を表示',showTr:'翻訳を表示',cantChat:'このデザイナーとはまだチャットできません',cantChatSelf:'ご本人です',loginTitle:'ログイン / 登録',orEmail:'またはメールで',loginHint:'初めての方はメール認証で自動的に登録されます。',myIdCard:'マイIDカード',columns:'カラム',color:'カラー',cover:'カバー',coverLight:'ミニマル',coverTint:'カラー',custom:'カスタム',snsL:'SNSリンク（任意）',pfCaption:'キャプションを追加（任意）',featured:'ピック',claimQ:'この作品の作者ですか？',claimBtn:'プロフィールに登録',removeReq:'削除リクエスト',claimToast:'登録すると自分のプロフィールに追加できます ✨',
+svcTitle:'メニュー・料金',svcHint:'プロフィールに表示されます',svcName:'メニュー名（例: カット+パーマ）',svcPrice:'料金（例: ¥8,000）',svcDur:'所要時間',addSvc:'メニュー追加',
+book2:'予約',bkTitle:'予約リクエスト',bkService:'メニュー',bkConsult:'相談して決める',bkDate:'日付',bkTime:'時間',bkNote:'ご要望（任意）',bkNotePh:'参考写真のリンク、ご希望など…',bkSend:'リクエストを送る',bkSent:'予約リクエストを送りました ✨',bkFail:'失敗しました',bkNeedDate:'日付を選んでください',
+myBookings:'予約',bkNone:'まだ予約がありません',bk_pending:'承認待ち',bk_accepted:'承認済み',bk_declined:'お断り',bk_done:'完了',bk_cancelled:'キャンセル',
+bkAccept:'承認',bkDecline:'お断り',bkComplete:'完了にする',bkCancel:'キャンセル',
+writeReview:'レビューを書く',rvTitle:'いかがでしたか？',rvPh:'体験をシェアしてください（任意）',rvSend:'レビュー送信',rvThanks:'レビューありがとうございます ✨'});
 
 let iLang='ko';
 function openI(did){const d=dById(did);iLang=LANG==='en'?'ko':LANG;
@@ -700,7 +749,7 @@ function openI(did){const d=dById(did);iLang=LANG==='en'?'ko':LANG;
 }
 function setILang(l){iLang=l;document.querySelectorAll('#iselrow button').forEach(b=>b.classList.toggle('on',b.textContent.toLowerCase()===l));$('imsg').placeholder=T[l].inqPH;}
 function closeI(){$('imodal').classList.remove('on');}
-document.addEventListener('keydown',e=>{if(e.key==='Escape'){closeFa();closeChat();closeWork();closePf();closeId();closeI();closeD();closeLogin();closeUmenu();}});
+document.addEventListener('keydown',e=>{if(e.key==='Escape'){closeBk();closeFa();closeChat();closeWork();closePf();closeId();closeI();closeD();closeLogin();closeUmenu();}});
 Object.assign(T.en,{idCard:'ID Card',idDl:'Download',idShare:'Share',idPrep:'Creating image…',idFail:'Download failed (try Share)',linkCopied:'Link copied ✨',saveHint:'Press & hold the image to save it 📥',done:'Done'});
 Object.assign(T.ko,{idCard:'ID 카드',idDl:'다운로드',idShare:'공유',idPrep:'이미지 만드는 중…',idFail:'다운로드 실패 (공유로 시도)',linkCopied:'링크 복사됨 ✨',saveHint:'이미지를 꾹 눌러 저장하세요 📥',done:'닫기'});
 Object.assign(T.ja,{idCard:'IDカード',idDl:'保存',idShare:'シェア',idPrep:'画像を作成中…',idFail:'保存失敗（シェアでお試し）',linkCopied:'リンクをコピー ✨',saveHint:'画像を長押しして保存してください 📥',done:'閉じる'});
@@ -714,13 +763,13 @@ const SB_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZ
 const SB=window.supabase.createClient(SB_URL,SB_KEY,{auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:true}});
 function roleIn(r){return (r==='designer'||r==='owner'||r==='desg')?'desg':'cust';}
 function profToMe(p){const s=p.shop||{};const photos=[];(s.photos||[]).forEach(function(x){if(x&&photos.indexOf(x)<0)photos.push(x);});
- return {uid:p.id,role:roleIn(p.role),name:p.nickname||p.full_name||'',country:'',city:p.region||s.area||'',area:s.area||'',spec:(s.specialties||p.interests||[]),career:s.career||'',avatar:s.avatar||p.avatar_url||'',insta:(s.insta||'').replace(/^@/,''),sns:s.sns||(s.insta?{instagram:(s.insta||'').replace(/^@/,'')}:{}),shopName:s.name||'',bio:p.bio||'',works:photos,idCols:s.idCols||2,idColor:s.idColor||'',idTheme:s.idTheme||'light',verified:true,provider:'email',joined:p.created_at?new Date(p.created_at).getTime():Date.now()};}
+ return {uid:p.id,role:roleIn(p.role),name:p.nickname||p.full_name||'',country:'',city:p.region||s.area||'',area:s.area||'',spec:(s.specialties||p.interests||[]),career:s.career||'',avatar:s.avatar||p.avatar_url||'',insta:(s.insta||'').replace(/^@/,''),sns:s.sns||(s.insta?{instagram:(s.insta||'').replace(/^@/,'')}:{}),shopName:s.name||'',bio:p.bio||'',works:photos,idCols:s.idCols||2,idColor:s.idColor||'',idTheme:s.idTheme||'light',services:s.services||[],verified:true,provider:'email',joined:p.created_at?new Date(p.created_at).getTime():Date.now()};}
 async function uploadOne(dataUrl){try{const sess=(await SB.auth.getSession()).data.session;if(!sess||dataUrl.indexOf('data:')!==0)return dataUrl;const uid=sess.user.id;const blob=await (await fetch(dataUrl)).blob();const path=uid+'/'+Date.now()+'-'+Math.random().toString(36).slice(2,8)+'.jpg';const up=await SB.storage.from('beautia').upload(path,blob,{contentType:'image/jpeg',upsert:false});if(up.error){console.warn('[beautia] storage upload failed → base64 fallback:',up.error&&up.error.message);return dataUrl;}const pu=SB.storage.from('beautia').getPublicUrl(path);return (pu.data&&pu.data.publicUrl)||dataUrl;}catch(e){return dataUrl;}}
-async function persistShop(){if(!ME||!ME.uid)return;try{await SB.from('profiles').update({shop:{name:ME.shopName||'',area:ME.city||'',specialties:ME.spec||[],avatar:ME.avatar||'',photos:ME.works||[],career:ME.career||'',insta:ME.insta||'',sns:ME.sns||{},idCols:ME.idCols||2,idColor:ME.idColor||'',idTheme:ME.idTheme||'light'}}).eq('id',ME.uid);}catch(e){}}
+async function persistShop(){if(!ME||!ME.uid)return;try{await SB.from('profiles').update({shop:{name:ME.shopName||'',area:ME.city||'',specialties:ME.spec||[],avatar:ME.avatar||'',photos:ME.works||[],career:ME.career||'',insta:ME.insta||'',sns:ME.sns||{},idCols:ME.idCols||2,idColor:ME.idColor||'',idTheme:ME.idTheme||'light',services:ME.services||[]}}).eq('id',ME.uid);}catch(e){}}
 async function onAuth(session){
  if(!session){ME=null;renderAuth();buildTiles();render();return;}
  let prof=null;try{prof=(await SB.from('profiles').select('id,nickname,role,region,bio,interests,shop,avatar_url,full_name,created_at').eq('id',session.user.id).maybeSingle()).data;}catch(e){}
- if(prof&&prof.nickname){ME=profToMe(prof);closeLogin();renderAuth();buildTiles();render();loadSaves();checkUnread();refreshOwner();return;}
+ if(prof&&prof.nickname){ME=profToMe(prof);closeLogin();renderAuth();buildTiles();render();loadSaves();checkUnread();refreshOwner();loadBkBadge();return;}
  if($('lmodal')&&$('lmodal').classList.contains('on'))return;
  let pend={};try{pend=JSON.parse(localStorage.getItem('beautia_coll_pending')||'{}');}catch(e){}
  const um=session.user.user_metadata||{};
@@ -734,6 +783,7 @@ function toggleUmenu(e){if(e)e.stopPropagation();const m=$('umenu');if(m.classLi
  m.innerHTML=`<div class="uh"><div class="un">${T[LANG].hi}, ${esc(ME?ME.name:'')}</div><div class="ur">${ME?roleLabel(ME.role):''}${ME&&ME.verified?' · '+T[LANG].verifiedMember:''}</div></div>
  <a onclick="openProfile();closeUmenu()"><i class="ti ti-user"></i> ${T[LANG].profile}</a>
  <a onclick="openChat();closeUmenu()"><i class="ti ti-message-2"></i> ${T[LANG].messages}${chatUnread>0?'<span class="undot"></span>':''}</a>
+ <a onclick="openBookings();closeUmenu()"><i class="ti ti-calendar-heart"></i> ${T[LANG].myBookings}${bkPend>0?'<span class="undot"></span>':''}</a>
  ${ME&&ME.works&&ME.works.length?`<a onclick="closeUmenu();openIdCard('me')"><i class="ti ti-id-badge-2"></i> ${T[LANG].myIdCard}</a>`:''}
  ${ME&&ME.isOwner?`<a onclick="closeUmenu();openFeaturedAdd()"><i class="ti ti-plus"></i> Featured 추가</a>`:''}
  <a onclick="setView('saved');closeUmenu()"><i class="ti ti-heart"></i> ${T[LANG].saved}</a>
@@ -800,7 +850,7 @@ async function suVerify(){const v=$('suCode')?$('suCode').value.trim():'';if(!v)
  const {data,error}=await SB.auth.verifyOtp({email:SU.contact,token:v,type:'email'});
  if(error){toast(T[LANG].codeWrong);return;}
  const uid=data.user.id;let prof=null;try{prof=(await SB.from('profiles').select('id,nickname,role,region,bio,interests,shop,avatar_url,full_name,created_at').eq('id',uid).maybeSingle()).data;}catch(e){}
- if(prof&&prof.nickname){ME=profToMe(prof);closeLogin();renderAuth();buildTiles();render();loadSaves();checkUnread();refreshOwner();toast(T[LANG].welcomeBack||T[LANG].verifiedToast);return;}
+ if(prof&&prof.nickname){ME=profToMe(prof);closeLogin();renderAuth();buildTiles();render();loadSaves();checkUnread();refreshOwner();loadBkBadge();toast(T[LANG].welcomeBack||T[LANG].verifiedToast);return;}
  SU.verified=true;SU.uid=uid;renderSU();toast(T[LANG].verifiedToast);}
 async function suFinish(){const wasEdit=SU.edit;
  const sess=(await SB.auth.getSession()).data.session;
@@ -817,7 +867,7 @@ async function suFinish(){const wasEdit=SU.edit;
  if(error){toast('저장 실패: '+error.message);return;}
  let prof=(await SB.from('profiles').select('id,nickname,role,region,bio,interests,shop,avatar_url,full_name,created_at').eq('id',uid).maybeSingle()).data;
  ME=prof?profToMe(prof):null;
- loadSaves();checkUnread();refreshOwner();
+ loadSaves();checkUnread();refreshOwner();loadBkBadge();
  try{localStorage.removeItem('beautia_coll_pending');}catch(e){}
  closeLogin();renderAuth();buildTiles();render();
  toast(wasEdit?'✅':(T[LANG].joinDone+(SU.role==='desg'?' — '+T[LANG].joinToast:'')));}
@@ -903,7 +953,7 @@ async function loadDesigners(){try{
       bio:p.bio||'',avatar:s.avatar||p.avatar_url||'',insta:(s.insta||'').replace(/^@/,''),
       handles:s.sns||(s.insta?{instagram:(s.insta||'').replace(/^@/,'')}:{}),
       works:photos,ba:[photos[0],photos[Math.min(1,photos.length-1)]],
-      sns:Object.keys(s.sns||{}).filter(function(k){return (s.sns||{})[k];}),reviews:[]});
+      sns:Object.keys(s.sns||{}).filter(function(k){return (s.sns||{})[k];}),services:(s.services||[]),reviews:[]});
   });
   DUSERS=list;buildTiles();renderCities();render();
   var _pu=new URLSearchParams(location.search).get('u');if(_pu&&!document.querySelector('.dmodal.on'))openByUid(_pu);
@@ -918,6 +968,78 @@ https://..."></textarea>
   <button class="lcont" style="width:100%;margin-top:14px" onclick="submitFeatured()">추가</button>`;
   $('famodal').classList.add('on');}
 function closeFa(){$('famodal').classList.remove('on');}
+// ===== 마켓플레이스: 예약 요청(무료·결제 없음) + 리뷰 =====
+let bkPend=0,rvStars=5;
+function closeBk(){$('bkmodal').classList.remove('on');}
+function bkStatusLabel(s){return T[LANG]['bk_'+s]||s;}
+function openBook(did,svcIdx){const d=dById(did);if(!d||!d.uid)return;
+ if(!(ME&&ME.uid)){openLogin('');toast(T[LANG].needLogin);return;}
+ if(ME.uid===d.uid){toast(T[LANG].cantChatSelf);return;}
+ const name=(LANG==='ko'&&d.ko)?d.ko:d.name;const svcs=d.services||[];
+ var today=new Date().toISOString().slice(0,10);
+ $('bkcard').innerHTML=`<button class="iclose" onclick="closeBk()" style="position:absolute;top:16px;right:20px;font-size:24px;color:var(--sub);z-index:2">×</button>
+  <h3 class="serif">${T[LANG].bkTitle}</h3>
+  <div class="pfsub">${esc(d.flag)} ${esc(name)} · ${esc(cl(d.cat))}${d.city?' · '+esc(d.city):''}</div>
+  <div class="il">${T[LANG].bkService}</div>
+  <select class="linput" id="bkSvc">${svcs.map((s,i)=>`<option value="${i}" ${i===svcIdx?'selected':''}>${esc(s.n)}${s.p?' — '+esc(s.p):''}</option>`).join('')}<option value="-1" ${svcIdx==null&&!svcs.length?'selected':''}>${T[LANG].bkConsult}</option></select>
+  <div class="il">${T[LANG].bkDate}</div><input class="linput" type="date" id="bkDate" min="${today}" value="${today}">
+  <div class="il">${T[LANG].bkTime}</div><input class="linput" type="time" id="bkTime" value="11:00">
+  <div class="il">${T[LANG].bkNote}</div><textarea class="linput" id="bkNote" rows="3" style="resize:none" placeholder="${T[LANG].bkNotePh}"></textarea>
+  <button class="lcont" style="width:100%;margin-top:16px" onclick="submitBooking('${d.id}')"><i class="ti ti-calendar-heart"></i> ${T[LANG].bkSend}</button>`;
+ $('bkmodal').classList.add('on');}
+async function submitBooking(did){const d=dById(did);if(!d||!d.uid||!ME||!ME.uid)return;
+ var si=parseInt($('bkSvc').value,10);var svc=(si>=0&&d.services&&d.services[si])?{n:d.services[si].n,p:d.services[si].p||'',du:d.services[si].du||''}:{n:T[LANG].bkConsult,p:'',du:''};
+ var date=$('bkDate').value,time=$('bkTime').value,note=($('bkNote').value||'').slice(0,1000);
+ if(!date){toast(T[LANG].bkNeedDate);return;}
+ try{var r=await SB.from('bookings').insert({customer:ME.uid,designer:d.uid,service:svc,date:date,time:time,note:note});
+  if(r.error){toast(T[LANG].bkFail+': '+r.error.message);return;}
+ }catch(e){toast(T[LANG].bkFail);return;}
+ closeBk();toast(T[LANG].bkSent);}
+async function openBookings(){if(!(ME&&ME.uid)){openLogin('');return;}
+ $('bkcard').innerHTML=`<button class="iclose" onclick="closeBk()" style="position:absolute;top:16px;right:20px;font-size:24px;color:var(--sub);z-index:2">×</button>
+  <h3 class="serif">${T[LANG].myBookings}</h3><div id="bklist" class="pfsub">…</div>`;
+ $('bkmodal').classList.add('on');
+ var rows=[];try{rows=(await SB.from('bookings').select('*').or('customer.eq.'+ME.uid+',designer.eq.'+ME.uid).order('created_at',{ascending:false}).limit(50)).data||[];}catch(e){}
+ var revd={};try{(await SB.from('reviews').select('booking').eq('customer',ME.uid)).data.forEach(function(r){revd[r.booking]=1;});}catch(e){}
+ var ids=[];rows.forEach(function(b){ids.push(b.customer);ids.push(b.designer);});
+ await fetchProfiles(ids);
+ if(!rows.length){$('bklist').innerHTML=T[LANG].bkNone;return;}
+ $('bklist').innerHTML=rows.map(function(b){
+   var mine=b.customer===ME.uid;var other=PROFCACHE[mine?b.designer:b.customer]||{name:'User'};
+   var svc=b.service||{};var acts='';
+   if(!mine&&b.status==='pending')acts=`<button class="bkbtn ok" onclick="setBk('${b.id}','accepted')">${T[LANG].bkAccept}</button><button class="bkbtn warn" onclick="setBk('${b.id}','declined')">${T[LANG].bkDecline}</button>`;
+   else if(!mine&&b.status==='accepted')acts=`<button class="bkbtn ok" onclick="setBk('${b.id}','done')">${T[LANG].bkComplete}</button>`;
+   else if(mine&&b.status==='pending')acts=`<button class="bkbtn" onclick="setBk('${b.id}','cancelled')">${T[LANG].bkCancel}</button>`;
+   else if(mine&&b.status==='done'&&!revd[b.id])acts=`<button class="bkbtn ok" onclick="openReview('${b.id}','${b.designer}')">${T[LANG].writeReview}</button>`;
+   return `<div class="bkcard"><div class="bkhead"><span class="bkwho">${mine?'→ ':'← '}${esc(other.name)}</span><span class="bkst ${esc(b.status)}">${bkStatusLabel(b.status)}</span></div>
+    <div class="bkmeta">${esc(svc.n||'')}${svc.p?' · <b>'+esc(svc.p)+'</b>':''}<br>${esc(b.date||'')} ${esc(b.time||'')}</div>
+    ${b.note?`<div class="bknote">${esc(b.note)}</div>`:''}
+    ${acts?`<div class="bkacts">${acts}</div>`:''}</div>`;
+ }).join('');}
+async function setBk(id,status){try{var r=await SB.from('bookings').update({status:status}).eq('id',id);if(r.error){toast(T[LANG].bkFail);return;}}catch(e){toast(T[LANG].bkFail);return;}
+ toast(bkStatusLabel(status)+' ✓');loadBkBadge();openBookings();}
+function openReview(bid,designer){rvStars=5;
+ $('bkcard').innerHTML=`<button class="iclose" onclick="openBookings()" style="position:absolute;top:16px;right:20px;font-size:24px;color:var(--sub);z-index:2">×</button>
+  <h3 class="serif">${T[LANG].rvTitle}</h3>
+  <div class="rvstars" id="rvstars">${[1,2,3,4,5].map(n=>`<i class="ti ti-star-filled ${n<=rvStars?'on':''}" onclick="setRvStars(${n})"></i>`).join('')}</div>
+  <textarea class="linput" id="rvBody" rows="4" style="resize:none;margin-top:8px" placeholder="${T[LANG].rvPh}"></textarea>
+  <button class="lcont" style="width:100%;margin-top:16px" onclick="submitReview('${bid}','${designer}')">${T[LANG].rvSend}</button>`;}
+function setRvStars(n){rvStars=n;document.querySelectorAll('#rvstars i').forEach(function(el,i){el.classList.toggle('on',i<n);});}
+async function submitReview(bid,designer){var body=($('rvBody').value||'').slice(0,1000);
+ try{var r=await SB.from('reviews').insert({booking:bid,customer:ME.uid,designer:designer,stars:rvStars,body:body});
+  if(r.error){toast(T[LANG].bkFail+': '+r.error.message);return;}
+ }catch(e){toast(T[LANG].bkFail);return;}
+ toast(T[LANG].rvThanks);openBookings();}
+async function loadRevsFor(d){try{
+ var rows=(await SB.from('reviews').select('stars,body,created_at,customer').eq('designer',d.uid).order('created_at',{ascending:false}).limit(20)).data||[];
+ if(!rows.length)return;
+ await fetchProfiles(rows.map(function(r){return r.customer;}));
+ var avg=(rows.reduce(function(a,r){return a+r.stars;},0)/rows.length).toFixed(1);
+ var el=document.getElementById('revsec');if(!el)return;
+ el.innerHTML=`<div class="st">${T[LANG].reviews} · ${rows.length} · ★ ${avg}</div>`+rows.map(function(r,i){var p=PROFCACHE[r.customer]||{name:'User'};
+  return `<div class="rev"><div class="ra" style="background:${GR[i%GR.length]}">${esc((p.name||'?')[0])}</div><div><div class="rn">${esc(p.name)}</div><div class="rs">${stars(r.stars)}</div><div class="rt">${esc(r.body||'')}</div></div></div>`;}).join('');
+}catch(e){}}
+async function loadBkBadge(){bkPend=0;if(!(ME&&ME.uid))return;try{var r=await SB.from('bookings').select('id',{count:'exact',head:true}).eq('designer',ME.uid).eq('status','pending');bkPend=r.count||0;}catch(e){}}
 async function submitFeatured(){var ig=igClean($('faIG')?$('faIG').value:'');var cat=$('faCat')?$('faCat').value:'Hair';var city=$('faCity')?$('faCity').value.trim():'';var imgs=($('faImgs')?$('faImgs').value:'').split(/\n+/).map(function(s){return s.trim();}).filter(function(s){return /^https?:\/\//.test(s);}).slice(0,12);if(!ig){toast('인스타 핸들을 입력하세요');return;}if(!imgs.length){toast('사진 URL을 넣으세요');return;}
   try{var r=await SB.from('featured').insert({insta:ig,cat:cat,city:city,imgs:imgs});if(r.error){toast('저장 실패: '+r.error.message);return;}}catch(e){toast('저장 실패');return;}
   closeFa();await loadFeatured();toast('추가됐어요 ✨');}
@@ -939,7 +1061,7 @@ fetch('https://ipapi.co/json/').then(function(r){return r.ok?r.json():null;}).th
    if(open&&!locked){sy=window.scrollY||window.pageYOffset||0;document.body.style.top=(-sy)+'px';document.body.classList.add('mlock');locked=true;}
    else if(!open&&locked){document.body.classList.remove('mlock');document.body.style.top='';locked=false;window.scrollTo(0,sy);}}
  var mo=new MutationObserver(sync);
- ['dmodal','wmodal','lmodal','imodal','idmodal','pfmodal','chatmodal','famodal'].forEach(function(id){var el=document.getElementById(id);if(el)mo.observe(el,{attributes:true,attributeFilter:['class']});});
+ ['dmodal','wmodal','lmodal','imodal','idmodal','pfmodal','chatmodal','famodal','bkmodal'].forEach(function(id){var el=document.getElementById(id);if(el)mo.observe(el,{attributes:true,attributeFilter:['class']});});
 })();
 </script>
 </body></html>
