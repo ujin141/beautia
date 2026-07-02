@@ -447,7 +447,7 @@ const FEATURED=[
 ];
 function featuredDesigners(){return FEATURED.map(function(f,i){var h=igClean(f.insta||'');var imgs=(f.imgs||[]).filter(Boolean);return {id:'f'+i,name:h?('@'+h):'Featured',ko:'',cat:f.cat||'Hair',city:f.city||'',area:f.area||'',flag:'📌',rating:0,rev:0,years:'',ko_ok:0,ver:0,featured:true,insta:h,handles:h?{instagram:h}:{},bio:'',avatar:'',works:imgs,ba:[imgs[0],imgs[Math.min(1,imgs.length-1)]],sns:h?['instagram']:[],reviews:[]};}).filter(function(d){return d.works.length;});}
 let DUSERS=[];
-function allD(){const m=meDesigner();var others=DUSERS.filter(function(d){return !(m&&d.uid===m.uid)&&!D.some(function(x){return x.uid===d.uid;});});var base=featuredDesigners().concat(others).concat(D);return m?[m].concat(base):base;}
+function allD(){const m=meDesigner();var others=DUSERS.filter(function(d){return !(m&&d.uid===m.uid)&&!D.some(function(x){return x.uid===d.uid;});});var dd=D.filter(function(x){return !(m&&x.uid===m.uid);});var base=featuredDesigners().concat(others).concat(dd);return m?[m].concat(base):base;}
 function dById(id){return allD().find(d=>d.id===id);}
 function openByUid(uid){if(!uid)return false;var d=allD().find(function(x){return x.uid===uid;});if(d){openD(d.id);return true;}return false;}
 let TILES=[];
