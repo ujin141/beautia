@@ -38,7 +38,9 @@ create policy bk_update on public.bookings for update
   with check (auth.uid() = customer or auth.uid() = designer);
 
 -- 리뷰 (완료된 예약당 1개, 공개 읽기)
-create table if not exists public.reviews (
+-- ※ 테이블명이 designer_reviews 인 이유: 옛 컨셉의 public.reviews(shop_id/rating/content)가
+--   이미 존재해서 이름 충돌 → 옛 테이블은 건드리지 않고 새 이름 사용.
+create table if not exists public.designer_reviews (
   id          uuid primary key default gen_random_uuid(),
   booking     uuid not null unique references public.bookings(id) on delete cascade,
   customer    uuid not null references auth.users(id) on delete cascade,
@@ -46,18 +48,18 @@ create table if not exists public.reviews (
   stars       int  not null check (stars between 1 and 5),
   body        text,
   created_at  timestamptz not null default now(),
-  constraint reviews_body_len check (char_length(coalesce(body,'')) <= 1000)
+  constraint drv_body_len check (char_length(coalesce(body,'')) <= 1000)
 );
-create index if not exists reviews_designer_idx on public.reviews(designer, created_at desc);
+create index if not exists drv_designer_idx on public.designer_reviews(designer, created_at desc);
 
-alter table public.reviews enable row level security;
+alter table public.designer_reviews enable row level security;
 
-drop policy if exists rv_read on public.reviews;
-create policy rv_read on public.reviews for select using (true);
+drop policy if exists drv_read on public.designer_reviews;
+create policy drv_read on public.designer_reviews for select using (true);
 
 -- 본인이 고객이고, 해당 예약이 done 상태일 때만 작성 가능
-drop policy if exists rv_insert on public.reviews;
-create policy rv_insert on public.reviews for insert
+drop policy if exists drv_insert on public.designer_reviews;
+create policy drv_insert on public.designer_reviews for insert
   with check (
     auth.uid() = customer
     and exists (select 1 from public.bookings b

@@ -1000,7 +1000,7 @@ async function openBookings(){if(!(ME&&ME.uid)){openLogin('');return;}
   <h3 class="serif">${T[LANG].myBookings}</h3><div id="bklist" class="pfsub">…</div>`;
  $('bkmodal').classList.add('on');
  var rows=[];try{rows=(await SB.from('bookings').select('*').or('customer.eq.'+ME.uid+',designer.eq.'+ME.uid).order('created_at',{ascending:false}).limit(50)).data||[];}catch(e){}
- var revd={};try{(await SB.from('reviews').select('booking').eq('customer',ME.uid)).data.forEach(function(r){revd[r.booking]=1;});}catch(e){}
+ var revd={};try{(await SB.from('designer_reviews').select('booking').eq('customer',ME.uid)).data.forEach(function(r){revd[r.booking]=1;});}catch(e){}
  var ids=[];rows.forEach(function(b){ids.push(b.customer);ids.push(b.designer);});
  await fetchProfiles(ids);
  if(!rows.length){$('bklist').innerHTML=T[LANG].bkNone;return;}
@@ -1026,12 +1026,12 @@ function openReview(bid,designer){rvStars=5;
   <button class="lcont" style="width:100%;margin-top:16px" onclick="submitReview('${bid}','${designer}')">${T[LANG].rvSend}</button>`;}
 function setRvStars(n){rvStars=n;document.querySelectorAll('#rvstars i').forEach(function(el,i){el.classList.toggle('on',i<n);});}
 async function submitReview(bid,designer){var body=($('rvBody').value||'').slice(0,1000);
- try{var r=await SB.from('reviews').insert({booking:bid,customer:ME.uid,designer:designer,stars:rvStars,body:body});
+ try{var r=await SB.from('designer_reviews').insert({booking:bid,customer:ME.uid,designer:designer,stars:rvStars,body:body});
   if(r.error){toast(T[LANG].bkFail+': '+r.error.message);return;}
  }catch(e){toast(T[LANG].bkFail);return;}
  toast(T[LANG].rvThanks);openBookings();}
 async function loadRevsFor(d){try{
- var rows=(await SB.from('reviews').select('stars,body,created_at,customer').eq('designer',d.uid).order('created_at',{ascending:false}).limit(20)).data||[];
+ var rows=(await SB.from('designer_reviews').select('stars,body,created_at,customer').eq('designer',d.uid).order('created_at',{ascending:false}).limit(20)).data||[];
  if(!rows.length)return;
  await fetchProfiles(rows.map(function(r){return r.customer;}));
  var avg=(rows.reduce(function(a,r){return a+r.stars;},0)/rows.length).toFixed(1);
