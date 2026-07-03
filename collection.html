@@ -401,18 +401,25 @@ body.mlock{position:fixed;left:0;right:0;width:100%;overflow:hidden;}
 .popsub{font-size:12.5px;color:var(--sub);font-weight:600;}
 .poprow{display:flex;gap:13px;overflow-x:auto;padding:2px 2px 10px;scroll-snap-type:x mandatory;-webkit-overflow-scrolling:touch;}
 .poprow::-webkit-scrollbar{height:0;}
-.pcard{flex:0 0 auto;width:170px;scroll-snap-align:start;background:#fff;border:1px solid var(--line);border-radius:16px;overflow:hidden;cursor:pointer;transition:transform .12s,box-shadow .12s;}
+.pcard{flex:0 0 auto;width:194px;scroll-snap-align:start;background:#fff;border:1px solid var(--line);border-radius:16px;overflow:hidden;cursor:pointer;transition:transform .12s,box-shadow .12s;}
 .pcard:hover{transform:translateY(-3px);box-shadow:0 16px 34px -20px rgba(40,20,40,.4);}
-.pcimg{position:relative;height:196px;background-size:cover;background-position:center;background-color:var(--soft);}
+.pcimg{position:relative;height:186px;background-size:cover;background-position:center;background-color:var(--soft);cursor:zoom-in;}
 .pcbadge{position:absolute;top:9px;left:9px;display:inline-flex;align-items:center;gap:3px;font-size:10px;font-weight:800;color:#fff;background:linear-gradient(90deg,#F0663B,#E0447A);padding:4px 8px;border-radius:999px;letter-spacing:.3px;}
 .pcbadge i{font-size:11px;}
-.pcb{padding:9px 10px 11px;}
+.pccount{position:absolute;bottom:8px;right:8px;display:inline-flex;align-items:center;gap:3px;font-size:10.5px;font-weight:700;color:#fff;background:rgba(20,10,18,.5);padding:3px 7px;border-radius:999px;}
+.pccount i{font-size:11px;}
+.pthumbs{display:grid;grid-template-columns:repeat(3,1fr);gap:3px;padding:3px;}
+.pth{position:relative;height:54px;background-size:cover;background-position:center;background-color:var(--soft);border-radius:7px;cursor:pointer;transition:opacity .12s;}
+.pth:hover{opacity:.85;}
+.pth.pthx{background:#faf6f7;cursor:default;pointer-events:none;}
+.pmore{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:rgba(30,15,25,.52);color:#fff;font-size:12px;font-weight:800;border-radius:7px;}
+.pcb{padding:8px 10px 11px;}
 .pcn{font-size:13px;font-weight:800;color:var(--ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
 .pcm{font-size:11px;color:var(--sub);font-weight:600;margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;} .pcm .star{color:var(--gold);}
 .pcbook{width:100%;margin-top:9px;display:inline-flex;align-items:center;justify-content:center;gap:4px;font-size:12px;font-weight:800;padding:7px 6px;border-radius:9px;cursor:pointer;border:1px solid var(--plum);background:var(--plum);color:#fff;font-family:inherit;transition:.12s;}
 .pcbook:hover{filter:brightness(1.09);}
 .pcbook.ghost{background:#fff;color:var(--plum);border-color:var(--line);}
-@media(max-width:760px){.pcard{width:150px;}.pcimg{height:174px;}.pophead h3{font-size:18px;}}
+@media(max-width:760px){.pcard{width:168px;}.pcimg{height:162px;}.pth{height:46px;}.pophead h3{font-size:18px;}}
 @media(max-width:1100px){.grid.dgview{grid-template-columns:repeat(2,1fr);}}
 @media(max-width:600px){.grid.dgview{grid-template-columns:1fr;gap:14px;} .dcthumbs{height:170px;}}
 @media(max-width:1100px){.grid{column-count:3;}}
@@ -692,18 +699,24 @@ const HYB={
 function hyb(){return HYB[LANG]||HYB.en;}
 function renderPopular(){var el=$('popwrap');if(!el)return;
  var show=(VIEW==='explore'&&CAT==='All'&&!(($('q').value||'').trim())&&!$('city').value);
- var pop=[];
- if(show){var sorted=TILES.slice().sort(function(a,b){return ((b.featured?1:0)-(a.featured?1:0))||((parseFloat(b.rating)||0)-(parseFloat(a.rating)||0));});
-  var seen={};sorted.forEach(function(t){var c=seen[t.did]||0;if(c<2){pop.push(t);seen[t.did]=c+1;}});pop=pop.slice(0,12);}
- if(!show||pop.length<4){el.classList.add('off');el.innerHTML='';return;}
+ // 디자이너 중복 없이(1명당 카드 1개), 인기순 정렬
+ var ds=show?allD().filter(function(d){return d.works&&d.works.length;}):[];
+ ds=ds.slice().sort(function(a,b){return ((b.featured?1:0)-(a.featured?1:0))||((parseFloat(b.rating)||0)-(parseFloat(a.rating)||0))||((b.works?b.works.length:0)-(a.works?a.works.length:0));}).slice(0,12);
+ if(!show||ds.length<3){el.classList.add('off');el.innerHTML='';return;}
  el.classList.remove('off');var L=hyb();
  el.innerHTML='<div class="pophead"><h3 class="serif">'+esc(L.popular)+'</h3><span class="popsub">'+esc(L.popularSub)+'</span></div>'+
-  '<div class="poprow">'+pop.map(function(t){var d=dById(t.did);var uid=d&&d.uid;var nm=(LANG==='ko'&&d&&d.ko)?d.ko:t.name;
-   return '<div class="pcard" onclick="openWork(\''+t.wid+'\')">'+
-     '<div class="pcimg" style="background-image:url(\''+im(t.img,500)+'\')">'+(t.featured?'<span class="pcbadge"><i class="ti ti-flame-filled"></i> HOT</span>':'')+'</div>'+
-     '<div class="pcb"><div class="pcn">'+esc(t.flag)+' '+esc(nm)+'</div>'+
-      '<div class="pcm"><span class="star">★ '+esc(t.rating)+'</span> · '+esc(cl(t.cat))+(t.city?' · '+esc(t.city):'')+'</div>'+
-      (uid?'<button class="pcbook" onclick="event.stopPropagation();openBook(\''+t.did+'\')"><i class="ti ti-calendar-heart"></i> '+esc(L.book)+'</button>':'<button class="pcbook ghost" onclick="event.stopPropagation();openD(\''+t.did+'\')">'+esc(L.prof)+'</button>')+
+  '<div class="poprow">'+ds.map(function(d){var uid=d.uid;var nm=(LANG==='ko'&&d.ko)?d.ko:d.name;var tot=d.works.length;
+   var rest=d.works.slice(1,4);var more=tot-1-rest.length;
+   var thumbs=rest.map(function(w,i){var last=(i===rest.length-1&&more>0);
+     return '<div class="pth" onclick="event.stopPropagation();openWork(\''+d.id+'_'+(i+1)+'\')" style="background-image:url(\''+im(w,220)+'\')">'+(last?'<span class="pmore">+'+more+'</span>':'')+'</div>';}).join('');
+   // 썸네일 칸 3개 고정(빈칸 채움)
+   for(var k=rest.length;k<3;k++)thumbs+='<div class="pth pthx"></div>';
+   return '<div class="pcard" onclick="openD(\''+d.id+'\')">'+
+     '<div class="pcimg" onclick="event.stopPropagation();openWork(\''+d.id+'_0\')" style="background-image:url(\''+im(d.works[0],500)+'\')">'+(d.featured?'<span class="pcbadge"><i class="ti ti-flame-filled"></i> HOT</span>':'')+'<span class="pccount"><i class="ti ti-photo"></i> '+tot+'</span></div>'+
+     '<div class="pthumbs">'+thumbs+'</div>'+
+     '<div class="pcb"><div class="pcn">'+esc(d.flag)+' '+esc(nm)+'</div>'+
+      '<div class="pcm"><span class="star">★ '+esc(d.rating||'5')+'</span> · '+esc(cl(d.cat))+(d.city?' · '+esc(d.city):'')+'</div>'+
+      (uid?'<button class="pcbook" onclick="event.stopPropagation();openBook(\''+d.id+'\')"><i class="ti ti-calendar-heart"></i> '+esc(L.book)+'</button>':'<button class="pcbook ghost" onclick="event.stopPropagation();openD(\''+d.id+'\')">'+esc(L.prof)+'</button>')+
      '</div></div>';
   }).join('')+'</div>';}
 
