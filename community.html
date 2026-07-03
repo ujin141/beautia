@@ -636,7 +636,7 @@ const D=[
   ba:['https://pzbxcktaljhesrfnqwzq.supabase.co/storage/v1/object/public/beautia/21a1661c-4974-477a-8d0d-f806457db5a4/1782731426098-xdb79x.jpg','https://pzbxcktaljhesrfnqwzq.supabase.co/storage/v1/object/public/beautia/21a1661c-4974-477a-8d0d-f806457db5a4/1782731424179-6dzmzs.jpg'],
   sns:['instagram'],reviews:[]},
 ];
-function meDesigner(){if(ME&&ME.uid&&ME.works&&ME.works.length){return {id:'me',uid:ME.uid,name:ME.name||'You',ko:'',cat:(ME.spec&&ME.spec[0])||'Hair',city:ME.city||ME.country||'',area:ME.area||'',flag:ME.role==='desg'?'🎨':'✨',rating:5.0,rev:0,years:ME.career||'',ko_ok:1,ver:ME.verified?1:0,spec:(ME.spec&&ME.spec.length?ME.spec.slice():['Hair']),bio:ME.bio||'',avatar:ME.avatar||'',insta:ME.insta||'',handles:ME.sns||{},works:ME.works.slice(),ba:[ME.works[0],ME.works[Math.min(1,ME.works.length-1)]],sns:Object.keys(ME.sns||{}).filter(function(k){return ME.sns[k];}),services:(ME.services||[]).slice(),tags:(ME.tags||[]).slice(),shopName:ME.shopName||'',reviews:[],isMe:1};}return null;}
+function meDesigner(){if(ME&&ME.uid&&ME.works&&ME.works.length){return {id:'me',uid:ME.uid,name:ME.name||'You',ko:'',cat:canonCat((ME.spec&&ME.spec[0])||'Hair'),city:ME.city||ME.country||'',area:ME.area||'',flag:ME.role==='desg'?'🎨':'✨',rating:5.0,rev:0,years:ME.career||'',ko_ok:1,ver:ME.verified?1:0,spec:(ME.spec&&ME.spec.length?ME.spec.slice():['Hair']),bio:ME.bio||'',avatar:ME.avatar||'',insta:ME.insta||'',handles:ME.sns||{},works:ME.works.slice(),ba:[ME.works[0],ME.works[Math.min(1,ME.works.length-1)]],sns:Object.keys(ME.sns||{}).filter(function(k){return ME.sns[k];}),services:(ME.services||[]).slice(),tags:(ME.tags||[]).slice(),shopName:ME.shopName||'',reviews:[],isMe:1};}return null;}
 function gradFor(s){return GR[Math.abs((s||'B').charCodeAt(0))%GR.length];}
 function avHtml(d,cls){var nm=(LANG==='ko'&&d.ko)?d.ko:(d.name||'U');return d.avatar?`<div class="${cls}" style="background-image:url('${im(d.avatar,240)}')"></div>`:`<div class="${cls} mono" style="background:${gradFor(d.name)}">${esc(nm[0]||'U')}</div>`;}
 // ===== Featured(발견한 작업): 원작자 인스타 크레딧+링크, 사칭 X. {insta, cat, city, area, imgs:[...]} 로 채우기 =====
@@ -653,6 +653,15 @@ function buildTiles(){TILES=[];allD().forEach(d=>d.works.forEach((w,i)=>TILES.pu
 const SNSMETA={instagram:['ti-brand-instagram','Instagram'],tiktok:['ti-brand-tiktok','TikTok'],youtube:['ti-brand-youtube','YouTube'],x:['ti-brand-x','X'],whatsapp:['ti-brand-whatsapp','WhatsApp'],line:['ti-brand-line','LINE'],kakao:['ti-message-circle','KakaoTalk']};
 
 const CATS=['All','Hair','Makeup','Nail','Lash','Skin','Bridal'];
+// 전문분야 텍스트(한/영/일/태, 복합어 포함)를 카테고리 필터용 canonical('Hair'…)로 정규화
+function canonCat(x){if(!x)return 'Hair';if(CATS.indexOf(x)>=0)return x;var s=String(x).toLowerCase();
+ var KW={Lash:['속눈썹','래쉬','연장','lash','eyelash','まつげ','ขนตา'],
+  Nail:['네일','손톱','젤','nail','gel','ネイル','เล็บ'],
+  Makeup:['메이크','화장','makeup','make-up','メイク','เมค'],
+  Bridal:['브라이','신부','웨딩','결혼','bridal','wedding','ブライダル','เจ้าสาว'],
+  Skin:['스킨','피부','skin','facial','スキン','ผิว'],
+  Hair:['헤어','머리','펌','파마','매직','스트레이','레이어','염색','커트','컷','hair','perm','color','colour','balayage','ヘア','ผม']};
+ for(var C in KW){for(var i=0;i<KW[C].length;i++){if(s.indexOf(KW[C][i].toLowerCase())>=0)return C;}}return 'Hair';}
 const T={
  en:{explore:'Explore',designers:'Designers',saved:'Saved',join:'Join',search:'Search designers, styles…',all:'All',tagline:'Find a beauty pro who gets your style — anywhere in the world. Browse real work, save favorites, book or message the designer.',h1:'Find a beauty pro who <em>gets your style.</em>',
   verified:'Verified',portfolio:'PORTFOLIO',beforeafter:'BEFORE / AFTER',reviews:'REVIEWS',connect:'CONNECT',before:'BEFORE',after:'AFTER',years:'yrs',allcity:'All cities',
@@ -1254,7 +1263,7 @@ async function loadDesigners(){try{
     var s=p.shop||{};var photos=(s.photos||[]).filter(Boolean);
     if(!photos.length)return;                                       // 포폴 없는 프로필 제외
     list.push({id:'u_'+p.id,uid:p.id,name:p.nickname||s.name||p.full_name||'Designer',ko:'',
-      cat:(s.specialties&&s.specialties[0])||(p.interests&&p.interests[0])||'Hair',
+      cat:canonCat((s.specialties&&s.specialties[0])||(p.interests&&p.interests[0])||''),
       city:p.region||s.area||'',area:s.area||'',flag:roleIn(p.role)==='desg'?'🎨':'✨',
       rating:5.0,rev:0,years:s.career||'',ko_ok:1,ver:1,
       spec:(s.specialties&&s.specialties.length)?s.specialties:((p.interests&&p.interests.length)?p.interests:['Hair']),
