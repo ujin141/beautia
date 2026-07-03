@@ -393,6 +393,15 @@ body.mlock{position:fixed;left:0;right:0;width:100%;overflow:hidden;}
 .dcbtn.ghost:hover{background:var(--rosebg);border-color:var(--rosebg);}
 .dcbtn.book{background:var(--plum);color:#fff;border-color:var(--plum);}
 .dcbtn.book:hover{filter:brightness(1.09);}
+/* 팔로우 버튼 */
+.followBtn{display:inline-flex;align-items:center;justify-content:center;gap:6px;font-family:inherit;font-weight:800;cursor:pointer;border:none;transition:.14s;}
+.dcfollow{position:absolute;top:10px;right:10px;width:38px;height:38px;border-radius:50%;background:rgba(255,255,255,.94);color:var(--plum);box-shadow:0 3px 12px rgba(20,12,16,.22);z-index:3;font-size:18px;padding:0;}
+.dcfollow:hover{transform:scale(1.07);}
+.dcfollow.on{background:var(--plum);color:#fff;}
+.dhfollow{margin-top:13px;font-size:14px;padding:10px 22px;border-radius:999px;background:#fff;color:var(--plum);box-shadow:0 8px 22px rgba(0,0,0,.22);}
+.dhfollow i{font-size:17px;}
+.dhfollow.on{background:rgba(255,255,255,.16);color:#fff;box-shadow:inset 0 0 0 1.5px rgba(255,255,255,.75);backdrop-filter:blur(4px);}
+.dhfollow:hover{filter:brightness(1.05);}
 /* 이번 주 인기 스타일 */
 .popwrap{margin:2px 0 20px;}
 .popwrap.off{display:none;}
@@ -607,7 +616,7 @@ body.mlock{position:fixed;left:0;right:0;width:100%;overflow:hidden;}
     <span class="nearby" id="nearby" style="display:none"></span>
     <button class="loginBtn" id="loginBtn" onclick="openLogin('')" data-t="login">Log in</button>
     <div class="avt" id="avatar" onclick="toggleUmenu(event)" style="display:none"></div>
-    <button class="join" onclick="openLogin('desg')"><i class="ti ti-plus"></i><span data-t="joinD">Join as Designer</span></button>
+    <button class="join" onclick="openLogin('')"><i class="ti ti-user-plus"></i><span data-t="signup">Sign up</span></button>
   </div>
 </header>
 <nav class="tabbar" id="tabbar">
@@ -759,6 +768,18 @@ function toggleSave(w,ev){if(ev)ev.stopPropagation();const i=SAVED.indexOf(w);
  else{SAVED.splice(i,1);toast(T[LANG].unsaveT);if(ME&&ME.uid){try{SB.from('saves').delete().eq('user_id',ME.uid).eq('wid',w).then(function(){},function(){});}catch(e){}}}
  if(!(ME&&ME.uid))saveLocal();
  render();if(curD)openD(curD,true);}
+// ===== 디자이너 팔로우 (손님) — 로컬 저장 + 로그인 시 DB 동기화 =====
+let FOLLOWS=JSON.parse(localStorage.getItem('beautia_coll_follows')||'[]');
+const isFollowing=uid=>!!uid&&FOLLOWS.includes(uid);
+function saveFollowLocal(){try{localStorage.setItem('beautia_coll_follows',JSON.stringify(FOLLOWS));}catch(e){}}
+function followBtnHtml(uid,cls){if(!uid)return '';var on=isFollowing(uid);return `<button class="followBtn ${cls||''}${on?' on':''}" data-follow="${uid}" onclick="toggleFollow('${uid}',event)"><i class="ti ${on?'ti-user-check':'ti-user-plus'}"></i><span class="flbl">${on?T[LANG].following:T[LANG].follow}</span></button>`;}
+function syncFollowBtns(){document.querySelectorAll('.followBtn[data-follow]').forEach(function(b){var uid=b.getAttribute('data-follow');var on=isFollowing(uid);b.classList.toggle('on',on);var l=b.querySelector('.flbl');if(l)l.textContent=on?T[LANG].following:T[LANG].follow;var ic=b.querySelector('i');if(ic)ic.className='ti '+(on?'ti-user-check':'ti-user-plus');});}
+async function loadFollows(){if(!ME||!ME.uid)return;try{var rows=(await SB.from('follows').select('designer').eq('follower',ME.uid)).data||[];var remote=rows.map(function(r){return r.designer;});var localOnly=FOLLOWS.filter(function(u){return remote.indexOf(u)<0;});if(localOnly.length){try{await SB.from('follows').upsert(localOnly.map(function(u){return {follower:ME.uid,designer:u};}));}catch(e){}remote=remote.concat(localOnly);}FOLLOWS=remote;saveFollowLocal();syncFollowBtns();}catch(e){}}
+function toggleFollow(uid,ev){if(ev)ev.stopPropagation();if(!uid)return;
+ var i=FOLLOWS.indexOf(uid);
+ if(i<0){FOLLOWS.push(uid);toast(T[LANG].followedT);if(ME&&ME.uid){try{SB.from('follows').upsert({follower:ME.uid,designer:uid}).then(function(){},function(){});}catch(e){}}}
+ else{FOLLOWS.splice(i,1);toast(T[LANG].unfollowedT);if(ME&&ME.uid){try{SB.from('follows').delete().eq('follower',ME.uid).eq('designer',uid).then(function(){},function(){});}catch(e){}}}
+ saveFollowLocal();syncFollowBtns();}
 function toast(m){const t=$('toast');t.textContent=m;t.classList.add('on');clearTimeout(window._t);window._t=setTimeout(()=>t.classList.remove('on'),2200);}
 const cl=c=>c==='All'?T[LANG].all:(T[LANG].Cat[c]||c);
 function chipsOf(d){return (d&&d.tags&&d.tags.length)?d.tags:((d&&d.spec)||[]);}
@@ -837,7 +858,7 @@ function renderDesigners(q,city){var g=$('grid');g.classList.add('dgview');
     rev>0?`<span class="tb"><i class="ti ti-message-star"></i> ${esc(L.reviews)} ${rev}</span>`:'',
     d.uid?`<span class="tb tb-f"><i class="ti ti-bolt"></i> ${esc(L.fast)}</span>`:''].filter(Boolean).join('');
   return `<div class="dcard">
-    <div class="dcthumbs" onclick="openD('${d.id}')">${thumbs.map(function(w){return `<div class="dcth" style="background-image:url('${im(w,400)}')"></div>`;}).join('')}${d.featured?`<span class="dcfeat"><i class="ti ti-external-link"></i></span>`:''}</div>
+    <div class="dcthumbs" onclick="openD('${d.id}')">${thumbs.map(function(w){return `<div class="dcth" style="background-image:url('${im(w,400)}')"></div>`;}).join('')}${d.featured?`<span class="dcfeat"><i class="ti ti-external-link"></i></span>`:''}${d.uid?`<button class="followBtn dcfollow${isFollowing(d.uid)?' on':''}" data-follow="${d.uid}" onclick="toggleFollow('${d.uid}',event)" title="${T[LANG].follow}"><i class="ti ${isFollowing(d.uid)?'ti-user-check':'ti-user-plus'}"></i></button>`:''}</div>
     <div class="dcbody" onclick="openD('${d.id}')">
       ${avHtml(d,'dcav')}
       <div class="dci"><div class="dcn">${esc(d.flag)} ${esc(nm)} ${d.ver?`<i class="ti ti-rosette-discount-check-filled" style="color:var(--green);font-size:15px"></i>`:''}</div>
@@ -878,6 +899,7 @@ function openD(did,keep){const d=dById(did);if(!d)return;curD=did;const gi=D.ind
      ${avHtml(d,'dav-c')}
      <div class="dn">${esc(d.flag)} ${esc(name)} ${d.ver?`<span class="vbadge"><i class="ti ti-rosette-discount-check-filled"></i>${T[LANG].verified}</span>`:''}</div>${d.shopName?`<div class="dshop"><i class="ti ti-building-store"></i> ${esc(d.shopName)}</div>`:''}
      <div class="dmeta"><span id="dstars"><span class="star">★</span> ${esc(d.rating)} (${esc(d.rev)})</span>${d.cat?`<span>${esc(cl(d.cat))}</span>`:''}<span><i class="ti ti-map-pin" style="font-size:16px"></i> ${esc(d.city||d.area)}</span>${d.years?`<span><i class="ti ti-briefcase" style="font-size:16px"></i> ${esc(d.years)}${LANG==='en'?' ':''}${T[LANG].years}</span>`:''}</div>
+     ${(d.uid&&!d.isMe)?followBtnHtml(d.uid,'dhfollow'):''}
    </div>
   </div>
   <div class="dsec"><div class="chips">${chipsOf(d).map(s=>`<span class="chip">${esc(s)}</span>`).join('')}</div><div class="styl">${esc(d.bio)}</div><button class="idcardbtn" onclick="openIdCard('${d.id}')"><i class="ti ti-id-badge-2"></i> ${T[LANG].idCard}</button></div>
@@ -1081,6 +1103,9 @@ document.addEventListener('keydown',e=>{if(e.key==='Escape'){closeBk();closeFa()
 Object.assign(T.en,{idCard:'ID Card',idDl:'Download',idShare:'Share',idPrep:'Creating image…',idFail:'Download failed (try Share)',linkCopied:'Link copied ✨',saveHint:'Press & hold the image to save it 📥',done:'Done',idKind:'ID CARD',idScan:'SCAN TO VIEW & BOOK',fbKick:'Featured work',fbView:'View portfolio'});
 Object.assign(T.ko,{idCard:'ID 카드',idDl:'다운로드',idShare:'공유',idPrep:'이미지 만드는 중…',idFail:'다운로드 실패 (공유로 시도)',linkCopied:'링크 복사됨 ✨',saveHint:'이미지를 꾹 눌러 저장하세요 📥',done:'닫기',idKind:'ID 카드',idScan:'스캔해서 예약하기',fbKick:'추천 작업',fbView:'포트폴리오 보기'});
 Object.assign(T.ja,{idCard:'IDカード',idDl:'保存',idShare:'シェア',idPrep:'画像を作成中…',idFail:'保存失敗（シェアでお試し）',linkCopied:'リンクをコピー ✨',saveHint:'画像を長押しして保存してください 📥',done:'閉じる',idKind:'IDカード',idScan:'スキャンして予約',fbKick:'注目の作品',fbView:'ポートフォリオを見る'});
+Object.assign(T.en,{follow:'Follow',following:'Following',followedT:'Following ✓',unfollowedT:'Unfollowed',signup:'Sign up',followers:'followers'});
+Object.assign(T.ko,{follow:'팔로우',following:'팔로잉',followedT:'팔로우했어요 ✓',unfollowedT:'팔로우 취소',signup:'회원가입',followers:'팔로워'});
+Object.assign(T.ja,{follow:'フォロー',following:'フォロー中',followedT:'フォローしました ✓',unfollowedT:'フォロー解除',signup:'会員登録',followers:'フォロワー'});
 // 태국어: 영어 전체를 상속받고 주요 문자열만 태국어로 (누락 키는 영어로 자동 폴백)
 T.th=Object.assign({},T.en,{
  explore:'สำรวจ',designers:'ดีไซเนอร์',saved:'บันทึกไว้',join:'สมัคร',my:'ฉัน',messages:'ข้อความ',
@@ -1118,7 +1143,7 @@ async function persistShop(){if(!ME||!ME.uid)return;try{await SB.from('profiles'
 async function onAuth(session){
  if(!session){ME=null;renderAuth();buildTiles();render();return;}
  let prof=null;try{prof=(await SB.from('profiles').select('id,nickname,role,region,bio,interests,shop,avatar_url,full_name,created_at').eq('id',session.user.id).maybeSingle()).data;}catch(e){}
- if(prof&&prof.nickname){ME=profToMe(prof);closeLogin();renderAuth();buildTiles();render();loadSaves();checkUnread();refreshOwner();loadBkBadge();return;}
+ if(prof&&prof.nickname){ME=profToMe(prof);closeLogin();renderAuth();buildTiles();render();loadSaves();loadFollows();checkUnread();refreshOwner();loadBkBadge();return;}
  if($('lmodal')&&$('lmodal').classList.contains('on'))return;
  let pend={};try{pend=JSON.parse(localStorage.getItem('beautia_coll_pending')||'{}');}catch(e){}
  const um=session.user.user_metadata||{};
@@ -1179,7 +1204,7 @@ function toggleUmenu(e){if(e)e.stopPropagation();const m=$('umenu');m.classList.
  m.style.top=(r.bottom+10)+'px';m.style.right=Math.max(12,window.innerWidth-r.right)+'px';m.style.left='auto';}
 function closeUmenu(){var m=$('umenu');m.classList.remove('on');m.classList.remove('frombar');}
 
-function openLogin(r){SU={role:r||'',name:'',country:'',city:'',spec:[],tags:[],career:'',avatar:'',sns:{},contact:'',verified:false,code:'',tos:false,priv:false,mktg:false,provider:'email',step:1,edit:false};renderSU();$('lmodal').classList.add('on');}
+function openLogin(r){SU={role:'cust',name:'',country:'',city:'',spec:[],tags:[],career:'',avatar:'',sns:{},contact:'',verified:false,code:'',tos:false,priv:false,mktg:false,provider:'email',step:1,edit:false};renderSU();$('lmodal').classList.add('on');}
 function closeLogin(){$('lmodal').classList.remove('on');}
 function suSteps(){return [1,2,3];}
 function renderSU(){const steps=suSteps(),idx=steps.indexOf(SU.step);
@@ -1196,9 +1221,6 @@ function suBody(){
   ${SU.code?`<div class="verifyrow" style="margin-top:10px"><input class="linput" id="suCode" maxlength="6" inputmode="numeric" placeholder="${T[LANG].codePh}"><button class="vbtn" onclick="suVerify()">${T[LANG].verify}</button></div>`:''}
   ${SU.verified?`<div class="vok">✅ ${T[LANG].verified}</div>`:`<div class="secnote" style="margin-top:12px">${T[LANG].loginHint}</div>`}`;
  if(SU.step===2)return `<h3>${T[LANG].profileSetup}</h3>
-  ${SU.edit?'':`<div class="il">${T[LANG].roleQ}</div><div class="rolepick">
-   <div class="rolecard ${SU.role==='cust'?'on':''}" onclick="SU.role='cust';renderSU()"><div class="ic">🙋</div><div class="rt">${T[LANG].cust}</div><div class="rd">${T[LANG].custDesc}</div></div>
-   <div class="rolecard ${SU.role==='desg'?'on':''}" onclick="SU.role='desg';renderSU()"><div class="ic">🎨</div><div class="rt">${T[LANG].desg}</div><div class="rd">${T[LANG].desgDesc}</div></div></div>`}
   <input type="file" id="suAvFile" accept="image/*" style="display:none" onchange="suAvatar(event)">
   <div class="suava"><div class="suav" onclick="document.getElementById('suAvFile').click()" style="${SU.avatar?`background-image:url('${SU.avatar}')`:''}">${SU.avatar?'':'<i class="ti ti-camera"></i>'}</div><button type="button" class="suavbtn" onclick="document.getElementById('suAvFile').click()">${SU.avatar?T[LANG].changePhoto:T[LANG].photoL}</button></div>
   <div class="il">${T[LANG].nick}</div><input class="linput" id="suNick" maxlength="24" placeholder="${T[LANG].nickPh}" value="${(SU.name||'').replace(/"/g,'&quot;')}">
@@ -1244,7 +1266,7 @@ async function suVerify(){const v=$('suCode')?$('suCode').value.trim():'';if(!v)
  const {data,error}=await SB.auth.verifyOtp({email:SU.contact,token:v,type:'email'});
  if(error){toast(T[LANG].codeWrong);return;}
  const uid=data.user.id;let prof=null;try{prof=(await SB.from('profiles').select('id,nickname,role,region,bio,interests,shop,avatar_url,full_name,created_at').eq('id',uid).maybeSingle()).data;}catch(e){}
- if(prof&&prof.nickname){ME=profToMe(prof);closeLogin();renderAuth();buildTiles();render();loadSaves();checkUnread();refreshOwner();loadBkBadge();toast(T[LANG].welcomeBack||T[LANG].verifiedToast);return;}
+ if(prof&&prof.nickname){ME=profToMe(prof);closeLogin();renderAuth();buildTiles();render();loadSaves();loadFollows();checkUnread();refreshOwner();loadBkBadge();toast(T[LANG].welcomeBack||T[LANG].verifiedToast);return;}
  SU.verified=true;SU.uid=uid;renderSU();toast(T[LANG].verifiedToast);}
 async function suFinish(){const wasEdit=SU.edit;
  if(wasEdit&&ME&&ME.role)SU.role=ME.role;   // 편집 시 역할 변경 금지(가입 때 고정)
@@ -1262,7 +1284,7 @@ async function suFinish(){const wasEdit=SU.edit;
  if(error){toast('저장 실패: '+error.message);return;}
  let prof=(await SB.from('profiles').select('id,nickname,role,region,bio,interests,shop,avatar_url,full_name,created_at').eq('id',uid).maybeSingle()).data;
  ME=prof?profToMe(prof):null;
- loadSaves();checkUnread();refreshOwner();loadBkBadge();
+ loadSaves();loadFollows();checkUnread();refreshOwner();loadBkBadge();
  try{localStorage.removeItem('beautia_coll_pending');}catch(e){}
  closeLogin();renderAuth();buildTiles();render();
  toast(wasEdit?'✅':(T[LANG].joinDone+(SU.role==='desg'?' — '+T[LANG].joinToast:'')));}
@@ -1520,7 +1542,7 @@ window.addEventListener('beforeinstallprompt',function(e){e.preventDefault();pwa
   if(pull>0&&window.scrollY<=0){var p=Math.min(pull,150);el.style.transform='translateX(-50%) translateY('+(p*0.5)+'px) rotate('+(p*1.8)+'deg)';el.style.opacity=Math.min(1,p/70);}},{passive:true});
  window.addEventListener('touchend',async function(){if(!active)return;active=false;
   if(pull>90&&window.scrollY<=0&&!busy){busy=true;el.classList.add('spin');
-   try{await Promise.all([loadDesigners(),loadFeatured()]);if(ME&&ME.uid){loadSaves();checkUnread();loadBkBadge();}}catch(e){}
+   try{await Promise.all([loadDesigners(),loadFeatured()]);if(ME&&ME.uid){loadSaves();loadFollows();checkUnread();loadBkBadge();}}catch(e){}
    el.classList.remove('spin');busy=false;toast(T[LANG].refreshed);}
   el.style.transform='translateX(-50%) translateY(0)';el.style.opacity=0;pull=0;});
 })();
