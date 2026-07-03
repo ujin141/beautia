@@ -310,6 +310,26 @@ body.mlock{position:fixed;left:0;right:0;width:100%;overflow:hidden;}
 
 .wrap{max-width:1320px;margin:0 auto;padding:24px 28px 90px;}
 .grid{column-count:4;column-gap:18px;}
+/* 디자이너 디렉토리(카드형) */
+.grid.dgview{column-count:unset;display:grid;grid-template-columns:repeat(3,1fr);gap:18px;}
+.dcard{background:#fff;border:1px solid var(--line);border-radius:18px;overflow:hidden;cursor:pointer;transition:transform .12s,box-shadow .12s;break-inside:avoid;}
+.dcard:hover{transform:translateY(-3px);box-shadow:0 18px 40px -22px rgba(40,20,40,.4);}
+.dcthumbs{position:relative;display:grid;grid-template-columns:2fr 1fr;grid-template-rows:1fr 1fr;gap:2px;height:150px;background:var(--soft);}
+.dcthumbs .dcth{background-size:cover;background-position:center;background-color:var(--soft);}
+.dcthumbs .dcth:first-child{grid-row:1/3;}
+.dcthumbs .dcth:only-child{grid-column:1/3;grid-row:1/3;}
+.dcfeat{position:absolute;top:8px;left:8px;width:24px;height:24px;border-radius:8px;background:rgba(20,12,16,.55);color:#fff;display:flex;align-items:center;justify-content:center;font-size:13px;backdrop-filter:blur(3px);}
+.dcbody{display:flex;align-items:center;gap:10px;padding:12px 13px 4px;}
+.dcav{width:40px;height:40px;border-radius:50%;background-size:cover;background-position:center;flex:0 0 auto;}
+.dcav.mono{display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:16px;}
+.dci{flex:1;min-width:0;}
+.dcn{font-weight:800;font-size:14.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;display:flex;align-items:center;gap:4px;}
+.dcm{font-size:12px;color:var(--sub);margin-top:2px;font-weight:600;} .dcm .star{color:#EBB662;}
+.dcarr{color:var(--line);font-size:18px;flex:0 0 auto;}
+.dcchips{display:flex;flex-wrap:wrap;gap:5px;padding:6px 13px 14px;}
+.dcchips span{font-size:11px;font-weight:700;color:var(--plum);background:var(--rosebg);padding:3px 9px;border-radius:999px;}
+@media(max-width:1100px){.grid.dgview{grid-template-columns:repeat(2,1fr);}}
+@media(max-width:600px){.grid.dgview{grid-template-columns:1fr;gap:14px;} .dcthumbs{height:170px;}}
 @media(max-width:1100px){.grid{column-count:3;}}
 @media(max-width:760px){.grid{column-count:2;}}
 .tile{break-inside:avoid;margin-bottom:18px;position:relative;border-radius:18px;overflow:hidden;background:var(--soft);cursor:pointer;}
@@ -356,7 +376,13 @@ body.mlock{position:fixed;left:0;right:0;width:100%;overflow:hidden;}
 .cav.mono{display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700;font-size:16px;}
 .cvlist{flex:1;overflow-y:auto;}
 .cv{display:flex;align-items:center;gap:12px;padding:14px 16px;border-bottom:1px solid var(--line);cursor:pointer;}
-.cv:hover{background:var(--soft);} .cvmid{flex:1;min-width:0;} .cvn{font-weight:700;font-size:15px;}
+.cv:hover{background:var(--soft);} .cvmid{flex:1;min-width:0;}
+.cvtop{display:flex;align-items:baseline;justify-content:space-between;gap:8px;}
+.cvn{font-weight:700;font-size:15px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.cvt{font-size:11.5px;color:var(--sub);flex:0 0 auto;font-weight:500;}
+.cvp{font-size:13px;color:var(--sub);margin-top:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.unreadcv .cvn{font-weight:800;} .unreadcv .cvp{color:var(--ink2);font-weight:600;}
+.cvbadge{flex:0 0 auto;min-width:20px;height:20px;padding:0 6px;border-radius:999px;background:var(--plum);color:#fff;font-size:11px;font-weight:800;display:flex;align-items:center;justify-content:center;}
 .cempty{display:flex;flex-direction:column;align-items:center;gap:10px;color:var(--sub);padding:60px 20px;text-align:center;font-size:14px;}
 .cthread{flex:1;overflow-y:auto;padding:16px;display:flex;flex-direction:column;gap:4px;background:var(--soft);}
 .mrow{display:flex;flex-direction:column;align-items:flex-start;max-width:80%;margin-bottom:6px;}
@@ -642,15 +668,34 @@ function render(){renderStories();
  if(VIEW==='me'){$('grid').style.display='none';if(fb)fb.style.display='none';if(mep)mep.style.display='block';renderMe();syncTabs('me');window.scrollTo({top:0});return;}
  if(mep)mep.style.display='none';$('grid').style.display='';if(fb)fb.style.display='';
  const q=($('q').value||'').toLowerCase(),city=$('city').value;
+ const g=$('grid');
+ if(VIEW==='designers'){renderDesigners(q,city);return;}
+ g.classList.remove('dgview');
  let list;
  if(VIEW==='saved'){list=TILES.filter(t=>isSaved(t.wid));}
  else list=TILES.filter(t=>(CAT==='All'||t.cat===CAT)&&(!city||t.city===city)&&(!q||(t.name+t.cat+t.city+t.area).toLowerCase().includes(q)));
- if(VIEW==='designers'){const seen={};list=list.filter(t=>seen[t.did]?0:(seen[t.did]=1));}
  if(USERLOC&&VIEW!=='saved'&&!city){list=list.slice().sort(function(x,y){return distOf(x.city)-distOf(y.city);});}
- const g=$('grid');
  if(!list.length){g.innerHTML=`<div class="empty"><i class="ti ti-${VIEW==='saved'?'heart':'search'}"></i><p>${VIEW==='saved'?T[LANG].emptyS:T[LANG].noRes}</p></div>`;return;}
  g.innerHTML=list.map(tileHtml).join('');
 }
+function renderDesigners(q,city){var g=$('grid');g.classList.add('dgview');
+ var ds=allD().filter(function(d){return d.works&&d.works.length;});
+ if(CAT!=='All')ds=ds.filter(function(d){return d.cat===CAT;});
+ if(city)ds=ds.filter(function(d){return d.city===city;});
+ if(q)ds=ds.filter(function(d){return (d.name+(d.ko||'')+d.cat+(d.city||'')+(d.area||'')+(d.spec||[]).join('')).toLowerCase().includes(q);});
+ if(USERLOC&&!city)ds=ds.slice().sort(function(x,y){return distOf(x.city)-distOf(y.city);});
+ if(!ds.length){g.innerHTML=`<div class="empty"><i class="ti ti-search"></i><p>${T[LANG].noRes}</p></div>`;return;}
+ g.innerHTML=ds.map(function(d){var nm=(LANG==='ko'&&d.ko)?d.ko:d.name;var thumbs=d.works.slice(0,3);
+  return `<div class="dcard" onclick="openD('${d.id}')">
+    <div class="dcthumbs">${thumbs.map(function(w){return `<div class="dcth" style="background-image:url('${im(w,400)}')"></div>`;}).join('')}${d.featured?`<span class="dcfeat"><i class="ti ti-external-link"></i></span>`:''}</div>
+    <div class="dcbody">
+      ${avHtml(d,'dcav')}
+      <div class="dci"><div class="dcn">${esc(d.flag)} ${esc(nm)} ${d.ver?`<i class="ti ti-rosette-discount-check-filled" style="color:var(--green);font-size:15px"></i>`:''}</div>
+       <div class="dcm"><span class="star">★</span> ${esc(d.rating||'5')} · ${esc(cl(d.cat))}${d.city?' · '+esc(d.city):''}</div></div>
+      <i class="ti ti-chevron-right dcarr"></i>
+    </div>
+    ${(d.spec&&d.spec.length)?`<div class="dcchips">${d.spec.slice(0,3).map(function(s){return `<span>${esc(s)}</span>`;}).join('')}</div>`:''}
+  </div>`;}).join('');}
 
 let curW=null;
 function openWork(wid){const t=TILES.find(x=>x.wid===wid);if(!t)return;const d=dById(t.did);if(!d)return;curW=wid;const nm=(LANG==='ko'&&d.ko)?d.ko:d.name;const feat=d.featured,ig=igClean(d.insta);
@@ -827,19 +872,19 @@ function pfSetCaption(i,val){if(!ME||!ME.works||!ME.works[i])return;var w=ME.wor
 function delPfPhoto(i){ME.works.splice(i,1);renderPf();buildTiles();render();persistShop();}
 Object.assign(T.en,{pfHint:'Upload your best work. It appears in the gallery, your profile, and your ID card.',addPhoto:'Add photo',nearYou:'Sorted by distance from your location',photoL:'Add profile photo',changePhoto:'Change photo',byDesigner:"{n}'s portfolio",viewDesigner:'View designer',otpSentToast:'Code sent to your email ✉️',welcomeBack:'Welcome back 👋',needCode:'Enter the code',needLogin:'Please sign in',sending:'Sending…',emailPh:'you@email.com',emailL:'Email',messages:'Messages',noChats:'No conversations yet',sayHi:'Say hello to start the chat',typeMsg:'Type a message…',showOrig:'Show original',showTr:'Show translation',cantChat:'Chat is not available for this designer yet',cantChatSelf:"That's you",loginTitle:'Log in or sign up',orEmail:'or with email',loginHint:'New here? Verifying your email signs you up automatically.',myIdCard:'My ID card',columns:'Columns',color:'Color',cover:'Cover',coverLight:'Minimal',coverTint:'Color',custom:'Custom',snsL:'Social links (optional)',pfCaption:'Write a caption (optional)',featured:'Featured',claimQ:'Is this your work?',claimBtn:'Claim your profile',removeReq:'Request removal',claimToast:'Sign up to add this to your profile ✨',
 svcTitle:'Services & prices',svcHint:'shown on your profile',svcName:'Service (e.g. Cut + perm)',svcPrice:'Price (e.g. ₩80,000)',svcDur:'Duration',addSvc:'Add service',
-book2:'Book',bkTitle:'Request a booking',bkService:'Service',bkConsult:'Decide after consult',bkDate:'Date',bkTime:'Time',bkNote:'Note (optional)',bkNotePh:'Reference photo link, requests…',bkSend:'Send request',bkSent:'Booking request sent ✨',bkNew:'New booking request',installApp:'Install app',notifOn:'Turn on notifications',pushOn:'Notifications on 🔔',pushDenied:'Notifications blocked in settings',pushUnsupported:'Not supported on this browser',refreshed:'Updated ✨',my:'My',footTerms:'Terms',footPrivacy:'Privacy',footContact:'Contact',delAcct:'Delete account',iosInstallHint:'Safari: Share → Add to Home Screen 📲',bkFail:'Failed',bkNeedDate:'Pick a date',
+book2:'Book',bkTitle:'Request a booking',bkService:'Service',bkConsult:'Decide after consult',bkDate:'Date',bkTime:'Time',bkNote:'Note (optional)',bkNotePh:'Reference photo link, requests…',bkSend:'Send request',bkSent:'Booking request sent ✨',bkNew:'New booking request',installApp:'Install app',notifOn:'Turn on notifications',pushOn:'Notifications on 🔔',pushDenied:'Notifications blocked in settings',pushUnsupported:'Not supported on this browser',refreshed:'Updated ✨',justNow:'now',minAgo:'m',hrAgo:'h',dayAgo:'d',youPrefix:'You: ',my:'My',footTerms:'Terms',footPrivacy:'Privacy',footContact:'Contact',delAcct:'Delete account',iosInstallHint:'Safari: Share → Add to Home Screen 📲',bkFail:'Failed',bkNeedDate:'Pick a date',
 myBookings:'Bookings',bkNone:'No bookings yet',bk_pending:'Pending',bk_accepted:'Accepted',bk_declined:'Declined',bk_done:'Completed',bk_cancelled:'Cancelled',
 bkAccept:'Accept',bkDecline:'Decline',bkComplete:'Mark completed',bkCancel:'Cancel',
 writeReview:'Write a review',rvTitle:'How was it?',rvPh:'Share your experience (optional)',rvSend:'Submit review',rvThanks:'Thanks for your review ✨'});
 Object.assign(T.ko,{pfHint:'대표 작업을 올리세요. 갤러리·내 프로필·ID 카드에 바로 보여요.',addPhoto:'사진 추가',nearYou:'내 위치에서 가까운 순으로 정렬',photoL:'프로필 사진 추가',changePhoto:'사진 변경',byDesigner:'{n}님의 포트폴리오',viewDesigner:'디자이너 보기',otpSentToast:'인증 코드를 이메일로 보냈어요 ✉️',welcomeBack:'다시 오신 걸 환영해요 👋',needCode:'코드를 입력하세요',needLogin:'로그인이 필요해요',sending:'전송 중…',emailPh:'you@email.com',emailL:'이메일',messages:'메시지',noChats:'아직 대화가 없어요',sayHi:'인사를 건네 대화를 시작하세요',typeMsg:'메시지 입력…',showOrig:'원문 보기',showTr:'번역 보기',cantChat:'아직 이 디자이너와는 채팅할 수 없어요',cantChatSelf:'본인이에요',loginTitle:'로그인 또는 가입',orEmail:'또는 이메일로',loginHint:'처음이세요? 이메일 인증하면 자동으로 가입돼요.',myIdCard:'내 ID 카드',columns:'컬럼',color:'색상',cover:'커버',coverLight:'미니멀',coverTint:'컬러',custom:'직접',snsL:'SNS 연동 (선택)',pfCaption:'설명을 적어보세요 (선택)',featured:'발견',claimQ:'이 작업의 주인이신가요?',claimBtn:'내 프로필로 등록',removeReq:'삭제 요청',claimToast:'가입하면 내 프로필로 가져올 수 있어요 ✨',
 svcTitle:'서비스·가격',svcHint:'프로필에 표시돼요',svcName:'서비스명 (예: 컷+펌)',svcPrice:'가격 (예: ₩80,000)',svcDur:'소요시간',addSvc:'서비스 추가',
-book2:'예약',bkTitle:'예약 요청',bkService:'서비스',bkConsult:'상담 후 결정',bkDate:'날짜',bkTime:'시간',bkNote:'요청사항 (선택)',bkNotePh:'참고 사진 링크, 원하는 스타일 등…',bkSend:'예약 요청 보내기',bkSent:'예약 요청을 보냈어요 ✨',bkNew:'새 예약 요청이 왔어요',installApp:'앱 설치',notifOn:'알림 켜기',pushOn:'알림이 켜졌어요 🔔',pushDenied:'알림이 차단돼 있어요 (설정에서 허용)',pushUnsupported:'이 브라우저에선 지원되지 않아요',refreshed:'새로고침 완료 ✨',my:'마이',footTerms:'이용약관',footPrivacy:'개인정보처리방침',footContact:'문의하기',delAcct:'회원탈퇴',iosInstallHint:'사파리: 공유 → 홈 화면에 추가 📲',bkFail:'실패했어요',bkNeedDate:'날짜를 선택하세요',
+book2:'예약',bkTitle:'예약 요청',bkService:'서비스',bkConsult:'상담 후 결정',bkDate:'날짜',bkTime:'시간',bkNote:'요청사항 (선택)',bkNotePh:'참고 사진 링크, 원하는 스타일 등…',bkSend:'예약 요청 보내기',bkSent:'예약 요청을 보냈어요 ✨',bkNew:'새 예약 요청이 왔어요',installApp:'앱 설치',notifOn:'알림 켜기',pushOn:'알림이 켜졌어요 🔔',pushDenied:'알림이 차단돼 있어요 (설정에서 허용)',pushUnsupported:'이 브라우저에선 지원되지 않아요',refreshed:'새로고침 완료 ✨',justNow:'방금',minAgo:'분 전',hrAgo:'시간 전',dayAgo:'일 전',youPrefix:'나: ',my:'마이',footTerms:'이용약관',footPrivacy:'개인정보처리방침',footContact:'문의하기',delAcct:'회원탈퇴',iosInstallHint:'사파리: 공유 → 홈 화면에 추가 📲',bkFail:'실패했어요',bkNeedDate:'날짜를 선택하세요',
 myBookings:'예약',bkNone:'아직 예약이 없어요',bk_pending:'대기중',bk_accepted:'수락됨',bk_declined:'거절됨',bk_done:'완료',bk_cancelled:'취소됨',
 bkAccept:'수락',bkDecline:'거절',bkComplete:'완료 처리',bkCancel:'취소',
 writeReview:'리뷰 쓰기',rvTitle:'어떠셨나요?',rvPh:'경험을 들려주세요 (선택)',rvSend:'리뷰 등록',rvThanks:'리뷰 감사합니다 ✨'});
 Object.assign(T.ja,{pfHint:'代表作品をアップ。ギャラリー・プロフィール・IDカードに表示されます。',addPhoto:'写真を追加',nearYou:'現在地から近い順に表示',photoL:'プロフィール写真を追加',changePhoto:'写真を変更',byDesigner:'{n}さんのポートフォリオ',viewDesigner:'デザイナーを見る',otpSentToast:'認証コードをメールに送りました ✉️',welcomeBack:'おかえりなさい 👋',needCode:'コードを入力してください',needLogin:'ログインしてください',sending:'送信中…',emailPh:'you@email.com',emailL:'メール',messages:'メッセージ',noChats:'まだ会話がありません',sayHi:'挨拶して会話を始めましょう',typeMsg:'メッセージを入力…',showOrig:'原文を表示',showTr:'翻訳を表示',cantChat:'このデザイナーとはまだチャットできません',cantChatSelf:'ご本人です',loginTitle:'ログイン / 登録',orEmail:'またはメールで',loginHint:'初めての方はメール認証で自動的に登録されます。',myIdCard:'マイIDカード',columns:'カラム',color:'カラー',cover:'カバー',coverLight:'ミニマル',coverTint:'カラー',custom:'カスタム',snsL:'SNSリンク（任意）',pfCaption:'キャプションを追加（任意）',featured:'ピック',claimQ:'この作品の作者ですか？',claimBtn:'プロフィールに登録',removeReq:'削除リクエスト',claimToast:'登録すると自分のプロフィールに追加できます ✨',
 svcTitle:'メニュー・料金',svcHint:'プロフィールに表示されます',svcName:'メニュー名（例: カット+パーマ）',svcPrice:'料金（例: ¥8,000）',svcDur:'所要時間',addSvc:'メニュー追加',
-book2:'予約',bkTitle:'予約リクエスト',bkService:'メニュー',bkConsult:'相談して決める',bkDate:'日付',bkTime:'時間',bkNote:'ご要望（任意）',bkNotePh:'参考写真のリンク、ご希望など…',bkSend:'リクエストを送る',bkSent:'予約リクエストを送りました ✨',bkNew:'新しい予約リクエスト',installApp:'アプリを追加',notifOn:'通知をオンにする',pushOn:'通知オン 🔔',pushDenied:'通知がブロックされています',pushUnsupported:'このブラウザでは非対応です',refreshed:'更新しました ✨',my:'マイ',footTerms:'利用規約',footPrivacy:'プライバシー',footContact:'お問い合わせ',delAcct:'退会',iosInstallHint:'Safari: 共有 → ホーム画面に追加 📲',bkFail:'失敗しました',bkNeedDate:'日付を選んでください',
+book2:'予約',bkTitle:'予約リクエスト',bkService:'メニュー',bkConsult:'相談して決める',bkDate:'日付',bkTime:'時間',bkNote:'ご要望（任意）',bkNotePh:'参考写真のリンク、ご希望など…',bkSend:'リクエストを送る',bkSent:'予約リクエストを送りました ✨',bkNew:'新しい予約リクエスト',installApp:'アプリを追加',notifOn:'通知をオンにする',pushOn:'通知オン 🔔',pushDenied:'通知がブロックされています',pushUnsupported:'このブラウザでは非対応です',refreshed:'更新しました ✨',justNow:'たった今',minAgo:'分前',hrAgo:'時間前',dayAgo:'日前',youPrefix:'自分: ',my:'マイ',footTerms:'利用規約',footPrivacy:'プライバシー',footContact:'お問い合わせ',delAcct:'退会',iosInstallHint:'Safari: 共有 → ホーム画面に追加 📲',bkFail:'失敗しました',bkNeedDate:'日付を選んでください',
 myBookings:'予約',bkNone:'まだ予約がありません',bk_pending:'承認待ち',bk_accepted:'承認済み',bk_declined:'お断り',bk_done:'完了',bk_cancelled:'キャンセル',
 bkAccept:'承認',bkDecline:'お断り',bkComplete:'完了にする',bkCancel:'キャンセル',
 writeReview:'レビューを書く',rvTitle:'いかがでしたか？',rvPh:'体験をシェアしてください（任意）',rvSend:'レビュー送信',rvThanks:'レビューありがとうございます ✨'});
@@ -1058,8 +1103,18 @@ function renderChatBadge(){var has=chatUnread>0||bkPend>0;var a=$('avatar');if(a
 async function checkUnread(){if(!ME||!ME.uid){chatUnread=0;renderChatBadge();return;}try{var since=new Date(chatSeenTs()||1).toISOString();var d=(await SB.from('messages').select('id,sender').gt('created_at',since)).data||[];chatUnread=d.filter(function(m){return m.sender!==ME.uid;}).length;}catch(e){}renderChatBadge();
  if(chatGlobalSub){try{SB.removeChannel(chatGlobalSub);}catch(e){}}
  chatGlobalSub=SB.channel('gmsg').on('postgres_changes',{event:'INSERT',schema:'public',table:'messages'},function(p){var m=p.new;if(!m||m.sender===ME.uid)return;if(curConv&&m.conversation===curConv.id&&$('chatmodal')&&$('chatmodal').classList.contains('on')){markChatSeen();return;}chatUnread++;renderChatBadge();}).subscribe();}
-async function loadConvos(){var data=[];try{data=(await SB.from('conversations').select('*').or('customer.eq.'+ME.uid+',designer.eq.'+ME.uid).order('last_at',{ascending:false})).data||[];}catch(e){}CHATS=data;await fetchProfiles(data.map(otherUid));renderChatList();}
-function renderChatList(){var rows=CHATS.map(function(c){var o=PROFCACHE[otherUid(c)]||{name:'User'};return `<div class="cv" onclick="openConvoById('${c.id}')">${avChip(o)}<div class="cvmid"><div class="cvn">${esc(o.name)}</div></div><i class="ti ti-chevron-right" style="color:var(--sub)"></i></div>`;}).join('');$('chatcard').innerHTML=`<div class="chead"><div class="chl">${T[LANG].messages}</div><button class="cx" onclick="closeChat()">×</button></div><div class="cvlist">${rows||('<div class="cempty"><i class="ti ti-messages" style="font-size:34px;color:#d8c9cc"></i><p>'+T[LANG].noChats+'</p></div>')}</div>`;}
+function timeAgo(ts){if(!ts)return '';var s=Math.floor((Date.now()-new Date(ts).getTime())/1000);if(s<60)return T[LANG].justNow;if(s<3600)return Math.floor(s/60)+T[LANG].minAgo;if(s<86400)return Math.floor(s/3600)+T[LANG].hrAgo;var days=Math.floor(s/86400);if(days<7)return days+T[LANG].dayAgo;return new Date(ts).toLocaleDateString();}
+async function loadConvos(){var data=[];try{data=(await SB.from('conversations').select('*').or('customer.eq.'+ME.uid+',designer.eq.'+ME.uid).order('last_at',{ascending:false})).data||[];}catch(e){}CHATS=data;await fetchProfiles(data.map(otherUid));
+ var seen=chatSeenTs();
+ await Promise.all(data.map(async function(c){try{var last=(await SB.from('messages').select('body,lang,tr,sender,created_at').eq('conversation',c.id).order('created_at',{ascending:false}).limit(1)).data;c._last=last&&last[0]||null;
+   var un=(await SB.from('messages').select('id',{count:'exact',head:true}).eq('conversation',c.id).neq('sender',ME.uid).gt('created_at',new Date(seen||1).toISOString()));c._unread=un.count||0;
+ }catch(e){c._last=null;c._unread=0;}}));
+ renderChatList();}
+function renderChatList(){var rows=CHATS.map(function(c){var o=PROFCACHE[otherUid(c)]||{name:'User'};
+   var last=c._last;var prev=last?((last.sender===ME.uid?T[LANG].youPrefix:'')+msgText(last)):T[LANG].sayHi;
+   var un=c._unread||0;
+   return `<div class="cv${un?' unreadcv':''}" onclick="openConvoById('${c.id}')">${avChip(o)}<div class="cvmid"><div class="cvtop"><div class="cvn">${esc(o.name)}</div><div class="cvt">${last?esc(timeAgo(last.created_at)):''}</div></div><div class="cvp">${esc(prev)}</div></div>${un?`<span class="cvbadge">${un>99?'99+':un}</span>`:''}</div>`;}).join('');
+ $('chatcard').innerHTML=`<div class="chead"><div class="chl">${T[LANG].messages}</div><button class="cx" onclick="closeChat()">×</button></div><div class="cvlist">${rows||('<div class="cempty"><i class="ti ti-messages" style="font-size:34px;color:#d8c9cc"></i><p>'+T[LANG].noChats+'</p></div>')}</div>`;}
 function openConvoById(id){var c=CHATS.find(function(x){return x.id===id;});if(c)openConvo(c);}
 async function startConvoWith(did){var d=dById(did);if(!d||!d.uid){toast(T[LANG].cantChat);return null;}if(d.uid===ME.uid){toast(T[LANG].cantChatSelf);return null;}PROFCACHE[d.uid]={name:(LANG==='ko'&&d.ko)?d.ko:d.name,avatar:d.avatar||''};var conv=null;try{conv=(await SB.from('conversations').select('*').eq('customer',ME.uid).eq('designer',d.uid).maybeSingle()).data;}catch(e){}if(!conv){try{conv=(await SB.from('conversations').insert({customer:ME.uid,designer:d.uid}).select('*').maybeSingle()).data;}catch(e){}}return conv;}
 async function openChatWith(did){if(!(await ensureLoginC()))return;var conv=await startConvoWith(did);if(!conv){toast(T[LANG].cantChat);return;}await loadConvos();var c=CHATS.find(function(x){return x.id===conv.id;})||conv;$('chatmodal').classList.add('on');openConvo(c);}
