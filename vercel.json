@@ -4,7 +4,19 @@
   "redirects": [
     { "source": "/", "destination": "/community", "permanent": false },
     { "source": "/landing", "destination": "/community", "permanent": true },
-    { "source": "/landing.html", "destination": "/community", "permanent": true }
+    { "source": "/landing.html", "destination": "/community", "permanent": true },
+    { "source": "/info", "destination": "/community", "permanent": true },
+    { "source": "/info.html", "destination": "/community", "permanent": true },
+    { "source": "/info/:slug*", "destination": "/community", "permanent": true },
+    { "source": "/shop", "destination": "/community", "permanent": true },
+    { "source": "/shop.html", "destination": "/community", "permanent": true },
+    { "source": "/shop/:slug*", "destination": "/community", "permanent": true },
+    { "source": "/app", "destination": "/community", "permanent": true },
+    { "source": "/app.html", "destination": "/community", "permanent": true },
+    { "source": "/apply", "destination": "/community", "permanent": true },
+    { "source": "/apply.html", "destination": "/community", "permanent": true },
+    { "source": "/salon", "destination": "/community", "permanent": true },
+    { "source": "/salon.html", "destination": "/community", "permanent": true }
   ],
   "rewrites": [
     { "source": "/p/:id", "destination": "/api/post?id=:id" },
