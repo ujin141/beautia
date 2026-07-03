@@ -211,6 +211,20 @@ body.mlock{position:fixed;left:0;right:0;width:100%;overflow:hidden;}
 .meacct a{font-size:12.5px;color:var(--sub);text-decoration:underline;}
 .mever{text-align:center;font-size:11px;color:var(--sub);margin-top:18px;letter-spacing:.02em;}
 @media (min-width:861px){ .mepage{display:none!important;} }
+/* 간편 예약 (서비스칩·날짜칩·시간슬롯) */
+.bksvcs{display:flex;flex-direction:column;gap:8px;margin-top:6px;}
+.bksvc{display:flex;align-items:center;gap:8px;text-align:left;border:1.5px solid var(--line);border-radius:14px;padding:12px 14px;background:#fff;cursor:pointer;transition:.12s;}
+.bksvc.on{border-color:var(--plum);background:var(--rosebg);}
+.bksvc .bsn{flex:1;font-weight:700;font-size:14.5px;color:var(--ink);}
+.bksvc .bsp{font-weight:800;font-size:14px;color:var(--plum);} .bksvc .bsd{font-size:12px;color:var(--sub);}
+.bkdates{display:flex;gap:8px;overflow-x:auto;padding:6px 2px 2px;-webkit-overflow-scrolling:touch;scrollbar-width:none;} .bkdates::-webkit-scrollbar{display:none;}
+.bkchip.bdate{flex:0 0 auto;display:flex;flex-direction:column;align-items:center;gap:2px;min-width:52px;padding:10px 8px;border:1.5px solid var(--line);border-radius:14px;background:#fff;cursor:pointer;transition:.12s;}
+.bkchip.bdate.on{border-color:var(--plum);background:var(--plum);color:#fff;}
+.bkchip.bdate .bd1{font-size:12px;font-weight:700;} .bkchip.bdate .bd2{font-size:11px;opacity:.8;font-weight:600;}
+.bkslots{display:grid;grid-template-columns:repeat(4,1fr);gap:7px;margin-top:6px;max-height:172px;overflow-y:auto;padding:2px;}
+.bkslot{border:1.5px solid var(--line);border-radius:11px;padding:10px 4px;font-size:13.5px;font-weight:700;color:var(--ink2);background:#fff;cursor:pointer;transition:.1s;}
+.bkslot.on{border-color:var(--plum);background:var(--plum);color:#fff;}
+.bkslot:disabled{opacity:.32;cursor:not-allowed;text-decoration:line-through;}
 /* 당겨서 새로고침 */
 .ptr{position:fixed;top:10px;left:50%;transform:translateX(-50%);z-index:90;width:42px;height:42px;border-radius:50%;background:#fff;box-shadow:0 8px 24px rgba(20,12,16,.2);display:flex;align-items:center;justify-content:center;color:var(--plum);font-size:20px;opacity:0;pointer-events:none;transition:opacity .15s;}
 .ptr.spin i{animation:ptrspin .7s linear infinite;}
@@ -875,19 +889,19 @@ function pfSetCaption(i,val){if(!ME||!ME.works||!ME.works[i])return;var w=ME.wor
 function delPfPhoto(i){ME.works.splice(i,1);renderPf();buildTiles();render();persistShop();}
 Object.assign(T.en,{pfHint:'Upload your best work. It appears in the gallery, your profile, and your ID card.',addPhoto:'Add photo',nearYou:'Sorted by distance from your location',photoL:'Add profile photo',changePhoto:'Change photo',byDesigner:"{n}'s portfolio",viewDesigner:'View designer',otpSentToast:'Code sent to your email ✉️',welcomeBack:'Welcome back 👋',needCode:'Enter the code',needLogin:'Please sign in',sending:'Sending…',emailPh:'you@email.com',emailL:'Email',messages:'Messages',noChats:'No conversations yet',sayHi:'Say hello to start the chat',typeMsg:'Type a message…',showOrig:'Show original',showTr:'Show translation',cantChat:'Chat is not available for this designer yet',cantChatSelf:"That's you",loginTitle:'Log in or sign up',orEmail:'or with email',loginHint:'New here? Verifying your email signs you up automatically.',myIdCard:'My ID card',columns:'Columns',color:'Color',cover:'Cover',coverLight:'Minimal',coverTint:'Color',custom:'Custom',snsL:'Social links (optional)',pfCaption:'Write a caption (optional)',featured:'Featured',claimQ:'Is this your work?',claimBtn:'Claim your profile',removeReq:'Request removal',claimToast:'Sign up to add this to your profile ✨',
 svcTitle:'Services & prices',svcHint:'shown on your profile',svcName:'Service (e.g. Cut + perm)',svcPrice:'Price (e.g. ₩80,000)',svcDur:'Duration',addSvc:'Add service',
-book2:'Book',bkTitle:'Request a booking',bkService:'Service',bkConsult:'Decide after consult',bkDate:'Date',bkTime:'Time',bkNote:'Note (optional)',bkNotePh:'Reference photo link, requests…',bkSend:'Send request',bkSent:'Booking request sent ✨',bkNew:'New booking request',installApp:'Install app',notifOn:'Turn on notifications',pushOn:'Notifications on 🔔',pushDenied:'Notifications blocked in settings',pushUnsupported:'Not supported on this browser',refreshed:'Updated ✨',justNow:'now',minAgo:'m',hrAgo:'h',dayAgo:'d',youPrefix:'You: ',my:'My',footTerms:'Terms',footPrivacy:'Privacy',footContact:'Contact',delAcct:'Delete account',iosInstallHint:'Safari: Share → Add to Home Screen 📲',bkFail:'Failed',bkNeedDate:'Pick a date',
+book2:'Book',bkTitle:'Request a booking',bkService:'Service',bkConsult:'Decide after consult',bkDate:'Date',bkTime:'Time',bkNote:'Note (optional)',bkNotePh:'Reference photo link, requests…',bkSend:'Send request',bkSent:'Booking request sent ✨',bkNew:'New booking request',installApp:'Install app',notifOn:'Turn on notifications',pushOn:'Notifications on 🔔',pushDenied:'Notifications blocked in settings',pushUnsupported:'Not supported on this browser',refreshed:'Updated ✨',justNow:'now',minAgo:'m',hrAgo:'h',dayAgo:'d',youPrefix:'You: ',my:'My',footTerms:'Terms',footPrivacy:'Privacy',footContact:'Contact',delAcct:'Delete account',iosInstallHint:'Safari: Share → Add to Home Screen 📲',bkFail:'Failed',bkNeedDate:'Pick a date',bkPickSlot:'Pick a time',today:'Today',tomorrow:'Tmrw',weekdays:['Sun','Mon','Tue','Wed','Thu','Fri','Sat'],
 myBookings:'Bookings',bkNone:'No bookings yet',bk_pending:'Pending',bk_accepted:'Accepted',bk_declined:'Declined',bk_done:'Completed',bk_cancelled:'Cancelled',
 bkAccept:'Accept',bkDecline:'Decline',bkComplete:'Mark completed',bkCancel:'Cancel',
 writeReview:'Write a review',rvTitle:'How was it?',rvPh:'Share your experience (optional)',rvSend:'Submit review',rvThanks:'Thanks for your review ✨'});
 Object.assign(T.ko,{pfHint:'대표 작업을 올리세요. 갤러리·내 프로필·ID 카드에 바로 보여요.',addPhoto:'사진 추가',nearYou:'내 위치에서 가까운 순으로 정렬',photoL:'프로필 사진 추가',changePhoto:'사진 변경',byDesigner:'{n}님의 포트폴리오',viewDesigner:'디자이너 보기',otpSentToast:'인증 코드를 이메일로 보냈어요 ✉️',welcomeBack:'다시 오신 걸 환영해요 👋',needCode:'코드를 입력하세요',needLogin:'로그인이 필요해요',sending:'전송 중…',emailPh:'you@email.com',emailL:'이메일',messages:'메시지',noChats:'아직 대화가 없어요',sayHi:'인사를 건네 대화를 시작하세요',typeMsg:'메시지 입력…',showOrig:'원문 보기',showTr:'번역 보기',cantChat:'아직 이 디자이너와는 채팅할 수 없어요',cantChatSelf:'본인이에요',loginTitle:'로그인 또는 가입',orEmail:'또는 이메일로',loginHint:'처음이세요? 이메일 인증하면 자동으로 가입돼요.',myIdCard:'내 ID 카드',columns:'컬럼',color:'색상',cover:'커버',coverLight:'미니멀',coverTint:'컬러',custom:'직접',snsL:'SNS 연동 (선택)',pfCaption:'설명을 적어보세요 (선택)',featured:'발견',claimQ:'이 작업의 주인이신가요?',claimBtn:'내 프로필로 등록',removeReq:'삭제 요청',claimToast:'가입하면 내 프로필로 가져올 수 있어요 ✨',
 svcTitle:'서비스·가격',svcHint:'프로필에 표시돼요',svcName:'서비스명 (예: 컷+펌)',svcPrice:'가격 (예: ₩80,000)',svcDur:'소요시간',addSvc:'서비스 추가',
-book2:'예약',bkTitle:'예약 요청',bkService:'서비스',bkConsult:'상담 후 결정',bkDate:'날짜',bkTime:'시간',bkNote:'요청사항 (선택)',bkNotePh:'참고 사진 링크, 원하는 스타일 등…',bkSend:'예약 요청 보내기',bkSent:'예약 요청을 보냈어요 ✨',bkNew:'새 예약 요청이 왔어요',installApp:'앱 설치',notifOn:'알림 켜기',pushOn:'알림이 켜졌어요 🔔',pushDenied:'알림이 차단돼 있어요 (설정에서 허용)',pushUnsupported:'이 브라우저에선 지원되지 않아요',refreshed:'새로고침 완료 ✨',justNow:'방금',minAgo:'분 전',hrAgo:'시간 전',dayAgo:'일 전',youPrefix:'나: ',my:'마이',footTerms:'이용약관',footPrivacy:'개인정보처리방침',footContact:'문의하기',delAcct:'회원탈퇴',iosInstallHint:'사파리: 공유 → 홈 화면에 추가 📲',bkFail:'실패했어요',bkNeedDate:'날짜를 선택하세요',
+book2:'예약',bkTitle:'예약 요청',bkService:'서비스',bkConsult:'상담 후 결정',bkDate:'날짜',bkTime:'시간',bkNote:'요청사항 (선택)',bkNotePh:'참고 사진 링크, 원하는 스타일 등…',bkSend:'예약 요청 보내기',bkSent:'예약 요청을 보냈어요 ✨',bkNew:'새 예약 요청이 왔어요',installApp:'앱 설치',notifOn:'알림 켜기',pushOn:'알림이 켜졌어요 🔔',pushDenied:'알림이 차단돼 있어요 (설정에서 허용)',pushUnsupported:'이 브라우저에선 지원되지 않아요',refreshed:'새로고침 완료 ✨',justNow:'방금',minAgo:'분 전',hrAgo:'시간 전',dayAgo:'일 전',youPrefix:'나: ',my:'마이',footTerms:'이용약관',footPrivacy:'개인정보처리방침',footContact:'문의하기',delAcct:'회원탈퇴',iosInstallHint:'사파리: 공유 → 홈 화면에 추가 📲',bkFail:'실패했어요',bkNeedDate:'날짜를 선택하세요',bkPickSlot:'시간을 선택하세요',today:'오늘',tomorrow:'내일',weekdays:['일','월','화','수','목','금','토'],
 myBookings:'예약',bkNone:'아직 예약이 없어요',bk_pending:'대기중',bk_accepted:'수락됨',bk_declined:'거절됨',bk_done:'완료',bk_cancelled:'취소됨',
 bkAccept:'수락',bkDecline:'거절',bkComplete:'완료 처리',bkCancel:'취소',
 writeReview:'리뷰 쓰기',rvTitle:'어떠셨나요?',rvPh:'경험을 들려주세요 (선택)',rvSend:'리뷰 등록',rvThanks:'리뷰 감사합니다 ✨'});
 Object.assign(T.ja,{pfHint:'代表作品をアップ。ギャラリー・プロフィール・IDカードに表示されます。',addPhoto:'写真を追加',nearYou:'現在地から近い順に表示',photoL:'プロフィール写真を追加',changePhoto:'写真を変更',byDesigner:'{n}さんのポートフォリオ',viewDesigner:'デザイナーを見る',otpSentToast:'認証コードをメールに送りました ✉️',welcomeBack:'おかえりなさい 👋',needCode:'コードを入力してください',needLogin:'ログインしてください',sending:'送信中…',emailPh:'you@email.com',emailL:'メール',messages:'メッセージ',noChats:'まだ会話がありません',sayHi:'挨拶して会話を始めましょう',typeMsg:'メッセージを入力…',showOrig:'原文を表示',showTr:'翻訳を表示',cantChat:'このデザイナーとはまだチャットできません',cantChatSelf:'ご本人です',loginTitle:'ログイン / 登録',orEmail:'またはメールで',loginHint:'初めての方はメール認証で自動的に登録されます。',myIdCard:'マイIDカード',columns:'カラム',color:'カラー',cover:'カバー',coverLight:'ミニマル',coverTint:'カラー',custom:'カスタム',snsL:'SNSリンク（任意）',pfCaption:'キャプションを追加（任意）',featured:'ピック',claimQ:'この作品の作者ですか？',claimBtn:'プロフィールに登録',removeReq:'削除リクエスト',claimToast:'登録すると自分のプロフィールに追加できます ✨',
 svcTitle:'メニュー・料金',svcHint:'プロフィールに表示されます',svcName:'メニュー名（例: カット+パーマ）',svcPrice:'料金（例: ¥8,000）',svcDur:'所要時間',addSvc:'メニュー追加',
-book2:'予約',bkTitle:'予約リクエスト',bkService:'メニュー',bkConsult:'相談して決める',bkDate:'日付',bkTime:'時間',bkNote:'ご要望（任意）',bkNotePh:'参考写真のリンク、ご希望など…',bkSend:'リクエストを送る',bkSent:'予約リクエストを送りました ✨',bkNew:'新しい予約リクエスト',installApp:'アプリを追加',notifOn:'通知をオンにする',pushOn:'通知オン 🔔',pushDenied:'通知がブロックされています',pushUnsupported:'このブラウザでは非対応です',refreshed:'更新しました ✨',justNow:'たった今',minAgo:'分前',hrAgo:'時間前',dayAgo:'日前',youPrefix:'自分: ',my:'マイ',footTerms:'利用規約',footPrivacy:'プライバシー',footContact:'お問い合わせ',delAcct:'退会',iosInstallHint:'Safari: 共有 → ホーム画面に追加 📲',bkFail:'失敗しました',bkNeedDate:'日付を選んでください',
+book2:'予約',bkTitle:'予約リクエスト',bkService:'メニュー',bkConsult:'相談して決める',bkDate:'日付',bkTime:'時間',bkNote:'ご要望（任意）',bkNotePh:'参考写真のリンク、ご希望など…',bkSend:'リクエストを送る',bkSent:'予約リクエストを送りました ✨',bkNew:'新しい予約リクエスト',installApp:'アプリを追加',notifOn:'通知をオンにする',pushOn:'通知オン 🔔',pushDenied:'通知がブロックされています',pushUnsupported:'このブラウザでは非対応です',refreshed:'更新しました ✨',justNow:'たった今',minAgo:'分前',hrAgo:'時間前',dayAgo:'日前',youPrefix:'自分: ',my:'マイ',footTerms:'利用規約',footPrivacy:'プライバシー',footContact:'お問い合わせ',delAcct:'退会',iosInstallHint:'Safari: 共有 → ホーム画面に追加 📲',bkFail:'失敗しました',bkNeedDate:'日付を選んでください',bkPickSlot:'時間を選んでください',today:'今日',tomorrow:'明日',weekdays:['日','月','火','水','木','金','土'],
 myBookings:'予約',bkNone:'まだ予約がありません',bk_pending:'承認待ち',bk_accepted:'承認済み',bk_declined:'お断り',bk_done:'完了',bk_cancelled:'キャンセル',
 bkAccept:'承認',bkDecline:'お断り',bkComplete:'完了にする',bkCancel:'キャンセル',
 writeReview:'レビューを書く',rvTitle:'いかがでしたか？',rvPh:'体験をシェアしてください（任意）',rvSend:'レビュー送信',rvThanks:'レビューありがとうございます ✨'});
@@ -1183,25 +1197,41 @@ let bkPend=0,rvStars=5;
 function closeBk(){$('bkmodal').classList.remove('on');}
 function bkStatusLabel(s){return T[LANG]['bk_'+s]||s;}
 function bkTimeOpts(sel){var o='';for(var h=9;h<=21;h++){for(var m=0;m<60;m+=30){var v=(h<10?'0':'')+h+':'+(m?'30':'00');o+='<option value="'+v+'"'+(v===sel?' selected':'')+'>'+v+'</option>';}}return o;}
+var bkSel={did:null,svc:-1,date:'',time:''};
+function bkDateChips(){var out='';var wd=T[LANG].weekdays||['일','월','화','수','목','금','토'];
+ for(var i=0;i<14;i++){var dt=new Date();dt.setDate(dt.getDate()+i);var v=dt.toISOString().slice(0,10);
+  var lbl=i===0?T[LANG].today:(i===1?T[LANG].tomorrow:wd[dt.getDay()]);
+  out+='<button class="bkchip bdate'+(v===bkSel.date?' on':'')+'" onclick="bkPickDate(\''+v+'\')"><span class="bd1">'+lbl+'</span><span class="bd2">'+(dt.getMonth()+1)+'/'+dt.getDate()+'</span></button>';}
+ return out;}
+function bkTimeGrid(){var now=new Date();var isToday=bkSel.date===now.toISOString().slice(0,10);var out='';
+ for(var h=9;h<=21;h++){for(var m=0;m<60;m+=30){var v=(h<10?'0':'')+h+':'+(m?'30':'00');
+  var past=isToday&&(h<now.getHours()||(h===now.getHours()&&m<=now.getMinutes()));
+  out+='<button class="bkslot'+(v===bkSel.time?' on':'')+'"'+(past?' disabled':'')+' onclick="bkPickTime(\''+v+'\')">'+v+'</button>';}}
+ return out;}
+function bkPickDate(v){bkSel.date=v;bkSel.time='';bkRender();}
+function bkPickTime(v){bkSel.time=v;bkRender();}
+function bkPickSvc(i){bkSel.svc=i;bkRender();}
 function openBook(did,svcIdx){const d=dById(did);if(!d||!d.uid)return;
  if(!(ME&&ME.uid)){openLogin('');toast(T[LANG].needLogin);return;}
  if(ME.uid===d.uid){toast(T[LANG].cantChatSelf);return;}
+ bkSel={did:did,svc:(svcIdx!=null?svcIdx:((d.services&&d.services.length)?0:-1)),date:new Date().toISOString().slice(0,10),time:''};
+ bkRender();$('bkmodal').classList.add('on');}
+function bkRender(){var d=dById(bkSel.did);if(!d)return;
  const name=(LANG==='ko'&&d.ko)?d.ko:d.name;const svcs=d.services||[];
- var today=new Date().toISOString().slice(0,10);
+ var can=!!(bkSel.date&&bkSel.time);
  $('bkcard').innerHTML=`<button class="iclose" onclick="closeBk()" style="position:absolute;top:16px;right:20px;font-size:24px;color:var(--sub);z-index:2">×</button>
   <h3 class="serif">${T[LANG].bkTitle}</h3>
   <div class="pfsub">${esc(d.flag)} ${esc(name)} · ${esc(cl(d.cat))}${d.city?' · '+esc(d.city):''}</div>
-  <div class="il">${T[LANG].bkService}</div>
-  <select class="linput" id="bkSvc">${svcs.map((s,i)=>`<option value="${i}" ${i===svcIdx?'selected':''}>${esc(s.n)}${s.p?' — '+esc(s.p):''}</option>`).join('')}<option value="-1" ${svcIdx==null&&!svcs.length?'selected':''}>${T[LANG].bkConsult}</option></select>
-  <div class="il">${T[LANG].bkDate}</div><input class="linput" type="date" id="bkDate" min="${today}" value="${today}">
-  <div class="il">${T[LANG].bkTime}</div><select class="linput" id="bkTime">${bkTimeOpts('11:00')}</select>
-  <div class="il">${T[LANG].bkNote}</div><textarea class="linput" id="bkNote" rows="3" style="resize:none" placeholder="${T[LANG].bkNotePh}"></textarea>
-  <button class="lcont" style="width:100%;margin-top:16px" onclick="submitBooking('${d.id}')"><i class="ti ti-calendar-heart"></i> ${T[LANG].bkSend}</button>`;
- $('bkmodal').classList.add('on');}
-async function submitBooking(did){const d=dById(did);if(!d||!d.uid||!ME||!ME.uid)return;
- var si=parseInt($('bkSvc').value,10);var svc=(si>=0&&d.services&&d.services[si])?{n:d.services[si].n,p:d.services[si].p||'',du:d.services[si].du||''}:{n:T[LANG].bkConsult,p:'',du:''};
- var date=$('bkDate').value,time=$('bkTime').value,note=($('bkNote').value||'').slice(0,1000);
+  ${svcs.length?`<div class="il">${T[LANG].bkService}</div><div class="bksvcs">${svcs.map((s,i)=>`<button class="bksvc${i===bkSel.svc?' on':''}" onclick="bkPickSvc(${i})"><span class="bsn">${esc(s.n)}</span>${s.p?`<span class="bsp">${esc(s.p)}</span>`:''}${s.du?`<span class="bsd">${esc(s.du)}</span>`:''}</button>`).join('')}<button class="bksvc${bkSel.svc<0?' on':''}" onclick="bkPickSvc(-1)"><span class="bsn">${T[LANG].bkConsult}</span></button></div>`:''}
+  <div class="il">${T[LANG].bkDate}</div><div class="bkdates">${bkDateChips()}</div>
+  <div class="il">${T[LANG].bkTime}</div><div class="bkslots">${bkTimeGrid()}</div>
+  <div class="il">${T[LANG].bkNote}</div><textarea class="linput" id="bkNote" rows="2" style="resize:none" placeholder="${T[LANG].bkNotePh}">${esc(bkSel.note||'')}</textarea>
+  <button class="lcont" style="width:100%;margin-top:16px${can?'':';opacity:.5'}" onclick="submitBooking()"><i class="ti ti-calendar-heart"></i> ${can?(T[LANG].bkSend+' · '+bkSel.time):T[LANG].bkPickSlot}</button>`;}
+async function submitBooking(){const d=dById(bkSel.did);if(!d||!d.uid||!ME||!ME.uid)return;
+ var si=bkSel.svc;var svc=(si>=0&&d.services&&d.services[si])?{n:d.services[si].n,p:d.services[si].p||'',du:d.services[si].du||''}:{n:T[LANG].bkConsult,p:'',du:''};
+ var date=bkSel.date,time=bkSel.time;var nt=$('bkNote');bkSel.note=nt?nt.value:'';var note=(bkSel.note||'').slice(0,1000);
  if(!date){toast(T[LANG].bkNeedDate);return;}
+ if(!time){toast(T[LANG].bkPickSlot);return;}
  try{var r=await SB.from('bookings').insert({customer:ME.uid,designer:d.uid,service:svc,date:date,time:time,note:note});
   if(r.error){toast(T[LANG].bkFail+': '+r.error.message);return;}
  }catch(e){toast(T[LANG].bkFail);return;}
