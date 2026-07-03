@@ -887,7 +887,11 @@ function renderIdCanvas(){return new Promise(function(resolve,reject){
   var cuts=el.querySelectorAll('.ic-cut'),saved=[];
   cuts.forEach(function(c,i){saved[i]=c.style.height;c.style.height=c.offsetWidth+'px';});
   function restore(){if(iw)iw.style.transform=t;cuts.forEach(function(c,i){c.style.height=saved[i];});}
-  html2canvas(el,{useCORS:true,scale:3,backgroundColor:'#ffffff'}).then(function(cv){restore();resolve(cv);}).catch(function(e){restore();reject(e);});
+  // 폰트(Pretendard) 로딩을 보장한 뒤 캡처 — 폰에서 폴백폰트로 렌더돼 글자 위치가 틀어지는 것 방지
+  var fr=(document.fonts&&document.fonts.ready)?document.fonts.ready:Promise.resolve();
+  Promise.resolve(fr).then(function(){
+    return html2canvas(el,{useCORS:true,scale:3,backgroundColor:'#ffffff'});
+  }).then(function(cv){restore();resolve(cv);}).catch(function(e){restore();reject(e);});
 });}
 function idSaveOverlay(url){var ov=document.createElement('div');ov.className='idsave';
  ov.innerHTML='<div class="idsave-h">'+esc(T[LANG].saveHint)+'</div><img src="'+url+'" class="idsave-img" alt=""><button class="idsave-x">'+esc(T[LANG].done)+'</button>';
