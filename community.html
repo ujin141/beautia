@@ -1046,8 +1046,7 @@ function suBody(){
   ${SU.code?`<div class="verifyrow" style="margin-top:10px"><input class="linput" id="suCode" maxlength="6" inputmode="numeric" placeholder="${T[LANG].codePh}"><button class="vbtn" onclick="suVerify()">${T[LANG].verify}</button></div>`:''}
   ${SU.verified?`<div class="vok">✅ ${T[LANG].verified}</div>`:`<div class="secnote" style="margin-top:12px">${T[LANG].loginHint}</div>`}`;
  if(SU.step===2)return `<h3>${T[LANG].profileSetup}</h3>
-  <div class="il">${T[LANG].roleQ}</div>
-  ${SU.edit?`<div class="rolelocked"><div class="ic">${SU.role==='desg'?'🎨':'🙋'}</div><div style="flex:1"><div class="rt">${roleLabel(SU.role)}</div><div class="rd">${T[LANG].roleLocked}</div></div><i class="ti ti-lock"></i></div>`:`<div class="rolepick">
+  ${SU.edit?'':`<div class="il">${T[LANG].roleQ}</div><div class="rolepick">
    <div class="rolecard ${SU.role==='cust'?'on':''}" onclick="SU.role='cust';renderSU()"><div class="ic">🙋</div><div class="rt">${T[LANG].cust}</div><div class="rd">${T[LANG].custDesc}</div></div>
    <div class="rolecard ${SU.role==='desg'?'on':''}" onclick="SU.role='desg';renderSU()"><div class="ic">🎨</div><div class="rt">${T[LANG].desg}</div><div class="rd">${T[LANG].desgDesc}</div></div></div>`}
   <input type="file" id="suAvFile" accept="image/*" style="display:none" onchange="suAvatar(event)">
