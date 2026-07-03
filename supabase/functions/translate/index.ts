@@ -9,7 +9,7 @@ import "jsr:@supabase/functions-js/edge-runtime.d.ts";
 const OPENAI_API_KEY = Deno.env.get("OPENAI_API_KEY")!;
 const MODEL = Deno.env.get("OPENAI_MODEL") ?? "gpt-4o-mini";
 
-const LANG_NAME: Record<string, string> = { ko: "Korean", en: "English", ja: "Japanese" };
+const LANG_NAME: Record<string, string> = { ko: "Korean", en: "English", ja: "Japanese", th: "Thai" };
 
 const cors = {
   "Access-Control-Allow-Origin": "*",

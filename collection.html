@@ -85,6 +85,10 @@ nav.main a.on{color:var(--ink);border-color:var(--accent);}
 .umenu a .undot{display:inline-block;width:8px;height:8px;border-radius:50%;background:#e5484d;margin-left:6px;vertical-align:middle;}
 .umenu{position:fixed;top:66px;right:28px;z-index:55;background:#fff;border:1px solid var(--line);border-radius:16px;box-shadow:0 24px 60px -18px rgba(0,0,0,.25);padding:8px;min-width:184px;display:none;}
 .umenu.on{display:block;}
+.langmenu{min-width:150px;} .langmenu a{gap:8px;} .langmenu a.on{color:var(--plum);font-weight:800;background:var(--soft);}
+.langbtn{width:40px;height:40px;border-radius:50%;display:flex;align-items:center;justify-content:center;color:var(--ink2);font-size:20px;flex:0 0 auto;}
+.langbtn:hover{background:var(--soft);}
+@media(max-width:860px){.langbtn{margin-left:auto;}}
 .umenu .uh{padding:10px 14px 12px;border-bottom:1px solid var(--line);margin-bottom:6px;}
 .umenu .uh .un{font-weight:800;font-size:15px;} .umenu .uh .ur{font-size:12.5px;color:var(--sub);margin-top:2px;}
 .umenu a{display:flex;align-items:center;gap:10px;padding:12px 14px;font-size:15px;font-weight:600;color:var(--ink);border-radius:10px;cursor:pointer;}
@@ -526,6 +530,7 @@ body.mlock{position:fixed;left:0;right:0;width:100%;overflow:hidden;}
       <a data-v="saved" onclick="setView('saved')" data-t="saved">Saved</a>
     </nav>
     <div class="hsearch"><i class="ti ti-search"></i><input id="q" oninput="onSearchInput()" onfocus="renderSuggest()" onblur="hideSuggest()" autocomplete="off" data-tph="search"><div class="sugbox" id="sugbox"></div></div>
+    <button class="langbtn" id="langbtn" onclick="toggleLangMenu(event)" aria-label="Language"><i class="ti ti-world"></i></button>
     <button class="loginBtn" id="loginBtn" onclick="openLogin('')" data-t="login">Log in</button>
     <div class="avt" id="avatar" onclick="toggleUmenu(event)" style="display:none"></div>
     <button class="join" onclick="openLogin('desg')"><i class="ti ti-plus"></i><span data-t="joinD">Join as Designer</span></button>
@@ -566,6 +571,7 @@ body.mlock{position:fixed;left:0;right:0;width:100%;overflow:hidden;}
 
 <div class="imodal" id="imodal" onclick="if(event.target===this)closeI()"><div class="icard" id="icard"></div></div>
 <div class="umenu" id="umenu"></div>
+<div class="umenu langmenu" id="langmenu"></div>
 <div class="lmodal" id="lmodal" onclick="if(event.target===this)closeLogin()"><div class="lcard" id="lcard"></div></div>
 <div class="idmodal" id="idmodal" onclick="if(event.target===this)closeId()"><div class="idwrap" id="idwrap"><div class="idcard" id="idcard"></div><div class="idcfg" id="idcfg"></div><div class="idbtns"><button class="pri" onclick="dlId()"><i class="ti ti-download"></i> <span id="idDlT">Download</span></button><button onclick="shareId()"><i class="ti ti-link"></i> <span id="idShT">Share</span></button><button onclick="closeId()"><i class="ti ti-x"></i></button></div></div></div>
 <div class="pfmodal" id="pfmodal" onclick="if(event.target===this)closePf()"><div class="pfcard" id="pfcard"></div></div>
@@ -648,7 +654,12 @@ const cl=c=>c==='All'?T[LANG].all:(T[LANG].Cat[c]||c);
 function renderCats(){$('cats').innerHTML=CATS.map(c=>`<button class="cat ${CAT===c?'on':''}" onclick="setCat('${c}')">${cl(c)}</button>`).join('');}
 function renderCities(){const cs=[...new Set(allD().map(d=>d.city).filter(Boolean))];$('city').innerHTML=`<option value="">${T[LANG].allcity}</option>`+cs.map(c=>`<option value="${esc(c)}">${esc(c)}</option>`).join('');}
 function setCat(c){CAT=c;renderCats();render();}
-function setLang(l){LANG=l;document.documentElement.lang=l;applyI18n();renderCats();renderCities();updateNearby();render();if(curD)openD(curD,true);}
+const LANGS=[['ko','한국어','🇰🇷'],['en','English','🇺🇸'],['ja','日本語','🇯🇵'],['th','ไทย','🇹🇭']];
+function setLang(l,auto){LANG=l;document.documentElement.lang=l;if(!auto){try{localStorage.setItem('beautia_lang',l);}catch(e){}}applyI18n();renderCats();renderCities();updateNearby();render();if(curD)openD(curD,true);closeLangMenu();}
+function toggleLangMenu(e){if(e)e.stopPropagation();var m=$('langmenu');if(m.classList.contains('on')){closeLangMenu();return;}
+ m.innerHTML=LANGS.map(function(x){return `<a onclick="setLang('${x[0]}')" class="${LANG===x[0]?'on':''}"><span>${x[2]}</span> ${x[1]}${LANG===x[0]?' <i class="ti ti-check" style="margin-left:auto"></i>':''}</a>`;}).join('');
+ m.classList.add('on');var b=$('langbtn'),r=b.getBoundingClientRect();m.style.top=(r.bottom+8)+'px';m.style.right=Math.max(12,window.innerWidth-r.right)+'px';}
+function closeLangMenu(){var m=$('langmenu');if(m)m.classList.remove('on');}
 const SEO_TITLE=document.title,SEO_DESC=(document.querySelector('meta[name=description]')||{}).content||'';
 function setSEO(title,desc){document.title=title;var d=document.querySelector('meta[name=description]');if(d)d.setAttribute('content',desc||SEO_DESC);var ot=document.querySelector('meta[property="og:title"]');if(ot)ot.setAttribute('content',title);}
 function setView(v){VIEW=v;[...document.querySelectorAll('#nav a')].forEach(a=>a.classList.toggle('on',a.dataset.v===v));$('hero').style.display=v==='explore'?'block':'none';render();window.scrollTo({top:0});syncTabs(v);}
@@ -924,6 +935,27 @@ document.addEventListener('keydown',e=>{if(e.key==='Escape'){closeBk();closeFa()
 Object.assign(T.en,{idCard:'ID Card',idDl:'Download',idShare:'Share',idPrep:'Creating image…',idFail:'Download failed (try Share)',linkCopied:'Link copied ✨',saveHint:'Press & hold the image to save it 📥',done:'Done'});
 Object.assign(T.ko,{idCard:'ID 카드',idDl:'다운로드',idShare:'공유',idPrep:'이미지 만드는 중…',idFail:'다운로드 실패 (공유로 시도)',linkCopied:'링크 복사됨 ✨',saveHint:'이미지를 꾹 눌러 저장하세요 📥',done:'닫기'});
 Object.assign(T.ja,{idCard:'IDカード',idDl:'保存',idShare:'シェア',idPrep:'画像を作成中…',idFail:'保存失敗（シェアでお試し）',linkCopied:'リンクをコピー ✨',saveHint:'画像を長押しして保存してください 📥',done:'閉じる'});
+// 태국어: 영어 전체를 상속받고 주요 문자열만 태국어로 (누락 키는 영어로 자동 폴백)
+T.th=Object.assign({},T.en,{
+ explore:'สำรวจ',designers:'ดีไซเนอร์',saved:'บันทึกไว้',join:'สมัคร',my:'ฉัน',messages:'ข้อความ',
+ search:'ค้นหาดีไซเนอร์ สไตล์…',all:'ทั้งหมด',allcity:'ทุกเมือง',
+ tagline:'ค้นหาช่างความงามที่เข้าใจสไตล์ของคุณ — ทั่วโลก ดูผลงานจริง บันทึกที่ชอบ จองหรือทักแชทได้เลย',
+ h1:'ค้นหาช่างความงามที่ <em>เข้าใจสไตล์คุณ</em>',
+ verified:'ยืนยันแล้ว',portfolio:'ผลงาน',beforeafter:'ก่อน / หลัง',reviews:'รีวิว',connect:'ติดต่อ',before:'ก่อน',after:'หลัง',years:'ปี',
+ save:'บันทึก',saved2:'บันทึกแล้ว',book:'จอง / ทัก',noRes:'ไม่พบผลลัพธ์',emptyS:'ยังไม่มีที่บันทึก — แตะ ♡ ที่ผลงานใดก็ได้',
+ login:'เข้าสู่ระบบ',logout:'ออกจากระบบ',joinD:'สมัครเป็นดีไซเนอร์',hi:'สวัสดี',
+ roleQ:'ฉันคือ…',cust:'ลูกค้า',desg:'ดีไซเนอร์',custDesc:'ค้นหาและจองช่างความงาม',desgDesc:'โชว์ผลงาน รับลูกค้า',roleLocked:'ตั้งค่าตอนสมัคร · เปลี่ยนไม่ได้',
+ googleBtn:'ดำเนินการต่อด้วย Google',orText:'หรือด้วยอีเมล',profileSetup:'ตั้งค่าโปรไฟล์',nick:'ชื่อ',nickPh:'ชื่อ หรือ @ไอดี',country:'ประเทศ',city:'เมือง',cityPh:'เช่น กรุงเทพฯ',specialties:'ความเชี่ยวชาญ',interests:'ความสนใจ',career:'ประสบการณ์',careerPh:'เช่น 7 ปี',
+ prev:'ย้อนกลับ',next:'ถัดไป',done:'เสร็จ',edit:'แก้ไขโปรไฟล์',joined:'เข้าร่วม',verifiedMember:'สมาชิกยืนยันแล้ว',profile:'โปรไฟล์',pfManage:'จัดการผลงาน',
+ svcTitle:'บริการ & ราคา',svcName:'บริการ (เช่น ตัด+ดัด)',svcPrice:'ราคา (เช่น ฿800)',svcDur:'ระยะเวลา',addSvc:'เพิ่มบริการ',
+ book2:'จอง',bkTitle:'ขอจองคิว',bkService:'บริการ',bkConsult:'ปรึกษาก่อนตัดสินใจ',bkDate:'วันที่',bkTime:'เวลา',bkNote:'หมายเหตุ (ไม่บังคับ)',bkNotePh:'ลิงก์รูปอ้างอิง สไตล์ที่ต้องการ…',bkSend:'ส่งคำขอจอง',bkSent:'ส่งคำขอจองแล้ว ✨',bkPickSlot:'เลือกเวลา',today:'วันนี้',tomorrow:'พรุ่งนี้',weekdays:['อา','จ','อ','พ','พฤ','ศ','ส'],
+ myBookings:'การจอง',bkNone:'ยังไม่มีการจอง',bk_pending:'รอยืนยัน',bk_accepted:'ยืนยันแล้ว',bk_declined:'ปฏิเสธ',bk_done:'เสร็จสิ้น',bk_cancelled:'ยกเลิก',
+ bkAccept:'ยอมรับ',bkDecline:'ปฏิเสธ',bkComplete:'ทำเครื่องหมายว่าเสร็จ',bkCancel:'ยกเลิก',writeReview:'เขียนรีวิว',rvTitle:'เป็นอย่างไรบ้าง?',rvPh:'แชร์ประสบการณ์ (ไม่บังคับ)',rvSend:'ส่งรีวิว',rvThanks:'ขอบคุณสำหรับรีวิว ✨',bkNew:'มีคำขอจองใหม่',
+ noChats:'ยังไม่มีบทสนทนา',sayHi:'ทักทายเพื่อเริ่มแชท',typeMsg:'พิมพ์ข้อความ…',showOrig:'ดูต้นฉบับ',showTr:'ดูคำแปล',youPrefix:'คุณ: ',justNow:'เมื่อกี้',minAgo:' นาที',hrAgo:' ชม.',dayAgo:' วัน',
+ installApp:'ติดตั้งแอป',notifOn:'เปิดการแจ้งเตือน',iosInstallHint:'Safari: แชร์ → เพิ่มไปยังหน้าจอโฮม 📲',refreshed:'อัปเดตแล้ว ✨',
+ footTerms:'ข้อกำหนด',footPrivacy:'ความเป็นส่วนตัว',footContact:'ติดต่อ',delAcct:'ลบบัญชี',cover:'ปก',coverLight:'มินิมอล',coverTint:'สี',custom:'กำหนดเอง',columns:'คอลัมน์',color:'สี',myIdCard:'ID การ์ดของฉัน',idCard:'ID การ์ด',idDl:'ดาวน์โหลด',idShare:'แชร์',
+ Cat:{Hair:'ผม',Makeup:'เมคอัพ',Nail:'เล็บ',Lash:'ขนตา',Skin:'ผิว',Bridal:'เจ้าสาว'}
+});
 
 // ===== 계정: 회원가입(역할·지역·전문분야·OTP·약관·Google) + 마이페이지 =====
 const GSVG='<svg width="20" height="20" viewBox="0 0 48 48"><path fill="#FFC107" d="M43.6 20.5H42V20H24v8h11.3C33.7 32.4 29.3 35 24 35c-6.6 0-12-5.4-12-12s5.4-12 12-12c3.1 0 5.9 1.2 8 3.1l5.7-5.7C34.3 5.1 29.4 3 24 3 12.4 3 3 12.4 3 24s9.4 21 21 21 21-9.4 21-21c0-1.2-.1-2.3-.4-3.5z"/><path fill="#FF3D00" d="M6.3 14.7l6.6 4.8C14.7 16 19 13 24 13c3.1 0 5.9 1.2 8 3.1l5.7-5.7C34.3 5.1 29.4 3 24 3 16.3 3 9.7 7.3 6.3 14.7z"/><path fill="#4CAF50" d="M24 45c5.2 0 9.9-2 13.5-5.2l-6.2-5.3C29.2 35.9 26.7 37 24 37c-5.3 0-9.7-2.6-11.3-7l-6.5 5C9.6 41.6 16.2 45 24 45z"/><path fill="#1976D2" d="M43.6 20.5H42V20H24v8h11.3c-.8 2.2-2.2 4.1-4 5.5l6.2 5.3C39.9 36.7 45 31 45 24c0-1.2-.1-2.3-.4-3.5z"/></svg>';
@@ -1097,10 +1129,10 @@ function openProfile(){if(!ME){openLogin('');return;}const since=ME.joined?new D
  $('dmodal').classList.add('on');curD=null;}
 function editProfile(){if(!ME)return;closeD();SU={role:ME.role,name:ME.name,country:ME.country||'',city:ME.city,spec:(ME.spec||[]).slice(),career:ME.career||'',avatar:ME.avatar||'',insta:ME.insta||'',sns:Object.assign({},ME.sns||{}),shopName:ME.shopName||'',uid:ME.uid,contact:'x',verified:true,code:'x',tos:true,priv:true,mktg:ME.mktg,provider:ME.provider,step:2,edit:true};$('lmodal').classList.add('on');renderSU();}
 function suAvatar(e){var f=e.target.files[0];if(!f||!/^image\//.test(f.type))return;var r=new FileReader();r.onload=function(ev){pfDownscale(ev.target.result,500,function(d){SU.avatar=d;renderSU();});};r.readAsDataURL(f);e.target.value='';}
-document.addEventListener('click',function(){closeUmenu();});
+document.addEventListener('click',function(){closeUmenu();closeLangMenu();});
 
 // 언어 자동: 1) 브라우저 로케일로 즉시 기본값 → 2) IP 국가로 덮어쓰기(권위)
-(function(){var nl=(navigator.language||'en').toLowerCase();LANG=nl.indexOf('ko')===0?'ko':nl.indexOf('ja')===0?'ja':'en';})();
+(function(){try{var sv=localStorage.getItem('beautia_lang');if(sv&&['en','ko','ja','th'].indexOf(sv)>=0){LANG=sv;return;}}catch(e){}var nl=(navigator.language||'en').toLowerCase();LANG=nl.indexOf('ko')===0?'ko':nl.indexOf('ja')===0?'ja':nl.indexOf('th')===0?'th':'en';})();
 document.documentElement.lang=LANG;
 (function(){var _q=new URLSearchParams(location.search).get('q');if(_q&&$('q'))$('q').value=_q.slice(0,80);})();
 // ===== 채팅(메시징) + 자동번역(GPT) =====
@@ -1349,8 +1381,9 @@ const _du=new URLSearchParams(location.search).get('u');if(_du)openByUid(_du);
 fetch('https://ipapi.co/json/').then(function(r){return r.ok?r.json():null;}).then(function(j){if(!j)return;
  if(typeof j.latitude==='number'&&typeof j.longitude==='number')USERLOC={lat:j.latitude,lng:j.longitude,city:j.city||'',country:j.country_code||''};
  updateNearby();
- var cc=(j.country_code||'').toUpperCase();var l=cc==='KR'?'ko':cc==='JP'?'ja':(cc?'en':LANG);
- if(l!==LANG)setLang(l);else render();
+ var saved=false;try{saved=!!localStorage.getItem('beautia_lang');}catch(e){}
+ var cc=(j.country_code||'').toUpperCase();var l=cc==='KR'?'ko':cc==='JP'?'ja':cc==='TH'?'th':(cc?'en':LANG);
+ if(!saved&&l!==LANG)setLang(l,true);else render();
 }).catch(function(){});
 // 모달 열리면 스크롤 위치 보존하며 배경 잠금
 (function(){var sy=0,locked=false;
