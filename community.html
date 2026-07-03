@@ -354,7 +354,7 @@ body.mlock{position:fixed;left:0;right:0;width:100%;overflow:hidden;}
 .fin::-webkit-scrollbar{display:none;}
 .cats{display:flex;gap:8px;}
 .cat{font-size:14px;font-weight:700;color:var(--ink2);padding:10px 18px;border:1px solid var(--line);border-radius:999px;white-space:nowrap;transition:.15s;}
-.nearby{align-items:center;gap:7px;font-size:13.5px;font-weight:800;color:var(--plum);background:var(--rosebg);padding:10px 16px;border-radius:999px;white-space:nowrap;flex:0 0 auto;}
+.nearby{align-items:center;gap:6px;font-size:13px;font-weight:800;color:var(--plum);background:var(--rosebg);padding:8px 13px;border-radius:999px;white-space:nowrap;flex:0 0 auto;}
 .nearby i{font-size:17px;}
 .cat.on{background:var(--ink);color:#fff;border-color:var(--ink);}
 .cat:hover:not(.on){border-color:var(--ink);}
@@ -565,6 +565,7 @@ body.mlock{position:fixed;left:0;right:0;width:100%;overflow:hidden;}
       <a data-v="saved" onclick="setView('saved')" data-t="saved">Saved</a>
     </nav>
     <div class="hsearch"><i class="ti ti-search"></i><input id="q" oninput="onSearchInput()" onfocus="renderSuggest()" onblur="hideSuggest()" autocomplete="off" data-tph="search"><div class="sugbox" id="sugbox"></div></div>
+    <span class="nearby" id="nearby" style="display:none"></span>
     <button class="loginBtn" id="loginBtn" onclick="openLogin('')" data-t="login">Log in</button>
     <div class="avt" id="avatar" onclick="toggleUmenu(event)" style="display:none"></div>
     <button class="join" onclick="openLogin('desg')"><i class="ti ti-plus"></i><span data-t="joinD">Join as Designer</span></button>
@@ -582,7 +583,7 @@ body.mlock{position:fixed;left:0;right:0;width:100%;overflow:hidden;}
 <div class="hero" id="hero"><h1 class="serif"></h1><p data-t="tagline"></p></div>
 <div class="stories" id="stories"></div>
 
-<div class="filterbar"><div class="fin"><span class="nearby" id="nearby" style="display:none"></span><div class="cats" id="cats"></div><div class="citysel"><i class="ti ti-map-pin"></i><select id="city" onchange="render()"></select></div></div></div>
+<div class="filterbar"><div class="fin"><div class="cats" id="cats"></div><div class="citysel"><i class="ti ti-map-pin"></i><select id="city" onchange="render()"></select></div></div></div>
 
 <div class="wrap"><div class="grid" id="grid"></div><div class="mepage" id="mepage" style="display:none"></div></div>
 
