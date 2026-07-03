@@ -86,6 +86,10 @@ textarea.inp{resize:vertical;min-height:80px;line-height:1.6;}
 .hactions{display:flex;gap:8px;margin-top:16px;flex-wrap:wrap;}
 .card.hero .btn.ghost{background:rgba(255,255,255,.16);color:#fff;border-color:rgba(255,255,255,.4);}
 .statgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(58px,1fr));gap:8px;margin-top:14px;}
+.flwrs{display:flex;flex-wrap:wrap;gap:9px;margin-top:8px;}
+.flwr{display:flex;align-items:center;gap:7px;background:var(--soft);border:1px solid var(--line);border-radius:999px;padding:5px 13px 5px 5px;}
+.flav{width:30px;height:30px;border-radius:50%;background:var(--rosebg) center/cover;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:800;color:var(--plum);flex:0 0 auto;}
+.flwr span{font-size:13px;font-weight:700;color:var(--ink2);}
 .stat{background:#fff;border:1px solid var(--line);border-radius:14px;padding:15px 4px;text-align:center;min-width:0;}
 .stat .sv{font-size:21px;font-weight:800;color:var(--plum);letter-spacing:-.02em;white-space:nowrap;}
 .stat .sl{font-size:11px;color:var(--sub);font-weight:700;margin-top:4px;}
@@ -162,6 +166,10 @@ textarea.inp{resize:vertical;min-height:80px;line-height:1.6;}
       <div class="prog"><div class="progbar" id="progBar"></div></div>
       <div class="hint" id="progPct" style="margin:8px 0 0"></div>
       <div id="progTips"></div>
+    </div>
+    <div class="card">
+      <h2>팔로워 <span class="hint" id="flwrCount" style="display:inline;font-weight:600"></span></h2>
+      <div id="followerList" class="flwrs"><div class="hint">불러오는 중…</div></div>
     </div>
   </div>
 
@@ -293,6 +301,19 @@ async function afterLogin(user){
 function pubUrl(){return 'https://beautia.io/d/'+UID;}
 function copyPub(){navigator.clipboard&&navigator.clipboard.writeText(pubUrl()).then(()=>toast('공유 링크 복사됨 ✨'),()=>toast(pubUrl()));}
 async function loadFollowerCount(){try{const r=await SB.from('follows').select('*',{count:'exact',head:true}).eq('designer',UID);if(!r.error&&typeof r.count==='number'&&$('stFollowers'))$('stFollowers').textContent=r.count;}catch(e){}}
+async function loadFollowerList(){
+  const box=$('followerList'),cnt=$('flwrCount');if(!box)return;
+  try{
+    const {data:fr,error}=await SB.from('follows').select('follower,created_at').eq('designer',UID).order('created_at',{ascending:false}).limit(60);
+    if(error){box.innerHTML='<div class="hint">팔로워 기능을 켜려면 db_enable_follows.sql을 실행하세요</div>';return;}
+    if(!fr||!fr.length){if(cnt)cnt.textContent='';box.innerHTML='<div class="hint">아직 팔로워가 없어요. 프로필을 공유해 팔로워를 모아보세요 ✨</div>';return;}
+    if(cnt)cnt.textContent='· '+fr.length+'명';
+    const ids=fr.map(x=>x.follower);
+    let profs=[];try{profs=(await SB.from('profiles').select('id,nickname,shop,avatar_url').in('id',ids)).data||[];}catch(e){}
+    const pm={};profs.forEach(p=>pm[p.id]={name:p.nickname||(p.shop&&p.shop.name)||'회원',avatar:(p.shop&&p.shop.avatar)||p.avatar_url||''});
+    box.innerHTML=ids.map(id=>{const p=pm[id]||{name:'회원',avatar:''};return '<div class="flwr"><div class="flav" style="'+(p.avatar?"background-image:url('"+p.avatar+"')":'')+'">'+(p.avatar?'':esc((p.name||'?')[0]))+'</div><span>'+esc(p.name)+'</span></div>';}).join('');
+  }catch(e){box.innerHTML='<div class="hint">팔로워를 불러올 수 없어요</div>';}
+}
 function renderHome(){
   const s=ME.shop||{};
   $('hName').textContent=ME.nickname||'디자이너';
@@ -301,7 +322,7 @@ function renderHome(){
   $('hMeta').textContent=[(state.spec.map(x=>catKo[x]||x).join('·')),ME.region].filter(Boolean).join(' · ');
   $('hViewPub').href=pubUrl();
   $('stPhotos').textContent=state.photos.length;
-  loadFollowerCount();
+  loadFollowerCount();loadFollowerList();
   // 완성도
   const checks=[
     ['프로필 사진',!!state.avatar],['이름',!!ME.nickname],['샵 이름',!!s.name],['지역',!!ME.region],

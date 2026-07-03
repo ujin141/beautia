@@ -134,6 +134,10 @@ nav.main a.on{color:var(--ink);border-color:var(--accent);}
 .vbtn{flex:0 0 auto;background:var(--ink);color:#fff;border-radius:12px;padding:0 18px;font-weight:800;font-size:14px;white-space:nowrap;}
 .vok{margin-top:10px;font-size:14px;font-weight:700;color:var(--green);text-align:left;}
 .secnote{font-size:12.5px;color:var(--sub);margin-top:6px;text-align:left;line-height:1.4;}
+.lsub{font-size:13px;color:var(--ink2);margin-top:6px;line-height:1.5;font-weight:600;}
+.codesent{display:flex;align-items:center;gap:6px;margin-top:14px;font-size:13px;font-weight:700;color:var(--green);}
+.codesent i{font-size:16px;}
+.codein{text-align:center;letter-spacing:.42em;font-size:20px;font-weight:800;padding-left:.42em;}
 .agree{display:flex;align-items:flex-start;gap:9px;font-size:14px;color:var(--ink2);margin-top:13px;text-align:left;cursor:pointer;}
 .agree input{margin-top:3px;flex:0 0 auto;} .agree .req{color:var(--accent);font-weight:800;} .agree a{color:var(--accent);text-decoration:underline;margin-left:4px;}
 .lfoot{display:flex;gap:10px;margin-top:22px;}
@@ -1112,9 +1116,9 @@ document.addEventListener('keydown',e=>{if(e.key==='Escape'){closeBk();closeFa()
 Object.assign(T.en,{idCard:'ID Card',idDl:'Download',idShare:'Share',idPrep:'Creating image…',idFail:'Download failed (try Share)',linkCopied:'Link copied ✨',saveHint:'Press & hold the image to save it 📥',done:'Done',idKind:'ID CARD',idScan:'SCAN TO VIEW & BOOK',fbKick:'Featured work',fbView:'View portfolio'});
 Object.assign(T.ko,{idCard:'ID 카드',idDl:'다운로드',idShare:'공유',idPrep:'이미지 만드는 중…',idFail:'다운로드 실패 (공유로 시도)',linkCopied:'링크 복사됨 ✨',saveHint:'이미지를 꾹 눌러 저장하세요 📥',done:'닫기',idKind:'ID 카드',idScan:'스캔해서 예약하기',fbKick:'추천 작업',fbView:'포트폴리오 보기'});
 Object.assign(T.ja,{idCard:'IDカード',idDl:'保存',idShare:'シェア',idPrep:'画像を作成中…',idFail:'保存失敗（シェアでお試し）',linkCopied:'リンクをコピー ✨',saveHint:'画像を長押しして保存してください 📥',done:'閉じる',idKind:'IDカード',idScan:'スキャンして予約',fbKick:'注目の作品',fbView:'ポートフォリオを見る'});
-Object.assign(T.en,{follow:'Follow',following:'Following',followedT:'Following ✓',unfollowedT:'Unfollowed',signup:'Sign up',followers:'followers',dgAll:'All',noFollowing:"You're not following anyone yet"});
-Object.assign(T.ko,{follow:'팔로우',following:'팔로잉',followedT:'팔로우했어요 ✓',unfollowedT:'팔로우 취소',signup:'회원가입',followers:'팔로워',dgAll:'전체',noFollowing:'아직 팔로우한 디자이너가 없어요'});
-Object.assign(T.ja,{follow:'フォロー',following:'フォロー中',followedT:'フォローしました ✓',unfollowedT:'フォロー解除',signup:'会員登録',followers:'フォロワー',dgAll:'すべて',noFollowing:'まだ誰もフォローしていません'});
+Object.assign(T.en,{follow:'Follow',following:'Following',followedT:'Following ✓',unfollowedT:'Unfollowed',signup:'Sign up',followers:'followers',dgAll:'All',noFollowing:"You're not following anyone yet",noPwHint:'No password needed — just log in with the code sent to your email.',codeSentTo:'Code sent to {email}',spamHint:"Can't find it? Check your spam folder, or tap Resend."});
+Object.assign(T.ko,{follow:'팔로우',following:'팔로잉',followedT:'팔로우했어요 ✓',unfollowedT:'팔로우 취소',signup:'회원가입',followers:'팔로워',dgAll:'전체',noFollowing:'아직 팔로우한 디자이너가 없어요',noPwHint:'비밀번호가 필요 없어요 — 이메일로 받은 코드로 로그인해요.',codeSentTo:'{email} 로 인증코드를 보냈어요',spamHint:'메일이 안 보이면 스팸함을 확인하거나 재전송을 눌러주세요.'});
+Object.assign(T.ja,{follow:'フォロー',following:'フォロー中',followedT:'フォローしました ✓',unfollowedT:'フォロー解除',signup:'会員登録',followers:'フォロワー',dgAll:'すべて',noFollowing:'まだ誰もフォローしていません',noPwHint:'パスワード不要 — メールに届いたコードでログインします。',codeSentTo:'{email} に認証コードを送りました',spamHint:'メールが届かない場合は迷惑メールを確認するか、再送を押してください。'});
 // 태국어: 영어 전체를 상속받고 주요 문자열만 태국어로 (누락 키는 영어로 자동 폴백)
 T.th=Object.assign({},T.en,{
  explore:'สำรวจ',designers:'ดีไซเนอร์',saved:'บันทึกไว้',join:'สมัคร',my:'ฉัน',messages:'ข้อความ',
@@ -1224,11 +1228,15 @@ function renderSU(){const steps=suSteps(),idx=steps.indexOf(SU.step);
   <div class="lfoot">${idx>0?`<button class="lprev" onclick="suGo(-1)">${T[LANG].prev}</button>`:''}<button class="lcont" onclick="suNext()">${idx===steps.length-1?T[LANG].done:T[LANG].next}</button></div>`;}
 function suBody(){
  if(SU.step===1)return `<h3>${T[LANG].loginTitle}</h3>
+  <div class="lsub">${T[LANG].noPwHint}</div>
   <button class="gbtn" onclick="suGoogle()">${GSVG} ${T[LANG].googleBtn}</button>
   <div class="ldiv"><span>${T[LANG].orEmail}</span></div>
-  <div class="verifyrow"><input class="linput" id="suContact" type="email" autocomplete="email" placeholder="${T[LANG].emailPh}" value="${(SU.contact||'').replace(/"/g,'&quot;')}" ${SU.code?'disabled':''}><button class="vbtn" onclick="suSendCode()">${SU.code?T[LANG].resend:T[LANG].sendCode}</button></div>
-  ${SU.code?`<div class="verifyrow" style="margin-top:10px"><input class="linput" id="suCode" maxlength="6" inputmode="numeric" placeholder="${T[LANG].codePh}"><button class="vbtn" onclick="suVerify()">${T[LANG].verify}</button></div>`:''}
-  ${SU.verified?`<div class="vok">✅ ${T[LANG].verified}</div>`:`<div class="secnote" style="margin-top:12px">${T[LANG].loginHint}</div>`}`;
+  <div class="verifyrow"><input class="linput" id="suContact" type="email" autocomplete="email" placeholder="${T[LANG].emailPh}" value="${(SU.contact||'').replace(/"/g,'&quot;')}" ${SU.code?'disabled':''} onkeydown="if(event.key==='Enter'){event.preventDefault();suSendCode();}"><button class="vbtn" onclick="suSendCode()">${SU.code?T[LANG].resend:T[LANG].sendCode}</button></div>
+  ${SU.verified?`<div class="vok">✅ ${T[LANG].verified}</div>`
+   :SU.code?`<div class="codesent"><i class="ti ti-mail-check"></i> ${T[LANG].codeSentTo.replace('{email}',esc(SU.contact))}</div>
+    <div class="verifyrow" style="margin-top:8px"><input class="linput codein" id="suCode" maxlength="6" inputmode="numeric" autocomplete="one-time-code" placeholder="——————" onkeydown="if(event.key==='Enter'){event.preventDefault();suVerify();}"><button class="vbtn" onclick="suVerify()">${T[LANG].verify}</button></div>
+    <div class="secnote" style="margin-top:10px"><i class="ti ti-info-circle" style="font-size:13px"></i> ${T[LANG].spamHint}</div>`
+   :`<div class="secnote" style="margin-top:12px">${T[LANG].loginHint}</div>`}`;
  if(SU.step===2)return `<h3>${T[LANG].profileSetup}</h3>
   <input type="file" id="suAvFile" accept="image/*" style="display:none" onchange="suAvatar(event)">
   <div class="suava"><div class="suav" onclick="document.getElementById('suAvFile').click()" style="${SU.avatar?`background-image:url('${SU.avatar}')`:''}">${SU.avatar?'':'<i class="ti ti-camera"></i>'}</div><button type="button" class="suavbtn" onclick="document.getElementById('suAvFile').click()">${SU.avatar?T[LANG].changePhoto:T[LANG].photoL}</button></div>
@@ -1270,7 +1278,7 @@ async function suSendCode(){suSnapshot();const em=(SU.contact||'').trim();if(em.
  toast(T[LANG].sending||'...');
  const {error}=await SB.auth.signInWithOtp({email:em,options:{shouldCreateUser:true}});
  if(error){toast(error.message);return;}
- SU.code='sent';renderSU();toast(T[LANG].otpSentToast);}
+ SU.code='sent';renderSU();toast(T[LANG].otpSentToast);setTimeout(function(){var c=$('suCode');if(c)c.focus();},80);}
 async function suVerify(){const v=$('suCode')?$('suCode').value.trim():'';if(!v){toast(T[LANG].needCode||T[LANG].needContact);return;}
  const {data,error}=await SB.auth.verifyOtp({email:SU.contact,token:v,type:'email'});
  if(error){toast(T[LANG].codeWrong);return;}
