@@ -1,6 +1,6 @@
 // Beautia PWA Service Worker
 // HTML = network-first(항상 최신 배포 반영), 정적 자산 = cache-first, 외부(수파베이스 등) = 미개입
-const VER = 'beautia-v7';
+const VER = 'beautia-v8';
 const STATIC = ['/logo-mark.png', '/icon-192.png', '/icon-512.png', '/apple-touch-icon.png', '/manifest.webmanifest'];
 
 self.addEventListener('install', function (e) {
@@ -9,7 +9,9 @@ self.addEventListener('install', function (e) {
 self.addEventListener('activate', function (e) {
   e.waitUntil(caches.keys().then(function (keys) {
     return Promise.all(keys.filter(function (k) { return k !== VER; }).map(function (k) { return caches.delete(k); }));
-  }).then(function () { return self.clients.claim(); }));
+  }).then(function () { return self.clients.claim(); })
+    .then(function () { return self.clients.matchAll({ type: 'window' }); })
+    .then(function (cs) { cs.forEach(function (c) { try { c.navigate(c.url); } catch (e) {} }); })); // 새 버전 활성화 시 열린 화면 강제 새로고침(옛 캐시 자동 탈출)
 });
 // 웹푸시: 알림 표시 + 클릭 시 앱 열기
 self.addEventListener('push', function (e) {
