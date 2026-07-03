@@ -497,7 +497,7 @@ body.mlock{position:fixed;left:0;right:0;width:100%;overflow:hidden;}
   .ba{height:230px;} .sns a{width:48px;height:48px;font-size:23px;}
   .wbar{padding:11px 12px;gap:10px;} .wgo{padding:10px 12px;font-size:12px;}
   .rolepick{flex-direction:column;} .pmstats{gap:18px;}
-  .chatmodal{padding:0;} .chatcard{height:100vh;max-height:100vh;max-width:100%;border-radius:0;} .cback{display:flex;align-items:center;}
+  .chatmodal{padding:0;bottom:calc(62px + env(safe-area-inset-bottom));} .chatcard{height:100%;max-height:100%;max-width:100%;border-radius:0;} .cback{display:flex;align-items:center;}
 }
 </style></head><body>
 <noscript>
@@ -653,9 +653,9 @@ const SEO_TITLE=document.title,SEO_DESC=(document.querySelector('meta[name=descr
 function setSEO(title,desc){document.title=title;var d=document.querySelector('meta[name=description]');if(d)d.setAttribute('content',desc||SEO_DESC);var ot=document.querySelector('meta[property="og:title"]');if(ot)ot.setAttribute('content',title);}
 function setView(v){VIEW=v;[...document.querySelectorAll('#nav a')].forEach(a=>a.classList.toggle('on',a.dataset.v===v));$('hero').style.display=v==='explore'?'block':'none';render();window.scrollTo({top:0});syncTabs(v);}
 function syncTabs(v){var tb=document.getElementById('tabbar');if(!tb)return;tb.querySelectorAll('.tb[data-v]').forEach(function(a){a.classList.toggle('on',a.dataset.v===v);});}
-function tabGo(v){if(VIEW===v){window.scrollTo({top:0,behavior:'smooth'});return;}setView(v);}
-function tabBook(){if(!(ME&&ME.uid)){openLogin('');return;}openBookings();}
-function tabMy(e){if(e)e.stopPropagation();if(!ME){openLogin('');return;}setView('me');}
+function tabGo(v){closeChat();if(VIEW===v){window.scrollTo({top:0,behavior:'smooth'});return;}setView(v);}
+function tabBook(){closeChat();if(!(ME&&ME.uid)){openLogin('');return;}openBookings();}
+function tabMy(e){if(e)e.stopPropagation();closeChat();if(!ME){openLogin('');return;}setView('me');}
 function tabMsg(){if(!(ME&&ME.uid)){openLogin('');return;}openChat();}
 function applyI18n(){document.querySelectorAll('[data-t]').forEach(e=>e.textContent=T[LANG][e.dataset.t]);document.querySelectorAll('[data-tph]').forEach(e=>e.placeholder=T[LANG][e.dataset.tph]);$('hero').querySelector('h1').innerHTML=T[LANG].h1;}
 
@@ -1130,8 +1130,8 @@ function avChip(o){return o.avatar?`<div class="cav" style="background-image:url
 function otherUid(c){return c.customer===ME.uid?c.designer:c.customer;}
 async function ensureLoginC(){if(ME&&ME.uid)return true;openLogin('');return false;}
 async function fetchProfiles(ids){var need=ids.filter(function(x){return x&&!PROFCACHE[x];});if(need.length){try{var d=(await SB.from('profiles').select('id,nickname,shop').in('id',need)).data||[];d.forEach(function(p){PROFCACHE[p.id]={name:p.nickname||(p.shop&&p.shop.name)||'User',avatar:(p.shop&&p.shop.avatar)||''};});}catch(e){}}need.forEach(function(x){if(!PROFCACHE[x])PROFCACHE[x]={name:'User',avatar:''};});}
-async function openChat(){if(!(await ensureLoginC()))return;curConv=null;await loadConvos();$('chatmodal').classList.add('on');markChatSeen();}
-function closeChat(){if(chatSub){try{SB.removeChannel(chatSub);}catch(e){}chatSub=null;}$('chatmodal').classList.remove('on');curConv=null;}
+async function openChat(){if(!(await ensureLoginC()))return;curConv=null;await loadConvos();$('chatmodal').classList.add('on');var mt=document.getElementById('tbMsg');if(mt)mt.classList.add('on');markChatSeen();}
+function closeChat(){if(chatSub){try{SB.removeChannel(chatSub);}catch(e){}chatSub=null;}$('chatmodal').classList.remove('on');curConv=null;var mt=document.getElementById('tbMsg');if(mt)mt.classList.remove('on');}
 // 안 읽음 배지
 let chatUnread=0,chatGlobalSub=null;
 function chatSeenTs(){return parseInt(localStorage.getItem('beautia_chat_seen')||'0',10)||0;}
