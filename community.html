@@ -489,6 +489,8 @@ body.mlock{position:fixed;left:0;right:0;width:100%;overflow:hidden;}
 .sns{display:flex;flex-wrap:wrap;gap:11px;}
 .sns a{width:54px;height:54px;border-radius:16px;background:var(--soft);border:1px solid var(--line);display:flex;align-items:center;justify-content:center;font-size:26px;color:var(--ink);transition:.15s;}
 .sns a:hover{background:var(--ink);color:#fff;transform:translateY(-2px);}
+.sns a.sns-nv{background:#03C75A;border-color:#03C75A;color:#fff;font-family:'Outfit','Pretendard',sans-serif;font-weight:900;font-size:24px;}
+.sns a.sns-nv:hover{background:#02b350;color:#fff;}
 /* sticky footer cta */
 .dfoot{flex:0 0 auto;display:flex;gap:12px;padding:18px 32px;border-top:1px solid var(--line);background:#fff;}
 .cbtn{padding:16px;border-radius:14px;font-size:16px;font-weight:800;display:flex;align-items:center;justify-content:center;gap:8px;}
@@ -794,6 +796,7 @@ function openD(did,keep){const d=dById(did);if(!d)return;curD=did;const gi=D.ind
  const SNSBASE={instagram:'https://instagram.com/',tiktok:'https://tiktok.com/@',youtube:'https://youtube.com/@',x:'https://x.com/'};
  const handles=Object.assign({},d.handles||(d.insta?{instagram:d.insta}:{}));
  const snsHtml=Object.keys(SNSBASE).map(function(p){var h=igClean(handles[p]||'');return h?`<a href="${SNSBASE[p]}${h}" target="_blank" rel="noopener"><i class="ti ${SNSMETA[p][0]}"></i></a>`:'';}).join('');
+ const naverHtml=(d.naver&&/^https?:\/\//.test(d.naver))?`<a href="${d.naver}" target="_blank" rel="noopener" class="sns-nv" title="네이버 예약">N</a>`:'';
  $('dsheet').innerHTML=`
  <div class="dbody">
   <div class="dhero" style="background-image:url('${im(d.works[0],900)}')"><div class="sc"></div>
@@ -817,7 +820,7 @@ function openD(did,keep){const d=dById(did);if(!d)return;curD=did;const gi=D.ind
   ${(d.services&&d.services.length)?`<div class="dsec"><div class="st">${T[LANG].svcTitle}</div>${d.services.map((s,i)=>`<div class="svc"><div class="svci"><div class="svcn">${esc(s.n)}</div><div class="svcm">${s.du?esc(s.du)+' · ':''}<b>${esc(s.p)}</b></div></div>${d.uid&&!d.isMe?`<button class="svcbk" onclick="openBook('${d.id}',${i})">${T[LANG].book2}</button>`:''}</div>`).join('')}</div>`:''}
   <div class="dsec"><div class="st">${T[LANG].portfolio}</div><div class="dgrid">${d.works.map(w=>`<img src="${im(w,500)}" loading="lazy" onclick="window.open('${im(w,1200)}','_blank')">`).join('')}</div></div>
   <div class="dsec" id="revsec"><div class="st">${T[LANG].reviews} · ${esc(d.rev)}</div>${d.reviews.map((r,i)=>`<div class="rev"><div class="ra" style="background:${GR[(gi+i)%GR.length]}">${esc((r.n||'?')[0])}</div><div><div class="rn">${esc(r.n)}</div><div class="rs">${stars(r.s)}</div><div class="rt">${esc(r.t)}</div></div></div>`).join('')}</div>
-  ${snsHtml?`<div class="dsec" style="border:none"><div class="st">${T[LANG].connect}</div><div class="sns">${snsHtml}</div></div>`:''}
+  ${(snsHtml||naverHtml)?`<div class="dsec" style="border:none"><div class="st">${T[LANG].connect}</div><div class="sns">${snsHtml}${naverHtml}</div></div>`:''}
  </div>
  <div class="dfoot">
    <button class="cbtn save ${fav?'on':''}" onclick="toggleSave('${d.id}_0',event)"><i class="ti ti-heart${fav?'-filled':''}"></i><span>${fav?T[LANG].saved2:T[LANG].save}</span></button>
@@ -1023,7 +1026,7 @@ const SB_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZ
 const SB=window.supabase.createClient(SB_URL,SB_KEY,{auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:true}});
 function roleIn(r){return (r==='designer'||r==='owner'||r==='desg')?'desg':'cust';}
 function profToMe(p){const s=p.shop||{};const photos=[];(s.photos||[]).forEach(function(x){if(x&&photos.indexOf(x)<0)photos.push(x);});
- return {uid:p.id,role:roleIn(p.role),name:p.nickname||p.full_name||'',country:'',city:p.region||s.area||'',area:s.area||'',spec:(s.specialties||p.interests||[]),career:s.career||'',avatar:s.avatar||p.avatar_url||'',insta:(s.insta||'').replace(/^@/,''),sns:s.sns||(s.insta?{instagram:(s.insta||'').replace(/^@/,'')}:{}),shopName:s.name||'',bio:p.bio||'',works:photos,idCols:s.idCols||2,idColor:s.idColor||'',idTheme:s.idTheme||'light',services:s.services||[],tags:s.tags||[],verified:true,provider:'email',joined:p.created_at?new Date(p.created_at).getTime():Date.now()};}
+ return {uid:p.id,role:roleIn(p.role),name:p.nickname||p.full_name||'',country:'',city:p.region||s.area||'',area:s.area||'',spec:(s.specialties||p.interests||[]),career:s.career||'',avatar:s.avatar||p.avatar_url||'',insta:(s.insta||'').replace(/^@/,''),sns:s.sns||(s.insta?{instagram:(s.insta||'').replace(/^@/,'')}:{}),naver:s.naver||'',shopName:s.name||'',bio:p.bio||'',works:photos,idCols:s.idCols||2,idColor:s.idColor||'',idTheme:s.idTheme||'light',services:s.services||[],tags:s.tags||[],verified:true,provider:'email',joined:p.created_at?new Date(p.created_at).getTime():Date.now()};}
 async function uploadOne(dataUrl){try{const sess=(await SB.auth.getSession()).data.session;if(!sess||dataUrl.indexOf('data:')!==0)return dataUrl;const uid=sess.user.id;const blob=await (await fetch(dataUrl)).blob();const path=uid+'/'+Date.now()+'-'+Math.random().toString(36).slice(2,8)+'.jpg';const up=await SB.storage.from('beautia').upload(path,blob,{contentType:'image/jpeg',upsert:false});if(up.error){console.warn('[beautia] storage upload failed → base64 fallback:',up.error&&up.error.message);return dataUrl;}const pu=SB.storage.from('beautia').getPublicUrl(path);return (pu.data&&pu.data.publicUrl)||dataUrl;}catch(e){return dataUrl;}}
 async function persistShop(){if(!ME||!ME.uid)return;try{await SB.from('profiles').update({shop:{name:ME.shopName||'',area:ME.city||'',specialties:ME.spec||[],avatar:ME.avatar||'',photos:ME.works||[],career:ME.career||'',insta:ME.insta||'',sns:ME.sns||{},idCols:ME.idCols||2,idColor:ME.idColor||'',idTheme:ME.idTheme||'light',services:ME.services||[],tags:ME.tags||[]}}).eq('id',ME.uid);}catch(e){}}
 async function onAuth(session){
