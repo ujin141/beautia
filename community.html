@@ -1274,7 +1274,7 @@ async function loadDesigners(){try{
       city:p.region||s.area||'',area:s.area||'',flag:roleIn(p.role)==='desg'?'🎨':'✨',
       rating:5.0,rev:0,years:s.career||'',ko_ok:1,ver:1,
       spec:(s.specialties&&s.specialties.length)?s.specialties:((p.interests&&p.interests.length)?p.interests:['Hair']),
-      bio:p.bio||'',avatar:s.avatar||p.avatar_url||'',insta:(s.insta||'').replace(/^@/,''),
+      bio:p.bio||'',avatar:s.avatar||p.avatar_url||'',insta:(s.insta||'').replace(/^@/,''),naver:s.naver||'',
       handles:s.sns||(s.insta?{instagram:(s.insta||'').replace(/^@/,'')}:{}),
       works:photos,ba:[photos[0],photos[Math.min(1,photos.length-1)]],
       sns:Object.keys(s.sns||{}).filter(function(k){return (s.sns||{})[k];}),services:(s.services||[]),tags:s.tags||[],shopName:s.name||'',reviews:[]});
