@@ -807,7 +807,7 @@ function openIdCard(did){const d=dById(did||curD);if(!d)return;idDid=d.id;
    <div class="ic-meta">${esc(cl(d.cat))}${d.area?' · '+esc(d.area):''}${d.city?', '+esc(d.city):''} · ★ ${esc(d.rating)}</div></div></div>
    <div class="ic-tags">${chipsOf(d).slice(0,3).map(s=>`<span style="color:${accent};background:${tag}">${esc(s)}</span>`).join('')}</div></div>
   <div class="ic-divider" style="background:var(--line)"></div>
-  <div class="ic-foot"><div class="ic-qr" id="icqr"></div><div class="ic-scan"><div class="s1" style="color:${accent}">${esc(T[LANG].idScan)}</div><div class="s2">@beautia.collection</div></div></div>`;
+  <div class="ic-foot"><div class="ic-qr" id="icqr"></div><div class="ic-scan"><div class="s1" style="color:${accent}">${esc(T[LANG].idScan)}</div><div class="s2">@${esc(igClean(d.insta)||'beautia.collection')}</div></div></div>`;
  try{var qr=qrcode(0,'M');qr.addData(idUrl(d.id));qr.make();$('icqr').innerHTML=qr.createImgTag(4,0);}catch(e){$('icqr').textContent='';}
  var cfg=$('idcfg');
  if(cfg){if(own){var COLORS=['#6E4A50','#8E5A6B','#B5828C','#D98C9A','#C9A063','#B8894A','#6E8B7A','#4E7C6E','#5B7BA6','#3F5A8A','#A45C4D','#2A2430'];
