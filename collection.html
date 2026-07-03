@@ -379,8 +379,40 @@ body.mlock{position:fixed;left:0;right:0;width:100%;overflow:hidden;}
 .dcn{font-weight:800;font-size:14.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;display:flex;align-items:center;gap:4px;}
 .dcm{font-size:12px;color:var(--sub);margin-top:2px;font-weight:600;} .dcm .star{color:#EBB662;}
 .dcarr{color:var(--line);font-size:18px;flex:0 0 auto;}
-.dcchips{display:flex;flex-wrap:wrap;gap:5px;padding:6px 13px 14px;}
+.dcchips{display:flex;flex-wrap:wrap;gap:5px;padding:6px 13px 10px;}
 .dcchips span{font-size:11px;font-weight:700;color:var(--plum);background:var(--rosebg);padding:3px 9px;border-radius:999px;}
+.dcthumbs,.dcbody{cursor:pointer;}
+.dctrust{display:flex;flex-wrap:wrap;gap:5px;padding:2px 13px 0;}
+.tb{display:inline-flex;align-items:center;gap:3px;font-size:10.5px;font-weight:700;color:var(--sub);background:#f7f2f1;border:1px solid var(--line);padding:3px 8px;border-radius:999px;line-height:1;}
+.tb i{font-size:12px;}
+.tb-v{color:var(--green);background:rgba(62,124,106,.09);border-color:rgba(62,124,106,.22);}
+.tb-f{color:#B87407;background:rgba(230,150,40,.1);border-color:rgba(230,150,40,.24);}
+.dcact{display:flex;gap:8px;padding:8px 13px 14px;}
+.dcbtn{flex:1;display:inline-flex;align-items:center;justify-content:center;gap:5px;font-size:12.5px;font-weight:800;padding:9px 6px;border-radius:11px;cursor:pointer;border:1px solid var(--line);transition:.12s;font-family:inherit;color:var(--ink);}
+.dcbtn.ghost{background:#fff;}
+.dcbtn.ghost:hover{background:var(--rosebg);border-color:var(--rosebg);}
+.dcbtn.book{background:var(--plum);color:#fff;border-color:var(--plum);}
+.dcbtn.book:hover{filter:brightness(1.09);}
+/* 이번 주 인기 스타일 */
+.popwrap{margin:2px 0 20px;}
+.popwrap.off{display:none;}
+.pophead{display:flex;align-items:baseline;gap:10px;margin:6px 2px 12px;flex-wrap:wrap;}
+.pophead h3{font-size:20px;margin:0;color:var(--ink);}
+.popsub{font-size:12.5px;color:var(--sub);font-weight:600;}
+.poprow{display:flex;gap:13px;overflow-x:auto;padding:2px 2px 10px;scroll-snap-type:x mandatory;-webkit-overflow-scrolling:touch;}
+.poprow::-webkit-scrollbar{height:0;}
+.pcard{flex:0 0 auto;width:170px;scroll-snap-align:start;background:#fff;border:1px solid var(--line);border-radius:16px;overflow:hidden;cursor:pointer;transition:transform .12s,box-shadow .12s;}
+.pcard:hover{transform:translateY(-3px);box-shadow:0 16px 34px -20px rgba(40,20,40,.4);}
+.pcimg{position:relative;height:196px;background-size:cover;background-position:center;background-color:var(--soft);}
+.pcbadge{position:absolute;top:9px;left:9px;display:inline-flex;align-items:center;gap:3px;font-size:10px;font-weight:800;color:#fff;background:linear-gradient(90deg,#F0663B,#E0447A);padding:4px 8px;border-radius:999px;letter-spacing:.3px;}
+.pcbadge i{font-size:11px;}
+.pcb{padding:9px 10px 11px;}
+.pcn{font-size:13px;font-weight:800;color:var(--ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.pcm{font-size:11px;color:var(--sub);font-weight:600;margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;} .pcm .star{color:var(--gold);}
+.pcbook{width:100%;margin-top:9px;display:inline-flex;align-items:center;justify-content:center;gap:4px;font-size:12px;font-weight:800;padding:7px 6px;border-radius:9px;cursor:pointer;border:1px solid var(--plum);background:var(--plum);color:#fff;font-family:inherit;transition:.12s;}
+.pcbook:hover{filter:brightness(1.09);}
+.pcbook.ghost{background:#fff;color:var(--plum);border-color:var(--line);}
+@media(max-width:760px){.pcard{width:150px;}.pcimg{height:174px;}.pophead h3{font-size:18px;}}
 @media(max-width:1100px){.grid.dgview{grid-template-columns:repeat(2,1fr);}}
 @media(max-width:600px){.grid.dgview{grid-template-columns:1fr;gap:14px;} .dcthumbs{height:170px;}}
 @media(max-width:1100px){.grid{column-count:3;}}
@@ -585,7 +617,7 @@ body.mlock{position:fixed;left:0;right:0;width:100%;overflow:hidden;}
 
 <div class="filterbar"><div class="fin"><div class="cats" id="cats"></div><div class="citysel"><i class="ti ti-map-pin"></i><select id="city" onchange="render()"></select></div></div></div>
 
-<div class="wrap"><div class="grid" id="grid"></div><div class="mepage" id="mepage" style="display:none"></div></div>
+<div class="wrap"><section id="popwrap" class="popwrap off"></section><div class="grid" id="grid"></div><div class="mepage" id="mepage" style="display:none"></div></div>
 
 <footer class="sitefoot">
   <div class="sf-in">
@@ -652,6 +684,28 @@ function dById(id){return allD().find(d=>d.id===id);}
 function openByUid(uid){if(!uid)return false;var d=allD().find(function(x){return x.uid===uid;});if(d){openD(d.id);return true;}return false;}
 let TILES=[];
 function buildTiles(){TILES=[];allD().forEach(d=>d.works.forEach((w,i)=>TILES.push({wid:d.id+'_'+i,did:d.id,img:workImg(w),text:workText(w),cat:d.cat,city:d.city,area:d.area,name:d.name,flag:d.flag,rating:d.rating,featured:d.featured,insta:d.insta})));}
+const HYB={
+ ko:{popular:'이번 주 인기 스타일',popularSub:'지금 가장 주목받는 포트폴리오',book:'바로 예약',prof:'프로필',viewProfile:'프로필 보기',verified:'인증 디자이너',reviews:'후기',fast:'빠른 예약 가능'},
+ en:{popular:'Trending styles this week',popularSub:'Most-loved portfolios right now',book:'Book',prof:'Profile',viewProfile:'View profile',verified:'Verified',reviews:'reviews',fast:'Instant booking'},
+ ja:{popular:'今週の人気スタイル',popularSub:'いま最も注目のポートフォリオ',book:'予約する',prof:'プロフィール',viewProfile:'プロフィール',verified:'認証済み',reviews:'口コミ',fast:'即時予約OK'}
+};
+function hyb(){return HYB[LANG]||HYB.en;}
+function renderPopular(){var el=$('popwrap');if(!el)return;
+ var show=(VIEW==='explore'&&CAT==='All'&&!(($('q').value||'').trim())&&!$('city').value);
+ var pop=[];
+ if(show){var sorted=TILES.slice().sort(function(a,b){return ((b.featured?1:0)-(a.featured?1:0))||((parseFloat(b.rating)||0)-(parseFloat(a.rating)||0));});
+  var seen={};sorted.forEach(function(t){var c=seen[t.did]||0;if(c<2){pop.push(t);seen[t.did]=c+1;}});pop=pop.slice(0,12);}
+ if(!show||pop.length<4){el.classList.add('off');el.innerHTML='';return;}
+ el.classList.remove('off');var L=hyb();
+ el.innerHTML='<div class="pophead"><h3 class="serif">'+esc(L.popular)+'</h3><span class="popsub">'+esc(L.popularSub)+'</span></div>'+
+  '<div class="poprow">'+pop.map(function(t){var d=dById(t.did);var uid=d&&d.uid;var nm=(LANG==='ko'&&d&&d.ko)?d.ko:t.name;
+   return '<div class="pcard" onclick="openWork(\''+t.wid+'\')">'+
+     '<div class="pcimg" style="background-image:url(\''+im(t.img,500)+'\')">'+(t.featured?'<span class="pcbadge"><i class="ti ti-flame-filled"></i> HOT</span>':'')+'</div>'+
+     '<div class="pcb"><div class="pcn">'+esc(t.flag)+' '+esc(nm)+'</div>'+
+      '<div class="pcm"><span class="star">★ '+esc(t.rating)+'</span> · '+esc(cl(t.cat))+(t.city?' · '+esc(t.city):'')+'</div>'+
+      (uid?'<button class="pcbook" onclick="event.stopPropagation();openBook(\''+t.did+'\')"><i class="ti ti-calendar-heart"></i> '+esc(L.book)+'</button>':'<button class="pcbook ghost" onclick="event.stopPropagation();openD(\''+t.did+'\')">'+esc(L.prof)+'</button>')+
+     '</div></div>';
+  }).join('')+'</div>';}
 
 const SNSMETA={instagram:['ti-brand-instagram','Instagram'],tiktok:['ti-brand-tiktok','TikTok'],youtube:['ti-brand-youtube','YouTube'],x:['ti-brand-x','X'],whatsapp:['ti-brand-whatsapp','WhatsApp'],line:['ti-brand-line','LINE'],kakao:['ti-message-circle','KakaoTalk']};
 
@@ -740,7 +794,7 @@ function renderBanner(){var el=document.getElementById('fbanner');if(!el)return;
     <button class="fbcta" onclick="event.stopPropagation();openD('${x.did}')">${T[LANG].fbView||'포트폴리오 보기'} <i class="ti ti-arrow-right"></i></button></div>`;}).join('')}${s.length>1?`<div class="fbdots">${s.map(function(_,i){return `<span class="${i===0?'on':''}" onclick="fbGo(${i})"></span>`;}).join('')}</div>`:''}</div>`;
  fbIdx=0;if(fbTimer)clearInterval(fbTimer);if(s.length>1)fbTimer=setInterval(function(){fbGo((fbIdx+1)%s.length);},4000);}
 function fbGo(i){var sl=document.querySelectorAll('#fbanner .fbslide'),dt=document.querySelectorAll('#fbanner .fbdots span');if(!sl.length)return;fbIdx=i;sl.forEach(function(e,k){e.classList.toggle('on',k===i);});dt.forEach(function(e,k){e.classList.toggle('on',k===i);});}
-function render(){renderBanner();renderStories();
+function render(){renderBanner();renderStories();renderPopular();
  var mep=document.getElementById('mepage');
  var fb=document.querySelector('.filterbar');
  if(VIEW==='me'&&!ME)VIEW='explore';
@@ -764,16 +818,21 @@ function renderDesigners(q,city){var g=$('grid');g.classList.add('dgview');
  if(q)ds=ds.filter(function(d){return (d.name+(d.ko||'')+d.cat+(d.city||'')+(d.area||'')+(d.spec||[]).join('')).toLowerCase().includes(q);});
  if(USERLOC&&!city)ds=ds.slice().sort(function(x,y){return distOf(x.city)-distOf(y.city);});
  if(!ds.length){g.innerHTML=`<div class="empty"><i class="ti ti-search"></i><p>${T[LANG].noRes}</p></div>`;return;}
- g.innerHTML=ds.map(function(d){var nm=(LANG==='ko'&&d.ko)?d.ko:d.name;var thumbs=d.works.slice(0,3);
-  return `<div class="dcard" onclick="openD('${d.id}')">
-    <div class="dcthumbs">${thumbs.map(function(w){return `<div class="dcth" style="background-image:url('${im(w,400)}')"></div>`;}).join('')}${d.featured?`<span class="dcfeat"><i class="ti ti-external-link"></i></span>`:''}</div>
-    <div class="dcbody">
+ g.innerHTML=ds.map(function(d){var nm=(LANG==='ko'&&d.ko)?d.ko:d.name;var thumbs=d.works.slice(0,3);var L=hyb();
+  var rev=parseInt(d.rev||d.reviews||0,10)||0;
+  var badges=[d.ver?`<span class="tb tb-v"><i class="ti ti-rosette-discount-check-filled"></i> ${esc(L.verified)}</span>`:'',
+    rev>0?`<span class="tb"><i class="ti ti-message-star"></i> ${esc(L.reviews)} ${rev}</span>`:'',
+    d.uid?`<span class="tb tb-f"><i class="ti ti-bolt"></i> ${esc(L.fast)}</span>`:''].filter(Boolean).join('');
+  return `<div class="dcard">
+    <div class="dcthumbs" onclick="openD('${d.id}')">${thumbs.map(function(w){return `<div class="dcth" style="background-image:url('${im(w,400)}')"></div>`;}).join('')}${d.featured?`<span class="dcfeat"><i class="ti ti-external-link"></i></span>`:''}</div>
+    <div class="dcbody" onclick="openD('${d.id}')">
       ${avHtml(d,'dcav')}
       <div class="dci"><div class="dcn">${esc(d.flag)} ${esc(nm)} ${d.ver?`<i class="ti ti-rosette-discount-check-filled" style="color:var(--green);font-size:15px"></i>`:''}</div>
        <div class="dcm"><span class="star">★</span> ${esc(d.rating||'5')} · ${esc(cl(d.cat))}${d.city?' · '+esc(d.city):''}</div></div>
-      <i class="ti ti-chevron-right dcarr"></i>
     </div>
+    ${badges?`<div class="dctrust">${badges}</div>`:''}
     ${(chipsOf(d).length)?`<div class="dcchips">${chipsOf(d).slice(0,3).map(function(s){return `<span>${esc(s)}</span>`;}).join('')}</div>`:''}
+    <div class="dcact"><button class="dcbtn ghost" onclick="openD('${d.id}')"><i class="ti ti-user"></i> ${esc(L.viewProfile)}</button>${d.uid?`<button class="dcbtn book" onclick="event.stopPropagation();openBook('${d.id}')"><i class="ti ti-calendar-heart"></i> ${esc(L.book)}</button>`:''}</div>
   </div>`;}).join('');}
 
 let curW=null;
