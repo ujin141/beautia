@@ -2,7 +2,9 @@
   "cleanUrls": true,
   "trailingSlash": false,
   "redirects": [
-    { "source": "/", "destination": "/community", "permanent": false }
+    { "source": "/", "destination": "/community", "permanent": false },
+    { "source": "/landing", "destination": "/community", "permanent": true },
+    { "source": "/landing.html", "destination": "/community", "permanent": true }
   ],
   "rewrites": [
     { "source": "/p/:id", "destination": "/api/post?id=:id" },
