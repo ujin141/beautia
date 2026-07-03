@@ -580,6 +580,21 @@ body.mlock{position:fixed;left:0;right:0;width:100%;overflow:hidden;}
 .iclose{float:right;font-size:24px;color:var(--sub);margin-top:-6px;}
 
 .toast{position:fixed;left:50%;bottom:32px;transform:translateX(-50%) translateY(20px);background:var(--ink);color:#fff;padding:15px 26px;border-radius:999px;font-size:15px;font-weight:700;opacity:0;transition:.25s;z-index:90;pointer-events:none;box-shadow:0 14px 40px -10px rgba(0,0,0,.5);}
+/* PC 앱 다운로드 팝업 */
+.apppop{position:fixed;top:-240px;left:50%;transform:translateX(-50%);z-index:100;display:flex;align-items:center;gap:18px;background:#fff;border:1px solid var(--line);border-radius:20px;padding:16px 44px 16px 18px;box-shadow:0 24px 60px -18px rgba(60,30,50,.45);max-width:560px;width:calc(100% - 32px);opacity:0;transition:top .42s cubic-bezier(.2,.8,.3,1),opacity .42s;}
+.apppop.on{top:16px;opacity:1;}
+.apx{position:absolute;top:10px;right:14px;font-size:22px;color:var(--sub);background:none;border:none;cursor:pointer;line-height:1;}
+.apic{flex:0 0 auto;width:56px;height:56px;border-radius:16px;background:var(--rosebg);display:flex;align-items:center;justify-content:center;}
+.apic img{width:40px;height:40px;object-fit:contain;}
+.aptx{flex:1;min-width:0;}
+.apt{font-size:16px;font-weight:800;color:var(--ink);letter-spacing:-.01em;}
+.aps{font-size:12.5px;color:var(--sub);font-weight:600;margin-top:3px;line-height:1.45;}
+.apinstall{margin-top:11px;display:inline-flex;align-items:center;gap:6px;background:var(--plum);color:#fff;border:none;border-radius:999px;padding:9px 18px;font-size:13.5px;font-weight:800;cursor:pointer;font-family:inherit;transition:.14s;}
+.apinstall:hover{filter:brightness(1.09);}
+.apqr{flex:0 0 auto;text-align:center;}
+.apqr img{width:86px;height:86px;border-radius:11px;display:block;border:1px solid var(--line);}
+.apqr span{display:block;font-size:10.5px;color:var(--sub);font-weight:700;margin-top:5px;}
+@media(max-width:860px){.apppop{display:none!important;}}
 .toast.on{opacity:1;transform:translateX(-50%);}
 
 @media(max-width:860px){
@@ -634,7 +649,7 @@ body.mlock{position:fixed;left:0;right:0;width:100%;overflow:hidden;}
     <span class="nearby" id="nearby" style="display:none"></span>
     <button class="loginBtn" id="loginBtn" onclick="openLogin('')" data-t="login">Log in</button>
     <div class="avt" id="avatar" onclick="toggleUmenu(event)" style="display:none"></div>
-    <button class="join" onclick="openLogin('')"><i class="ti ti-user-plus"></i><span data-t="signup">Sign up</span></button>
+    <button class="join" id="joinBtn" onclick="openLogin('')"><i class="ti ti-user-plus"></i><span data-t="signup">Sign up</span></button>
   </div>
 </header>
 <nav class="tabbar" id="tabbar">
@@ -676,6 +691,13 @@ body.mlock{position:fixed;left:0;right:0;width:100%;overflow:hidden;}
 <div class="lmodal" id="lmodal" onclick="if(event.target===this)closeLogin()"><div class="lcard" id="lcard"></div></div>
 <div class="idmodal" id="idmodal" onclick="if(event.target===this)closeId()"><div class="idwrap" id="idwrap"><div class="idcard" id="idcard"></div><div class="idcfg" id="idcfg"></div><div class="idbtns"><button class="pri" onclick="dlId()"><i class="ti ti-download"></i> <span id="idDlT">Download</span></button><button onclick="shareId()"><i class="ti ti-link"></i> <span id="idShT">Share</span></button><button onclick="closeId()"><i class="ti ti-x"></i></button></div></div></div>
 <div class="pfmodal" id="pfmodal" onclick="if(event.target===this)closePf()"><div class="pfcard" id="pfcard"></div></div>
+<div class="apppop" id="apppop">
+  <button class="apx" onclick="dismissAppPop()" aria-label="close">×</button>
+  <div class="apic"><img src="logo-mark.png" alt="Beautia"></div>
+  <div class="aptx"><div class="apt" data-t="appTitle">Get the Beautia app</div><div class="aps" data-t="appSub">Add it to your home screen and get new-work alerts.</div>
+    <button class="apinstall" onclick="installApp()"><i class="ti ti-device-mobile-plus"></i> <span data-t="appInstall">Install</span></button></div>
+  <div class="apqr"><img src="https://api.qrserver.com/v1/create-qr-code/?size=180x180&margin=0&color=6E4A50&bgcolor=FFFFFF&data=https%3A%2F%2Fbeautia.io" alt="QR"><span data-t="appScan">Scan on your phone</span></div>
+</div>
 <div class="toast" id="toast"></div>
 
 <script>
@@ -1134,9 +1156,9 @@ document.addEventListener('keydown',e=>{if(e.key==='Escape'){closeBk();closeFa()
 Object.assign(T.en,{idCard:'ID Card',idDl:'Download',idShare:'Share',idPrep:'Creating image…',idFail:'Download failed (try Share)',linkCopied:'Link copied ✨',saveHint:'Press & hold the image to save it 📥',done:'Done',idKind:'ID CARD',idScan:'SCAN TO VIEW & BOOK',fbKick:'Featured work',fbView:'View portfolio'});
 Object.assign(T.ko,{idCard:'ID 카드',idDl:'다운로드',idShare:'공유',idPrep:'이미지 만드는 중…',idFail:'다운로드 실패 (공유로 시도)',linkCopied:'링크 복사됨 ✨',saveHint:'이미지를 꾹 눌러 저장하세요 📥',done:'닫기',idKind:'ID 카드',idScan:'스캔해서 예약하기',fbKick:'추천 작업',fbView:'포트폴리오 보기'});
 Object.assign(T.ja,{idCard:'IDカード',idDl:'保存',idShare:'シェア',idPrep:'画像を作成中…',idFail:'保存失敗（シェアでお試し）',linkCopied:'リンクをコピー ✨',saveHint:'画像を長押しして保存してください 📥',done:'閉じる',idKind:'IDカード',idScan:'スキャンして予約',fbKick:'注目の作品',fbView:'ポートフォリオを見る'});
-Object.assign(T.en,{follow:'Follow',following:'Following',followedT:'Following ✓',unfollowedT:'Unfollowed',signup:'Sign up',followers:'followers',dgAll:'All',noFollowing:"You're not following anyone yet",noPwHint:'No password needed — just log in with the code sent to your email.',codeSentTo:'Code sent to {email}',spamHint:"Can't find it? Check your spam folder, or tap Resend.",newBadge:'New',newWorkToast:'{n} designer(s) you follow posted new work ✨'});
-Object.assign(T.ko,{follow:'팔로우',following:'팔로잉',followedT:'팔로우했어요 ✓',unfollowedT:'팔로우 취소',signup:'회원가입',followers:'팔로워',dgAll:'전체',noFollowing:'아직 팔로우한 디자이너가 없어요',noPwHint:'비밀번호가 필요 없어요 — 이메일로 받은 코드로 로그인해요.',codeSentTo:'{email} 로 인증코드를 보냈어요',spamHint:'메일이 안 보이면 스팸함을 확인하거나 재전송을 눌러주세요.',newBadge:'새 작업',newWorkToast:'팔로우한 디자이너 {n}명이 새 작업을 올렸어요 ✨'});
-Object.assign(T.ja,{follow:'フォロー',following:'フォロー中',followedT:'フォローしました ✓',unfollowedT:'フォロー解除',signup:'会員登録',followers:'フォロワー',dgAll:'すべて',noFollowing:'まだ誰もフォローしていません',noPwHint:'パスワード不要 — メールに届いたコードでログインします。',codeSentTo:'{email} に認証コードを送りました',spamHint:'メールが届かない場合は迷惑メールを確認するか、再送を押してください。',newBadge:'新着',newWorkToast:'フォロー中のデザイナー{n}名が新作を投稿しました ✨'});
+Object.assign(T.en,{follow:'Follow',following:'Following',followedT:'Following ✓',unfollowedT:'Unfollowed',signup:'Sign up',followers:'followers',dgAll:'All',noFollowing:"You're not following anyone yet",noPwHint:'No password needed — just log in with the code sent to your email.',codeSentTo:'Code sent to {email}',spamHint:"Can't find it? Check your spam folder, or tap Resend.",newBadge:'New',newWorkToast:'{n} designer(s) you follow posted new work ✨',appTitle:'Get the Beautia app',appSub:'Add it to your home screen and get new-work alerts.',appInstall:'Install',appScan:'Scan on your phone'});
+Object.assign(T.ko,{follow:'팔로우',following:'팔로잉',followedT:'팔로우했어요 ✓',unfollowedT:'팔로우 취소',signup:'회원가입',followers:'팔로워',dgAll:'전체',noFollowing:'아직 팔로우한 디자이너가 없어요',noPwHint:'비밀번호가 필요 없어요 — 이메일로 받은 코드로 로그인해요.',codeSentTo:'{email} 로 인증코드를 보냈어요',spamHint:'메일이 안 보이면 스팸함을 확인하거나 재전송을 눌러주세요.',newBadge:'새 작업',newWorkToast:'팔로우한 디자이너 {n}명이 새 작업을 올렸어요 ✨',appTitle:'Beautia 앱으로 더 편하게',appSub:'휴대폰 홈 화면에 추가하고 새 작업 알림까지 받아보세요.',appInstall:'설치하기',appScan:'휴대폰으로 스캔'});
+Object.assign(T.ja,{follow:'フォロー',following:'フォロー中',followedT:'フォローしました ✓',unfollowedT:'フォロー解除',signup:'会員登録',followers:'フォロワー',dgAll:'すべて',noFollowing:'まだ誰もフォローしていません',noPwHint:'パスワード不要 — メールに届いたコードでログインします。',codeSentTo:'{email} に認証コードを送りました',spamHint:'メールが届かない場合は迷惑メールを確認するか、再送を押してください。',newBadge:'新着',newWorkToast:'フォロー中のデザイナー{n}名が新作を投稿しました ✨',appTitle:'Beautiaアプリをどうぞ',appSub:'ホーム画面に追加して新作の通知も受け取れます。',appInstall:'インストール',appScan:'スマホでスキャン'});
 // 태국어: 영어 전체를 상속받고 주요 문자열만 태국어로 (누락 키는 영어로 자동 폴백)
 T.th=Object.assign({},T.en,{
  explore:'สำรวจ',designers:'ดีไซเนอร์',saved:'บันทึกไว้',join:'สมัคร',my:'ฉัน',messages:'ข้อความ',
@@ -1218,7 +1240,7 @@ function renderMe(){var el=document.getElementById('mepage');if(!el)return;if(!M
  <div class="meacct"><a href="mailto:hello@beautia.io?subject=${encodeURIComponent('Beautia '+T[LANG].delAcct)}&body=${encodeURIComponent('uid: '+(ME.uid||''))}">${T[LANG].delAcct}</a></div>
  <div class="mever">Beautia · v1.0.0</div>`;}
 function savedCount(){return SAVED.length;}
-function renderAuth(){const li=$('loginBtn'),av=$('avatar');if(ME){li.style.display='none';av.style.display='flex';if(ME.avatar){av.style.backgroundImage="url('"+ME.avatar+"')";av.style.backgroundSize='cover';av.style.backgroundPosition='center';av.textContent='';}else{av.style.backgroundImage='';av.textContent=(ME.name||'U')[0].toUpperCase();}}else{li.style.display='inline-flex';av.style.display='none';closeUmenu();}}
+function renderAuth(){const li=$('loginBtn'),av=$('avatar'),jb=$('joinBtn');if(jb)jb.style.display=ME?'none':'';if(ME){li.style.display='none';av.style.display='flex';if(ME.avatar){av.style.backgroundImage="url('"+ME.avatar+"')";av.style.backgroundSize='cover';av.style.backgroundPosition='center';av.textContent='';}else{av.style.backgroundImage='';av.textContent=(ME.name||'U')[0].toUpperCase();}}else{li.style.display='inline-flex';av.style.display='none';closeUmenu();}}
 function toggleUmenu(e){if(e)e.stopPropagation();const m=$('umenu');m.classList.remove('frombar');if(m.classList.contains('on')){closeUmenu();return;}
  m.innerHTML=`<div class="uh"><div class="un">${T[LANG].hi}, ${esc(ME?ME.name:'')}</div><div class="ur">${ME?roleLabel(ME.role):''}${ME&&ME.verified?' · '+T[LANG].verifiedMember:''}</div></div>
  <a onclick="openProfile();closeUmenu()"><i class="ti ti-user"></i> ${T[LANG].profile}</a>
@@ -1582,6 +1604,14 @@ window.addEventListener('beforeinstallprompt',function(e){e.preventDefault();pwa
   el.style.transform='translateX(-50%) translateY(0)';el.style.opacity=0;pull=0;});
 })();
 function installApp(){closeUmenu();if(pwaPrompt){pwaPrompt.prompt();pwaPrompt=null;return;}toast(T[LANG].iosInstallHint);}
+function dismissAppPop(){try{localStorage.setItem('beautia_apppop_x','1');}catch(e){}var p=$('apppop');if(p)p.classList.remove('on');}
+function showAppPop(){try{
+ if(localStorage.getItem('beautia_apppop_x'))return;
+ if(window.matchMedia&&window.matchMedia('(display-mode: standalone)').matches)return; // 이미 설치앱
+ if((window.innerWidth||0)<=860)return; // PC에서만
+ setTimeout(function(){var p=$('apppop');if(p)p.classList.add('on');},1600);
+}catch(e){}}
+showAppPop();
 // 웹푸시: 구독(알림 켜기) + 발송 헬퍼
 const VAPID_PUB='BEqmwrpTXryFvloIrotb9c9Mg3Q0NIXf4Oftc-OOCIlEHc3JQE8oFrqUGyzhcH6ZojZt_gf-RWw_M6Jz3LCx57M';
 function urlB64ToU8(s){var p='='.repeat((4-s.length%4)%4),b=atob((s+p).replace(/-/g,'+').replace(/_/g,'/')),a=new Uint8Array(b.length);for(var i=0;i<b.length;i++)a[i]=b.charCodeAt(i);return a;}
