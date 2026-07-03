@@ -185,6 +185,29 @@ body.mlock{position:fixed;left:0;right:0;width:100%;overflow:hidden;}
 .bkbtn.ok{background:var(--ink);color:#fff;} .bkbtn.warn{background:#FBE4E4;color:#9B3B3B;}
 .rvstars{display:flex;gap:6px;justify-content:center;margin:14px 0 4px;}
 .rvstars i{font-size:30px;color:#e3dcd9;cursor:pointer;} .rvstars i.on{color:#EBB662;}
+/* 마이페이지 (전용 뷰) */
+.mepage{max-width:560px;margin:0 auto;padding:8px 16px 30px;}
+.mehero{display:flex;flex-direction:column;align-items:center;text-align:center;padding:24px 16px 20px;}
+.mehero .meav{width:88px;height:88px;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:34px;box-shadow:0 10px 30px -10px rgba(110,74,80,.5);}
+.mehero .men{font-size:21px;font-weight:800;color:var(--ink);margin-top:14px;display:flex;align-items:center;gap:6px;letter-spacing:-.02em;}
+.mehero .mesub{font-size:13.5px;color:var(--sub);margin-top:4px;font-weight:600;}
+.mestats{display:flex;gap:10px;margin:4px 0 20px;}
+.mestat{flex:1;background:var(--soft);border:none;border-radius:16px;padding:15px 8px;cursor:pointer;text-align:center;}
+.mestat:active{background:var(--rosebg);}
+.mestat .mn{font-size:22px;font-weight:800;color:var(--plum);}
+.mestat .ml{font-size:11.5px;color:var(--sub);font-weight:600;margin-top:2px;}
+.megroup{background:#fff;border:1px solid var(--line);border-radius:16px;overflow:hidden;margin-bottom:16px;}
+.merow{display:flex;align-items:center;gap:13px;padding:15px 16px;font-size:15px;font-weight:600;color:var(--ink);cursor:pointer;border-bottom:1px solid var(--line);position:relative;}
+.megroup .merow:last-child{border-bottom:none;}
+.merow:active{background:var(--soft);}
+.merow>i:first-child{font-size:21px;color:var(--plum);width:24px;text-align:center;flex:0 0 auto;}
+.merow>span{flex:1;}
+.merow .medot{width:8px;height:8px;border-radius:50%;background:#e5484d;flex:0 0 auto;}
+.merow .mearr{font-size:18px;color:var(--line);flex:0 0 auto;}
+.meacct{text-align:center;margin-top:4px;}
+.meacct a{font-size:12.5px;color:var(--sub);text-decoration:underline;}
+.mever{text-align:center;font-size:11px;color:var(--sub);margin-top:18px;letter-spacing:.02em;}
+@media (min-width:861px){ .mepage{display:none!important;} }
 /* 당겨서 새로고침 */
 .ptr{position:fixed;top:10px;left:50%;transform:translateX(-50%);z-index:90;width:42px;height:42px;border-radius:50%;background:#fff;box-shadow:0 8px 24px rgba(20,12,16,.2);display:flex;align-items:center;justify-content:center;color:var(--plum);font-size:20px;opacity:0;pointer-events:none;transition:opacity .15s;}
 .ptr.spin i{animation:ptrspin .7s linear infinite;}
@@ -478,7 +501,7 @@ body.mlock{position:fixed;left:0;right:0;width:100%;overflow:hidden;}
 
 <div class="filterbar"><div class="fin"><span class="nearby" id="nearby" style="display:none"></span><div class="cats" id="cats"></div><div class="citysel"><i class="ti ti-map-pin"></i><select id="city" onchange="render()"></select></div></div></div>
 
-<div class="wrap"><div class="grid" id="grid"></div></div>
+<div class="wrap"><div class="grid" id="grid"></div><div class="mepage" id="mepage" style="display:none"></div></div>
 
 <footer class="sitefoot">
   <div class="sf-in">
@@ -589,7 +612,7 @@ function setView(v){VIEW=v;[...document.querySelectorAll('#nav a')].forEach(a=>a
 function syncTabs(v){var tb=document.getElementById('tabbar');if(!tb)return;tb.querySelectorAll('.tb[data-v]').forEach(function(a){a.classList.toggle('on',a.dataset.v===v);});}
 function tabGo(v){if(VIEW===v){window.scrollTo({top:0,behavior:'smooth'});return;}setView(v);}
 function tabBook(){if(!(ME&&ME.uid)){openLogin('');return;}openBookings();}
-function tabMy(e){if(e)e.stopPropagation();if(!ME){openLogin('');return;}var m=$('umenu');if(m.classList.contains('on')){closeUmenu();return;}toggleUmenu(e);m.classList.add('frombar');}
+function tabMy(e){if(e)e.stopPropagation();if(!ME){openLogin('');return;}setView('me');}
 function applyI18n(){document.querySelectorAll('[data-t]').forEach(e=>e.textContent=T[LANG][e.dataset.t]);document.querySelectorAll('[data-tph]').forEach(e=>e.placeholder=T[LANG][e.dataset.tph]);$('hero').querySelector('h1').innerHTML=T[LANG].h1;}
 
 function tileHtml(t){return `<div class="tile" onclick="openWork('${t.wid}')">
@@ -612,6 +635,11 @@ function renderStories(){var el=document.getElementById('stories');if(!el)return
  el.innerHTML=allD().map(function(d){var nm=(LANG==='ko'&&d.ko)?d.ko:d.name;var img=safeUrl(d.avatar||'')||(d.works&&d.works.length?im(d.works[0],200):'');
   return `<div class="sty" onclick="openD('${d.id}')"><div class="ring"><div style="${img?`background-image:url('${img}')`:`background:${gradFor(nm)}`}">${img?'':esc((nm||'?')[0])}</div></div><div class="sn">${esc(nm)}</div></div>`;}).join('');}
 function render(){renderStories();
+ var mep=document.getElementById('mepage');
+ var fb=document.querySelector('.filterbar');
+ if(VIEW==='me'&&!ME)VIEW='explore';
+ if(VIEW==='me'){$('grid').style.display='none';if(fb)fb.style.display='none';if(mep)mep.style.display='block';renderMe();syncTabs('me');window.scrollTo({top:0});return;}
+ if(mep)mep.style.display='none';$('grid').style.display='';if(fb)fb.style.display='';
  const q=($('q').value||'').toLowerCase(),city=$('city').value;
  let list;
  if(VIEW==='saved'){list=TILES.filter(t=>isSaved(t.wid));}
@@ -857,6 +885,41 @@ async function onAuth(session){
  renderSU();$('lmodal').classList.add('on');}
 SB.auth.onAuthStateChange(function(ev,session){if(ev==='SIGNED_OUT'){ME=null;renderAuth();buildTiles();render();}else{onAuth(session);}});
 function roleLabel(r){return r==='desg'?T[LANG].desg:T[LANG].cust;}
+function renderMe(){var el=document.getElementById('mepage');if(!el)return;if(!ME){el.innerHTML='';return;}
+ var av=ME.avatar&&im(ME.avatar,240);var isD=ME.role==='desg';
+ var badge=(chatUnread>0||bkPend>0);
+ function row(icon,label,fn,dot){return `<a class="merow" onclick="${fn}"><i class="ti ${icon}"></i><span>${label}</span>${dot?'<span class="medot"></span>':''}<i class="ti ti-chevron-right mearr"></i></a>`;}
+ el.innerHTML=`
+ <div class="mehero">
+   <div class="meav" style="${av?`background-image:url('${av}');background-size:cover;background-position:center`:`background:${gradFor(ME.name||'U')}`}">${av?'':esc((ME.name||'U')[0].toUpperCase())}</div>
+   <div class="men">${esc(ME.name||'')} ${ME.verified?`<i class="ti ti-rosette-discount-check-filled" style="color:var(--green);font-size:18px"></i>`:''}</div>
+   <div class="mesub">${roleLabel(ME.role)}${ME.city?' · '+esc(ME.city):''}</div>
+ </div>
+ <div class="mestats">
+   <button class="mestat" onclick="setView('saved')"><div class="mn">${savedCount()}</div><div class="ml">${T[LANG].saved}</div></button>
+   ${isD?`<button class="mestat" onclick="openPortfolio()"><div class="mn">${(ME.works||[]).length}</div><div class="ml">${T[LANG].portfolio}</div></button>`:''}
+   <button class="mestat" onclick="openBookings()"><div class="mn">${bkPend||0}</div><div class="ml">${T[LANG].myBookings}</div></button>
+ </div>
+ <div class="megroup">
+   ${isD?row('ti-upload',T[LANG].pfManage,'openPortfolio()'):''}
+   ${isD&&ME.works&&ME.works.length?row('ti-id-badge-2',T[LANG].idCard,"openIdCard('me')"):''}
+   ${row('ti-pencil',T[LANG].edit,'editProfile()')}
+ </div>
+ <div class="megroup">
+   ${row('ti-message-2',T[LANG].messages,'openChat()',chatUnread>0)}
+   ${row('ti-calendar-heart',T[LANG].myBookings,'openBookings()',bkPend>0)}
+   ${row('ti-heart',T[LANG].saved,"setView('saved')")}
+   ${row('ti-bell-ringing',T[LANG].notifOn,'enablePush()')}
+   ${window.matchMedia&&window.matchMedia('(display-mode: standalone)').matches?'':row('ti-device-mobile-plus',T[LANG].installApp,'installApp()')}
+ </div>
+ <div class="megroup">
+   ${row('ti-file-text',T[LANG].footTerms,"window.open('terms.html','_blank')")}
+   ${row('ti-shield-lock',T[LANG].footPrivacy,"window.open('privacy.html','_blank')")}
+   ${row('ti-mail',T[LANG].footContact,"location.href='mailto:hello@beautia.io'")}
+   ${row('ti-logout',T[LANG].logout,'logout()')}
+ </div>
+ <div class="meacct"><a href="mailto:hello@beautia.io?subject=${encodeURIComponent('Beautia '+T[LANG].delAcct)}&body=${encodeURIComponent('uid: '+(ME.uid||''))}">${T[LANG].delAcct}</a></div>
+ <div class="mever">Beautia · v1.0.0</div>`;}
 function savedCount(){return SAVED.length;}
 function renderAuth(){const li=$('loginBtn'),av=$('avatar');if(ME){li.style.display='none';av.style.display='flex';if(ME.avatar){av.style.backgroundImage="url('"+ME.avatar+"')";av.style.backgroundSize='cover';av.style.backgroundPosition='center';av.textContent='';}else{av.style.backgroundImage='';av.textContent=(ME.name||'U')[0].toUpperCase();}}else{li.style.display='inline-flex';av.style.display='none';closeUmenu();}}
 function toggleUmenu(e){if(e)e.stopPropagation();const m=$('umenu');m.classList.remove('frombar');if(m.classList.contains('on')){closeUmenu();return;}
