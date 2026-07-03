@@ -324,7 +324,7 @@ body.mlock{position:fixed;left:0;right:0;width:100%;overflow:hidden;}
 .ic-name{font-family:'Pretendard','Malgun Gothic',sans-serif;font-weight:800;font-size:23px;letter-spacing:-.02em;display:flex;align-items:center;gap:7px;}
 .ic-meta{font-size:12.5px;color:var(--ink2);margin-top:4px;font-weight:600;letter-spacing:-.01em;}
 .ic-tags{display:flex;flex-wrap:wrap;gap:6px;margin-top:12px;}
-.ic-tags span{font-size:11.5px;font-weight:700;padding:5px 12px;border-radius:999px;}
+.ic-tags span{font-size:11.5px;font-weight:700;line-height:1;padding:7px 12px 6px;border-radius:999px;}
 .ic-divider{height:1px;margin:8px 22px 0;}
 .ic-foot{display:flex;align-items:center;gap:14px;padding:15px 22px 20px;margin-top:4px;}
 .ic-qr{width:70px;height:70px;flex:0 0 auto;border-radius:11px;padding:5px;background:#fff;box-shadow:0 0 0 1px rgba(20,12,16,.06);}
@@ -880,7 +880,11 @@ function closeId(){$('idmodal').classList.remove('on');}
 function renderIdCanvas(){return new Promise(function(resolve,reject){
   var el=$('idcard');if(!el||typeof html2canvas==='undefined'){reject(new Error('no'));return;}
   var iw=$('idwrap'),t=iw?iw.style.transform:'';if(iw)iw.style.transform='';
-  html2canvas(el,{useCORS:true,scale:3,backgroundColor:'#ffffff'}).then(function(cv){if(iw)iw.style.transform=t;resolve(cv);}).catch(function(e){if(iw)iw.style.transform=t;reject(e);});
+  // html2canvas는 aspect-ratio 미지원 → 캡처 직전 사진칸을 실제 너비대로 정사각형 높이 고정(화면과 동일하게)
+  var cuts=el.querySelectorAll('.ic-cut'),saved=[];
+  cuts.forEach(function(c,i){saved[i]=c.style.height;c.style.height=c.offsetWidth+'px';});
+  function restore(){if(iw)iw.style.transform=t;cuts.forEach(function(c,i){c.style.height=saved[i];});}
+  html2canvas(el,{useCORS:true,scale:3,backgroundColor:'#ffffff'}).then(function(cv){restore();resolve(cv);}).catch(function(e){restore();reject(e);});
 });}
 function idSaveOverlay(url){var ov=document.createElement('div');ov.className='idsave';
  ov.innerHTML='<div class="idsave-h">'+esc(T[LANG].saveHint)+'</div><img src="'+url+'" class="idsave-img" alt=""><button class="idsave-x">'+esc(T[LANG].done)+'</button>';
