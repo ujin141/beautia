@@ -817,8 +817,12 @@ function openIdCard(did){const d=dById(did||curD);if(!d)return;idDid=d.id;
    cfg.style.display='block';}else cfg.style.display='none';}
  $('idmodal').classList.add('on');requestAnimationFrame(fitIdCard);setTimeout(fitIdCard,120);
  if(own&&ME&&ME.uid)setTimeout(function(){var iw=$('idwrap');if(iw&&!iw.style.transform)uploadIdCardPng();},480);}
-function fitIdCard(){var iw=$('idwrap');if(!iw||!$('idmodal').classList.contains('on'))return;iw.style.transform='';var avail=window.innerHeight-24;var need=iw.offsetHeight;iw.style.transform=need>avail?'scale('+Math.max(0.45,avail/need)+')':'';}
+function fitIdCard(){var iw=$('idwrap');if(!iw||!$('idmodal').classList.contains('on'))return;iw.style.transform='';
+ var vh=(window.visualViewport&&window.visualViewport.height)||window.innerHeight;
+ var avail=vh-20;var need=iw.offsetHeight;
+ iw.style.transform=need>avail?'scale('+Math.max(0.32,avail/need)+')':'';}
 window.addEventListener('resize',function(){if($('idmodal')&&$('idmodal').classList.contains('on'))fitIdCard();});
+if(window.visualViewport){window.visualViewport.addEventListener('resize',function(){if($('idmodal')&&$('idmodal').classList.contains('on'))fitIdCard();});}
 function setIdCols(n){if(!ME)return;ME.idCols=n;persistShop();openIdCard('me');}
 function setIdColor(c){if(!ME)return;ME.idColor=c;persistShop();openIdCard('me');}
 function setIdTheme(t){if(!ME)return;ME.idTheme=t;persistShop();openIdCard('me');}
