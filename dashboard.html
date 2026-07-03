@@ -403,6 +403,8 @@ async function saveProfile(){
       specialties:state.spec.slice(), tags:state.tags.slice(), services:state.services.slice(),
       insta:insta, naver:($('f_naver').value||'').trim(), blog:($('f_blog').value||'').trim()
     });
+    // 새 작업이 추가되면 시각 기록 → 팔로워 앱에 '새 작업' 알림
+    if(state.photos.length>(((ME.shop&&ME.shop.photos)||[]).length))shop.lastWorkAt=Date.now();
     const payload={id:UID, nickname:($('f_name').value||'').trim(), role:'designer',
       region:($('f_region').value||'').trim(), bio:($('f_bio').value||'').trim(), shop:shop};
     const {error}=await SB.from('profiles').upsert(payload);

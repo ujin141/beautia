@@ -402,6 +402,8 @@ body.mlock{position:fixed;left:0;right:0;width:100%;overflow:hidden;}
 .dcfollow{position:absolute;top:10px;right:10px;width:38px;height:38px;border-radius:50%;background:rgba(255,255,255,.94);color:var(--plum);box-shadow:0 3px 12px rgba(20,12,16,.22);z-index:3;font-size:18px;padding:0;}
 .dcfollow:hover{transform:scale(1.07);}
 .dcfollow.on{background:var(--plum);color:#fff;}
+.dcnew{position:absolute;top:10px;left:10px;z-index:3;display:inline-flex;align-items:center;gap:4px;font-size:11px;font-weight:800;color:#fff;background:linear-gradient(90deg,#E0447A,#B5828C);padding:5px 11px;border-radius:999px;box-shadow:0 3px 10px rgba(180,60,110,.4);letter-spacing:.2px;}
+.dcnew i{font-size:12px;}
 .dhfollow{margin-top:13px;font-size:14px;padding:10px 22px;border-radius:999px;background:#fff;color:var(--plum);box-shadow:0 8px 22px rgba(0,0,0,.22);}
 .dhfollow i{font-size:17px;}
 .dhfollow.on{background:rgba(255,255,255,.16);color:#fff;box-shadow:inset 0 0 0 1.5px rgba(255,255,255,.75);backdrop-filter:blur(4px);}
@@ -783,12 +785,19 @@ const isFollowing=uid=>!!uid&&FOLLOWS.includes(uid);
 function saveFollowLocal(){try{localStorage.setItem('beautia_coll_follows',JSON.stringify(FOLLOWS));}catch(e){}}
 function followBtnHtml(uid,cls){if(!uid)return '';var on=isFollowing(uid);return `<button class="followBtn ${cls||''}${on?' on':''}" data-follow="${uid}" onclick="toggleFollow('${uid}',event)"><i class="ti ${on?'ti-user-check':'ti-user-plus'}"></i><span class="flbl">${on?T[LANG].following:T[LANG].follow}</span></button>`;}
 function syncFollowBtns(){document.querySelectorAll('.followBtn[data-follow]').forEach(function(b){var uid=b.getAttribute('data-follow');var on=isFollowing(uid);b.classList.toggle('on',on);var l=b.querySelector('.flbl');if(l)l.textContent=on?T[LANG].following:T[LANG].follow;var ic=b.querySelector('i');if(ic)ic.className='ti '+(on?'ti-user-check':'ti-user-plus');});}
-async function loadFollows(){if(!ME||!ME.uid)return;try{var rows=(await SB.from('follows').select('designer').eq('follower',ME.uid)).data||[];var remote=rows.map(function(r){return r.designer;});var localOnly=FOLLOWS.filter(function(u){return remote.indexOf(u)<0;});if(localOnly.length){try{await SB.from('follows').upsert(localOnly.map(function(u){return {follower:ME.uid,designer:u};}));}catch(e){}remote=remote.concat(localOnly);}FOLLOWS=remote;saveFollowLocal();try{render();}catch(e){syncFollowBtns();}}catch(e){}}
+async function loadFollows(){if(!ME||!ME.uid)return;try{var rows=(await SB.from('follows').select('designer').eq('follower',ME.uid)).data||[];var remote=rows.map(function(r){return r.designer;});var localOnly=FOLLOWS.filter(function(u){return remote.indexOf(u)<0;});if(localOnly.length){try{await SB.from('follows').upsert(localOnly.map(function(u){return {follower:ME.uid,designer:u};}));}catch(e){}remote=remote.concat(localOnly);}FOLLOWS=remote;saveFollowLocal();try{render();}catch(e){syncFollowBtns();}maybeNotifyNewWork();}catch(e){}}
 function toggleFollow(uid,ev){if(ev)ev.stopPropagation();if(!uid)return;
  var i=FOLLOWS.indexOf(uid);
  if(i<0){FOLLOWS.push(uid);toast(T[LANG].followedT);if(ME&&ME.uid){try{SB.from('follows').upsert({follower:ME.uid,designer:uid}).then(function(){},function(){});}catch(e){}}}
  else{FOLLOWS.splice(i,1);toast(T[LANG].unfollowedT);if(ME&&ME.uid){try{SB.from('follows').delete().eq('follower',ME.uid).eq('designer',uid).then(function(){},function(){});}catch(e){}}}
  saveFollowLocal();syncFollowBtns();}
+// ===== 새 작업 알림: 팔로우한 디자이너가 새 작업 올리면 배지+토스트 =====
+let followSeen=parseInt(localStorage.getItem('beautia_follow_seen')||'0',10)||0;
+if(!followSeen){followSeen=Date.now();try{localStorage.setItem('beautia_follow_seen',''+followSeen);}catch(e){}}
+let _notifiedNew=false;
+function isNewWork(d){return !!(d&&isFollowing(d.uid)&&d.newAt&&d.newAt>followSeen);}
+function markFollowSeen(){followSeen=Date.now();try{localStorage.setItem('beautia_follow_seen',''+followSeen);}catch(e){}}
+function maybeNotifyNewWork(){if(_notifiedNew)return;try{var n=allD().filter(isNewWork).length;if(n>0){_notifiedNew=true;toast(T[LANG].newWorkToast.replace('{n}',n));}}catch(e){}}
 function toast(m){const t=$('toast');t.textContent=m;t.classList.add('on');clearTimeout(window._t);window._t=setTimeout(()=>t.classList.remove('on'),2200);}
 const cl=c=>c==='All'?T[LANG].all:(T[LANG].Cat[c]||c);
 function chipsOf(d){return (d&&d.tags&&d.tags.length)?d.tags:((d&&d.spec)||[]);}
@@ -863,7 +872,7 @@ function renderDesigners(q,city){var g=$('grid');g.classList.add('dgview');
  if(dgFollowOnly)ds=ds.filter(function(d){return isFollowing(d.uid);});
  if(USERLOC&&!city)ds=ds.slice().sort(function(x,y){return distOf(x.city)-distOf(y.city);});
  if(FOLLOWS.length&&!dgFollowOnly)ds=ds.slice().sort(function(a,b){return (isFollowing(b.uid)?1:0)-(isFollowing(a.uid)?1:0);});
- var fbar=FOLLOWS.length?`<div class="dgfollowbar"><button class="dgfb${dgFollowOnly?'':' on'}" onclick="dgFollowOnly=false;render()">${T[LANG].dgAll}</button><button class="dgfb${dgFollowOnly?' on':''}" onclick="dgFollowOnly=true;render()"><i class="ti ti-user-check"></i> ${T[LANG].following} ${FOLLOWS.length}</button></div>`:'';
+ var fbar=FOLLOWS.length?`<div class="dgfollowbar"><button class="dgfb${dgFollowOnly?'':' on'}" onclick="dgFollowOnly=false;render()">${T[LANG].dgAll}</button><button class="dgfb${dgFollowOnly?' on':''}" onclick="dgFollowOnly=true;markFollowSeen();render()"><i class="ti ti-user-check"></i> ${T[LANG].following} ${FOLLOWS.length}</button></div>`:'';
  if(!ds.length){g.innerHTML=fbar+`<div class="empty" style="grid-column:1/-1"><i class="ti ti-user-heart"></i><p>${dgFollowOnly?T[LANG].noFollowing:T[LANG].noRes}</p></div>`;return;}
  g.innerHTML=fbar+ds.map(function(d){var nm=(LANG==='ko'&&d.ko)?d.ko:d.name;var thumbs=d.works.slice(0,3);var L=hyb();
   var rev=parseInt(d.rev||d.reviews||0,10)||0;
@@ -871,7 +880,7 @@ function renderDesigners(q,city){var g=$('grid');g.classList.add('dgview');
     rev>0?`<span class="tb"><i class="ti ti-message-star"></i> ${esc(L.reviews)} ${rev}</span>`:'',
     d.uid?`<span class="tb tb-f"><i class="ti ti-bolt"></i> ${esc(L.fast)}</span>`:''].filter(Boolean).join('');
   return `<div class="dcard">
-    <div class="dcthumbs" onclick="openD('${d.id}')">${thumbs.map(function(w){return `<div class="dcth" style="background-image:url('${im(w,400)}')"></div>`;}).join('')}${d.featured?`<span class="dcfeat"><i class="ti ti-external-link"></i></span>`:''}${d.uid?`<button class="followBtn dcfollow${isFollowing(d.uid)?' on':''}" data-follow="${d.uid}" onclick="toggleFollow('${d.uid}',event)" title="${T[LANG].follow}"><i class="ti ${isFollowing(d.uid)?'ti-user-check':'ti-user-plus'}"></i></button>`:''}</div>
+    <div class="dcthumbs" onclick="openD('${d.id}')">${isNewWork(d)?`<span class="dcnew"><i class="ti ti-sparkles"></i> ${T[LANG].newBadge}</span>`:''}${thumbs.map(function(w){return `<div class="dcth" style="background-image:url('${im(w,400)}')"></div>`;}).join('')}${d.featured?`<span class="dcfeat"><i class="ti ti-external-link"></i></span>`:''}${d.uid?`<button class="followBtn dcfollow${isFollowing(d.uid)?' on':''}" data-follow="${d.uid}" onclick="toggleFollow('${d.uid}',event)" title="${T[LANG].follow}"><i class="ti ${isFollowing(d.uid)?'ti-user-check':'ti-user-plus'}"></i></button>`:''}</div>
     <div class="dcbody" onclick="openD('${d.id}')">
       ${avHtml(d,'dcav')}
       <div class="dci"><div class="dcn">${esc(d.flag)} ${esc(nm)} ${d.ver?`<i class="ti ti-rosette-discount-check-filled" style="color:var(--green);font-size:15px"></i>`:''}</div>
@@ -1116,9 +1125,9 @@ document.addEventListener('keydown',e=>{if(e.key==='Escape'){closeBk();closeFa()
 Object.assign(T.en,{idCard:'ID Card',idDl:'Download',idShare:'Share',idPrep:'Creating image…',idFail:'Download failed (try Share)',linkCopied:'Link copied ✨',saveHint:'Press & hold the image to save it 📥',done:'Done',idKind:'ID CARD',idScan:'SCAN TO VIEW & BOOK',fbKick:'Featured work',fbView:'View portfolio'});
 Object.assign(T.ko,{idCard:'ID 카드',idDl:'다운로드',idShare:'공유',idPrep:'이미지 만드는 중…',idFail:'다운로드 실패 (공유로 시도)',linkCopied:'링크 복사됨 ✨',saveHint:'이미지를 꾹 눌러 저장하세요 📥',done:'닫기',idKind:'ID 카드',idScan:'스캔해서 예약하기',fbKick:'추천 작업',fbView:'포트폴리오 보기'});
 Object.assign(T.ja,{idCard:'IDカード',idDl:'保存',idShare:'シェア',idPrep:'画像を作成中…',idFail:'保存失敗（シェアでお試し）',linkCopied:'リンクをコピー ✨',saveHint:'画像を長押しして保存してください 📥',done:'閉じる',idKind:'IDカード',idScan:'スキャンして予約',fbKick:'注目の作品',fbView:'ポートフォリオを見る'});
-Object.assign(T.en,{follow:'Follow',following:'Following',followedT:'Following ✓',unfollowedT:'Unfollowed',signup:'Sign up',followers:'followers',dgAll:'All',noFollowing:"You're not following anyone yet",noPwHint:'No password needed — just log in with the code sent to your email.',codeSentTo:'Code sent to {email}',spamHint:"Can't find it? Check your spam folder, or tap Resend."});
-Object.assign(T.ko,{follow:'팔로우',following:'팔로잉',followedT:'팔로우했어요 ✓',unfollowedT:'팔로우 취소',signup:'회원가입',followers:'팔로워',dgAll:'전체',noFollowing:'아직 팔로우한 디자이너가 없어요',noPwHint:'비밀번호가 필요 없어요 — 이메일로 받은 코드로 로그인해요.',codeSentTo:'{email} 로 인증코드를 보냈어요',spamHint:'메일이 안 보이면 스팸함을 확인하거나 재전송을 눌러주세요.'});
-Object.assign(T.ja,{follow:'フォロー',following:'フォロー中',followedT:'フォローしました ✓',unfollowedT:'フォロー解除',signup:'会員登録',followers:'フォロワー',dgAll:'すべて',noFollowing:'まだ誰もフォローしていません',noPwHint:'パスワード不要 — メールに届いたコードでログインします。',codeSentTo:'{email} に認証コードを送りました',spamHint:'メールが届かない場合は迷惑メールを確認するか、再送を押してください。'});
+Object.assign(T.en,{follow:'Follow',following:'Following',followedT:'Following ✓',unfollowedT:'Unfollowed',signup:'Sign up',followers:'followers',dgAll:'All',noFollowing:"You're not following anyone yet",noPwHint:'No password needed — just log in with the code sent to your email.',codeSentTo:'Code sent to {email}',spamHint:"Can't find it? Check your spam folder, or tap Resend.",newBadge:'New',newWorkToast:'{n} designer(s) you follow posted new work ✨'});
+Object.assign(T.ko,{follow:'팔로우',following:'팔로잉',followedT:'팔로우했어요 ✓',unfollowedT:'팔로우 취소',signup:'회원가입',followers:'팔로워',dgAll:'전체',noFollowing:'아직 팔로우한 디자이너가 없어요',noPwHint:'비밀번호가 필요 없어요 — 이메일로 받은 코드로 로그인해요.',codeSentTo:'{email} 로 인증코드를 보냈어요',spamHint:'메일이 안 보이면 스팸함을 확인하거나 재전송을 눌러주세요.',newBadge:'새 작업',newWorkToast:'팔로우한 디자이너 {n}명이 새 작업을 올렸어요 ✨'});
+Object.assign(T.ja,{follow:'フォロー',following:'フォロー中',followedT:'フォローしました ✓',unfollowedT:'フォロー解除',signup:'会員登録',followers:'フォロワー',dgAll:'すべて',noFollowing:'まだ誰もフォローしていません',noPwHint:'パスワード不要 — メールに届いたコードでログインします。',codeSentTo:'{email} に認証コードを送りました',spamHint:'メールが届かない場合は迷惑メールを確認するか、再送を押してください。',newBadge:'新着',newWorkToast:'フォロー中のデザイナー{n}名が新作を投稿しました ✨'});
 // 태국어: 영어 전체를 상속받고 주요 문자열만 태국어로 (누락 키는 영어로 자동 폴백)
 T.th=Object.assign({},T.en,{
  explore:'สำรวจ',designers:'ดีไซเนอร์',saved:'บันทึกไว้',join:'สมัคร',my:'ฉัน',messages:'ข้อความ',
@@ -1400,12 +1409,12 @@ async function loadDesigners(){try{
       city:p.region||s.area||'',area:s.area||'',flag:roleIn(p.role)==='desg'?'🎨':'✨',
       rating:5.0,rev:0,years:s.career||'',ko_ok:1,ver:1,
       spec:(s.specialties&&s.specialties.length)?s.specialties:((p.interests&&p.interests.length)?p.interests:['Hair']),
-      bio:p.bio||'',avatar:s.avatar||p.avatar_url||'',insta:(s.insta||'').replace(/^@/,''),naver:s.naver||'',blog:s.blog||'',
+      bio:p.bio||'',avatar:s.avatar||p.avatar_url||'',insta:(s.insta||'').replace(/^@/,''),naver:s.naver||'',blog:s.blog||'',newAt:s.lastWorkAt||0,
       handles:s.sns||(s.insta?{instagram:(s.insta||'').replace(/^@/,'')}:{}),
       works:photos,ba:[photos[0],photos[Math.min(1,photos.length-1)]],
       sns:Object.keys(s.sns||{}).filter(function(k){return (s.sns||{})[k];}),services:(s.services||[]),tags:s.tags||[],shopName:s.name||'',reviews:[]});
   });
-  DUSERS=list;buildTiles();renderCities();render();
+  DUSERS=list;buildTiles();renderCities();render();maybeNotifyNewWork();
   var _pu=new URLSearchParams(location.search).get('u');if(_pu&&!document.querySelector('.dmodal.on'))openByUid(_pu);
 }catch(e){}}
 function openFeaturedAdd(){if(!(ME&&ME.isOwner)){toast('오너만 사용 가능');return;}$('facard').innerHTML=`<button class="iclose" onclick="closeFa()" style="position:absolute;top:16px;right:20px;font-size:24px;color:var(--sub);z-index:2">×</button>
