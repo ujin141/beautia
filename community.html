@@ -85,10 +85,6 @@ nav.main a.on{color:var(--ink);border-color:var(--accent);}
 .umenu a .undot{display:inline-block;width:8px;height:8px;border-radius:50%;background:#e5484d;margin-left:6px;vertical-align:middle;}
 .umenu{position:fixed;top:66px;right:28px;z-index:55;background:#fff;border:1px solid var(--line);border-radius:16px;box-shadow:0 24px 60px -18px rgba(0,0,0,.25);padding:8px;min-width:184px;display:none;}
 .umenu.on{display:block;}
-.langmenu{min-width:150px;} .langmenu a{gap:8px;} .langmenu a.on{color:var(--plum);font-weight:800;background:var(--soft);}
-.langbtn{width:40px;height:40px;border-radius:50%;display:flex;align-items:center;justify-content:center;color:var(--ink2);font-size:20px;flex:0 0 auto;}
-.langbtn:hover{background:var(--soft);}
-@media(max-width:860px){.langbtn{margin-left:auto;}}
 .umenu .uh{padding:10px 14px 12px;border-bottom:1px solid var(--line);margin-bottom:6px;}
 .umenu .uh .un{font-weight:800;font-size:15px;} .umenu .uh .ur{font-size:12.5px;color:var(--sub);margin-top:2px;}
 .umenu a{display:flex;align-items:center;gap:10px;padding:12px 14px;font-size:15px;font-weight:600;color:var(--ink);border-radius:10px;cursor:pointer;}
@@ -530,7 +526,6 @@ body.mlock{position:fixed;left:0;right:0;width:100%;overflow:hidden;}
       <a data-v="saved" onclick="setView('saved')" data-t="saved">Saved</a>
     </nav>
     <div class="hsearch"><i class="ti ti-search"></i><input id="q" oninput="onSearchInput()" onfocus="renderSuggest()" onblur="hideSuggest()" autocomplete="off" data-tph="search"><div class="sugbox" id="sugbox"></div></div>
-    <button class="langbtn" id="langbtn" onclick="toggleLangMenu(event)" aria-label="Language"><i class="ti ti-world"></i></button>
     <button class="loginBtn" id="loginBtn" onclick="openLogin('')" data-t="login">Log in</button>
     <div class="avt" id="avatar" onclick="toggleUmenu(event)" style="display:none"></div>
     <button class="join" onclick="openLogin('desg')"><i class="ti ti-plus"></i><span data-t="joinD">Join as Designer</span></button>
@@ -571,7 +566,6 @@ body.mlock{position:fixed;left:0;right:0;width:100%;overflow:hidden;}
 
 <div class="imodal" id="imodal" onclick="if(event.target===this)closeI()"><div class="icard" id="icard"></div></div>
 <div class="umenu" id="umenu"></div>
-<div class="umenu langmenu" id="langmenu"></div>
 <div class="lmodal" id="lmodal" onclick="if(event.target===this)closeLogin()"><div class="lcard" id="lcard"></div></div>
 <div class="idmodal" id="idmodal" onclick="if(event.target===this)closeId()"><div class="idwrap" id="idwrap"><div class="idcard" id="idcard"></div><div class="idcfg" id="idcfg"></div><div class="idbtns"><button class="pri" onclick="dlId()"><i class="ti ti-download"></i> <span id="idDlT">Download</span></button><button onclick="shareId()"><i class="ti ti-link"></i> <span id="idShT">Share</span></button><button onclick="closeId()"><i class="ti ti-x"></i></button></div></div></div>
 <div class="pfmodal" id="pfmodal" onclick="if(event.target===this)closePf()"><div class="pfcard" id="pfcard"></div></div>
@@ -654,12 +648,7 @@ const cl=c=>c==='All'?T[LANG].all:(T[LANG].Cat[c]||c);
 function renderCats(){$('cats').innerHTML=CATS.map(c=>`<button class="cat ${CAT===c?'on':''}" onclick="setCat('${c}')">${cl(c)}</button>`).join('');}
 function renderCities(){const cs=[...new Set(allD().map(d=>d.city).filter(Boolean))];$('city').innerHTML=`<option value="">${T[LANG].allcity}</option>`+cs.map(c=>`<option value="${esc(c)}">${esc(c)}</option>`).join('');}
 function setCat(c){CAT=c;renderCats();render();}
-const LANGS=[['ko','한국어','🇰🇷'],['en','English','🇺🇸'],['ja','日本語','🇯🇵'],['th','ไทย','🇹🇭']];
-function setLang(l,auto){LANG=l;document.documentElement.lang=l;if(!auto){try{localStorage.setItem('beautia_lang',l);}catch(e){}}applyI18n();renderCats();renderCities();updateNearby();render();if(curD)openD(curD,true);closeLangMenu();}
-function toggleLangMenu(e){if(e)e.stopPropagation();var m=$('langmenu');if(m.classList.contains('on')){closeLangMenu();return;}
- m.innerHTML=LANGS.map(function(x){return `<a onclick="setLang('${x[0]}')" class="${LANG===x[0]?'on':''}"><span>${x[2]}</span> ${x[1]}${LANG===x[0]?' <i class="ti ti-check" style="margin-left:auto"></i>':''}</a>`;}).join('');
- m.classList.add('on');var b=$('langbtn'),r=b.getBoundingClientRect();m.style.top=(r.bottom+8)+'px';m.style.right=Math.max(12,window.innerWidth-r.right)+'px';}
-function closeLangMenu(){var m=$('langmenu');if(m)m.classList.remove('on');}
+function setLang(l){LANG=l;document.documentElement.lang=l;applyI18n();renderCats();renderCities();updateNearby();render();if(curD)openD(curD,true);}
 const SEO_TITLE=document.title,SEO_DESC=(document.querySelector('meta[name=description]')||{}).content||'';
 function setSEO(title,desc){document.title=title;var d=document.querySelector('meta[name=description]');if(d)d.setAttribute('content',desc||SEO_DESC);var ot=document.querySelector('meta[property="og:title"]');if(ot)ot.setAttribute('content',title);}
 function setView(v){VIEW=v;[...document.querySelectorAll('#nav a')].forEach(a=>a.classList.toggle('on',a.dataset.v===v));$('hero').style.display=v==='explore'?'block':'none';render();window.scrollTo({top:0});syncTabs(v);}
@@ -1129,10 +1118,10 @@ function openProfile(){if(!ME){openLogin('');return;}const since=ME.joined?new D
  $('dmodal').classList.add('on');curD=null;}
 function editProfile(){if(!ME)return;closeD();SU={role:ME.role,name:ME.name,country:ME.country||'',city:ME.city,spec:(ME.spec||[]).slice(),career:ME.career||'',avatar:ME.avatar||'',insta:ME.insta||'',sns:Object.assign({},ME.sns||{}),shopName:ME.shopName||'',uid:ME.uid,contact:'x',verified:true,code:'x',tos:true,priv:true,mktg:ME.mktg,provider:ME.provider,step:2,edit:true};$('lmodal').classList.add('on');renderSU();}
 function suAvatar(e){var f=e.target.files[0];if(!f||!/^image\//.test(f.type))return;var r=new FileReader();r.onload=function(ev){pfDownscale(ev.target.result,500,function(d){SU.avatar=d;renderSU();});};r.readAsDataURL(f);e.target.value='';}
-document.addEventListener('click',function(){closeUmenu();closeLangMenu();});
+document.addEventListener('click',function(){closeUmenu();});
 
 // 언어 자동: 1) 브라우저 로케일로 즉시 기본값 → 2) IP 국가로 덮어쓰기(권위)
-(function(){try{var sv=localStorage.getItem('beautia_lang');if(sv&&['en','ko','ja','th'].indexOf(sv)>=0){LANG=sv;return;}}catch(e){}var nl=(navigator.language||'en').toLowerCase();LANG=nl.indexOf('ko')===0?'ko':nl.indexOf('ja')===0?'ja':nl.indexOf('th')===0?'th':'en';})();
+(function(){var nl=(navigator.language||'en').toLowerCase();LANG=nl.indexOf('ko')===0?'ko':nl.indexOf('ja')===0?'ja':nl.indexOf('th')===0?'th':'en';})();
 document.documentElement.lang=LANG;
 (function(){var _q=new URLSearchParams(location.search).get('q');if(_q&&$('q'))$('q').value=_q.slice(0,80);})();
 // ===== 채팅(메시징) + 자동번역(GPT) =====
@@ -1381,9 +1370,8 @@ const _du=new URLSearchParams(location.search).get('u');if(_du)openByUid(_du);
 fetch('https://ipapi.co/json/').then(function(r){return r.ok?r.json():null;}).then(function(j){if(!j)return;
  if(typeof j.latitude==='number'&&typeof j.longitude==='number')USERLOC={lat:j.latitude,lng:j.longitude,city:j.city||'',country:j.country_code||''};
  updateNearby();
- var saved=false;try{saved=!!localStorage.getItem('beautia_lang');}catch(e){}
  var cc=(j.country_code||'').toUpperCase();var l=cc==='KR'?'ko':cc==='JP'?'ja':cc==='TH'?'th':(cc?'en':LANG);
- if(!saved&&l!==LANG)setLang(l,true);else render();
+ if(l!==LANG)setLang(l);else render();
 }).catch(function(){});
 // 모달 열리면 스크롤 위치 보존하며 배경 잠금
 (function(){var sy=0,locked=false;
