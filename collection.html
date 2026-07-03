@@ -725,7 +725,7 @@ function renderBanner(){var el=document.getElementById('fbanner');if(!el)return;
  el.classList.add('on');
  el.innerHTML=`<div class="fbslides" id="fbslides">${s.map(function(x,i){return `<div class="fbslide${i===0?' on':''}" onclick="openD('${x.did}')" style="background-image:url('${im(x.img,900)}')"><div class="fbsc"></div>
     <div class="fbtext"><div class="fbkick">${T[LANG].fbKick}</div><div class="fbname">${esc(x.name)}</div><div class="fbmeta">${esc(x.cat)}${x.city?' · '+esc(x.city):''}</div></div>
-    <button class="fbcta" onclick="event.stopPropagation();openBook('${x.did}')">${T[LANG].book2||'예약'} <i class="ti ti-arrow-right"></i></button></div>`;}).join('')}</div>
+    <button class="fbcta" onclick="event.stopPropagation();openD('${x.did}')">${T[LANG].fbView||'포트폴리오 보기'} <i class="ti ti-arrow-right"></i></button></div>`;}).join('')}</div>
   ${s.length>1?`<div class="fbdots">${s.map(function(_,i){return `<span class="${i===0?'on':''}" onclick="fbGo(${i})"></span>`;}).join('')}</div>`:''}`;
  fbIdx=0;if(fbTimer)clearInterval(fbTimer);if(s.length>1)fbTimer=setInterval(function(){fbGo((fbIdx+1)%s.length);},4000);}
 function fbGo(i){var sl=document.querySelectorAll('#fbanner .fbslide'),dt=document.querySelectorAll('#fbanner .fbdots span');if(!sl.length)return;fbIdx=i;sl.forEach(function(e,k){e.classList.toggle('on',k===i);});dt.forEach(function(e,k){e.classList.toggle('on',k===i);});}
@@ -976,9 +976,9 @@ function openI(did){const d=dById(did);iLang=LANG==='en'?'ko':LANG;
 function setILang(l){iLang=l;document.querySelectorAll('#iselrow button').forEach(b=>b.classList.toggle('on',b.textContent.toLowerCase()===l));$('imsg').placeholder=T[l].inqPH;}
 function closeI(){$('imodal').classList.remove('on');}
 document.addEventListener('keydown',e=>{if(e.key==='Escape'){closeBk();closeFa();closeChat();closeWork();closePf();closeId();closeI();closeD();closeLogin();closeUmenu();}});
-Object.assign(T.en,{idCard:'ID Card',idDl:'Download',idShare:'Share',idPrep:'Creating image…',idFail:'Download failed (try Share)',linkCopied:'Link copied ✨',saveHint:'Press & hold the image to save it 📥',done:'Done',idKind:'ID CARD',idScan:'SCAN TO VIEW & BOOK',fbKick:'Featured work'});
-Object.assign(T.ko,{idCard:'ID 카드',idDl:'다운로드',idShare:'공유',idPrep:'이미지 만드는 중…',idFail:'다운로드 실패 (공유로 시도)',linkCopied:'링크 복사됨 ✨',saveHint:'이미지를 꾹 눌러 저장하세요 📥',done:'닫기',idKind:'ID 카드',idScan:'스캔해서 예약하기',fbKick:'추천 작업'});
-Object.assign(T.ja,{idCard:'IDカード',idDl:'保存',idShare:'シェア',idPrep:'画像を作成中…',idFail:'保存失敗（シェアでお試し）',linkCopied:'リンクをコピー ✨',saveHint:'画像を長押しして保存してください 📥',done:'閉じる',idKind:'IDカード',idScan:'スキャンして予約',fbKick:'注目の作品'});
+Object.assign(T.en,{idCard:'ID Card',idDl:'Download',idShare:'Share',idPrep:'Creating image…',idFail:'Download failed (try Share)',linkCopied:'Link copied ✨',saveHint:'Press & hold the image to save it 📥',done:'Done',idKind:'ID CARD',idScan:'SCAN TO VIEW & BOOK',fbKick:'Featured work',fbView:'View portfolio'});
+Object.assign(T.ko,{idCard:'ID 카드',idDl:'다운로드',idShare:'공유',idPrep:'이미지 만드는 중…',idFail:'다운로드 실패 (공유로 시도)',linkCopied:'링크 복사됨 ✨',saveHint:'이미지를 꾹 눌러 저장하세요 📥',done:'닫기',idKind:'ID 카드',idScan:'스캔해서 예약하기',fbKick:'추천 작업',fbView:'포트폴리오 보기'});
+Object.assign(T.ja,{idCard:'IDカード',idDl:'保存',idShare:'シェア',idPrep:'画像を作成中…',idFail:'保存失敗（シェアでお試し）',linkCopied:'リンクをコピー ✨',saveHint:'画像を長押しして保存してください 📥',done:'閉じる',idKind:'IDカード',idScan:'スキャンして予約',fbKick:'注目の作品',fbView:'ポートフォリオを見る'});
 // 태국어: 영어 전체를 상속받고 주요 문자열만 태국어로 (누락 키는 영어로 자동 폴백)
 T.th=Object.assign({},T.en,{
  explore:'สำรวจ',designers:'ดีไซเนอร์',saved:'บันทึกไว้',join:'สมัคร',my:'ฉัน',messages:'ข้อความ',
