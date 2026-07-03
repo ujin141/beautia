@@ -7,7 +7,9 @@
   "rewrites": [
     { "source": "/p/:id", "destination": "/api/post?id=:id" },
     { "source": "/c/:u", "destination": "/api/card?u=:u" },
-    { "source": "/sitemap-posts.xml", "destination": "/api/sitemap-posts" }
+    { "source": "/d/:u", "destination": "/api/designer?u=:u" },
+    { "source": "/sitemap-posts.xml", "destination": "/api/sitemap-posts" },
+    { "source": "/sitemap-designers.xml", "destination": "/api/sitemap-designers" }
   ],
   "headers": [
     {
