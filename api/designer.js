@@ -24,12 +24,12 @@ function pickLang(str) {
   return 'en';
 }
 const L = {
-  ko: { designer: '뷰티 디자이너', portfolio: '포트폴리오', career: '경력', spec: '전문 분야', book: 'Beautia에서 예약·문의', insta: '인스타그램 보기', more: '다른 디자이너', home: '홈', work: '작업', worksIn: '지역', by: '작업', locale: 'ko_KR', htmllang: 'ko' },
-  ja: { designer: 'ビューティーデザイナー', portfolio: 'ポートフォリオ', career: '経歴', spec: '専門', book: 'Beautiaで予約・問い合わせ', insta: 'Instagramを見る', more: '他のデザイナー', home: 'ホーム', work: '作品', worksIn: 'エリア', by: '作品', locale: 'ja_JP', htmllang: 'ja' },
-  en: { designer: 'Beauty designer', portfolio: 'Portfolio', career: 'Experience', spec: 'Specialties', book: 'Book / message on Beautia', insta: 'View on Instagram', more: 'More designers', home: 'Home', work: 'work', worksIn: 'Area', by: 'work', locale: 'en_US', htmllang: 'en' },
+  ko: { designer: '뷰티 디자이너', portfolio: '포트폴리오', career: '경력', spec: '전문 분야', book: 'Beautia에서 예약·문의', insta: '인스타그램 보기', blog: '블로그', more: '다른 디자이너', home: '홈', work: '작업', worksIn: '지역', by: '작업', locale: 'ko_KR', htmllang: 'ko' },
+  ja: { designer: 'ビューティーデザイナー', portfolio: 'ポートフォリオ', career: '経歴', spec: '専門', book: 'Beautiaで予約・問い合わせ', insta: 'Instagramを見る', blog: 'ブログ', more: '他のデザイナー', home: 'ホーム', work: '作品', worksIn: 'エリア', by: '作品', locale: 'ja_JP', htmllang: 'ja' },
+  en: { designer: 'Beauty designer', portfolio: 'Portfolio', career: 'Experience', spec: 'Specialties', book: 'Book / message on Beautia', insta: 'View on Instagram', blog: 'Blog', more: 'More designers', home: 'Home', work: 'work', worksIn: 'Area', by: 'work', locale: 'en_US', htmllang: 'en' },
 };
 
-const igClean = s => String(s || '').trim().replace(/^@/, '').replace(/^https?:\/\/(www\.)?instagram\.com\//i, '').replace(/\/.*$/, '');
+const igClean = s => String(s || '').trim().replace(/^@/, '').replace(/^https?:\/\/(www\.)?instagram\.com\//i, '').replace(/[/?#].*$/, '');
 const photoUrls = shop => (Array.isArray(shop && shop.photos) ? shop.photos : [])
   .map(p => (p && typeof p === 'object') ? p.img : p)
   .filter(x => typeof x === 'string' && x.startsWith('http'));
@@ -50,6 +50,7 @@ export default async function handler(req, res) {
   const career = (shop.career || '').toString().trim();
   const bio = (pr.bio || '').toString().trim();
   const ig = igClean(shop.insta);
+  const blog = (typeof shop.blog === 'string' && /^https?:\/\//i.test(shop.blog)) ? shop.blog : '';
   const photos = photoUrls(shop);
   const avatar = (typeof shop.avatar === 'string' && shop.avatar.startsWith('http')) ? shop.avatar : '';
   const t = L[pickLang(name + ' ' + city + ' ' + career + ' ' + (shop.area || ''))];
@@ -73,7 +74,10 @@ export default async function handler(req, res) {
   if (bio) person.description = bio;
   if (specs.length) person.knowsAbout = specs;
   if (city) person.areaServed = city;
-  if (ig) person.sameAs = [`https://instagram.com/${ig}`];
+  const sameAs = [];
+  if (ig) sameAs.push(`https://instagram.com/${ig}`);
+  if (blog) sameAs.push(blog);
+  if (sameAs.length) person.sameAs = sameAs;
   if (career) person.award = career;
 
   const graph = [
@@ -165,7 +169,7 @@ footer{border-top:1px solid var(--line);margin-top:56px;padding:28px 0;color:var
   <div>
     <h1>${esc(name)}</h1>
     <div class="role">${esc(specText ? specText + ' · ' + t.designer : t.designer)}</div>
-    <div class="meta">${city ? `<span>📍 ${esc(city)}</span>` : ''}${career ? `<span>${esc(t.career)}: ${esc(career)}</span>` : ''}${ig ? `<a href="https://instagram.com/${esc(ig)}" rel="me nofollow" target="_blank">@${esc(ig)}</a>` : ''}</div>
+    <div class="meta">${city ? `<span>📍 ${esc(city)}</span>` : ''}${career ? `<span>${esc(t.career)}: ${esc(career)}</span>` : ''}${ig ? `<a href="https://instagram.com/${esc(ig)}" rel="me nofollow" target="_blank">@${esc(ig)}</a>` : ''}${blog ? `<a href="${esc(blog)}" rel="me nofollow" target="_blank">${esc(t.blog)}</a>` : ''}</div>
   </div>
 </section>
 ${chips ? `<div class="chips">${chips}</div>` : ''}
