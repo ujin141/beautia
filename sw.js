@@ -1,6 +1,6 @@
 // Beautia PWA Service Worker
 // HTML = network-first(항상 최신 배포 반영), 정적 자산 = cache-first, 외부(수파베이스 등) = 미개입
-const VER = 'beautia-v4';
+const VER = 'beautia-v5';
 const STATIC = ['/logo-mark.png', '/icon-192.png', '/icon-512.png', '/apple-touch-icon.png', '/manifest.webmanifest'];
 
 self.addEventListener('install', function (e) {
@@ -32,7 +32,7 @@ self.addEventListener('fetch', function (e) {
   if (e.request.method !== 'GET' || url.origin !== location.origin) return; // API·스토리지는 그대로
   if (e.request.mode === 'navigate' || (e.request.headers.get('accept') || '').includes('text/html')) {
     // 페이지: 네트워크 우선, 실패 시 캐시(오프라인)
-    e.respondWith(fetch(e.request).then(function (r) {
+    e.respondWith(fetch(e.request, { cache: 'no-store' }).then(function (r) {
       const copy = r.clone(); caches.open(VER).then(function (c) { c.put(e.request, copy); }); return r;
     }).catch(function () { return caches.match(e.request); }));
     return;
