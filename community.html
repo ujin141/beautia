@@ -804,7 +804,7 @@ function openD(did,keep){const d=dById(did);if(!d)return;curD=did;const gi=D.ind
    <div class="dhcap">
      ${avHtml(d,'dav-c')}
      <div class="dn">${esc(d.flag)} ${esc(name)} ${d.ver?`<span class="vbadge"><i class="ti ti-rosette-discount-check-filled"></i>${T[LANG].verified}</span>`:''}</div>${d.shopName?`<div class="dshop"><i class="ti ti-building-store"></i> ${esc(d.shopName)}</div>`:''}
-     <div class="dmeta"><span id="dstars"><span class="star">★</span> ${esc(d.rating)} (${esc(d.rev)})</span><span><i class="ti ti-map-pin" style="font-size:16px"></i> ${esc(d.area)}, ${esc(d.city)}</span><span><i class="ti ti-briefcase" style="font-size:16px"></i> ${esc(d.years)}${LANG==='en'?' ':''}${T[LANG].years}</span></div>
+     <div class="dmeta"><span id="dstars"><span class="star">★</span> ${esc(d.rating)} (${esc(d.rev)})</span>${d.cat?`<span>${esc(cl(d.cat))}</span>`:''}<span><i class="ti ti-map-pin" style="font-size:16px"></i> ${esc(d.city||d.area)}</span>${d.years?`<span><i class="ti ti-briefcase" style="font-size:16px"></i> ${esc(d.years)}${LANG==='en'?' ':''}${T[LANG].years}</span>`:''}</div>
    </div>
   </div>
   <div class="dsec"><div class="chips">${chipsOf(d).map(s=>`<span class="chip">${esc(s)}</span>`).join('')}</div><div class="styl">${esc(d.bio)}</div><button class="idcardbtn" onclick="openIdCard('${d.id}')"><i class="ti ti-id-badge-2"></i> ${T[LANG].idCard}</button></div>
