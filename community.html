@@ -492,7 +492,7 @@ body.mlock{position:fixed;left:0;right:0;width:100%;overflow:hidden;}
   <a class="tb on" data-v="explore" onclick="tabGo('explore')"><i class="ti ti-home"></i><span data-t="explore">Explore</span></a>
   <a class="tb" data-v="designers" onclick="tabGo('designers')"><i class="ti ti-sparkles"></i><span data-t="designers">Designers</span></a>
   <a class="tb" onclick="tabBook()"><i class="ti ti-calendar-heart"></i><span data-t="myBookings">Bookings</span></a>
-  <a class="tb" data-v="saved" onclick="tabGo('saved')"><i class="ti ti-heart"></i><span data-t="saved">Saved</span></a>
+  <a class="tb" id="tbMsg" onclick="tabMsg()"><i class="ti ti-message-2"></i><span data-t="messages">Messages</span></a>
   <a class="tb" id="tbMy" onclick="tabMy(event)"><i class="ti ti-user"></i><span data-t="my">My</span></a>
 </nav>
 
@@ -613,6 +613,7 @@ function syncTabs(v){var tb=document.getElementById('tabbar');if(!tb)return;tb.q
 function tabGo(v){if(VIEW===v){window.scrollTo({top:0,behavior:'smooth'});return;}setView(v);}
 function tabBook(){if(!(ME&&ME.uid)){openLogin('');return;}openBookings();}
 function tabMy(e){if(e)e.stopPropagation();if(!ME){openLogin('');return;}setView('me');}
+function tabMsg(){if(!(ME&&ME.uid)){openLogin('');return;}openChat();}
 function applyI18n(){document.querySelectorAll('[data-t]').forEach(e=>e.textContent=T[LANG][e.dataset.t]);document.querySelectorAll('[data-tph]').forEach(e=>e.placeholder=T[LANG][e.dataset.tph]);$('hero').querySelector('h1').innerHTML=T[LANG].h1;}
 
 function tileHtml(t){return `<div class="tile" onclick="openWork('${t.wid}')">
@@ -1052,7 +1053,8 @@ let chatUnread=0,chatGlobalSub=null;
 function chatSeenTs(){return parseInt(localStorage.getItem('beautia_chat_seen')||'0',10)||0;}
 function markChatSeen(){try{localStorage.setItem('beautia_chat_seen',''+Date.now());}catch(e){}chatUnread=0;renderChatBadge();}
 function renderChatBadge(){var has=chatUnread>0||bkPend>0;var a=$('avatar');if(a){var b=a.querySelector('.unread');if(has){if(!b){b=document.createElement('span');b.className='unread';a.appendChild(b);}}else if(b){b.remove();}}
- var t=document.getElementById('tbMy');if(t){var d=t.querySelector('.undot');if(has){if(!d){d=document.createElement('span');d.className='undot';t.appendChild(d);}}else if(d){d.remove();}}}
+ var t=document.getElementById('tbMy');if(t){var d=t.querySelector('.undot');if(has){if(!d){d=document.createElement('span');d.className='undot';t.appendChild(d);}}else if(d){d.remove();}}
+ var mt=document.getElementById('tbMsg');if(mt){var md=mt.querySelector('.undot');if(chatUnread>0){if(!md){md=document.createElement('span');md.className='undot';mt.appendChild(md);}}else if(md){md.remove();}}}
 async function checkUnread(){if(!ME||!ME.uid){chatUnread=0;renderChatBadge();return;}try{var since=new Date(chatSeenTs()||1).toISOString();var d=(await SB.from('messages').select('id,sender').gt('created_at',since)).data||[];chatUnread=d.filter(function(m){return m.sender!==ME.uid;}).length;}catch(e){}renderChatBadge();
  if(chatGlobalSub){try{SB.removeChannel(chatGlobalSub);}catch(e){}}
  chatGlobalSub=SB.channel('gmsg').on('postgres_changes',{event:'INSERT',schema:'public',table:'messages'},function(p){var m=p.new;if(!m||m.sender===ME.uid)return;if(curConv&&m.conversation===curConv.id&&$('chatmodal')&&$('chatmodal').classList.contains('on')){markChatSeen();return;}chatUnread++;renderChatBadge();}).subscribe();}
