@@ -1,6 +1,6 @@
 // Beautia PWA Service Worker
 // HTML = network-first(항상 최신 배포 반영), 정적 자산 = cache-first, 외부(수파베이스 등) = 미개입
-const VER = 'beautia-v8';
+const VER = 'beautia-v9';
 const STATIC = ['/logo-mark.png', '/icon-192.png', '/icon-512.png', '/apple-touch-icon.png', '/manifest.webmanifest'];
 
 self.addEventListener('install', function (e) {
