@@ -1,371 +1,437 @@
-<!DOCTYPE html>
-<html lang="ko">
-<head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Beautia · 운영 콘솔</title>
+<!DOCTYPE html><html lang="ko"><head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Beautia · 관리자</title>
+<meta name="robots" content="noindex,nofollow">
+<link rel="icon" href="/logo-mark.png" type="image/png">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css">
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3/dist/tabler-icons.min.css">
-<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<!--fonts: pretendard + tabler-->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@2.47.0/tabler-icons.min.css">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.110.0/dist/umd/supabase.js"></script>
 <style>
-:root{--rose:#B5828C; --plum:#6E4A50; --cream:#F5EBE8; --page:#FBF8F6; --card:#fff; --line:#ECE0DC; --muted:#9B8487; --gold:#C9A063;
-  --amber:#BA7515; --amberbg:#FAEEDA; --red:#A32D2D; --redbg:#FBEAEA; --green:#3B6D11; --greenbg:#EAF3DE;}
-*{box-sizing:border-box; margin:0; padding:0;}
-body{font-family:'Pretendard',system-ui,sans-serif; background:var(--page); color:var(--plum);}
-.app{display:flex; min-height:100vh;}
-/* sidebar */
-.sidebar{width:212px; flex-shrink:0; background:var(--plum); color:var(--cream); padding:20px 12px; position:sticky; top:0; height:100vh;}
-.brand{font-size:19px; font-weight:700; padding:6px 10px 4px;}
-.brand span{font-size:11px; font-weight:400; opacity:.7; display:block; margin-top:2px;}
-.nav{margin-top:18px;}
-.navitem{display:flex; align-items:center; gap:11px; padding:11px 12px; border-radius:9px; font-size:13.5px; cursor:pointer; color:rgba(245,235,232,.8); margin-bottom:2px;}
-.navitem .ti{font-size:18px;}
-.navitem:hover{background:rgba(255,255,255,.08);}
-.navitem.on{background:var(--rose); color:#fff; font-weight:600;}
-.navitem .cnt{margin-left:auto; font-size:11px; background:rgba(255,255,255,.22); padding:1px 7px; border-radius:10px;}
-/* main */
-.main{flex:1; min-width:0; display:flex; flex-direction:column;}
-.topbar{display:flex; align-items:center; justify-content:flex-end; gap:16px; padding:14px 26px; border-bottom:.5px solid var(--line); background:var(--card);}
-.topbar .who{display:flex; align-items:center; gap:9px; font-size:13px;}
-.topbar .av{width:30px; height:30px; border-radius:50%; background:var(--rose); color:#fff; display:flex; align-items:center; justify-content:center; font-size:12px; font-weight:600;}
-.topbar .ti{font-size:19px; color:var(--muted); cursor:pointer;}
-.content{padding:24px 26px; overflow-y:auto;}
-.panel{display:none;} .panel.active{display:block;}
-h2.pt{font-size:21px; font-weight:700; margin-bottom:4px;}
-.psub{font-size:13px; color:var(--muted); margin-bottom:20px;}
-/* metric cards */
-.metrics{display:grid; grid-template-columns:repeat(4,1fr); gap:14px; margin-bottom:24px;}
-.metric{background:var(--card); border:.5px solid var(--line); border-radius:12px; padding:16px 18px;}
-.metric .lab{font-size:12px; color:var(--muted);}
-.metric .val{font-size:28px; font-weight:700; margin-top:8px;}
-.metric .val.warn{color:var(--amber);} .metric .val.late{color:var(--red);}
-.metric .dl{font-size:11px; color:var(--muted); margin-top:6px;}
-.card{background:var(--card); border:.5px solid var(--line); border-radius:12px; padding:18px 20px; margin-bottom:16px;}
-.card h3{font-size:15px; font-weight:600; margin-bottom:14px;}
-.todo{display:flex; align-items:center; gap:12px; padding:11px 0; border-top:.5px solid var(--line); font-size:13px;}
-.todo:first-of-type{border-top:none;}
-.todo .ti{font-size:18px; color:var(--rose);}
-.todo .sla{margin-left:auto; font-size:11px; font-weight:600; padding:2px 9px; border-radius:20px;}
-.sla.ok{background:var(--cream); color:var(--muted);}
-.sla.warn{background:var(--amberbg); color:var(--amber);}
-.sla.late{background:var(--redbg); color:var(--red);}
-.linkbtn{color:var(--rose); font-weight:600; cursor:pointer; font-size:12px;}
-/* kanban */
-.kanban{display:flex; gap:14px; overflow-x:auto; padding-bottom:8px;}
-.kcol{flex:0 0 230px; background:var(--card); border:.5px solid var(--line); border-radius:12px; padding:12px;}
-.kcol .kh{font-size:13px; font-weight:600; margin-bottom:12px; display:flex; align-items:center; gap:7px;}
-.kcol .kh .n{font-size:11px; color:var(--muted); background:var(--cream); padding:1px 7px; border-radius:10px;}
-.kcard{background:var(--page); border:.5px solid var(--line); border-radius:9px; padding:11px; margin-bottom:9px; cursor:pointer;}
-.kcard:hover{border-color:var(--rose);}
-.kcard .nm{font-size:13px; font-weight:600;}
-.kcard .ds{font-size:11px; color:var(--muted); margin:4px 0 8px;}
-.kcard .ft{display:flex; align-items:center; justify-content:space-between;}
-.kcard .ft .sla{font-size:10px; font-weight:600; padding:1px 7px; border-radius:20px;}
-/* translate UI */
-.trhead{display:flex; align-items:center; gap:14px; margin-bottom:18px; flex-wrap:wrap;}
-.trhead .tag{font-size:12px; background:var(--cream); padding:5px 12px; border-radius:8px;}
-.relay{display:grid; grid-template-columns:1fr 1fr; gap:16px;}
-.relay .dir{font-size:12px; font-weight:600; color:var(--rose); margin-bottom:10px; display:flex; align-items:center; gap:7px;}
-.block{margin-bottom:14px;}
-.block .bl{font-size:11px; color:var(--muted); margin-bottom:6px;}
-.orig{background:var(--cream); border-radius:9px; padding:11px 13px; font-size:13px; line-height:1.6;}
-.draft{width:100%; border:.5px solid var(--rose); border-radius:9px; padding:11px 13px; font-size:13px; line-height:1.6; font-family:inherit; color:var(--plum); background:var(--card); resize:none;}
-.hits{display:flex; flex-wrap:wrap; gap:6px; margin-top:9px;}
-.hit{font-size:11px; background:var(--greenbg); color:var(--green); padding:3px 9px; border-radius:20px;}
-.hit .ti{font-size:11px; vertical-align:-1px;}
-.btn{font-family:inherit; cursor:pointer; border:none; border-radius:9px; font-weight:600; font-size:13px; padding:10px 16px; margin-top:12px;}
-.btn-primary{background:var(--plum); color:var(--cream);}
-.btn-rose{background:var(--rose); color:#fff;}
-/* table */
-table{width:100%; border-collapse:collapse; font-size:13px;}
-th{text-align:left; font-size:11px; color:var(--muted); font-weight:600; padding:10px 12px; border-bottom:.5px solid var(--line);}
-td{padding:12px; border-bottom:.5px solid var(--line);}
-.badge{font-size:11px; font-weight:600; padding:2px 9px; border-radius:20px; display:inline-flex; align-items:center; gap:3px;}
-.badge.v{background:var(--cream); color:var(--plum);} .badge.l{background:var(--page); color:var(--muted); border:.5px solid var(--line);}
-.dot{display:inline-block; width:7px; height:7px; border-radius:50%; margin-right:6px;}
-.dot.on{background:var(--green);} .dot.off{background:var(--muted);}
-/* verify checklist */
-.chkrow{display:flex; align-items:center; gap:12px; padding:13px 0; border-top:.5px solid var(--line); font-size:14px;}
-.chkrow:first-of-type{border-top:none;}
-.toggle{margin-left:auto; width:42px; height:24px; border-radius:14px; background:var(--line); position:relative; cursor:pointer; transition:.2s; flex-shrink:0;}
-.toggle.on{background:var(--rose);}
-.toggle::after{content:''; position:absolute; top:3px; left:3px; width:18px; height:18px; border-radius:50%; background:#fff; transition:.2s;}
-.toggle.on::after{left:21px;}
-.muted{color:var(--muted);}
-@keyframes scrIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
-.panel.active{animation:scrIn .22s ease;}
-.brand{font-family:'Cormorant Garamond',Georgia,serif;font-size:23px;letter-spacing:.4px;}
-.brand span{font-family:'Pretendard',sans-serif;letter-spacing:0;}
-h2.pt,.metric .val{letter-spacing:-.4px;}
-.btn{transition:transform .12s ease;}.btn:active{transform:scale(.97);}
-/* === design system v2 === */
-*{-webkit-font-smoothing:antialiased;}
-.card,.metric{box-shadow:0 1px 2px rgba(90,60,66,.04),0 10px 26px -18px rgba(90,60,66,.18);border-color:rgba(110,74,80,.09);}
-.kcard{box-shadow:0 1px 2px rgba(90,60,66,.05);}
-.btn-primary{box-shadow:0 8px 18px -8px rgba(110,74,80,.5);}
-.sidebar{box-shadow:2px 0 30px -20px rgba(70,40,46,.6);}
-.topbar{box-shadow:0 1px 0 rgba(110,74,80,.05);}
-.navitem{border-radius:10px;}
-.navitem.on{box-shadow:0 8px 18px -8px rgba(181,130,140,.75);}
-/* === white tone unify === */
-body,.main,.content{background:#FBFAF9;}
-.sidebar{background:#fff;color:var(--plum);border-right:1px solid #F0ECEA;box-shadow:none;}
-.brand{color:var(--plum);font-family:Georgia,'Times New Roman',serif;font-style:italic;}
-.brand span{color:var(--muted);font-style:normal;font-family:'Pretendard',sans-serif;}
-.navitem{color:#6B6065;border-radius:10px;}
-.navitem:hover{background:#F7F3F1;}
-.navitem.on{background:var(--rose);color:#fff;}
-.navitem .cnt{background:rgba(110,74,80,.08);color:var(--plum);}
-.navitem.on .cnt{background:rgba(255,255,255,.25);color:#fff;}
-.topbar{background:#fff;border-bottom:1px solid #F0ECEA;}
-.card,.metric{background:#fff;border:1px solid #F2EDEB;box-shadow:0 1px 1px rgba(90,60,66,.03),0 8px 22px -16px rgba(90,60,66,.16);}
-h2.pt{font-family:'Pretendard',sans-serif;letter-spacing:-.5px;}
-.metric .val{font-family:'Pretendard',sans-serif;font-variant-numeric:tabular-nums;letter-spacing:-.5px;}
-th{border-bottom:1px solid #F0ECEA;}td{border-bottom:1px solid #F4EFED;}
-.kcard{background:#FBFAF9;border-color:#F2EDEB;}
-/* === interactive relay + settlement === */
-.rqueue{display:flex;gap:8px;overflow-x:auto;margin-bottom:16px;padding-bottom:2px;}
-.rq{flex:0 0 auto;border:1px solid #F2EDEB;border-radius:10px;padding:9px 12px;cursor:pointer;background:#fff;min-width:138px;}
-.rq.on{border-color:var(--rose);box-shadow:0 0 0 1px var(--rose) inset;}
-.rq.done{opacity:.5;}
-.rq .qn{font-size:13px;font-weight:600;}
-.rq .qd{font-size:11px;color:var(--muted);margin:3px 0 6px;}
-.rq .qs{font-size:10px;font-weight:600;padding:1px 8px;border-radius:20px;}
-.block.locked{opacity:.65;}
-.sentbadge{display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:600;color:var(--green);background:var(--greenbg);padding:9px 13px;border-radius:9px;margin-top:8px;}
-.waitbox{background:var(--cream);border-radius:9px;padding:26px 18px;text-align:center;color:var(--muted);font-size:13px;line-height:1.6;}
-.waitbox .ti{font-size:24px;display:block;margin-bottom:9px;color:var(--rose);}
-.badge.amber{background:var(--amberbg);color:var(--amber);}
-.modalwrap{position:fixed;inset:0;background:rgba(40,30,33,.45);display:none;align-items:center;justify-content:center;z-index:80;padding:24px;}
-.modalwrap.show{display:flex;}
-.modal{background:#fff;border-radius:16px;max-width:430px;width:100%;max-height:86vh;overflow-y:auto;box-shadow:0 30px 70px -20px rgba(70,40,46,.5);}
-.modal .mh{display:flex;align-items:center;padding:16px 20px;border-bottom:1px solid #F0ECEA;font-size:15px;font-weight:700;}
-.modal .mh .ti{margin-left:auto;cursor:pointer;color:var(--muted);font-size:20px;}
-.modal .mb{padding:20px;}
-.inv .ir{display:flex;justify-content:space-between;font-size:13px;padding:9px 0;border-bottom:1px solid #F4EFED;}
-.inv .ir .k{color:var(--muted);}
-.inv .ir.tot{border-bottom:none;border-top:2px solid var(--plum);margin-top:6px;padding-top:13px;font-weight:700;font-size:16px;}
-.atoast{position:fixed;left:50%;bottom:30px;transform:translateX(-50%);background:var(--plum);color:#fff;font-size:13px;padding:11px 18px;border-radius:22px;opacity:0;transition:.25s;pointer-events:none;z-index:90;box-shadow:0 10px 24px -8px rgba(70,40,46,.5);}
-.atoast.show{opacity:1;}
-.ginp{width:100%;border:.5px solid var(--line);border-radius:9px;padding:11px 13px;font-family:inherit;font-size:13px;color:var(--plum);background:var(--card);outline:none;}
-.ginp:focus{border-color:var(--rose);}
-</style>
-</head>
+:root{--ink:#1c1418;--ink2:#574c51;--sub:#9b9095;--line:#efeae8;--bg:#fff;--soft:#f7f2f1;--accent:#B5828C;--plum:#6E4A50;--rosebg:#f3e7e9;--green:#3E7C6A;--red:#C0564B;--gold:#C9A063;}
+*{margin:0;padding:0;box-sizing:border-box;font-family:'Pretendard',system-ui,sans-serif;}
+html,body{overflow-x:hidden;}
+body{background:var(--soft);color:var(--ink);-webkit-font-smoothing:antialiased;}
+.hide{display:none!important;}
+a{color:inherit;text-decoration:none;}
+button{cursor:pointer;border:none;background:none;font-family:inherit;}
+.top{position:sticky;top:0;z-index:30;background:rgba(255,255,255,.92);backdrop-filter:blur(10px);border-bottom:1px solid var(--line);}
+.topin{max-width:1180px;margin:0 auto;display:flex;align-items:center;gap:12px;padding:13px 20px;}
+.brand{font-weight:800;font-size:19px;color:var(--plum);letter-spacing:-.02em;display:flex;align-items:center;gap:8px;}
+.brand .bg{font-size:11px;font-weight:800;color:#fff;background:var(--plum);padding:3px 8px;border-radius:7px;letter-spacing:.02em;}
+.spacer{flex:1;}
+.who{font-size:12.5px;color:var(--sub);font-weight:600;max-width:180px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.logout{font-size:13px;font-weight:700;color:var(--ink2);padding:8px 12px;border:1px solid var(--line);border-radius:999px;background:#fff;}
+.wrap{max-width:1180px;margin:0 auto;padding:18px 20px 90px;}
+.login{max-width:400px;margin:8vh auto;padding:0 22px;}
+.login .lc{background:#fff;border:1px solid var(--line);border-radius:20px;padding:30px 26px;box-shadow:0 24px 60px -30px rgba(60,30,50,.35);}
+.login h1{font-size:22px;font-weight:800;color:var(--plum);letter-spacing:-.02em;}
+.login p{font-size:13.5px;color:var(--ink2);margin-top:8px;line-height:1.6;font-weight:500;}
+.fld{margin-top:16px;}
+.fld label{display:block;font-size:12.5px;font-weight:800;color:var(--ink2);margin-bottom:7px;}
+.inp{width:100%;font-size:15px;padding:13px 15px;border:1.5px solid var(--line);border-radius:12px;background:var(--soft);color:var(--ink);outline:none;transition:.15s;}
+.inp:focus{border-color:var(--accent);background:#fff;}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:7px;background:var(--plum);color:#fff;font-weight:800;font-size:15px;padding:14px 22px;border-radius:12px;width:100%;transition:.15s;}
+.btn:hover{filter:brightness(1.08);} .btn:disabled{opacity:.5;}
+.btn.ghost{background:#fff;color:var(--plum);border:1.5px solid var(--plum);}
+.btn.sm{font-size:13px;padding:11px 16px;margin-top:8px;}
+.msg{font-size:12.5px;color:var(--sub);margin-top:12px;min-height:16px;font-weight:600;line-height:1.5;}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:18px;}
+.stat{background:#fff;border:1px solid var(--line);border-radius:15px;padding:15px 6px;text-align:center;min-width:0;}
+.stat .sv{font-size:24px;font-weight:800;color:var(--plum);letter-spacing:-.02em;white-space:nowrap;}
+.stat .sl{font-size:11.5px;color:var(--sub);font-weight:700;margin-top:3px;}
+.tabs{display:flex;gap:7px;margin-bottom:16px;flex-wrap:wrap;}
+.tab{flex:1;min-width:0;font-size:13.5px;font-weight:800;padding:11px 4px;border-radius:11px;border:1px solid var(--line);background:#fff;color:var(--ink2);text-align:center;}
+.tab.on{background:var(--plum);color:#fff;border-color:var(--plum);}
+.searchbar{display:flex;gap:9px;margin-bottom:14px;}
+.searchbar .inp{flex:1;}
+.dlist{display:grid;grid-template-columns:repeat(auto-fill,minmax(255px,1fr));gap:12px;}
+.dc{background:#fff;border:1px solid var(--line);border-radius:16px;padding:13px;display:flex;gap:12px;align-items:center;cursor:pointer;transition:.12s;position:relative;}
+.dc:hover{box-shadow:0 14px 34px -22px rgba(40,20,40,.4);transform:translateY(-2px);}
+.dc.dhidden{opacity:.5;}
+.dc .av{width:52px;height:52px;border-radius:14px;background:var(--soft) center/cover;flex:0 0 auto;border:1px solid var(--line);}
+.dc .di{flex:1;min-width:0;}
+.dc .dn{font-size:14.5px;font-weight:800;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.dc .dm{font-size:12px;color:var(--sub);font-weight:600;margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.dc .dtag{display:inline-flex;align-items:center;gap:3px;font-size:10.5px;font-weight:800;padding:2px 7px;border-radius:999px;margin-top:6px;}
+.dc .dtag.ph{background:var(--rosebg);color:var(--plum);}
+.dc .dtag.hd{background:#f0e6e6;color:var(--red);margin-left:5px;}
+.dc .arr{color:var(--line);font-size:20px;flex:0 0 auto;}
+.empty{text-align:center;padding:50px 20px;color:var(--sub);}
+.empty i{font-size:34px;opacity:.5;} .empty p{margin-top:10px;font-size:14px;font-weight:600;line-height:1.5;}
+.rowlist{display:flex;flex-direction:column;gap:9px;}
+.li{background:#fff;border:1px solid var(--line);border-radius:14px;padding:13px 15px;}
+.li .lh{display:flex;align-items:flex-start;gap:8px;justify-content:space-between;}
+.li .ln{font-size:14px;font-weight:800;}
+.li .ls{font-size:12px;color:var(--sub);font-weight:600;margin-top:3px;}
+.li .lbadge{font-size:11px;font-weight:800;padding:3px 9px;border-radius:999px;background:var(--rosebg);color:var(--plum);white-space:nowrap;}
+.li .lbadge.g{background:rgba(62,124,106,.12);color:var(--green);}
+.li .lbadge.y{background:#fbf0dc;color:#9a6a1a;}
+.scrim{position:fixed;inset:0;background:rgba(30,15,25,.45);z-index:60;opacity:0;pointer-events:none;transition:.2s;}
+.scrim.on{opacity:1;pointer-events:auto;}
+.drawer{position:fixed;top:0;right:0;height:100%;width:min(560px,100%);background:var(--soft);z-index:61;transform:translateX(100%);transition:transform .26s cubic-bezier(.4,0,.2,1);overflow-y:auto;box-shadow:-20px 0 60px -30px rgba(0,0,0,.5);}
+.drawer.on{transform:translateX(0);}
+.dh{position:sticky;top:0;background:rgba(247,242,241,.94);backdrop-filter:blur(8px);border-bottom:1px solid var(--line);display:flex;align-items:center;gap:10px;padding:15px 18px;z-index:2;}
+.dh .dt{font-size:16px;font-weight:800;flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.dh .x{font-size:24px;color:var(--sub);width:34px;height:34px;display:flex;align-items:center;justify-content:center;}
+.dbody{padding:16px 18px 40px;}
+.card{background:#fff;border:1px solid var(--line);border-radius:16px;padding:16px;margin-bottom:13px;}
+.card h3{font-size:14px;font-weight:800;margin-bottom:12px;display:flex;align-items:center;gap:7px;color:var(--ink);}
+.card h3 i{color:var(--accent);font-size:17px;}
+.row{margin-bottom:12px;} .row:last-child{margin-bottom:0;}
+.row label{display:block;font-size:12px;font-weight:800;color:var(--ink2);margin-bottom:6px;}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+textarea.inp{resize:vertical;min-height:70px;line-height:1.5;}
+.chips{display:flex;flex-wrap:wrap;gap:7px;}
+.chip{font-size:13px;font-weight:700;padding:9px 14px;border-radius:999px;border:1px solid var(--line);background:#fff;color:var(--ink2);}
+.chip.on{background:var(--rosebg);border-color:var(--accent);color:var(--plum);}
+.tagc{display:inline-flex;align-items:center;gap:6px;background:var(--rosebg);color:var(--plum);font-size:13px;font-weight:700;padding:8px 12px;border-radius:999px;}
+.tagc button{color:var(--plum);font-size:15px;display:flex;}
+.addrow{display:flex;gap:8px;margin-top:10px;}
+.addrow .inp{flex:1;}
+.mini{font-size:13px;font-weight:800;padding:11px 15px;border-radius:11px;background:var(--plum);color:#fff;white-space:nowrap;}
+.mini.g{background:#fff;color:var(--plum);border:1.5px solid var(--plum);}
+.pfgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;}
+.pf{position:relative;aspect-ratio:1;border-radius:12px;background:var(--soft) center/cover;border:1px solid var(--line);overflow:hidden;}
+.pf .del{position:absolute;top:5px;right:5px;width:26px;height:26px;border-radius:8px;background:rgba(30,10,20,.62);color:#fff;font-size:16px;display:flex;align-items:center;justify-content:center;}
+.pf .ord{position:absolute;bottom:5px;left:5px;display:flex;gap:4px;}
+.pf .ord button{width:24px;height:24px;border-radius:7px;background:rgba(255,255,255,.92);color:var(--ink);font-size:13px;display:flex;align-items:center;justify-content:center;}
+.avwrap{display:flex;align-items:center;gap:14px;}
+.avbig{width:74px;height:74px;border-radius:20px;background:var(--soft) center/cover;border:1px solid var(--line);flex:0 0 auto;}
+.upbtn{border:2px dashed var(--accent);border-radius:12px;color:var(--plum);font-weight:800;font-size:14px;padding:15px;display:flex;align-items:center;justify-content:center;gap:8px;background:var(--rosebg);width:100%;margin-top:10px;cursor:pointer;}
+.svcitem{display:flex;align-items:center;gap:10px;background:var(--soft);border:1px solid var(--line);border-radius:12px;padding:10px 12px;margin-bottom:8px;}
+.svcitem .si{flex:1;min-width:0;} .svcitem .sn{font-size:13.5px;font-weight:800;} .svcitem .sd{font-size:12px;color:var(--sub);font-weight:600;margin-top:2px;}
+.svcitem .sp{font-weight:800;font-size:14px;color:var(--plum);white-space:nowrap;}
+.svcitem .x{color:var(--sub);font-size:18px;padding:2px 4px;}
+.savebar{position:sticky;bottom:0;background:linear-gradient(to top,var(--soft) 70%,transparent);padding:14px 0 4px;margin-top:6px;}
+.ck{display:flex;align-items:center;gap:9px;font-size:13.5px;font-weight:700;color:var(--ink2);cursor:pointer;}
+.ck input{width:18px;height:18px;accent-color:var(--plum);}
+.note{font-size:12px;color:var(--ink2);font-weight:600;line-height:1.55;background:var(--rosebg);border-radius:11px;padding:11px 13px;}
+.toast{position:fixed;left:50%;bottom:26px;transform:translateX(-50%) translateY(20px);background:var(--ink);color:#fff;padding:14px 24px;border-radius:999px;font-size:14px;font-weight:700;opacity:0;transition:.25s;z-index:120;pointer-events:none;box-shadow:0 14px 40px -10px rgba(0,0,0,.5);}
+.toast.on{opacity:1;transform:translateX(-50%) translateY(0);}
+@media(max-width:600px){.stats{grid-template-columns:repeat(2,1fr);}.two{grid-template-columns:1fr;}.dlist{grid-template-columns:1fr;}}
+</style></head>
 <body>
-<div class="app">
-  <aside class="sidebar">
-    <div class="brand">Beautia<span>운영 콘솔 · Admin</span></div>
-    <div class="nav">
-      <div class="navitem on" onclick="showA('dash',this)"><i class="ti ti-layout-dashboard"></i> 대시보드</div>
-      <div class="navitem" onclick="showA('pipeline',this)"><i class="ti ti-layout-kanban"></i> 예약 파이프라인 <span class="cnt">6</span></div>
-      <div class="navitem" onclick="showA('translate',this)"><i class="ti ti-language"></i> 번역 검수 <span class="cnt">2</span></div>
-      <div class="navitem" onclick="showA('salons',this)"><i class="ti ti-building-store"></i> 미용실</div>
-      <div class="navitem" onclick="showA('verify',this)"><i class="ti ti-rosette-discount-check"></i> 검증 관리</div>
-      <div class="navitem" onclick="showA('glossary',this)"><i class="ti ti-book"></i> 용어사전</div>
-      <div class="navitem" onclick="showA('settle',this)"><i class="ti ti-receipt"></i> 정산 <span class="cnt">P2</span></div>
-    </div>
-  </aside>
 
-  <main class="main">
-    <div class="topbar">
-      <i class="ti ti-bell"></i>
-      <div class="who"><div class="av">우진</div> 우진 · admin</div>
-    </div>
-    <div class="content">
-
-      <!-- DASHBOARD -->
-      <section class="panel active" id="dash">
-        <h2 class="pt">대시보드</h2>
-        <div class="psub">오늘 2026-06-23 · 도쿄</div>
-        <div class="metrics">
-          <div class="metric"><div class="lab">신규 문의</div><div class="val">5</div><div class="dl">오늘 +3</div></div>
-          <div class="metric"><div class="lab">처리 대기</div><div class="val warn">2</div><div class="dl">번역 검수 필요</div></div>
-          <div class="metric"><div class="lab">SLA 임박/초과</div><div class="val late">1</div><div class="dl">미용실 무응답 22h</div></div>
-          <div class="metric"><div class="lab">오늘 확정</div><div class="val">4</div><div class="dl">완료 2</div></div>
-        </div>
-        <div class="card">
-          <h3>지금 할 일</h3>
-          <div class="todo"><i class="ti ti-language"></i> ARTISAN · 김지은 — 손님 요청 번역 검수 <span class="linkbtn" onclick="showA('translate',document.querySelectorAll('.navitem')[2])">검수하기</span> <span class="sla warn">임박 1h</span></div>
-          <div class="todo"><i class="ti ti-send"></i> Lien Tokyo · 박서준 — 미용실에 전달 대기 <span class="sla ok">정상</span></div>
-          <div class="todo"><i class="ti ti-alert-triangle"></i> atelier Nao · 이하늘 — 미용실 무응답, 전화 푸시 <span class="sla late">초과 22h</span></div>
-          <div class="todo"><i class="ti ti-message-2"></i> ARTISAN · 최유나 — 응답 도착, 손님에게 번역 전달 <span class="sla ok">정상</span></div>
-        </div>
-        <div class="card">
-          <h3>이번 주 퍼널</h3>
-          <div style="font-size:13px; line-height:2.1; color:var(--muted)">
-            방문 <b style="color:var(--plum)">1,240</b> → 상세조회 <b style="color:var(--plum)">312</b> → 문의 <b style="color:var(--plum)">38</b> → 확정 <b style="color:var(--plum)">21</b> → 완료 <b style="color:var(--plum)">17</b> → 리뷰 <b style="color:var(--plum)">12</b>
-          </div>
-        </div>
-      </section>
-
-      <!-- PIPELINE -->
-      <section class="panel" id="pipeline">
-        <h2 class="pt">예약 파이프라인</h2>
-        <div class="psub">문의가 들어온 순간부터 완료까지. 카드를 눌러 번역 검수로 이동.</div>
-        <div class="kanban" id="kanban"></div>
-      </section>
-
-      <!-- TRANSLATE REVIEW (핵심) -->
-      <section class="panel" id="translate">
-        <h2 class="pt">번역 검수</h2>
-        <div class="psub">AI 초안을 확인·수정한 뒤 전송. 손님과 미용실은 직접 대화하지 않습니다.</div>
-        <div class="rqueue" id="relayQueue"></div>
-        <div id="relayWrap"></div>
-        <div class="card" style="background:var(--cream); border:none">
-          <div style="font-size:12px; color:var(--plum); line-height:1.6"><b>팁:</b> 초안을 수정해 전송하면 그 수정이 용어사전에 학습됩니다. 사전이 쌓일수록 사람 검수 시간이 줄어듭니다 — 이게 Beautia의 해자.</div>
-        </div>
-      </section>
-
-      <!-- SALONS -->
-      <section class="panel" id="salons">
-        <h2 class="pt">미용실</h2>
-        <div class="psub" id="salonsSub">총 4곳 · 도쿄</div>
-        <div class="card" style="padding:0; overflow:hidden"><div id="salonsTable"></div></div>
-        <button class="btn btn-primary" onclick="addSalonModal()"><i class="ti ti-plus" style="vertical-align:-2px"></i> 미용실 등록</button>
-      </section>
-
-      <!-- VERIFY -->
-      <section class="panel" id="verify">
-        <h2 class="pt">검증 관리</h2>
-        <div class="psub">ARTISAN · 신오쿠보 — 한국인 기준 체크리스트</div>
-        <div class="card">
-          <h3>확인 항목</h3>
-          <div class="chkrow">한국어 응대 가능 <div class="toggle on" onclick="this.classList.toggle('on');vChk()"></div></div>
-          <div class="chkrow">다운펌 · 매직 가능 <div class="toggle on" onclick="this.classList.toggle('on');vChk()"></div></div>
-          <div class="chkrow">뿌리염색 · 탈색 가능 <div class="toggle on" onclick="this.classList.toggle('on');vChk()"></div></div>
-          <div class="chkrow">가격 사전 고지 <div class="toggle on" onclick="this.classList.toggle('on');vChk()"></div></div>
-          <div class="chkrow">한국 손님 응대 경험 <div class="toggle on" onclick="this.classList.toggle('on');vChk()"></div></div>
-          <div class="chkrow">역 도보 5분 이내 <div class="toggle on" onclick="this.classList.toggle('on');vChk()"></div></div>
-          <div class="chkrow" style="border-top:1px solid var(--line);margin-top:8px;padding-top:14px;font-weight:700">검증 레벨 <span id="vLevel" style="margin-left:auto;font-weight:400"></span></div>
-        </div>
-        <div class="card">
-          <h3>배지 · 손님 피드백</h3>
-          <div style="font-size:13px; line-height:1.9">현재 배지: <span id="vBadge"></span><br>
-          "한국어 통했나요?" 최근 5건 — <b style="color:var(--green)">5/5 예</b> · 강등 위험 없음</div>
-          <button class="btn btn-rose" onclick="vSave()">검증 저장</button>
-        </div>
-      </section>
-
-      <!-- GLOSSARY -->
-      <section class="panel" id="glossary">
-        <h2 class="pt">용어사전</h2>
-        <div class="psub">미용 전문 한↔일 용어. 번역 검수에서 자동 적용 · 경쟁사가 못 베끼는 자산.</div>
-        <div class="card" style="background:var(--cream);border:none;display:flex;align-items:center;gap:12px"><i class="ti ti-school" style="font-size:22px;color:var(--rose)"></i><div style="font-size:13px;line-height:1.5"><b id="glossLearned">0</b>건 — 이번 세션 검수에서 학습한 표현. 초안을 고쳐 보낼 때마다 늘어납니다 (Beautia의 해자).</div></div>
-        <div class="card" style="padding:0; overflow:hidden"><div id="glossTable"></div></div>
-        <button class="btn btn-primary" onclick="addGlossModal()"><i class="ti ti-plus" style="vertical-align:-2px"></i> 용어 추가</button>
-      </section>
-
-      <!-- SETTLEMENT (Phase 2) -->
-      <section class="panel" id="settle">
-        <h2 class="pt">정산 <span style="font-size:12px; background:var(--cream); color:var(--plum); padding:2px 9px; border-radius:8px; vertical-align:4px">Phase 2</span></h2>
-        <div class="psub">미용실 송객 수수료 · 손님은 무료, 거래량 쌓인 미용실만 과금</div>
-        <div class="metrics" id="settleMetrics"></div>
-        <div class="card" style="padding:0; overflow:hidden"><div id="settleTable"></div></div>
-        <div class="card" style="background:var(--cream); border:none"><div style="font-size:12px; line-height:1.6"><b>모델:</b> 검증 단계엔 전원 무료 → 거래량이 쌓인 미용실부터 송객 수수료 15% 도입. 손님은 끝까지 무료(언어 대행 가치). 노쇼는 수수료 제외.</div></div>
-      </section>
-
-    </div>
-  </main>
+<div id="loginView" class="login">
+  <div class="lc">
+    <h1>Beautia 관리자</h1>
+    <p>오너 전용 페이지입니다. 관리자 이메일로 로그인하세요.</p>
+    <div class="fld"><label>이메일</label><input class="inp" id="email" type="email" placeholder="you@email.com" autocomplete="email"></div>
+    <div class="fld" id="codeFld" style="display:none"><label>인증 코드</label><input class="inp" id="code" inputmode="numeric" placeholder="6자리 코드"></div>
+    <div class="fld" id="loginBtns"><button class="btn" id="sendBtn" onclick="sendCode()">인증 코드 받기</button></div>
+    <div class="msg" id="loginMsg"></div>
+  </div>
 </div>
-<div class="modalwrap" id="modalWrap" onclick="if(event.target===this)closeModal()"><div class="modal"><div class="mh"><span id="modalTitle"></span><i class="ti ti-x" onclick="closeModal()"></i></div><div class="mb" id="modalBody"></div></div></div>
-<div class="atoast" id="atoast"></div>
+
+<div id="denyView" class="login hide">
+  <div class="lc">
+    <h1 style="color:var(--red)">접근 권한 없음</h1>
+    <p><b id="denyEmail"></b> 계정은 관리자가 아닙니다. 오너 계정으로 로그인해주세요.</p>
+    <div class="fld"><button class="btn ghost" onclick="logout()">다른 계정으로 로그인</button></div>
+  </div>
+</div>
+
+<div id="adminView" class="hide">
+  <div class="top"><div class="topin">
+    <div class="brand"><span class="bg">ADMIN</span> Beautia</div>
+    <div class="spacer"></div>
+    <div class="who" id="who"></div>
+    <button class="logout" onclick="logout()">로그아웃</button>
+  </div></div>
+  <div class="wrap">
+    <div class="stats">
+      <div class="stat"><div class="sv" id="stD">0</div><div class="sl">디자이너</div></div>
+      <div class="stat"><div class="sv" id="stP">0</div><div class="sl">총 포트폴리오</div></div>
+      <div class="stat"><div class="sv" id="stB">0</div><div class="sl">예약</div></div>
+      <div class="stat"><div class="sv" id="stR">0</div><div class="sl">후기</div></div>
+    </div>
+    <div class="tabs">
+      <button class="tab on" id="tab-designers" onclick="tab('designers')">디자이너 관리</button>
+      <button class="tab" id="tab-bookings" onclick="tab('bookings')">예약</button>
+      <button class="tab" id="tab-reviews" onclick="tab('reviews')">후기</button>
+    </div>
+
+    <div id="sec-designers">
+      <div class="searchbar"><input class="inp" id="q" placeholder="이름·지역·시술 검색…" oninput="renderList()"><button class="mini g" onclick="loadAll()">새로고침</button></div>
+      <div class="note" style="margin-bottom:12px"><i class="ti ti-info-circle"></i> 신규 디자이너 <b>생성</b>은 등록 스크립트로 진행합니다. 여기서는 기존 디자이너 <b>편집·사진·서비스·노출</b>을 관리합니다.</div>
+      <div class="dlist" id="dlist"></div>
+    </div>
+
+    <div id="sec-bookings" class="hide"><div class="rowlist" id="bklist"></div></div>
+    <div id="sec-reviews" class="hide"><div class="rowlist" id="rvlist"></div></div>
+  </div>
+</div>
+
+<div class="scrim" id="scrim" onclick="closeEdit()"></div>
+<div class="drawer" id="drawer">
+  <div class="dh"><div class="dt" id="edTitle">디자이너 편집</div><a class="mini g" id="edView" target="_blank">공개 프로필</a><button class="x" onclick="closeEdit()">×</button></div>
+  <div class="dbody" id="edBody"></div>
+</div>
+
+<div class="toast" id="toast"></div>
+
 <script>
-function showA(id, el){
-  document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
-  document.getElementById(id).classList.add('active');
-  document.querySelectorAll('.navitem').forEach(n=>n.classList.remove('on'));
-  if(el) el.classList.add('on');
-  document.querySelector('.content').scrollTop=0;
-  if(id==='translate')renderRelay();
-  if(id==='settle')renderSettle();
-  if(id==='glossary')renderGloss();
-  if(id==='salons')renderSalons();
-  if(id==='pipeline')renderKanban();
-  if(id==='verify')vChk();
+const SB_URL='https://pzbxcktaljhesrfnqwzq.supabase.co';
+const SB_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InB6Ynhja3RhbGpoZXNyZm5xd3pxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjgxNjc1MjYsImV4cCI6MjA4Mzc0MzUyNn0.aUZbTgfWbjEISNr1-cu9YJnOGj1lzjXeRVifHygAplc';
+const SB=window.supabase.createClient(SB_URL,SB_KEY,{auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:true}});
+const OWNER_EMAIL='ujin141@naver.com';
+const SPECS=[['Hair','헤어'],['Makeup','메이크업'],['Nail','네일'],['Lash','속눈썹'],['Skin','스킨'],['Bridal','브라이덜']];
+const catKo={Hair:'헤어',Makeup:'메이크업',Nail:'네일',Lash:'속눈썹',Skin:'스킨',Bridal:'브라이덜'};
+const $=id=>document.getElementById(id);
+let EMAIL='', DESIGNERS=[], PMAP={}, BOOKINGS=[], REVIEWS=[];
+let ed=null;
+
+function toast(m){const t=$('toast');t.textContent=m;t.classList.add('on');clearTimeout(t._t);t._t=setTimeout(()=>t.classList.remove('on'),2600);}
+function esc(s){return String(s==null?'':s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));}
+
+async function sendCode(){
+  const em=($('email').value||'').trim();
+  if(em.indexOf('@')<1){toast('이메일을 확인해주세요');return;}
+  EMAIL=em;$('sendBtn').disabled=true;$('loginMsg').textContent='코드 전송 중…';
+  const {error}=await SB.auth.signInWithOtp({email:em,options:{shouldCreateUser:true}});
+  $('sendBtn').disabled=false;
+  if(error){$('loginMsg').textContent='전송 실패: '+error.message;return;}
+  $('codeFld').style.display='block';
+  $('loginBtns').innerHTML='<button class="btn" id="verBtn" onclick="verifyCode()">로그인</button><button class="btn ghost sm" onclick="sendCode()">코드 재전송</button>';
+  $('loginMsg').textContent='이메일로 보낸 6자리 코드를 입력하세요.';
+  setTimeout(()=>$('code')&&$('code').focus(),100);
 }
-function vChk(){var on=document.querySelectorAll('#verify .chkrow .toggle.on').length;var lvl=on>=5?{t:'Beautia 검증',c:'v'}:(on>=3?{t:'부분확인',c:'l'}:{t:'미달',c:'l'});var bg=(lvl.c==='v'?'<span class="badge v"><i class="ti ti-rosette-discount-check"></i> '+lvl.t+'</span>':'<span class="badge l">'+lvl.t+'</span>');var L=document.getElementById('vLevel');if(L)L.innerHTML=bg+' &nbsp;'+on+'/6';var B=document.getElementById('vBadge');if(B)B.innerHTML=bg;}
-function vSave(){vChk();toast('검증 정보를 저장했어요');}
-/* toast + modal */
-function toast(m){var t=document.getElementById('atoast');t.textContent=m;t.classList.add('show');clearTimeout(window.tt);window.tt=setTimeout(function(){t.classList.remove('show');},1600);}
-function openModal(title,html){document.getElementById('modalTitle').textContent=title;document.getElementById('modalBody').innerHTML=html;document.getElementById('modalWrap').classList.add('show');}
-function closeModal(){document.getElementById('modalWrap').classList.remove('show');}
-var GLOSS=[{ko:'다운펌',ja:'ダウンパーマ',cat:'펌',use:128},{ko:'매직(스트레이트)',ja:'縮毛矯正',cat:'펌',use:94},{ko:'볼륨매직 / 부분매직',ja:'部分縮毛矯正',cat:'펌',use:41},{ko:'뿌리염색',ja:'リタッチカラー',cat:'염색',use:76},{ko:'탈색 / 탈색모',ja:'ブリーチ / ブリーチ毛',cat:'염색',use:58},{ko:'레이어드컷',ja:'レイヤーカット',cat:'커트',use:33},{ko:'기장 유지',ja:'長さはキープ',cat:'공통',use:110}];
-var glossLearned=0;
-function renderGloss(){var t=document.getElementById('glossTable');if(t)t.innerHTML='<table><thead><tr><th>한국어</th><th>일본어</th><th>분류</th><th>사용</th></tr></thead><tbody>'+GLOSS.map(function(g){return '<tr><td>'+g.ko+'</td><td>'+g.ja+'</td><td class="muted">'+g.cat+'</td><td class="muted">'+g.use+'</td></tr>';}).join('')+'</tbody></table>';var c=document.getElementById('glossLearned');if(c)c.textContent=glossLearned;}
-function addGlossModal(){openModal('용어 추가','<div style="display:flex;flex-direction:column;gap:10px"><input class="ginp" id="gKo" placeholder="한국어 (예: 클리닉)"><input class="ginp" id="gJa" placeholder="일본어 (예: トリートメント)"><input class="ginp" id="gCat" placeholder="분류 (예: 클리닉)"></div><button class="btn btn-primary" style="margin-top:16px;width:100%" onclick="addGloss()">추가</button>');}
-function addGloss(){var ko=(document.getElementById('gKo').value||'').trim(),ja=(document.getElementById('gJa').value||'').trim(),cat=(document.getElementById('gCat').value||'').trim()||'공통';if(!ko||!ja){toast('한국어·일본어를 입력하세요');return;}GLOSS.unshift({ko:ko,ja:ja,cat:cat,use:1});closeModal();renderGloss();toast('용어를 추가했어요');}
-/* === translation relay (working demo) === */
-var REQ=[
- {id:1024,cust:'김지은',salon:'ARTISAN',area:'신오쿠보',svc:'다운펌',stage:'draft',
-  ko:'다운펌만 하고 기장은 유지하고 싶어요. 탈색모라 손상 최소화 부탁드려요. 6/28 오후 가능할까요?',
-  ja:'ダウンパーマのみで、長さはキープしたいです。ブリーチ毛なのでダメージを最小限にお願いします。6/28の午後は可能でしょうか？',
-  hits:[['다운펌','ダウンパーマ'],['기장 유지','長さキープ'],['탈색모','ブリーチ毛']],
-  sja:'可能です。ダウンパーマ（長さキープ）で¥8,800、約90分です。低ダメージ薬剤を使います。6/28 14:00はいかがですか？',
-  sko:'가능합니다. 다운펌(기장 유지) ¥8,800, 약 90분이에요. 저손상 약제를 사용합니다. 6/28 14:00 어떠세요?'},
- {id:1025,cust:'정민호',salon:'Lien Tokyo',area:'시부야',svc:'커트',stage:'draft',
-  ko:'앞머리 포함 단발로 자르고 싶어요. 손질 편한 스타일로 추천 부탁드려요. 6/29 가능한가요?',
-  ja:'前髪込みでボブにしたいです。お手入れが楽なスタイルでおすすめをお願いします。6/29は可能ですか？',
-  hits:[['단발','ボブ'],['앞머리','前髪']],
-  sja:'可能です。カット¥5,500、約60分です。6/29 11:00はいかがですか？',
-  sko:'가능합니다. 커트 ¥5,500, 약 60분이에요. 6/29 11:00 어떠세요?'},
- {id:1026,cust:'박서준',salon:'Lien Tokyo',area:'시부야',svc:'매직',stage:'sent',ko:'볼륨 매직 하고 싶어요. 7/2 가능할까요?',ja:'ボリューム縮毛矯正をしたいです。7/2は可能でしょうか？',hits:[['매직','縮毛矯正']],sja:'可能です。¥12,000、約150分です。7/2 13:00はいかがですか？',sko:'가능합니다. ¥12,000, 약 150분이에요. 7/2 13:00 어떠세요?'},
- {id:1027,cust:'최유나',salon:'ARTISAN',area:'신오쿠보',svc:'클리닉',stage:'responded',ko:'손상모 클리닉 받고 싶어요. 6/29 가능한가요?',ja:'ダメージ毛のトリートメントを受けたいです。6/29は可能ですか？',hits:[['클리닉','トリートメント']],sja:'可能です。トリートメント¥5,000、約60分です。6/29 16:00はいかがですか？',sko:'가능합니다. 클리닉 ¥5,000, 약 60분이에요. 6/29 16:00 어떠세요?'},
- {id:1028,cust:'강도윤',salon:'ARTISAN',area:'신오쿠보',svc:'다운펌',stage:'delivered',ko:'다운펌 6/28 가능할까요?',ja:'ダウンパーマ、6/28は可能でしょうか？',hits:[['다운펌','ダウンパーマ']],sja:'可能です。¥8,800、約90分。6/28 14:00で。',sko:'가능합니다. ¥8,800, 약 90분. 6/28 14:00로.'}
-];
-var curReq=0;
-function pendingCount(){return REQ.filter(function(r){return r.stage!=='delivered';}).length;}
-function stTag(r){return r.stage==='delivered'?['완료','sla ok']:(r.stage==='draft'?['번역 필요','sla warn']:(r.stage==='sent'?['전송됨','sla ok']:['응답 도착','sla warn']));}
-function renderQueue(){
-  document.getElementById('relayQueue').innerHTML=REQ.map(function(r,i){var s=stTag(r);return '<div class="rq'+(i===curReq?' on':'')+(r.stage==='delivered'?' done':'')+'" onclick="pickReq('+i+')"><div class="qn">'+r.cust+'</div><div class="qd">'+r.salon+' · '+r.svc+'</div><span class="qs '+s[1]+'">'+s[0]+'</span></div>';}).join('');
-  var cnt=document.querySelectorAll('.navitem')[2].querySelector('.cnt');if(cnt)cnt.textContent=pendingCount();
+async function verifyCode(){
+  const v=($('code').value||'').trim();if(!v){toast('코드를 입력하세요');return;}
+  $('verBtn').disabled=true;$('loginMsg').textContent='확인 중…';
+  const {data,error}=await SB.auth.verifyOtp({email:EMAIL,token:v,type:'email'});
+  $('verBtn').disabled=false;
+  if(error){$('loginMsg').textContent='코드가 틀렸어요';return;}
+  gate(data.user);
 }
-function renderRelay(){
-  renderQueue();var r=REQ[curReq];
-  var head='<div class="trhead"><span class="tag">예약 #'+r.id+'</span><span class="tag">손님 '+r.cust+'</span><span class="tag">'+r.salon+' · '+r.area+'</span><span class="tag">'+r.svc+'</span></div>';
-  var left,right;
-  if(r.stage==='draft'){
-    left='<div class="dir"><i class="ti ti-arrow-right"></i> 손님(한국어) → 미용실(일본어)</div><div class="block"><div class="bl">손님 원문 (KO)</div><div class="orig">'+r.ko+'</div></div><div class="block"><div class="bl">AI 번역 초안 (JA) · 수정 가능</div><textarea class="draft" id="draftJa" rows="5">'+r.ja+'</textarea><div class="hits">'+r.hits.map(function(h){return '<span class="hit"><i class="ti ti-check"></i> '+h[0]+' → '+h[1]+'</span>';}).join('')+'</div></div><button class="btn btn-primary" onclick="relaySend()"><i class="ti ti-brand-line" style="vertical-align:-2px"></i> LINE으로 전송</button>';
-  }else{
-    left='<div class="dir"><i class="ti ti-arrow-right"></i> 손님(한국어) → 미용실(일본어)</div><div class="block locked"><div class="bl">손님 원문 (KO)</div><div class="orig">'+r.ko+'</div></div><div class="block locked"><div class="bl">전송된 번역 (JA)</div><div class="orig">'+r.ja+'</div></div><div class="sentbadge"><i class="ti ti-check"></i> LINE으로 전송 완료</div>';
+async function logout(){await SB.auth.signOut();location.reload();}
+
+function gate(user){
+  EMAIL=(user.email||'').toLowerCase();
+  if(EMAIL!==OWNER_EMAIL.toLowerCase()){
+    $('loginView').classList.add('hide');$('denyView').classList.remove('hide');$('denyEmail').textContent=user.email||'';
+    return;
   }
-  if(r.stage==='draft'||r.stage==='sent'){
-    right='<div class="dir"><i class="ti ti-arrow-left"></i> 미용실(일본어) → 손님(한국어)</div><div class="waitbox"><i class="ti ti-clock"></i>'+(r.stage==='sent'?'미용실 응답을 기다리는 중…':'왼쪽을 전송하면 미용실 응답이 도착해요')+'</div>';
-  }else if(r.stage==='responded'){
-    right='<div class="dir"><i class="ti ti-arrow-left"></i> 미용실(일본어) → 손님(한국어)</div><div class="block"><div class="bl">미용실 원문 (JA)</div><div class="orig">'+r.sja+'</div></div><div class="block"><div class="bl">AI 번역 초안 (KO) · 수정 가능</div><textarea class="draft" id="draftKo" rows="5">'+r.sko+'</textarea></div><button class="btn btn-rose" onclick="relayDeliver()"><i class="ti ti-send" style="vertical-align:-2px"></i> 손님에게 전달</button>';
-  }else{
-    right='<div class="dir"><i class="ti ti-arrow-left"></i> 미용실(일본어) → 손님(한국어)</div><div class="block locked"><div class="bl">미용실 원문 (JA)</div><div class="orig">'+r.sja+'</div></div><div class="block locked"><div class="bl">전달된 번역 (KO)</div><div class="orig">'+r.sko+'</div></div><div class="sentbadge"><i class="ti ti-check"></i> 손님에게 전달 · 예약 확정</div>';
-  }
-  document.getElementById('relayWrap').innerHTML=head+'<div class="card"><div class="relay"><div>'+left+'</div><div>'+right+'</div></div></div>';
+  $('loginView').classList.add('hide');$('denyView').classList.add('hide');$('adminView').classList.remove('hide');
+  $('who').textContent=user.email||'';
+  loadAll();
 }
-function pickReq(i){curReq=i;renderRelay();}
-function relaySend(){var r=REQ[curReq];var e=(document.getElementById('draftJa').value||'').trim();if(e&&e!==r.ja){r.ja=e;glossLearned++;var ge=document.getElementById('glossLearned');if(ge)ge.textContent=glossLearned;toast('수정 1건이 용어사전에 학습됐어요');}else{toast('LINE으로 전송했어요');}r.stage='sent';renderRelay();renderKanban();setTimeout(function(){if(r.stage==='sent'){r.stage='responded';renderRelay();renderKanban();}},1500);}
-function relayDeliver(){var r=REQ[curReq];var e=(document.getElementById('draftKo').value||'').trim();if(e)r.sko=e;r.stage='delivered';toast('손님에게 전달 · 예약 확정 처리됨');var nx=REQ.findIndex(function(x){return x.stage!=='delivered';});if(nx>=0)curReq=nx;renderRelay();renderKanban();}
-/* === settlement (working demo) === */
-var RATE=0.15;
-var SETTLE=[{salon:'ARTISAN',n:9,amt:112000,status:'미청구'},{salon:'Lien Tokyo',n:6,amt:78000,status:'미청구'},{salon:'atelier Nao',n:2,amt:20000,status:'청구완료'}];
-function yen(n){return '¥'+n.toLocaleString();}
-function renderSettle(){
-  var totN=SETTLE.reduce(function(a,s){return a+s.n;},0),totAmt=SETTLE.reduce(function(a,s){return a+s.amt;},0),totFee=Math.round(totAmt*RATE),unb=SETTLE.filter(function(s){return s.status==='미청구';}).length;
-  document.getElementById('settleMetrics').innerHTML='<div class="metric"><div class="lab">이번 달 완료 송객</div><div class="val">'+totN+'</div><div class="dl">건</div></div><div class="metric"><div class="lab">시술액 합계</div><div class="val">'+yen(totAmt)+'</div><div class="dl">완료 기준</div></div><div class="metric"><div class="lab">수수료 ('+(RATE*100)+'%)</div><div class="val">'+yen(totFee)+'</div><div class="dl">청구 예정</div></div><div class="metric"><div class="lab">미청구</div><div class="val warn">'+unb+'곳</div><div class="dl">월말 청구</div></div>';
-  document.getElementById('settleTable').innerHTML='<table><thead><tr><th>미용실</th><th>완료 송객</th><th>시술액</th><th>수수료('+(RATE*100)+'%)</th><th>상태</th><th></th></tr></thead><tbody>'+SETTLE.map(function(s,i){var fee=Math.round(s.amt*RATE);var st=s.status==='미청구'?'<span class="badge amber">미청구</span>':'<span class="badge v">청구 완료</span>';var act=s.status==='미청구'?'<span class="linkbtn" onclick="makeInvoice('+i+')">청구서 생성</span>':'<span class="linkbtn" onclick="makeInvoice('+i+')">청구서 보기</span>';return '<tr><td><b>'+s.salon+'</b></td><td>'+s.n+'</td><td>'+yen(s.amt)+'</td><td>'+yen(fee)+'</td><td>'+st+'</td><td>'+act+'</td></tr>';}).join('')+'</tbody></table>';
+
+async function loadAll(){
+  try{
+    const {data,error}=await SB.from('profiles').select('id,nickname,role,region,bio,shop,avatar_url,full_name,created_at').limit(400);
+    if(error){toast('불러오기 실패: '+error.message);return;}
+    DESIGNERS=(data||[]).map(p=>{const s=p.shop||{};return {
+      id:p.id, nickname:p.nickname||s.name||p.full_name||'디자이너', role:p.role||'', region:p.region||s.area||'', bio:p.bio||'',
+      shop:s, avatar:s.avatar||p.avatar_url||'', photos:(s.photos||[]).filter(Boolean),
+      spec:(s.specialties&&s.specialties.length)?s.specialties.slice():[], tags:(s.tags||[]).slice(), services:(s.services||[]).slice(),
+      shopName:s.name||'', area:s.area||'', career:s.career||'', insta:(s.insta||'').replace(/^@/,''), naver:s.naver||'', blog:s.blog||'',
+      hidden:!!s.hidden, created:p.created_at||''
+    };});
+    PMAP={};DESIGNERS.forEach(d=>PMAP[d.id]=d);
+    DESIGNERS.sort((a,b)=>((b.photos.length>0)-(a.photos.length>0))||(new Date(b.created)-new Date(a.created)));
+    renderStats();renderList();loadBookings();loadReviews();
+  }catch(e){toast('오류: '+e.message);}
 }
-function makeInvoice(i){var s=SETTLE[i];var fee=Math.round(s.amt*RATE);var btns=s.status==='미청구'?'<div style="display:flex;gap:8px;margin-top:18px"><button class="btn btn-primary" style="flex:1;margin:0" onclick="downloadInvoice('+i+')"><i class="ti ti-download" style="vertical-align:-2px"></i> 청구서 저장</button><button class="btn btn-rose" style="flex:1;margin:0" onclick="confirmInvoice('+i+')">청구 완료 처리</button></div>':'<div style="margin-top:18px"><button class="btn btn-primary" style="width:100%;margin:0" onclick="downloadInvoice('+i+')"><i class="ti ti-download" style="vertical-align:-2px"></i> 청구서 저장</button></div>';
-  openModal('청구서 · '+s.salon,'<div class="inv"><div class="ir"><span class="k">미용실</span><span>'+s.salon+'</span></div><div class="ir"><span class="k">청구 기간</span><span>2026-06</span></div><div class="ir"><span class="k">완료 송객</span><span>'+s.n+'건</span></div><div class="ir"><span class="k">시술액 합계</span><span>'+yen(s.amt)+'</span></div><div class="ir"><span class="k">송객 수수료율</span><span>'+(RATE*100)+'%</span></div><div class="ir tot"><span>청구 금액</span><span>'+yen(fee)+'</span></div></div>'+btns);
+function renderStats(){
+  $('stD').textContent=DESIGNERS.filter(d=>d.photos.length&&!d.hidden).length;
+  $('stP').textContent=DESIGNERS.reduce((n,d)=>n+d.photos.length,0);
 }
-function confirmInvoice(i){SETTLE[i].status='청구완료';closeModal();renderSettle();toast(SETTLE[i].salon+' 청구 완료 처리됨');}
-function downloadInvoice(i){var s=SETTLE[i];var fee=Math.round(s.amt*RATE);var t='Beautia 송객 수수료 청구서\n\n청구처: '+s.salon+'\n청구 기간: 2026-06\n완료 송객: '+s.n+'건\n시술액 합계: '+yen(s.amt)+'\n수수료율: '+(RATE*100)+'%\n────────────\n청구 금액: '+yen(fee)+'\n';try{var b=new Blob([t],{type:'text/plain'});var u=URL.createObjectURL(b);var a=document.createElement('a');a.href=u;a.download='Beautia-invoice-'+s.salon+'-202606.txt';document.body.appendChild(a);a.click();a.remove();setTimeout(function(){URL.revokeObjectURL(u);},1000);}catch(e){}toast('청구서를 저장했어요');}
-var SAL=[{name:'ARTISAN',area:'신오쿠보',verified:true,active:true,contact:'LINE'},{name:'Lien Tokyo',area:'시부야',verified:true,active:true,contact:'LINE'},{name:'atelier Nao',area:'긴자',verified:false,active:true,contact:'전화'},{name:'Hygge Hair',area:'나카메구로',verified:false,active:false,contact:'이메일'}];
-function renderSalons(){var sub=document.getElementById('salonsSub');if(sub)sub.textContent='총 '+SAL.length+'곳 · 도쿄';var t=document.getElementById('salonsTable');if(!t)return;t.innerHTML='<table><thead><tr><th>가게명</th><th>지역</th><th>검증</th><th>상태</th><th>연락</th><th></th></tr></thead><tbody>'+SAL.map(function(s,i){return '<tr><td><b>'+s.name+'</b></td><td>'+s.area+'</td><td>'+(s.verified?'<span class="badge v"><i class="ti ti-rosette-discount-check"></i> 검증</span>':'<span class="badge l">부분확인</span>')+'</td><td><span class="dot '+(s.active?'on':'off')+'" onclick="toggleSalon('+i+')" style="cursor:pointer"></span>'+(s.active?'활성':'검토중')+'</td><td class="muted">'+s.contact+'</td><td><span class="linkbtn" onclick="editSalonModal('+i+')">수정</span></td></tr>';}).join('')+'</tbody></table>';}
-function salonForm(s){return '<div style="display:flex;flex-direction:column;gap:10px"><input class="ginp" id="sName" placeholder="가게명" value="'+(s?s.name:'')+'"><input class="ginp" id="sArea" placeholder="지역 (예: 신주쿠)" value="'+(s?s.area:'')+'"><input class="ginp" id="sContact" placeholder="연락 (LINE/전화/이메일)" value="'+(s?s.contact:'LINE')+'"><label style="font-size:13px;display:flex;align-items:center;gap:8px;color:var(--plum);cursor:pointer"><input type="checkbox" id="sVerified" '+(s&&s.verified?'checked':'')+'> Beautia 검증</label></div>';}
-function addSalonModal(){openModal('미용실 등록',salonForm(null)+'<button class="btn btn-primary" style="margin-top:16px;width:100%" onclick="saveSalon(-1)">등록</button>');}
-function editSalonModal(i){openModal('미용실 수정',salonForm(SAL[i])+'<button class="btn btn-primary" style="margin-top:16px;width:100%" onclick="saveSalon('+i+')">저장</button>');}
-function saveSalon(i){var name=(document.getElementById('sName').value||'').trim(),area=(document.getElementById('sArea').value||'').trim(),contact=(document.getElementById('sContact').value||'').trim()||'LINE',verified=document.getElementById('sVerified').checked;if(!name||!area){toast('가게명·지역을 입력하세요');return;}if(i<0){SAL.push({name:name,area:area,contact:contact,verified:verified,active:false});toast('미용실을 등록했어요 (검토중)');}else{SAL[i].name=name;SAL[i].area=area;SAL[i].contact=contact;SAL[i].verified=verified;toast('정보를 저장했어요');}closeModal();renderSalons();}
-function toggleSalon(i){SAL[i].active=!SAL[i].active;renderSalons();toast(SAL[i].active?'활성화했어요':'검토중으로 전환했어요');}
-var KCOL=[['draft','접수'],['sent','미용실 전달'],['responded','응답 도착'],['delivered','확정']];
-function renderKanban(){var k=document.getElementById('kanban');if(!k)return;k.innerHTML=KCOL.map(function(col){var items=REQ.filter(function(r){return r.stage===col[0];});return '<div class="kcol"><div class="kh">'+col[1]+' <span class="n">'+items.length+'</span></div>'+items.map(function(r){var i=REQ.indexOf(r);var sla=col[0]==='draft'?'<span class="sla warn">번역 필요</span>':(col[0]==='responded'?'<span class="sla warn">전달 대기</span>':'<span class="sla ok">'+col[1]+'</span>');return '<div class="kcard" onclick="kOpen('+i+')"><div class="nm">'+r.cust+'</div><div class="ds">'+r.salon+' · '+r.svc+'</div><div class="ft"><span class="muted" style="font-size:11px">#'+r.id+'</span>'+sla+'</div></div>';}).join('')+'</div>';}).join('');}
-function kOpen(i){curReq=i;showA('translate',document.querySelectorAll('.navitem')[2]);}
-renderRelay();renderSettle();renderGloss();renderSalons();renderKanban();vChk();
+function dName(id){const d=PMAP[id];return d?d.nickname:'—';}
+
+async function loadBookings(){
+  try{
+    const {data,error}=await SB.from('bookings').select('*').order('created_at',{ascending:false}).limit(200);
+    if(error){$('stB').textContent='—';renderBookings(error.message);return;}
+    BOOKINGS=data||[];$('stB').textContent=BOOKINGS.length;renderBookings();
+  }catch(e){renderBookings(e.message);}
+}
+async function loadReviews(){
+  try{
+    const {data,error}=await SB.from('designer_reviews').select('*').order('created_at',{ascending:false}).limit(200);
+    if(error){$('stR').textContent='—';renderReviews(error.message);return;}
+    REVIEWS=data||[];$('stR').textContent=REVIEWS.length;renderReviews();
+  }catch(e){renderReviews(e.message);}
+}
+
+function renderList(){
+  const q=($('q').value||'').toLowerCase().trim();
+  let list=DESIGNERS;
+  if(q)list=list.filter(d=>(d.nickname+d.region+d.area+d.spec.join('')+d.shopName+d.insta).toLowerCase().includes(q));
+  if(!list.length){$('dlist').innerHTML='<div class="empty" style="grid-column:1/-1"><i class="ti ti-users"></i><p>디자이너가 없어요</p></div>';return;}
+  $('dlist').innerHTML=list.map(d=>{
+    const cat=catKo[d.spec[0]]||d.spec[0]||'';
+    return `<div class="dc${d.hidden?' dhidden':''}" onclick="openEdit('${d.id}')">
+      <div class="av" style="background-image:url('${esc(d.avatar)}')"></div>
+      <div class="di">
+        <div class="dn">${esc(d.nickname)}</div>
+        <div class="dm">${esc([cat,d.region].filter(Boolean).join(' · ')||'미설정')}</div>
+        <div><span class="dtag ph"><i class="ti ti-photo"></i> ${d.photos.length}</span>${d.hidden?'<span class="dtag hd"><i class="ti ti-eye-off"></i> 숨김</span>':''}</div>
+      </div>
+      <i class="ti ti-chevron-right arr"></i>
+    </div>`;
+  }).join('');
+}
+
+function openEdit(id){
+  const d=PMAP[id];if(!d)return;
+  ed={id:d.id, nickname:d.nickname, region:d.region, bio:d.bio, shopName:d.shopName, area:d.area, career:d.career,
+      insta:d.insta, naver:d.naver, blog:d.blog, avatar:d.avatar, photos:d.photos.slice(),
+      spec:d.spec.slice(), tags:d.tags.slice(), services:d.services.map(s=>Object.assign({},s)), hidden:d.hidden, shop:d.shop};
+  $('edTitle').textContent=d.nickname;
+  $('edView').href='https://beautia.io/d/'+d.id;
+  renderEdit();
+  $('scrim').classList.add('on');$('drawer').classList.add('on');document.body.style.overflow='hidden';
+}
+function closeEdit(){$('scrim').classList.remove('on');$('drawer').classList.remove('on');document.body.style.overflow='';ed=null;}
+
+function renderEdit(){
+  const specChips=SPECS.map(([en,ko])=>`<button class="chip${ed.spec.includes(en)?' on':''}" onclick="toggleSpec('${en}')">${ko}</button>`).join('');
+  const tagChips=ed.tags.length?ed.tags.map((t,i)=>`<span class="tagc">${esc(t)}<button onclick="delTag(${i})"><i class="ti ti-x"></i></button></span>`).join(''):'<span style="font-size:12.5px;color:var(--sub);font-weight:600">태그 없음</span>';
+  const svc=ed.services.length?ed.services.map((s,i)=>`<div class="svcitem"><div class="si"><div class="sn">${esc(s.n||'')}</div><div class="sd">${esc(s.du||'')}</div></div>${s.p?`<span class="sp">${esc(s.p)}</span>`:''}<button class="x" onclick="delSvc(${i})"><i class="ti ti-trash"></i></button></div>`).join(''):'<div style="font-size:12.5px;color:var(--sub);font-weight:600;padding:4px 0">등록된 서비스 없음</div>';
+  const pf=ed.photos.map((p,i)=>`<div class="pf" style="background-image:url('${esc(p)}')"><button class="del" onclick="delPhoto(${i})"><i class="ti ti-x"></i></button><div class="ord">${i>0?`<button onclick="movePhoto(${i},-1)"><i class="ti ti-chevron-left"></i></button>`:''}${i<ed.photos.length-1?`<button onclick="movePhoto(${i},1)"><i class="ti ti-chevron-right"></i></button>`:''}</div></div>`).join('');
+  $('edBody').innerHTML=`
+    <div class="card">
+      <h3><i class="ti ti-user-circle"></i> 프로필 사진</h3>
+      <div class="avwrap">
+        <div class="avbig" style="background-image:url('${esc(ed.avatar)}')"></div>
+        <div style="flex:1"><label class="mini g" style="display:inline-flex" for="avIn"><i class="ti ti-upload"></i> 사진 변경</label>
+        <input id="avIn" type="file" accept="image/*" style="display:none" onchange="onAvatar(this)">
+        <label class="ck" style="margin-top:12px"><input type="checkbox" id="avLogo"> 로고(여백 자동 제거)</label></div>
+      </div>
+    </div>
+    <div class="card">
+      <h3><i class="ti ti-id-badge"></i> 기본 정보</h3>
+      <div class="row"><label>표시 이름</label><input class="inp" id="f_name" value="${esc(ed.nickname)}"></div>
+      <div class="two"><div class="row"><label>샵 이름</label><input class="inp" id="f_shop" value="${esc(ed.shopName)}"></div>
+      <div class="row"><label>지역(도시)</label><input class="inp" id="f_region" value="${esc(ed.region)}"></div></div>
+      <div class="row"><label>상세 지역</label><input class="inp" id="f_area" value="${esc(ed.area)}" placeholder="예: 서현동, 구래동"></div>
+      <div class="row"><label>경력</label><input class="inp" id="f_career" value="${esc(ed.career)}" placeholder="예: 8년"></div>
+      <div class="row"><label>소개</label><textarea class="inp" id="f_bio" placeholder="디자이너 소개">${esc(ed.bio)}</textarea></div>
+    </div>
+    <div class="card">
+      <h3><i class="ti ti-sparkles"></i> 전문 분야</h3>
+      <div class="chips">${specChips}</div>
+    </div>
+    <div class="card">
+      <h3><i class="ti ti-tag"></i> 태그</h3>
+      <div class="chips" id="tagBox">${tagChips}</div>
+      <div class="addrow"><input class="inp" id="tagIn" placeholder="예: 레이어드컷" onkeydown="if(event.key==='Enter'){event.preventDefault();addTag();}"><button class="mini" onclick="addTag()">추가</button></div>
+    </div>
+    <div class="card">
+      <h3><i class="ti ti-photo"></i> 포트폴리오 (${ed.photos.length})</h3>
+      <div class="pfgrid">${pf}</div>
+      <label class="upbtn" for="pfIn"><i class="ti ti-plus"></i> 사진 추가</label>
+      <input id="pfIn" type="file" accept="image/*" multiple style="display:none" onchange="onPhotos(this)">
+    </div>
+    <div class="card">
+      <h3><i class="ti ti-clipboard-list"></i> 서비스·가격</h3>
+      <div id="svcBox">${svc}</div>
+      <div class="addrow" style="flex-wrap:wrap"><input class="inp" id="svN" placeholder="서비스명 (예: 컷+펌)" style="flex:1 1 100%"><input class="inp" id="svP" placeholder="가격 (예: 80,000원)"><input class="inp" id="svD" placeholder="시간 (예: 2시간)"><button class="mini" onclick="addSvc()">추가</button></div>
+    </div>
+    <div class="card">
+      <h3><i class="ti ti-link"></i> 연락 링크</h3>
+      <div class="row"><label>Instagram</label><input class="inp" id="f_insta" value="${esc(ed.insta)}" placeholder="아이디 또는 링크"></div>
+      <div class="two"><div class="row"><label>네이버 플레이스</label><input class="inp" id="f_naver" value="${esc(ed.naver)}" placeholder="https://…"></div>
+      <div class="row"><label>블로그</label><input class="inp" id="f_blog" value="${esc(ed.blog)}" placeholder="https://…"></div></div>
+    </div>
+    <div class="card">
+      <h3><i class="ti ti-eye"></i> 노출</h3>
+      <label class="ck"><input type="checkbox" id="f_hidden" ${ed.hidden?'checked':''}> 커뮤니티에서 숨기기 (체크 시 목록·배너에서 제외)</label>
+    </div>
+    <div class="savebar">
+      <button class="btn" id="saveBtn" onclick="saveEdit()"><i class="ti ti-device-floppy"></i> 저장</button>
+    </div>`;
+}
+function syncInputs(){
+  if(!ed||!$('f_name'))return;
+  ed.nickname=$('f_name').value.trim();ed.shopName=$('f_shop').value.trim();ed.region=$('f_region').value.trim();
+  ed.area=$('f_area').value.trim();ed.career=$('f_career').value.trim();ed.bio=$('f_bio').value.trim();
+  ed.insta=$('f_insta').value.trim();ed.naver=$('f_naver').value.trim();ed.blog=$('f_blog').value.trim();
+  ed.hidden=$('f_hidden').checked;
+}
+function toggleSpec(en){const i=ed.spec.indexOf(en);if(i<0)ed.spec.unshift(en);else ed.spec.splice(i,1);syncInputs();renderEdit();}
+function addTag(){const v=($('tagIn').value||'').trim();if(!v)return;if(!ed.tags.includes(v))ed.tags.push(v);syncInputs();renderEdit();setTimeout(()=>$('tagIn')&&$('tagIn').focus(),0);}
+function delTag(i){ed.tags.splice(i,1);syncInputs();renderEdit();}
+function addSvc(){const n=($('svN').value||'').trim();if(!n){toast('서비스명을 입력하세요');return;}ed.services.push({n:n,p:($('svP').value||'').trim(),du:($('svD').value||'').trim()});syncInputs();renderEdit();}
+function delSvc(i){ed.services.splice(i,1);syncInputs();renderEdit();}
+function delPhoto(i){ed.photos.splice(i,1);syncInputs();renderEdit();}
+function movePhoto(i,dir){const j=i+dir;if(j<0||j>=ed.photos.length)return;const t=ed.photos[i];ed.photos[i]=ed.photos[j];ed.photos[j]=t;syncInputs();renderEdit();}
+
+async function uploadImg(file,folderUid,asPng){
+  const ext=asPng?'png':((file.name.split('.').pop()||'jpg').toLowerCase().replace('jpeg','jpg'));
+  const path=folderUid+'/'+Date.now()+'-'+Math.random().toString(36).slice(2,8)+'.'+ext;
+  const {error}=await SB.storage.from('beautia').upload(path,file,{contentType:file.type||('image/'+(ext==='jpg'?'jpeg':ext)),upsert:false});
+  if(error)throw error;
+  return SB.storage.from('beautia').getPublicUrl(path).data.publicUrl;
+}
+function trimWhite(file){return new Promise((res)=>{const img=new Image();img.onload=function(){
+  const W=img.naturalWidth,H=img.naturalHeight;const c=document.createElement('canvas');c.width=W;c.height=H;const x=c.getContext('2d');x.drawImage(img,0,0);
+  const d=x.getImageData(0,0,W,H).data;let mnx=W,mny=H,mxx=0,mxy=0;
+  for(let y=0;y<H;y++)for(let xx=0;xx<W;xx++){const i=(y*W+xx)*4;if(d[i]<238||d[i+1]<238||d[i+2]<238){if(xx<mnx)mnx=xx;if(xx>mxx)mxx=xx;if(y<mny)mny=y;if(y>mxy)mxy=y;}}
+  if(mxx<=mnx){res(file);return;}
+  const bw=mxx-mnx,bh=mxy-mny,cx=(mnx+mxx)/2,cy=(mny+mxy)/2,side=Math.max(bw,bh)*1.10;
+  const sx=Math.max(0,cx-side/2),sy=Math.max(0,cy-side/2),ss=Math.min(side,W-sx,H-sy);
+  const o=document.createElement('canvas');o.width=800;o.height=800;const ox=o.getContext('2d');ox.fillStyle='#fff';ox.fillRect(0,0,800,800);ox.imageSmoothingQuality='high';ox.drawImage(img,sx,sy,ss,ss,0,0,800,800);
+  o.toBlob(b=>res(b||file),'image/png',0.95);
+};img.onerror=()=>res(file);img.src=URL.createObjectURL(file);});}
+
+async function onAvatar(input){
+  const f=input.files&&input.files[0];if(!f||!ed)return;input.value='';syncInputs();
+  const logo=$('avLogo')&&$('avLogo').checked;toast('업로드 중…');
+  try{let file=f,png=false;if(logo){file=await trimWhite(f);png=true;}
+    const url=await uploadImg(file,ed.id,png);ed.avatar=url;renderEdit();toast('사진 변경됨 ✓');
+  }catch(e){toast('업로드 실패: '+(e.message||e));}
+}
+async function onPhotos(input){
+  const files=Array.from(input.files||[]);if(!files.length||!ed)return;input.value='';syncInputs();
+  toast('업로드 중… ('+files.length+')');
+  try{for(const f of files){const url=await uploadImg(f,ed.id,false);ed.photos.push(url);}renderEdit();toast('사진 추가됨 ✓');
+  }catch(e){toast('업로드 실패: '+(e.message||e));}
+}
+
+async function saveEdit(){
+  if(!ed)return;syncInputs();
+  const btn=$('saveBtn');btn.disabled=true;btn.innerHTML='<i class="ti ti-loader-2"></i> 저장 중…';
+  try{
+    const insta=ed.insta.replace(/^@/,'').replace(/^https?:\/\/(www\.)?instagram\.com\//i,'').replace(/[/?#].*$/,'');
+    const shop=Object.assign({},ed.shop||{},{
+      name:ed.shopName, area:ed.area, avatar:ed.avatar, photos:ed.photos, career:ed.career,
+      specialties:ed.spec.slice(), tags:ed.tags.slice(), services:ed.services.slice(),
+      insta:insta, naver:ed.naver, blog:ed.blog, hidden:ed.hidden
+    });
+    const payload={id:ed.id, nickname:ed.nickname, region:ed.region, bio:ed.bio, shop:shop};
+    const {error}=await SB.from('profiles').update(payload).eq('id',ed.id);
+    if(error){toast('저장 실패: '+error.message);btn.disabled=false;btn.innerHTML='<i class="ti ti-device-floppy"></i> 저장';return;}
+    const d=PMAP[ed.id];if(d){Object.assign(d,{nickname:ed.nickname,region:ed.region,bio:ed.bio,shopName:ed.shopName,area:ed.area,career:ed.career,insta:insta,naver:ed.naver,blog:ed.blog,avatar:ed.avatar,photos:ed.photos.slice(),spec:ed.spec.slice(),tags:ed.tags.slice(),services:ed.services.slice(),hidden:ed.hidden,shop:shop});}
+    renderStats();renderList();toast('저장됐어요 ✓');closeEdit();
+  }catch(e){toast('오류: '+e.message);btn.disabled=false;btn.innerHTML='<i class="ti ti-device-floppy"></i> 저장';}
+}
+
+function fmtDate(s){if(!s)return '';try{return new Date(s).toLocaleDateString('ko-KR',{month:'short',day:'numeric'});}catch(e){return s;}}
+function renderBookings(err){
+  if(err){$('bklist').innerHTML='<div class="empty"><i class="ti ti-lock"></i><p>예약을 불러올 권한이 없어요<br><span style="font-size:12px">'+esc(err)+'</span></p></div>';return;}
+  if(!BOOKINGS.length){$('bklist').innerHTML='<div class="empty"><i class="ti ti-calendar"></i><p>예약이 없어요</p></div>';return;}
+  const st={pending:['대기','y'],confirmed:['확정','g'],accepted:['확정','g'],done:['완료',''],completed:['완료',''],declined:['거절',''],cancelled:['취소','']};
+  $('bklist').innerHTML=BOOKINGS.map(b=>{const s=st[b.status]||[b.status||'대기','y'];let svc=b.service;if(svc&&typeof svc==='object')svc=svc.n||'상담';
+    return `<div class="li"><div class="lh"><div><div class="ln">${esc(dName(b.designer))}</div><div class="ls">${esc(svc||'상담')} · ${esc(b.date||'')} ${esc(b.time||'')}</div></div><span class="lbadge ${s[1]}">${esc(s[0])}</span></div>${b.note?`<div class="ls" style="margin-top:8px">📝 ${esc(b.note)}</div>`:''}</div>`;
+  }).join('');
+}
+function renderReviews(err){
+  if(err){$('rvlist').innerHTML='<div class="empty"><i class="ti ti-lock"></i><p>후기를 불러올 권한이 없어요<br><span style="font-size:12px">'+esc(err)+'</span></p></div>';return;}
+  if(!REVIEWS.length){$('rvlist').innerHTML='<div class="empty"><i class="ti ti-message"></i><p>후기가 없어요</p></div>';return;}
+  $('rvlist').innerHTML=REVIEWS.map(r=>{const rate=r.rating||r.stars||5;
+    return `<div class="li"><div class="lh"><div><div class="ln">${esc(dName(r.designer||r.designer_id))} <span style="color:var(--gold)">${'★'.repeat(Math.max(1,Math.min(5,Math.round(rate))))}</span></div><div class="ls">${esc(fmtDate(r.created_at))}</div></div></div><div class="ls" style="margin-top:8px;color:var(--ink2);line-height:1.5">${esc(r.text||r.body||r.comment||'')}</div></div>`;
+  }).join('');
+}
+
+function tab(t){
+  ['designers','bookings','reviews'].forEach(x=>{$('sec-'+x).classList.toggle('hide',x!==t);$('tab-'+x).classList.toggle('on',x===t);});
+}
+
+(async function(){
+  const {data}=await SB.auth.getSession();
+  if(data&&data.session&&data.session.user)gate(data.session.user);
+})();
 </script>
-</body>
-</html>
+</body></html>

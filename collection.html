@@ -1355,6 +1355,7 @@ async function loadDesigners(){try{
     if(D.some(function(d){return d.uid===p.id;}))return;            // 하드코딩 2명 중복 제외
     var s=p.shop||{};var photos=(s.photos||[]).filter(Boolean);
     if(!photos.length)return;                                       // 포폴 없는 프로필 제외
+    if(s.hidden)return;                                             // 오너가 숨김 처리한 디자이너 제외
     list.push({id:'u_'+p.id,uid:p.id,name:p.nickname||s.name||p.full_name||'Designer',ko:'',
       cat:canonCat((s.specialties&&s.specialties[0])||(p.interests&&p.interests[0])||''),
       city:p.region||s.area||'',area:s.area||'',flag:roleIn(p.role)==='desg'?'🎨':'✨',
