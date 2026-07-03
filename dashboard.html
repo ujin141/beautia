@@ -1,0 +1,345 @@
+<!DOCTYPE html><html lang="ko"><head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Beautia · 디자이너 대시보드</title>
+<meta name="robots" content="noindex">
+<link rel="icon" href="/logo-mark.png" type="image/png">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@2.47.0/tabler-icons.min.css">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.110.0/dist/umd/supabase.js"></script>
+<style>
+:root{--ink:#1c1418;--ink2:#574c51;--sub:#9b9095;--line:#efeae8;--bg:#fff;--soft:#f7f2f1;--accent:#B5828C;--plum:#6E4A50;--rosebg:#f3e7e9;--green:#3E7C6A;--red:#C0564B;}
+*{margin:0;padding:0;box-sizing:border-box;font-family:'Pretendard','Malgun Gothic',sans-serif;}
+body{background:var(--soft);color:var(--ink);-webkit-font-smoothing:antialiased;}
+a{color:inherit;text-decoration:none;}button{font-family:inherit;cursor:pointer;border:none;background:none;}
+img{display:block;}
+.wrap{max-width:720px;margin:0 auto;padding:0 16px 80px;}
+header.top{position:sticky;top:0;z-index:20;background:rgba(255,255,255,.95);backdrop-filter:blur(10px);border-bottom:1px solid var(--line);}
+.topin{max-width:720px;margin:0 auto;display:flex;align-items:center;gap:10px;padding:14px 16px;}
+.brand{font-weight:800;font-size:20px;color:var(--plum);letter-spacing:-.02em;}
+.brand small{font-size:11px;font-weight:700;color:var(--sub);letter-spacing:.12em;margin-left:6px;}
+.who{margin-left:auto;font-size:13px;color:var(--sub);font-weight:600;}
+.logout{font-size:13px;font-weight:700;color:var(--ink2);padding:8px 12px;border:1px solid var(--line);border-radius:999px;background:#fff;}
+/* 로그인 */
+.login{max-width:400px;margin:60px auto;background:#fff;border:1px solid var(--line);border-radius:22px;padding:34px 28px;box-shadow:0 30px 70px -40px rgba(40,20,40,.4);}
+.login h1{font-size:24px;letter-spacing:-.02em;}
+.login p{font-size:13.5px;color:var(--sub);margin-top:8px;line-height:1.6;}
+.fld{margin-top:16px;}
+.fld label{display:block;font-size:12.5px;font-weight:800;color:var(--ink2);margin-bottom:7px;}
+.inp{width:100%;font-size:15px;padding:13px 15px;border:1px solid var(--line);border-radius:12px;background:var(--soft);outline:none;}
+.inp:focus{border-color:var(--accent);background:#fff;}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:7px;background:var(--plum);color:#fff;font-weight:800;font-size:15px;padding:14px 22px;border-radius:12px;width:100%;}
+.btn:disabled{opacity:.5;}
+.btn.ghost{background:#fff;color:var(--plum);border:1.5px solid var(--plum);}
+.btn.sm{width:auto;padding:9px 16px;font-size:13.5px;border-radius:10px;}
+/* 탭 */
+.tabs{display:flex;gap:6px;margin:16px 0 4px;position:sticky;top:57px;z-index:15;background:var(--soft);padding:8px 0;}
+.tab{flex:1;text-align:center;font-size:14px;font-weight:800;color:var(--sub);padding:11px 0;border-radius:12px;background:#fff;border:1px solid var(--line);}
+.tab.on{background:var(--plum);color:#fff;border-color:var(--plum);}
+/* 카드 */
+.card{background:#fff;border:1px solid var(--line);border-radius:18px;padding:20px;margin-top:14px;}
+.card h2{font-size:16px;letter-spacing:-.01em;margin-bottom:4px;}
+.card .hint{font-size:12.5px;color:var(--sub);margin-bottom:14px;}
+.row{margin-top:14px;}
+.row label{display:block;font-size:12.5px;font-weight:800;color:var(--ink2);margin-bottom:7px;}
+textarea.inp{resize:vertical;min-height:80px;line-height:1.6;}
+.chips{display:flex;flex-wrap:wrap;gap:8px;}
+.chip{font-size:13px;font-weight:700;padding:9px 15px;border-radius:999px;border:1px solid var(--line);background:#fff;color:var(--ink2);}
+.chip.on{background:var(--rosebg);border-color:var(--accent);color:var(--plum);}
+.tagbox{display:flex;flex-wrap:wrap;gap:8px;align-items:center;}
+.tagc{display:inline-flex;align-items:center;gap:6px;background:var(--rosebg);color:var(--plum);font-size:13px;font-weight:700;padding:8px 12px;border-radius:999px;}
+.tagc i{cursor:pointer;font-size:15px;opacity:.7;}
+.avwrap{display:flex;align-items:center;gap:16px;}
+.av{width:84px;height:84px;border-radius:50%;background:var(--soft) center/cover;border:3px solid #fff;box-shadow:0 4px 14px rgba(0,0,0,.15);flex:0 0 auto;}
+.saveBar{position:sticky;bottom:0;background:linear-gradient(180deg,transparent,var(--soft) 40%);padding:14px 0 6px;margin-top:8px;}
+/* 포폴 */
+.pfgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:12px;}
+.pfitem{position:relative;aspect-ratio:3/4;border-radius:12px;overflow:hidden;background:var(--soft);}
+.pfitem img{width:100%;height:100%;object-fit:cover;}
+.pfitem .pact{position:absolute;top:5px;right:5px;display:flex;gap:4px;}
+.pfitem .pact button{width:26px;height:26px;border-radius:8px;background:rgba(20,12,16,.62);color:#fff;font-size:15px;display:flex;align-items:center;justify-content:center;}
+.pfitem .ord{position:absolute;bottom:5px;left:5px;display:flex;gap:4px;}
+.pfitem .ord button{width:24px;height:24px;border-radius:7px;background:rgba(255,255,255,.9);color:var(--ink);font-size:14px;display:flex;align-items:center;justify-content:center;}
+.upbtn{border:2px dashed var(--accent);border-radius:12px;color:var(--plum);font-weight:800;font-size:14px;padding:16px;display:flex;align-items:center;justify-content:center;gap:8px;background:var(--rosebg);width:100%;margin-top:12px;}
+/* 예약 */
+.bk{border:1px solid var(--line);border-radius:14px;padding:14px;margin-top:10px;display:flex;align-items:center;gap:12px;}
+.bk .bkinfo{flex:1;}
+.bk .bkname{font-weight:800;font-size:14.5px;}
+.bk .bkmeta{font-size:12.5px;color:var(--sub);margin-top:3px;}
+.bkbadge{font-size:11.5px;font-weight:800;padding:5px 10px;border-radius:999px;}
+.st-pending{background:#FFF3E0;color:#B8894A;}.st-accepted{background:#E7F3EE;color:var(--green);}.st-done{background:var(--soft);color:var(--sub);}.st-declined{background:#FBEBE9;color:var(--red);}
+.empty{text-align:center;color:var(--sub);padding:40px 0;font-size:14px;}
+.empty i{font-size:36px;display:block;margin-bottom:10px;opacity:.5;}
+.toast{position:fixed;left:50%;bottom:26px;transform:translateX(-50%) translateY(20px);background:var(--ink);color:#fff;padding:14px 24px;border-radius:999px;font-size:14px;font-weight:700;opacity:0;transition:.25s;z-index:90;pointer-events:none;box-shadow:0 14px 40px -10px rgba(0,0,0,.5);}
+.toast.on{opacity:1;transform:translateX(-50%);}
+.hide{display:none!important;}
+.muted{font-size:12px;color:var(--sub);margin-top:8px;line-height:1.5;}
+.ck{display:flex;align-items:center;gap:8px;font-size:13px;font-weight:700;color:var(--ink2);margin-top:10px;cursor:pointer;}
+</style>
+</head><body>
+<header class="top"><div class="topin">
+  <span class="brand">Beautia<small>DESIGNER</small></span>
+  <span class="who" id="who"></span>
+  <button class="logout hide" id="logoutBtn" onclick="logout()">로그아웃</button>
+</div></header>
+
+<!-- 로그인 -->
+<div class="wrap"><div class="login" id="loginView">
+  <h1>디자이너 로그인</h1>
+  <p>가입한 이메일로 인증코드를 받아 로그인하세요. 처음이면 먼저 앱에서 디자이너로 가입해주세요.</p>
+  <div class="fld"><label>이메일</label><input class="inp" id="email" type="email" placeholder="you@email.com" autocomplete="email"></div>
+  <div class="fld" id="codeFld" style="display:none"><label>인증코드 6자리</label><input class="inp" id="code" inputmode="numeric" placeholder="123456"></div>
+  <div style="margin-top:18px" id="loginBtns">
+    <button class="btn" id="sendBtn" onclick="sendCode()">인증코드 받기</button>
+  </div>
+  <div class="muted" id="loginMsg"></div>
+</div></div>
+
+<!-- 대시보드 -->
+<div class="wrap hide" id="dashView">
+  <div class="tabs">
+    <button class="tab on" data-tab="profile" onclick="tab('profile')">프로필</button>
+    <button class="tab" data-tab="portfolio" onclick="tab('portfolio')">포트폴리오</button>
+    <button class="tab" data-tab="bookings" onclick="tab('bookings')">예약</button>
+  </div>
+
+  <!-- 프로필 -->
+  <div id="sec-profile">
+    <div class="card">
+      <h2>프로필 사진</h2><div class="hint">로고나 얼굴 사진. 원형으로 표시돼요.</div>
+      <div class="avwrap">
+        <div class="av" id="avPreview"></div>
+        <div>
+          <button class="btn ghost sm" onclick="document.getElementById('avFile').click()"><i class="ti ti-upload"></i> 사진 변경</button>
+          <input type="file" id="avFile" accept="image/*" style="display:none" onchange="onAvatar(this)">
+          <label class="ck"><input type="checkbox" id="trimLogo"> 로고 여백 자동 제거</label>
+        </div>
+      </div>
+    </div>
+    <div class="card">
+      <h2>기본 정보</h2>
+      <div class="row"><label>이름 / 활동명</label><input class="inp" id="f_name" placeholder="예: 소아"></div>
+      <div class="row"><label>가게 · 샵 이름</label><input class="inp" id="f_shop" placeholder="예: 챌린지헤어"></div>
+      <div class="row"><label>지역 (도시)</label><input class="inp" id="f_region" placeholder="예: 김포"></div>
+      <div class="row"><label>주소 · 상세</label><input class="inp" id="f_area" placeholder="예: 경기 김포시 구래동 아스타프라자 301호"></div>
+      <div class="row"><label>전문 분야</label><div class="chips" id="specChips"></div></div>
+      <div class="row"><label>태그 (엔터로 추가 · 최대 8개)</label>
+        <div class="tagbox" id="tagBox"></div>
+        <input class="inp" id="tagIn" placeholder="예: 매직 스트레이트, 레이어드컷" style="margin-top:8px" onkeydown="tagKey(event)">
+      </div>
+      <div class="row"><label>경력</label><input class="inp" id="f_career" placeholder="예: 6년"></div>
+      <div class="row"><label>소개</label><textarea class="inp" id="f_bio" placeholder="시술 스타일, 강점 등을 소개해주세요"></textarea></div>
+    </div>
+    <div class="card">
+      <h2>연락 · 링크</h2>
+      <div class="row"><label>인스타그램 아이디 (@ 없이)</label><input class="inp" id="f_insta" placeholder="예: challengehair1"></div>
+      <div class="row"><label>네이버 플레이스 링크</label><input class="inp" id="f_naver" placeholder="https://m.place.naver.com/…"></div>
+      <div class="row"><label>블로그 링크</label><input class="inp" id="f_blog" placeholder="https://blog.naver.com/…"></div>
+    </div>
+    <div class="saveBar"><button class="btn" id="saveProfileBtn" onclick="saveProfile()"><i class="ti ti-device-floppy"></i> 프로필 저장</button></div>
+  </div>
+
+  <!-- 포트폴리오 -->
+  <div id="sec-portfolio" class="hide">
+    <div class="card">
+      <h2>포트폴리오 사진</h2><div class="hint">대표 작업을 올리세요. 갤러리·프로필·ID카드에 바로 보여요.</div>
+      <button class="upbtn" onclick="document.getElementById('pfFile').click()"><i class="ti ti-photo-plus"></i> 사진 추가</button>
+      <input type="file" id="pfFile" accept="image/*" multiple style="display:none" onchange="onPfFiles(this)">
+      <div class="pfgrid" id="pfGrid"></div>
+    </div>
+    <div class="saveBar"><button class="btn" id="savePfBtn" onclick="savePortfolio()"><i class="ti ti-device-floppy"></i> 포트폴리오 저장</button></div>
+  </div>
+
+  <!-- 예약 -->
+  <div id="sec-bookings" class="hide">
+    <div class="card">
+      <h2>받은 예약</h2><div class="hint">고객이 신청한 예약을 확인하고 수락·완료 처리하세요.</div>
+      <div id="bkList"></div>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+const SB_URL='https://pzbxcktaljhesrfnqwzq.supabase.co';
+const SB_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InB6Ynhja3RhbGpoZXNyZm5xd3pxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjgxNjc1MjYsImV4cCI6MjA4Mzc0MzUyNn0.aUZbTgfWbjEISNr1-cu9YJnOGj1lzjXeRVifHygAplc';
+const SB=window.supabase.createClient(SB_URL,SB_KEY,{auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:true}});
+const SPECS=[['Hair','헤어'],['Makeup','메이크업'],['Nail','네일'],['Lash','속눈썹'],['Skin','스킨'],['Bridal','브라이덜']];
+const $=id=>document.getElementById(id);
+let ME=null, UID=null, EMAIL='';
+let state={avatar:'',photos:[],spec:[],tags:[]};
+
+function toast(m){const t=$('toast');t.textContent=m;t.classList.add('on');clearTimeout(t._t);t._t=setTimeout(()=>t.classList.remove('on'),2600);}
+function esc(s){return String(s==null?'':s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));}
+
+// ---------- 인증 ----------
+async function sendCode(){
+  const em=($('email').value||'').trim();
+  if(em.indexOf('@')<1){toast('이메일을 확인해주세요');return;}
+  EMAIL=em;$('sendBtn').disabled=true;$('loginMsg').textContent='코드 전송 중…';
+  const {error}=await SB.auth.signInWithOtp({email:em,options:{shouldCreateUser:false}});
+  $('sendBtn').disabled=false;
+  if(error){$('loginMsg').textContent='전송 실패: '+error.message+' — 먼저 앱에서 디자이너로 가입했는지 확인하세요.';return;}
+  $('codeFld').style.display='block';
+  $('loginBtns').innerHTML='<button class="btn" id="verBtn" onclick="verifyCode()">로그인</button><button class="btn ghost sm" style="margin-top:8px;width:100%" onclick="sendCode()">코드 재전송</button>';
+  $('loginMsg').textContent='이메일로 보낸 6자리 코드를 입력하세요.';
+  setTimeout(()=>$('code')&&$('code').focus(),100);
+}
+async function verifyCode(){
+  const v=($('code').value||'').trim();if(!v){toast('코드를 입력하세요');return;}
+  $('verBtn').disabled=true;$('loginMsg').textContent='확인 중…';
+  const {data,error}=await SB.auth.verifyOtp({email:EMAIL,token:v,type:'email'});
+  $('verBtn').disabled=false;
+  if(error){$('loginMsg').textContent='코드가 틀렸어요';return;}
+  await afterLogin(data.user);
+}
+async function logout(){await SB.auth.signOut();location.reload();}
+
+async function afterLogin(user){
+  UID=user.id;EMAIL=user.email||'';
+  const {data:prof}=await SB.from('profiles').select('id,nickname,role,region,bio,shop').eq('id',UID).maybeSingle();
+  if(!prof){toast('프로필이 없어요. 앱에서 먼저 가입해주세요.');return;}
+  ME=prof;
+  $('loginView').classList.add('hide');$('dashView').classList.remove('hide');
+  $('who').textContent=EMAIL;$('logoutBtn').classList.remove('hide');
+  fillProfile();renderSpec();renderTags();renderPf();loadBookings();
+}
+
+// ---------- 프로필 채우기/저장 ----------
+function fillProfile(){
+  const s=ME.shop||{};
+  state.avatar=s.avatar||'';state.photos=(s.photos||[]).filter(x=>typeof x==='string'&&x.startsWith('http'));
+  state.spec=(s.specialties||[]).slice();state.tags=(s.tags||[]).slice();
+  $('f_name').value=ME.nickname||'';
+  $('f_shop').value=s.name||'';
+  $('f_region').value=ME.region||'';
+  $('f_area').value=s.area||'';
+  $('f_career').value=s.career||'';
+  $('f_bio').value=ME.bio||'';
+  $('f_insta').value=(s.insta||'').replace(/^@/,'');
+  $('f_naver').value=s.naver||'';
+  $('f_blog').value=s.blog||'';
+  updateAvPreview();
+}
+function updateAvPreview(){$('avPreview').style.backgroundImage=state.avatar?"url('"+state.avatar+"')":'';}
+function renderSpec(){
+  $('specChips').innerHTML=SPECS.map(([en,ko])=>`<button type="button" class="chip ${state.spec.includes(en)?'on':''}" onclick="toggleSpec('${en}')">${ko}</button>`).join('');
+}
+function toggleSpec(en){const i=state.spec.indexOf(en);if(i<0)state.spec.push(en);else state.spec.splice(i,1);renderSpec();}
+function renderTags(){
+  $('tagBox').innerHTML=state.tags.map((t,i)=>`<span class="tagc">${esc(t)}<i class="ti ti-x" onclick="delTag(${i})"></i></span>`).join('')||'<span class="muted">아직 태그가 없어요</span>';
+}
+function tagKey(e){if(e.key==='Enter'||e.key===','){e.preventDefault();const v=(e.target.value||'').trim();if(v&&state.tags.length<8&&state.tags.indexOf(v)<0)state.tags.push(v);e.target.value='';renderTags();}}
+function delTag(i){state.tags.splice(i,1);renderTags();}
+
+async function saveProfile(){
+  const btn=$('saveProfileBtn');btn.disabled=true;
+  try{
+    const insta=(($('f_insta').value||'').trim()).replace(/^@/,'').replace(/^https?:\/\/(www\.)?instagram\.com\//i,'').replace(/[/?#].*$/,'');
+    const shop=Object.assign({},ME.shop||{},{
+      name:($('f_shop').value||'').trim(), area:($('f_area').value||'').trim(),
+      avatar:state.avatar, photos:state.photos, career:($('f_career').value||'').trim(),
+      specialties:state.spec.slice(), tags:state.tags.slice(),
+      insta:insta, naver:($('f_naver').value||'').trim(), blog:($('f_blog').value||'').trim()
+    });
+    const payload={id:UID, nickname:($('f_name').value||'').trim(), role:'designer',
+      region:($('f_region').value||'').trim(), bio:($('f_bio').value||'').trim(), shop:shop};
+    const {error}=await SB.from('profiles').upsert(payload);
+    if(error){toast('저장 실패: '+error.message);btn.disabled=false;return;}
+    ME.shop=shop;ME.nickname=payload.nickname;ME.region=payload.region;ME.bio=payload.bio;
+    toast('저장됐어요 ✓');
+  }catch(e){toast('오류: '+e.message);}
+  btn.disabled=false;
+}
+
+// ---------- 이미지 업로드 ----------
+async function uploadImg(file,asPng){
+  const ext=asPng?'png':((file.name.split('.').pop()||'jpg').toLowerCase().replace('jpeg','jpg'));
+  const path=UID+'/'+Date.now()+'-'+Math.random().toString(36).slice(2,8)+'.'+ext;
+  const {error}=await SB.storage.from('beautia').upload(path,file,{contentType:file.type||('image/'+(ext==='jpg'?'jpeg':ext)),upsert:false});
+  if(error)throw error;
+  return SB.storage.from('beautia').getPublicUrl(path).data.publicUrl;
+}
+// 로고 여백 자동 제거 → Blob(png)
+function trimWhite(file){return new Promise((res,rej)=>{const img=new Image();img.onload=function(){
+  const W=img.naturalWidth,H=img.naturalHeight;const c=document.createElement('canvas');c.width=W;c.height=H;const x=c.getContext('2d');x.drawImage(img,0,0);
+  const d=x.getImageData(0,0,W,H).data;let mnx=W,mny=H,mxx=0,mxy=0;
+  for(let y=0;y<H;y++)for(let xx=0;xx<W;xx++){const i=(y*W+xx)*4;if(d[i]<238||d[i+1]<238||d[i+2]<238){if(xx<mnx)mnx=xx;if(xx>mxx)mxx=xx;if(y<mny)mny=y;if(y>mxy)mxy=y;}}
+  if(mxx<=mnx){res(file);return;}
+  const bw=mxx-mnx,bh=mxy-mny,cx=(mnx+mxx)/2,cy=(mny+mxy)/2,side=Math.max(bw,bh)*1.10;
+  const sx=Math.max(0,cx-side/2),sy=Math.max(0,cy-side/2),ss=Math.min(side,W-sx,H-sy);
+  const o=document.createElement('canvas');o.width=800;o.height=800;const ox=o.getContext('2d');ox.fillStyle='#fff';ox.fillRect(0,0,800,800);ox.imageSmoothingQuality='high';ox.drawImage(img,sx,sy,ss,ss,0,0,800,800);
+  o.toBlob(b=>res(b||file),'image/png',0.95);
+};img.onerror=()=>res(file);img.src=URL.createObjectURL(file);});}
+
+async function onAvatar(input){
+  const f=input.files&&input.files[0];if(!f)return;input.value='';
+  toast('업로드 중…');
+  try{
+    let file=f,png=false;
+    if($('trimLogo').checked){file=await trimWhite(f);png=true;}
+    const url=await uploadImg(file,png);state.avatar=url;updateAvPreview();toast('사진 올렸어요. 저장을 눌러 반영하세요.');
+  }catch(e){toast('업로드 실패: '+(e.message||e));}
+}
+async function onPfFiles(input){
+  const files=Array.from(input.files||[]);if(!files.length)return;input.value='';
+  toast(files.length+'장 업로드 중…');
+  for(const f of files){try{const url=await uploadImg(f,false);state.photos.push(url);}catch(e){toast('일부 실패: '+(e.message||e));}}
+  renderPf();toast('올렸어요. 포트폴리오 저장을 눌러 반영하세요.');
+}
+function renderPf(){
+  const g=$('pfGrid');
+  g.innerHTML=state.photos.map((u,i)=>`<div class="pfitem"><img src="${esc(u)}">
+    <div class="pact"><button onclick="delPf(${i})" title="삭제"><i class="ti ti-trash"></i></button></div>
+    <div class="ord">${i>0?`<button onclick="movePf(${i},-1)"><i class="ti ti-chevron-left"></i></button>`:''}${i<state.photos.length-1?`<button onclick="movePf(${i},1)"><i class="ti ti-chevron-right"></i></button>`:''}</div>
+  </div>`).join('')||'<div class="empty"><i class="ti ti-photo"></i>아직 사진이 없어요</div>';
+}
+function delPf(i){state.photos.splice(i,1);renderPf();}
+function movePf(i,d){const j=i+d;if(j<0||j>=state.photos.length)return;const t=state.photos[i];state.photos[i]=state.photos[j];state.photos[j]=t;renderPf();}
+async function savePortfolio(){
+  const btn=$('savePfBtn');btn.disabled=true;
+  const shop=Object.assign({},ME.shop||{},{photos:state.photos});
+  const {error}=await SB.from('profiles').upsert({id:UID,nickname:ME.nickname,role:'designer',region:ME.region,bio:ME.bio,shop});
+  if(error){toast('저장 실패: '+error.message);}else{ME.shop=shop;toast('포트폴리오 저장됨 ✓');}
+  btn.disabled=false;
+}
+
+// ---------- 예약 ----------
+async function loadBookings(){
+  const el=$('bkList');
+  let rows=null;
+  try{rows=(await SB.from('bookings').select('*').eq('designer',UID).order('created_at',{ascending:false})).data;}catch(e){}
+  if(!rows){el.innerHTML='<div class="empty"><i class="ti ti-calendar"></i>예약 정보를 불러올 수 없어요</div>';return;}
+  if(!rows.length){el.innerHTML='<div class="empty"><i class="ti ti-calendar"></i>아직 받은 예약이 없어요</div>';return;}
+  const statusL={pending:'대기중',accepted:'수락됨',done:'완료',completed:'완료',declined:'거절됨'};
+  const statusC={pending:'st-pending',accepted:'st-accepted',done:'st-done',completed:'st-done',declined:'st-declined'};
+  el.innerHTML=rows.map(b=>{
+    const st=b.status||'pending';
+    const when=[b.date,b.time].filter(Boolean).join(' ');
+    const acts=st==='pending'?`<button class="btn sm" onclick="setBk('${b.id}','accepted')">수락</button> <button class="btn ghost sm" onclick="setBk('${b.id}','declined')">거절</button>`
+      :(st==='accepted'?`<button class="btn sm" onclick="setBk('${b.id}','completed')">완료 처리</button>`:'');
+    return `<div class="bk"><div class="bkinfo"><div class="bkname">${esc(b.service||b.customer_name||'예약')}</div>
+      <div class="bkmeta">${esc(when||'')}${b.note?' · '+esc(b.note):''}</div><div style="margin-top:8px">${acts}</div></div>
+      <span class="bkbadge ${statusC[st]||'st-pending'}">${statusL[st]||st}</span></div>`;
+  }).join('');
+}
+async function setBk(id,status){
+  const {error}=await SB.from('bookings').update({status}).eq('id',id);
+  if(error){toast('처리 실패: '+error.message);return;}
+  toast('처리됐어요 ✓');loadBookings();
+}
+
+// ---------- 탭 ----------
+function tab(t){
+  document.querySelectorAll('.tab').forEach(b=>b.classList.toggle('on',b.dataset.tab===t));
+  ['profile','portfolio','bookings'].forEach(s=>$('sec-'+s).classList.toggle('hide',s!==t));
+  window.scrollTo({top:0});
+}
+
+// ---------- 부팅 ----------
+(async()=>{
+  const {data:{session}}=await SB.auth.getSession();
+  if(session&&session.user)await afterLogin(session.user);
+})();
+</script>
+</body></html>
