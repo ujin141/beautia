@@ -736,8 +736,7 @@ function renderBanner(){var el=document.getElementById('fbanner');if(!el)return;
  el.classList.add('on');
  el.innerHTML=`<div class="fbslides" id="fbslides">${s.map(function(x,i){return `<div class="fbslide${i===0?' on':''}" onclick="openD('${x.did}')" style="background-image:url('${im(x.img,900)}')"><div class="fbsc"></div>
     <div class="fbtext"><div class="fbkick">${T[LANG].fbKick}</div><div class="fbname">${esc(x.name)}</div><div class="fbmeta">${esc(x.cat)}${x.city?' · '+esc(x.city):''}</div></div>
-    <button class="fbcta" onclick="event.stopPropagation();openD('${x.did}')">${T[LANG].fbView||'포트폴리오 보기'} <i class="ti ti-arrow-right"></i></button></div>`;}).join('')}</div>
-  ${s.length>1?`<div class="fbdots">${s.map(function(_,i){return `<span class="${i===0?'on':''}" onclick="fbGo(${i})"></span>`;}).join('')}</div>`:''}`;
+    <button class="fbcta" onclick="event.stopPropagation();openD('${x.did}')">${T[LANG].fbView||'포트폴리오 보기'} <i class="ti ti-arrow-right"></i></button></div>`;}).join('')}${s.length>1?`<div class="fbdots">${s.map(function(_,i){return `<span class="${i===0?'on':''}" onclick="fbGo(${i})"></span>`;}).join('')}</div>`:''}</div>`;
  fbIdx=0;if(fbTimer)clearInterval(fbTimer);if(s.length>1)fbTimer=setInterval(function(){fbGo((fbIdx+1)%s.length);},4000);}
 function fbGo(i){var sl=document.querySelectorAll('#fbanner .fbslide'),dt=document.querySelectorAll('#fbanner .fbdots span');if(!sl.length)return;fbIdx=i;sl.forEach(function(e,k){e.classList.toggle('on',k===i);});dt.forEach(function(e,k){e.classList.toggle('on',k===i);});}
 function render(){renderBanner();renderStories();
@@ -797,6 +796,7 @@ function openD(did,keep){const d=dById(did);if(!d)return;curD=did;const gi=D.ind
  const handles=Object.assign({},d.handles||(d.insta?{instagram:d.insta}:{}));
  const snsHtml=Object.keys(SNSBASE).map(function(p){var h=igClean(handles[p]||'');return h?`<a href="${SNSBASE[p]}${h}" target="_blank" rel="noopener"><i class="ti ${SNSMETA[p][0]}"></i></a>`:'';}).join('');
  const naverHtml=(d.naver&&/^https?:\/\//.test(d.naver))?`<a href="${d.naver}" target="_blank" rel="noopener" class="sns-nv" title="네이버 예약">N</a>`:'';
+ const blogHtml=(d.blog&&/^https?:\/\//.test(d.blog))?`<a href="${d.blog}" target="_blank" rel="noopener" class="sns-nv" title="블로그"><i class="ti ti-notebook"></i></a>`:'';
  $('dsheet').innerHTML=`
  <div class="dbody">
   <div class="dhero" style="background-image:url('${im(d.works[0],900)}')"><div class="sc"></div>
@@ -820,7 +820,7 @@ function openD(did,keep){const d=dById(did);if(!d)return;curD=did;const gi=D.ind
   ${(d.services&&d.services.length)?`<div class="dsec"><div class="st">${T[LANG].svcTitle}</div>${d.services.map((s,i)=>`<div class="svc"><div class="svci"><div class="svcn">${esc(s.n)}</div><div class="svcm">${s.du?esc(s.du)+' · ':''}<b>${esc(s.p)}</b></div></div>${d.uid&&!d.isMe?`<button class="svcbk" onclick="openBook('${d.id}',${i})">${T[LANG].book2}</button>`:''}</div>`).join('')}</div>`:''}
   <div class="dsec"><div class="st">${T[LANG].portfolio}</div><div class="dgrid">${d.works.map(w=>`<img src="${im(w,500)}" loading="lazy" onclick="window.open('${im(w,1200)}','_blank')">`).join('')}</div></div>
   <div class="dsec" id="revsec"><div class="st">${T[LANG].reviews} · ${esc(d.rev)}</div>${d.reviews.map((r,i)=>`<div class="rev"><div class="ra" style="background:${GR[(gi+i)%GR.length]}">${esc((r.n||'?')[0])}</div><div><div class="rn">${esc(r.n)}</div><div class="rs">${stars(r.s)}</div><div class="rt">${esc(r.t)}</div></div></div>`).join('')}</div>
-  ${(snsHtml||naverHtml)?`<div class="dsec" style="border:none"><div class="st">${T[LANG].connect}</div><div class="sns">${snsHtml}${naverHtml}</div></div>`:''}
+  ${(snsHtml||naverHtml||blogHtml)?`<div class="dsec" style="border:none"><div class="st">${T[LANG].connect}</div><div class="sns">${snsHtml}${naverHtml}${blogHtml}</div></div>`:''}
  </div>
  <div class="dfoot">
    <button class="cbtn save ${fav?'on':''}" onclick="toggleSave('${d.id}_0',event)"><i class="ti ti-heart${fav?'-filled':''}"></i><span>${fav?T[LANG].saved2:T[LANG].save}</span></button>
@@ -895,11 +895,20 @@ function idSaveOverlay(url){var ov=document.createElement('div');ov.className='i
  ov.addEventListener('click',function(e){if(e.target===ov||(e.target.className&&e.target.className.indexOf('idsave-x')>=0))close();});
  document.body.appendChild(ov);}
 function dlId(){if(typeof html2canvas==='undefined'){toast(T[LANG].idFail);return;}toast(T[LANG].idPrep);
+ var mob=/Android|iPhone|iPad|iPod/i.test(navigator.userAgent||'')||(navigator.maxTouchPoints>1&&/Macintosh/.test(navigator.userAgent||''));
  renderIdCanvas().then(function(cv){cv.toBlob(function(blob){
    if(!blob){toast(T[LANG].idFail);return;}
    var fname='beautia-id-'+idDid+'.png';var url=URL.createObjectURL(blob);
-   var mob=/Android|iPhone|iPad|iPod/i.test(navigator.userAgent||'')||(navigator.maxTouchPoints>1&&/Macintosh/.test(navigator.userAgent||''));
-   if(mob){idSaveOverlay(url);return;}   // 모바일: iOS <a download> 미지원 → 이미지 꾹 눌러 저장
+   if(mob){
+     // 모바일: 네이티브 공유 시트로 "사진 저장/공유"(iOS는 <a download>·blob 길게눌러저장이 막힘)
+     try{var file=new File([blob],fname,{type:'image/png'});
+       if(navigator.canShare&&navigator.canShare({files:[file]})){
+         navigator.share({files:[file],title:'Beautia ID'}).catch(function(err){if(!err||err.name!=='AbortError')idSaveOverlay(url);});
+         return;
+       }
+     }catch(e){}
+     idSaveOverlay(url); return;   // 공유 미지원 → 이미지 꾹 눌러 저장
+   }
    var a=document.createElement('a');a.href=url;a.download=fname;document.body.appendChild(a);a.click();a.remove();setTimeout(function(){URL.revokeObjectURL(url);},5000);
  },'image/png');}).catch(function(){toast(T[LANG].idFail);});}
 // 네컷 카드를 1200x630 OG 이미지로 합성(흐린 카드 배경 + 가운데 선명한 카드) → <uid>/card.png 저장
@@ -1274,7 +1283,7 @@ async function loadDesigners(){try{
       city:p.region||s.area||'',area:s.area||'',flag:roleIn(p.role)==='desg'?'🎨':'✨',
       rating:5.0,rev:0,years:s.career||'',ko_ok:1,ver:1,
       spec:(s.specialties&&s.specialties.length)?s.specialties:((p.interests&&p.interests.length)?p.interests:['Hair']),
-      bio:p.bio||'',avatar:s.avatar||p.avatar_url||'',insta:(s.insta||'').replace(/^@/,''),naver:s.naver||'',
+      bio:p.bio||'',avatar:s.avatar||p.avatar_url||'',insta:(s.insta||'').replace(/^@/,''),naver:s.naver||'',blog:s.blog||'',
       handles:s.sns||(s.insta?{instagram:(s.insta||'').replace(/^@/,'')}:{}),
       works:photos,ba:[photos[0],photos[Math.min(1,photos.length-1)]],
       sns:Object.keys(s.sns||{}).filter(function(k){return (s.sns||{})[k];}),services:(s.services||[]),tags:s.tags||[],shopName:s.name||'',reviews:[]});
