@@ -402,6 +402,10 @@ body.mlock{position:fixed;left:0;right:0;width:100%;overflow:hidden;}
 .dhfollow i{font-size:17px;}
 .dhfollow.on{background:rgba(255,255,255,.16);color:#fff;box-shadow:inset 0 0 0 1.5px rgba(255,255,255,.75);backdrop-filter:blur(4px);}
 .dhfollow:hover{filter:brightness(1.05);}
+.dgfollowbar{grid-column:1/-1;display:flex;gap:8px;margin-bottom:2px;}
+.dgfb{display:inline-flex;align-items:center;gap:6px;font-size:13.5px;font-weight:800;padding:9px 16px;border-radius:999px;border:1px solid var(--line);background:#fff;color:var(--ink2);cursor:pointer;font-family:inherit;transition:.14s;}
+.dgfb.on{background:var(--plum);color:#fff;border-color:var(--plum);}
+.dgfb i{font-size:15px;}
 /* 이번 주 인기 스타일 */
 .popwrap{margin:2px 0 20px;}
 .popwrap.off{display:none;}
@@ -699,7 +703,7 @@ function allD(){const m=meDesigner();var others=DUSERS.filter(function(d){return
 function dById(id){return allD().find(d=>d.id===id);}
 function openByUid(uid){if(!uid)return false;var d=allD().find(function(x){return x.uid===uid;});if(d){openD(d.id);return true;}return false;}
 let TILES=[];
-function buildTiles(){TILES=[];allD().forEach(d=>d.works.forEach((w,i)=>TILES.push({wid:d.id+'_'+i,did:d.id,img:workImg(w),text:workText(w),cat:d.cat,city:d.city,area:d.area,name:d.name,flag:d.flag,rating:d.rating,featured:d.featured,insta:d.insta})));}
+function buildTiles(){TILES=[];allD().forEach(d=>d.works.forEach((w,i)=>TILES.push({wid:d.id+'_'+i,did:d.id,uid:d.uid||'',img:workImg(w),text:workText(w),cat:d.cat,city:d.city,area:d.area,name:d.name,flag:d.flag,rating:d.rating,featured:d.featured,insta:d.insta})));}
 const HYB={
  ko:{popular:'이번 주 인기 스타일',popularSub:'지금 가장 주목받는 포트폴리오',book:'바로 예약',prof:'프로필',viewProfile:'프로필 보기',verified:'인증 디자이너',reviews:'후기',fast:'빠른 예약 가능'},
  en:{popular:'Trending styles this week',popularSub:'Most-loved portfolios right now',book:'Book',prof:'Profile',viewProfile:'View profile',verified:'Verified',reviews:'reviews',fast:'Instant booking'},
@@ -710,7 +714,7 @@ function renderPopular(){var el=$('popwrap');if(!el)return;
  var show=(VIEW==='explore'&&CAT==='All'&&!(($('q').value||'').trim())&&!$('city').value);
  // 디자이너 중복 없이(1명당 카드 1개), 인기순 정렬
  var ds=show?allD().filter(function(d){return d.works&&d.works.length;}):[];
- ds=ds.slice().sort(function(a,b){return ((b.featured?1:0)-(a.featured?1:0))||((parseFloat(b.rating)||0)-(parseFloat(a.rating)||0))||((b.works?b.works.length:0)-(a.works?a.works.length:0));}).slice(0,12);
+ ds=ds.slice().sort(function(a,b){return ((isFollowing(b.uid)?1:0)-(isFollowing(a.uid)?1:0))||((b.featured?1:0)-(a.featured?1:0))||((parseFloat(b.rating)||0)-(parseFloat(a.rating)||0))||((b.works?b.works.length:0)-(a.works?a.works.length:0));}).slice(0,12);
  if(!show||ds.length<3){el.classList.add('off');el.innerHTML='';return;}
  el.classList.remove('off');var L=hyb();
  el.innerHTML='<div class="pophead"><h3 class="serif">'+esc(L.popular)+'</h3><span class="popsub">'+esc(L.popularSub)+'</span></div>'+
@@ -770,11 +774,12 @@ function toggleSave(w,ev){if(ev)ev.stopPropagation();const i=SAVED.indexOf(w);
  render();if(curD)openD(curD,true);}
 // ===== 디자이너 팔로우 (손님) — 로컬 저장 + 로그인 시 DB 동기화 =====
 let FOLLOWS=JSON.parse(localStorage.getItem('beautia_coll_follows')||'[]');
+let dgFollowOnly=false;
 const isFollowing=uid=>!!uid&&FOLLOWS.includes(uid);
 function saveFollowLocal(){try{localStorage.setItem('beautia_coll_follows',JSON.stringify(FOLLOWS));}catch(e){}}
 function followBtnHtml(uid,cls){if(!uid)return '';var on=isFollowing(uid);return `<button class="followBtn ${cls||''}${on?' on':''}" data-follow="${uid}" onclick="toggleFollow('${uid}',event)"><i class="ti ${on?'ti-user-check':'ti-user-plus'}"></i><span class="flbl">${on?T[LANG].following:T[LANG].follow}</span></button>`;}
 function syncFollowBtns(){document.querySelectorAll('.followBtn[data-follow]').forEach(function(b){var uid=b.getAttribute('data-follow');var on=isFollowing(uid);b.classList.toggle('on',on);var l=b.querySelector('.flbl');if(l)l.textContent=on?T[LANG].following:T[LANG].follow;var ic=b.querySelector('i');if(ic)ic.className='ti '+(on?'ti-user-check':'ti-user-plus');});}
-async function loadFollows(){if(!ME||!ME.uid)return;try{var rows=(await SB.from('follows').select('designer').eq('follower',ME.uid)).data||[];var remote=rows.map(function(r){return r.designer;});var localOnly=FOLLOWS.filter(function(u){return remote.indexOf(u)<0;});if(localOnly.length){try{await SB.from('follows').upsert(localOnly.map(function(u){return {follower:ME.uid,designer:u};}));}catch(e){}remote=remote.concat(localOnly);}FOLLOWS=remote;saveFollowLocal();syncFollowBtns();}catch(e){}}
+async function loadFollows(){if(!ME||!ME.uid)return;try{var rows=(await SB.from('follows').select('designer').eq('follower',ME.uid)).data||[];var remote=rows.map(function(r){return r.designer;});var localOnly=FOLLOWS.filter(function(u){return remote.indexOf(u)<0;});if(localOnly.length){try{await SB.from('follows').upsert(localOnly.map(function(u){return {follower:ME.uid,designer:u};}));}catch(e){}remote=remote.concat(localOnly);}FOLLOWS=remote;saveFollowLocal();try{render();}catch(e){syncFollowBtns();}}catch(e){}}
 function toggleFollow(uid,ev){if(ev)ev.stopPropagation();if(!uid)return;
  var i=FOLLOWS.indexOf(uid);
  if(i<0){FOLLOWS.push(uid);toast(T[LANG].followedT);if(ME&&ME.uid){try{SB.from('follows').upsert({follower:ME.uid,designer:uid}).then(function(){},function(){});}catch(e){}}}
@@ -818,7 +823,7 @@ function renderStories(){var el=document.getElementById('stories');if(!el)return
  el.innerHTML=allD().map(function(d){var nm=(LANG==='ko'&&d.ko)?d.ko:d.name;var img=safeUrl(d.avatar||'')||(d.works&&d.works.length?im(d.works[0],200):'');
   return `<div class="sty" onclick="openD('${d.id}')"><div class="ring"><div style="${img?`background-image:url('${img}')`:`background:${gradFor(nm)}`}">${img?'':esc((nm||'?')[0])}</div></div><div class="sn">${esc(nm)}</div></div>`;}).join('');}
 let fbTimer=null,fbIdx=0;
-function bannerSlides(){var out=[];allD().forEach(function(d){(d.works||[]).slice(0,2).forEach(function(w){out.push({did:d.id,name:(LANG==='ko'&&d.ko)?d.ko:d.name,cat:cl(d.cat),city:d.city||'',img:workImg(w)});});});return out;}
+function bannerSlides(){var out=[];var ds=allD();if(FOLLOWS.length)ds=ds.slice().sort(function(a,b){return (isFollowing(b.uid)?1:0)-(isFollowing(a.uid)?1:0);});ds.forEach(function(d){(d.works||[]).slice(0,2).forEach(function(w){out.push({did:d.id,name:(LANG==='ko'&&d.ko)?d.ko:d.name,cat:cl(d.cat),city:d.city||'',img:workImg(w)});});});return out;}
 function renderBanner(){var el=document.getElementById('fbanner');if(!el)return;
  if(VIEW!=='explore'){el.classList.remove('on');el.innerHTML='';if(fbTimer){clearInterval(fbTimer);fbTimer=null;}return;}
  var s=bannerSlides();if(!s.length){el.classList.remove('on');return;}
@@ -842,6 +847,7 @@ function render(){renderBanner();renderStories();renderPopular();
  if(VIEW==='saved'){list=TILES.filter(t=>isSaved(t.wid));}
  else list=TILES.filter(t=>(CAT==='All'||t.cat===CAT)&&(!city||t.city===city)&&(!q||(t.name+t.cat+t.city+t.area).toLowerCase().includes(q)));
  if(USERLOC&&VIEW!=='saved'&&!city){list=list.slice().sort(function(x,y){return distOf(x.city)-distOf(y.city);});}
+ if(VIEW!=='saved'&&FOLLOWS.length){list=list.slice().sort(function(x,y){return (isFollowing(y.uid)?1:0)-(isFollowing(x.uid)?1:0);});}
  if(!list.length){g.innerHTML=`<div class="empty"><i class="ti ti-${VIEW==='saved'?'heart':'search'}"></i><p>${VIEW==='saved'?T[LANG].emptyS:T[LANG].noRes}</p></div>`;return;}
  g.innerHTML=list.map(tileHtml).join('');
 }
@@ -850,9 +856,12 @@ function renderDesigners(q,city){var g=$('grid');g.classList.add('dgview');
  if(CAT!=='All')ds=ds.filter(function(d){return d.cat===CAT;});
  if(city)ds=ds.filter(function(d){return d.city===city;});
  if(q)ds=ds.filter(function(d){return (d.name+(d.ko||'')+d.cat+(d.city||'')+(d.area||'')+(d.spec||[]).join('')).toLowerCase().includes(q);});
+ if(dgFollowOnly)ds=ds.filter(function(d){return isFollowing(d.uid);});
  if(USERLOC&&!city)ds=ds.slice().sort(function(x,y){return distOf(x.city)-distOf(y.city);});
- if(!ds.length){g.innerHTML=`<div class="empty"><i class="ti ti-search"></i><p>${T[LANG].noRes}</p></div>`;return;}
- g.innerHTML=ds.map(function(d){var nm=(LANG==='ko'&&d.ko)?d.ko:d.name;var thumbs=d.works.slice(0,3);var L=hyb();
+ if(FOLLOWS.length&&!dgFollowOnly)ds=ds.slice().sort(function(a,b){return (isFollowing(b.uid)?1:0)-(isFollowing(a.uid)?1:0);});
+ var fbar=FOLLOWS.length?`<div class="dgfollowbar"><button class="dgfb${dgFollowOnly?'':' on'}" onclick="dgFollowOnly=false;render()">${T[LANG].dgAll}</button><button class="dgfb${dgFollowOnly?' on':''}" onclick="dgFollowOnly=true;render()"><i class="ti ti-user-check"></i> ${T[LANG].following} ${FOLLOWS.length}</button></div>`:'';
+ if(!ds.length){g.innerHTML=fbar+`<div class="empty" style="grid-column:1/-1"><i class="ti ti-user-heart"></i><p>${dgFollowOnly?T[LANG].noFollowing:T[LANG].noRes}</p></div>`;return;}
+ g.innerHTML=fbar+ds.map(function(d){var nm=(LANG==='ko'&&d.ko)?d.ko:d.name;var thumbs=d.works.slice(0,3);var L=hyb();
   var rev=parseInt(d.rev||d.reviews||0,10)||0;
   var badges=[d.ver?`<span class="tb tb-v"><i class="ti ti-rosette-discount-check-filled"></i> ${esc(L.verified)}</span>`:'',
     rev>0?`<span class="tb"><i class="ti ti-message-star"></i> ${esc(L.reviews)} ${rev}</span>`:'',
@@ -1103,9 +1112,9 @@ document.addEventListener('keydown',e=>{if(e.key==='Escape'){closeBk();closeFa()
 Object.assign(T.en,{idCard:'ID Card',idDl:'Download',idShare:'Share',idPrep:'Creating image…',idFail:'Download failed (try Share)',linkCopied:'Link copied ✨',saveHint:'Press & hold the image to save it 📥',done:'Done',idKind:'ID CARD',idScan:'SCAN TO VIEW & BOOK',fbKick:'Featured work',fbView:'View portfolio'});
 Object.assign(T.ko,{idCard:'ID 카드',idDl:'다운로드',idShare:'공유',idPrep:'이미지 만드는 중…',idFail:'다운로드 실패 (공유로 시도)',linkCopied:'링크 복사됨 ✨',saveHint:'이미지를 꾹 눌러 저장하세요 📥',done:'닫기',idKind:'ID 카드',idScan:'스캔해서 예약하기',fbKick:'추천 작업',fbView:'포트폴리오 보기'});
 Object.assign(T.ja,{idCard:'IDカード',idDl:'保存',idShare:'シェア',idPrep:'画像を作成中…',idFail:'保存失敗（シェアでお試し）',linkCopied:'リンクをコピー ✨',saveHint:'画像を長押しして保存してください 📥',done:'閉じる',idKind:'IDカード',idScan:'スキャンして予約',fbKick:'注目の作品',fbView:'ポートフォリオを見る'});
-Object.assign(T.en,{follow:'Follow',following:'Following',followedT:'Following ✓',unfollowedT:'Unfollowed',signup:'Sign up',followers:'followers'});
-Object.assign(T.ko,{follow:'팔로우',following:'팔로잉',followedT:'팔로우했어요 ✓',unfollowedT:'팔로우 취소',signup:'회원가입',followers:'팔로워'});
-Object.assign(T.ja,{follow:'フォロー',following:'フォロー中',followedT:'フォローしました ✓',unfollowedT:'フォロー解除',signup:'会員登録',followers:'フォロワー'});
+Object.assign(T.en,{follow:'Follow',following:'Following',followedT:'Following ✓',unfollowedT:'Unfollowed',signup:'Sign up',followers:'followers',dgAll:'All',noFollowing:"You're not following anyone yet"});
+Object.assign(T.ko,{follow:'팔로우',following:'팔로잉',followedT:'팔로우했어요 ✓',unfollowedT:'팔로우 취소',signup:'회원가입',followers:'팔로워',dgAll:'전체',noFollowing:'아직 팔로우한 디자이너가 없어요'});
+Object.assign(T.ja,{follow:'フォロー',following:'フォロー中',followedT:'フォローしました ✓',unfollowedT:'フォロー解除',signup:'会員登録',followers:'フォロワー',dgAll:'すべて',noFollowing:'まだ誰もフォローしていません'});
 // 태국어: 영어 전체를 상속받고 주요 문자열만 태국어로 (누락 키는 영어로 자동 폴백)
 T.th=Object.assign({},T.en,{
  explore:'สำรวจ',designers:'ดีไซเนอร์',saved:'บันทึกไว้',join:'สมัคร',my:'ฉัน',messages:'ข้อความ',
