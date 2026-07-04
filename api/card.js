@@ -31,10 +31,10 @@ export default async function handler(req, res) {
   const og = (await exists(cardImg)) ? cardImg : (firstWork || av || `${SITE}/og-default.png`);
   const appUrl = `/community?u=${encodeURIComponent(u)}`;
   const canon = `${SITE}/c/${encodeURIComponent(u)}`;
-  const title = `${nick}님의 BEAUTIA ID 카드`;
-  const desc = (pr.bio && pr.bio.trim()) ? pr.bio.trim().slice(0, 110) : `${nick}님의 뷰티 ID 카드 — Beautia 한·일 뷰티 커뮤니티에서 프로필·단골 정보 보기`;
+  const title = `${nick} · BEAUTIA ID card`;
+  const desc = (pr.bio && pr.bio.trim()) ? pr.bio.trim().slice(0, 110) : `${nick}'s beauty ID card on Beautia — discover beauty designers worldwide and book directly.`;
 
-  const html = `<!DOCTYPE html><html lang="ko"><head>
+  const html = `<!DOCTYPE html><html lang="en"><head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>${esc(title)}</title>
 <meta name="description" content="${esc(desc)}">
@@ -61,7 +61,7 @@ a.btn{margin-top:22px;display:inline-flex;align-items:center;gap:6px;background:
 <img class="card-img" src="${esc(og)}" alt="${esc(title)}">
 <h1>${esc(title)}</h1>
 <p>${esc(desc)}</p>
-<a class="btn" href="${esc(appUrl)}">프로필 보러가기 →</a>
+<a class="btn" href="${esc(appUrl)}">View profile →</a>
 <script>setTimeout(function(){location.replace(${JSON.stringify(appUrl)});},1200);</script>
 </body></html>`;
 
@@ -71,5 +71,5 @@ a.btn{margin-top:22px;display:inline-flex;align-items:center;gap:6px;background:
 }
 
 function page404() {
-  return `<!DOCTYPE html><html lang="ko"><head><meta charset="utf-8"><title>카드를 찾을 수 없어요 - Beautia</title><meta name="robots" content="noindex"><link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css"></head><body style="font-family:Pretendard,sans-serif;text-align:center;padding:80px 20px"><h1 style="font-size:22px">카드를 찾을 수 없어요</h1><p style="margin-top:10px;color:#888">삭제되었거나 없는 프로필일 수 있어요.</p><a style="margin-top:20px;display:inline-block;color:#6D4346;font-weight:700" href="/community">커뮤니티로</a></body></html>`;
+  return `<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><title>Card not found - Beautia</title><meta name="robots" content="noindex"><link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css"></head><body style="font-family:Pretendard,sans-serif;text-align:center;padding:80px 20px"><h1 style="font-size:22px">Card not found</h1><p style="margin-top:10px;color:#888">This profile may have been removed.</p><a style="margin-top:20px;display:inline-block;color:#6D4346;font-weight:700" href="/community">Browse designers →</a></body></html>`;
 }
