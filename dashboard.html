@@ -277,6 +277,17 @@ textarea.inp{resize:vertical;min-height:80px;line-height:1.6;}
       <div class="bkcal" id="bkCal"></div>
     </div>
     <div class="card">
+      <button class="btn ghost" onclick="toggleAddBk()"><i class="ti ti-plus"></i> 직접 예약 추가 <span class="hint" style="display:inline;font-weight:600">· 네이버·전화·워크인 등</span></button>
+      <div id="addBkForm" class="hide" style="margin-top:14px">
+        <div class="row"><label>손님 이름</label><input class="inp" id="mbName" placeholder="예: 홍길동"></div>
+        <div class="two"><div class="row"><label>날짜</label><input class="inp" id="mbDate" type="date"></div>
+        <div class="row"><label>시간</label><input class="inp" id="mbTime" type="time"></div></div>
+        <div class="row"><label>서비스</label><input class="inp" id="mbSvc" placeholder="예: 컷+펌"></div>
+        <div class="row"><label>메모 (선택)</label><input class="inp" id="mbNote" placeholder="예: 네이버예약 / 연락처 등"></div>
+        <button class="btn" id="mbAddBtn" onclick="addManualBk()"><i class="ti ti-calendar-plus"></i> 캘린더에 추가</button>
+      </div>
+    </div>
+    <div class="card">
       <h2 id="bkListTitle">받은 예약</h2><div class="hint">수락·완료 처리하세요.</div>
       <div id="bkList"></div>
     </div>
@@ -554,6 +565,22 @@ function renderBkCalendar(){
 }
 function bkCalMove(dir){bkCal.setMonth(bkCal.getMonth()+dir);renderBkCalendar();}
 function bkPickDate(ds){bkSelDate=(bkSelDate===ds)?'':ds;renderBkCalendar();renderBkList();}
+function toggleAddBk(){var f=$('addBkForm');if(f)f.classList.toggle('hide');}
+async function addManualBk(){
+  var name=($('mbName').value||'').trim(),date=$('mbDate').value,time=$('mbTime').value,svc=($('mbSvc').value||'').trim(),note=($('mbNote').value||'').trim();
+  if(!date){toast('날짜를 선택하세요');return;}
+  var noteFull=[name?('👤 '+name):'',note].filter(Boolean).join(' · ');
+  var btn=$('mbAddBtn');btn.disabled=true;
+  try{
+    var res=await SB.from('bookings').insert({designer:UID,customer:UID,service:svc||'예약',date:date,time:time||'',note:noteFull,status:'accepted'}).select('id');
+    if(res.error){toast('추가 실패: '+res.error.message);btn.disabled=false;return;}
+    if(!res.data||!res.data.length){toast('⚠️ 추가 안 됨 — 권한(RLS) 필요. Supabase에서 db_setup_all.sql 실행');btn.disabled=false;return;}
+    toast('캘린더에 추가됐어요 ✓');
+    ['mbName','mbSvc','mbNote','mbTime'].forEach(function(id){var e=$(id);if(e)e.value='';});
+    try{var dt=new Date(date);bkCal=new Date(dt.getFullYear(),dt.getMonth(),1);bkSelDate=date;}catch(e){}
+    $('mbDate').value='';toggleAddBk();loadBookings();
+  }catch(e){toast('오류: '+e.message);btn.disabled=false;}
+}
 function renderBkList(){
   const el=$('bkList');if(!el)return;
   if(bkRows===null){el.innerHTML='<div class="empty"><i class="ti ti-calendar"></i>예약 정보를 불러올 수 없어요</div>';return;}
