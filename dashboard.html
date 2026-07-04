@@ -667,7 +667,7 @@ function renderBkList(){
     const st=b.status||'pending';
     const when=[b.date,b.time].filter(Boolean).join(' ');
     const acts=st==='pending'?`<button class="btn sm" onclick="setBk('${b.id}','accepted')">수락</button> <button class="btn ghost sm" onclick="setBk('${b.id}','declined')">거절</button>`
-      :(st==='accepted'?`<button class="btn sm" onclick="setBk('${b.id}','completed')">완료 처리</button>`:'');
+      :(st==='accepted'?`<button class="btn sm" onclick="setBk('${b.id}','done')">완료 처리</button>`:'');
     return `<div class="bk"><div class="bkinfo"><div class="bkname">${esc(bkSvcName(b))}</div>
       <div class="bkmeta">${esc(when||'')}${b.note?' · '+esc(b.note):''}</div><div style="margin-top:8px">${acts}</div></div>
       <span class="bkbadge ${statusC[st]||'st-pending'}">${statusL[st]||st}</span></div>`;
