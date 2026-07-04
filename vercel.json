@@ -3,6 +3,11 @@
   "trailingSlash": false,
   "redirects": [
     { "source": "/", "destination": "/community", "permanent": false },
+    { "source": "/community_admin", "destination": "/admin", "permanent": false },
+    { "source": "/community_admin.html", "destination": "/admin", "permanent": false },
+    { "source": "/community-admin", "destination": "/admin", "permanent": false },
+    { "source": "/owner", "destination": "/admin", "permanent": false },
+    { "source": "/owner.html", "destination": "/admin", "permanent": false },
     { "source": "/landing", "destination": "/community", "permanent": true },
     { "source": "/landing.html", "destination": "/community", "permanent": true },
     { "source": "/info", "destination": "/community", "permanent": true },
