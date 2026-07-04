@@ -594,6 +594,12 @@ body.mlock{position:fixed;left:0;right:0;width:100%;overflow:hidden;}
 .apqr{flex:0 0 auto;text-align:center;}
 .apqr img{width:86px;height:86px;border-radius:11px;display:block;border:1px solid var(--line);}
 .apqr span{display:block;font-size:10.5px;color:var(--sub);font-weight:700;margin-top:5px;}
+/* 디자이너 등록 신청 */
+.dapfs{display:flex;flex-wrap:wrap;gap:8px;margin-top:2px;}
+.dapf{position:relative;width:64px;height:64px;border-radius:12px;background:var(--soft) center/cover;border:1px solid var(--line);}
+.dapf button{position:absolute;top:-6px;right:-6px;width:22px;height:22px;border-radius:50%;background:var(--ink);color:#fff;border:2px solid #fff;font-size:13px;line-height:1;cursor:pointer;}
+.dapadd{width:64px;height:64px;border-radius:12px;border:2px dashed var(--accent);background:var(--rosebg);color:var(--plum);display:flex;align-items:center;justify-content:center;font-size:22px;cursor:pointer;}
+.daok{display:flex;align-items:center;gap:8px;background:var(--rosebg);color:var(--plum);font-weight:800;font-size:14px;padding:16px;border-radius:14px;margin-top:14px;}
 @media(max-width:860px){.apppop{display:none!important;}}
 .toast.on{opacity:1;transform:translateX(-50%);}
 
@@ -672,6 +678,7 @@ body.mlock{position:fixed;left:0;right:0;width:100%;overflow:hidden;}
   <div class="sf-in">
     <div class="sf-brand"><img src="logo-mark.png" alt="" class="sf-logo"><span>BEAUTIA</span></div>
     <nav class="sf-links">
+      <a onclick="openDesignerApply()" style="cursor:pointer;color:var(--plum);font-weight:800" data-t="applyDesigner">Become a designer</a>
       <a href="terms.html" target="_blank" rel="noopener" data-t="footTerms">Terms</a>
       <a href="privacy.html" target="_blank" rel="noopener" data-t="footPrivacy">Privacy</a>
       <a href="mailto:hello@beautia.io" data-t="footContact">Contact</a>
@@ -691,6 +698,7 @@ body.mlock{position:fixed;left:0;right:0;width:100%;overflow:hidden;}
 <div class="lmodal" id="lmodal" onclick="if(event.target===this)closeLogin()"><div class="lcard" id="lcard"></div></div>
 <div class="idmodal" id="idmodal" onclick="if(event.target===this)closeId()"><div class="idwrap" id="idwrap"><div class="idcard" id="idcard"></div><div class="idcfg" id="idcfg"></div><div class="idbtns"><button class="pri" onclick="dlId()"><i class="ti ti-download"></i> <span id="idDlT">Download</span></button><button onclick="shareId()"><i class="ti ti-link"></i> <span id="idShT">Share</span></button><button onclick="closeId()"><i class="ti ti-x"></i></button></div></div></div>
 <div class="pfmodal" id="pfmodal" onclick="if(event.target===this)closePf()"><div class="pfcard" id="pfcard"></div></div>
+<div class="lmodal" id="damodal" onclick="if(event.target===this)closeDApply()"><div class="lcard" id="dacard" style="text-align:left"></div></div>
 <div class="apppop" id="apppop">
   <button class="apx" onclick="dismissAppPop()" aria-label="close">×</button>
   <div class="apic"><img src="logo-mark.png" alt="Beautia"></div>
@@ -1161,6 +1169,9 @@ Object.assign(T.ja,{idCard:'IDカード',idDl:'保存',idShare:'シェア',idPre
 Object.assign(T.en,{follow:'Follow',following:'Following',followedT:'Following ✓',unfollowedT:'Unfollowed',signup:'Sign up',followers:'followers',dgAll:'All',noFollowing:"You're not following anyone yet",noPwHint:'No password needed — just log in with the code sent to your email.',codeSentTo:'Code sent to {email}',spamHint:"Can't find it? Check your spam folder, or tap Resend.",newBadge:'New',newWorkToast:'{n} designer(s) you follow posted new work ✨',appTitle:'Get the Beautia app',appSub:'Add it to your home screen and get new-work alerts.',appInstall:'Install',appScan:'Scan on your phone'});
 Object.assign(T.ko,{follow:'팔로우',following:'팔로잉',followedT:'팔로우했어요 ✓',unfollowedT:'팔로우 취소',signup:'회원가입',followers:'팔로워',dgAll:'전체',noFollowing:'아직 팔로우한 디자이너가 없어요',noPwHint:'비밀번호가 필요 없어요 — 이메일로 받은 코드로 로그인해요.',codeSentTo:'{email} 로 인증코드를 보냈어요',spamHint:'메일이 안 보이면 스팸함을 확인하거나 재전송을 눌러주세요.',newBadge:'새 작업',newWorkToast:'팔로우한 디자이너 {n}명이 새 작업을 올렸어요 ✨',appTitle:'Beautia 앱으로 더 편하게',appSub:'휴대폰 홈 화면에 추가하고 새 작업 알림까지 받아보세요.',appInstall:'설치하기',appScan:'휴대폰으로 스캔'});
 Object.assign(T.ja,{follow:'フォロー',following:'フォロー中',followedT:'フォローしました ✓',unfollowedT:'フォロー解除',signup:'会員登録',followers:'フォロワー',dgAll:'すべて',noFollowing:'まだ誰もフォローしていません',noPwHint:'パスワード不要 — メールに届いたコードでログインします。',codeSentTo:'{email} に認証コードを送りました',spamHint:'メールが届かない場合は迷惑メールを確認するか、再送を押してください。',newBadge:'新着',newWorkToast:'フォロー中のデザイナー{n}名が新作を投稿しました ✨',appTitle:'Beautiaアプリをどうぞ',appSub:'ホーム画面に追加して新作の通知も受け取れます。',appInstall:'インストール',appScan:'スマホでスキャン'});
+Object.assign(T.en,{applyDesigner:'Become a designer',applyTitle:'Apply as a designer',applySub:'Once approved, you can showcase your work and get clients.',applyPortfolio:'Portfolio photos',applyMsg:'Message (optional)',applyMsgPh:'Tell us about yourself…',applySubmit:'Submit application',applyLogin:'Please log in to apply',applyAlreadyDesigner:"You're already a designer",applyPending:'Already applied · under review ⏳',applyDone:"Applied! We'll review and get back to you ✨",applyFail:'Failed to apply',applyNeedRegion:'Enter your area',applyNeedSpec:'Choose your specialty',applyNeedProof:'Add your Instagram or portfolio photos',uploading:'Uploading…'});
+Object.assign(T.ko,{applyDesigner:'디자이너 등록하기',applyTitle:'디자이너 등록 신청',applySub:'승인되면 작업을 보여주고 손님을 받을 수 있어요.',applyPortfolio:'포트폴리오 사진',applyMsg:'한마디 (선택)',applyMsgPh:'소개나 하고 싶은 말을 적어주세요…',applySubmit:'신청하기',applyLogin:'로그인 후 신청할 수 있어요',applyAlreadyDesigner:'이미 디자이너예요',applyPending:'이미 신청하셨어요 · 검토 중입니다 ⏳',applyDone:'신청 완료! 검토 후 알려드릴게요 ✨',applyFail:'신청 실패',applyNeedRegion:'지역을 입력해주세요',applyNeedSpec:'전문분야를 선택해주세요',applyNeedProof:'인스타그램 또는 포트폴리오 사진을 넣어주세요',uploading:'업로드 중…'});
+Object.assign(T.ja,{applyDesigner:'デザイナー登録',applyTitle:'デザイナー登録申請',applySub:'承認されると作品を掲載して集客できます。',applyPortfolio:'ポートフォリオ写真',applyMsg:'ひとこと（任意）',applyMsgPh:'自己紹介などをどうぞ…',applySubmit:'申請する',applyLogin:'ログイン後に申請できます',applyAlreadyDesigner:'すでにデザイナーです',applyPending:'申請済み・審査中です ⏳',applyDone:'申請完了！審査後にお知らせします ✨',applyFail:'申請失敗',applyNeedRegion:'エリアを入力してください',applyNeedSpec:'専門分野を選択してください',applyNeedProof:'Instagramまたはポートフォリオ写真を入れてください',uploading:'アップロード中…'});
 // 태국어: 영어 전체를 상속받고 주요 문자열만 태국어로 (누락 키는 영어로 자동 폴백)
 T.th=Object.assign({},T.en,{
  explore:'สำรวจ',designers:'ดีไซเนอร์',saved:'บันทึกไว้',join:'สมัคร',my:'ฉัน',messages:'ข้อความ',
@@ -1253,6 +1264,7 @@ function toggleUmenu(e){if(e)e.stopPropagation();const m=$('umenu');m.classList.
  <a onclick="setView('saved');closeUmenu()"><i class="ti ti-heart"></i> ${T[LANG].saved}</a>
  <a onclick="enablePush()"><i class="ti ti-bell-ringing"></i> ${T[LANG].notifOn}</a>
  ${window.matchMedia&&window.matchMedia('(display-mode: standalone)').matches?'':`<a onclick="installApp()"><i class="ti ti-device-mobile-plus"></i> ${T[LANG].installApp}</a>`}
+ ${ME&&ME.role!=='designer'?`<a onclick="closeUmenu();openDesignerApply()"><i class="ti ti-briefcase"></i> ${T[LANG].applyDesigner}</a>`:''}
  <a onclick="logout();closeUmenu()"><i class="ti ti-logout"></i> ${T[LANG].logout}</a>`;
  m.classList.add('on');
  var av=$('avatar'),r=av.getBoundingClientRect();
@@ -1261,6 +1273,56 @@ function closeUmenu(){var m=$('umenu');m.classList.remove('on');m.classList.remo
 
 function openLogin(r){SU={role:'cust',name:'',country:'',city:'',spec:[],tags:[],career:'',avatar:'',sns:{},contact:'',verified:false,code:'',tos:false,priv:false,mktg:false,provider:'email',step:1,edit:false};renderSU();$('lmodal').classList.add('on');}
 function closeLogin(){$('lmodal').classList.remove('on');}
+// ===== 디자이너 등록 신청 =====
+let DA={name:'',shop:'',region:'',spec:'',insta:'',career:'',contact:'',message:'',photos:[],busy:false,already:false};
+async function openDesignerApply(){
+ if(!(ME&&ME.uid)){toast(T[LANG].applyLogin);openLogin('');return;}
+ if(ME.role==='designer'){toast(T[LANG].applyAlreadyDesigner);return;}
+ var em='';try{var ss=(await SB.auth.getSession()).data.session;em=ss&&ss.user?(ss.user.email||''):'';}catch(e){}
+ DA={name:ME.name||'',shop:ME.shopName||'',region:ME.city||ME.country||'',spec:'',insta:ME.insta||'',career:'',contact:em,message:'',photos:[],busy:false,already:false};
+ renderDApply();$('damodal').classList.add('on');
+ try{var r=(await SB.from('designer_applications').select('id,status').eq('uid',ME.uid).eq('status','pending').limit(1)).data;if(r&&r.length){DA.already=true;renderDApply();}}catch(e){}
+}
+function closeDApply(){$('damodal').classList.remove('on');}
+function daToggleSpec(c){DA.spec=(DA.spec===c)?'':c;daSync();renderDApply();}
+function daSync(){[['daName','name'],['daShop','shop'],['daRegion','region'],['daInsta','insta'],['daCareer','career'],['daContact','contact'],['daMsg','message']].forEach(function(p){var el=$(p[0]);if(el)DA[p[1]]=el.value;});}
+async function daPhotos(input){var files=Array.prototype.slice.call(input.files||[]);input.value='';if(!files.length)return;daSync();toast(T[LANG].uploading);
+ for(var i=0;i<files.length;i++){if(DA.photos.length>=8)break;var f=files[i];try{var url=await new Promise(function(res){var rd=new FileReader();rd.onload=function(){uploadOne(rd.result).then(res,function(){res('');});};rd.onerror=function(){res('');};rd.readAsDataURL(f);});if(url&&url.indexOf('data:')!==0)DA.photos.push(url);else if(url)DA.photos.push(url);}catch(e){}}
+ renderDApply();}
+function daDelPhoto(i){daSync();DA.photos.splice(i,1);renderDApply();}
+function renderDApply(){var el=$('dacard');if(!el)return;
+ if(DA.already){el.innerHTML=`<button class="iclose" onclick="closeDApply()" style="position:absolute;top:18px;right:22px;font-size:24px;color:var(--sub);z-index:2">×</button><h3 class="serif">${T[LANG].applyTitle}</h3><div class="daok"><i class="ti ti-clock-hour-4"></i> ${T[LANG].applyPending}</div>`;return;}
+ var chips=CATS.slice(1).map(function(c){return `<span class="wchip ${DA.spec===c?'on':''}" onclick="daToggleSpec('${c}')">${cl(c)}</span>`;}).join('');
+ var pf=DA.photos.map(function(u,i){return `<div class="dapf" style="background-image:url('${im(u,240)}')"><button onclick="daDelPhoto(${i})">×</button></div>`;}).join('');
+ el.innerHTML=`<button class="iclose" onclick="closeDApply()" style="position:absolute;top:18px;right:22px;font-size:24px;color:var(--sub);z-index:2">×</button>
+  <h3 class="serif">${T[LANG].applyTitle}</h3>
+  <div class="secnote" style="margin:2px 0 10px">${T[LANG].applySub}</div>
+  <div class="il">${T[LANG].nick}</div><input class="linput" id="daName" value="${esc(DA.name)}" maxlength="40">
+  <div class="il">${T[LANG].shopName}</div><input class="linput" id="daShop" value="${esc(DA.shop)}" maxlength="60" placeholder="${T[LANG].shopNamePh}">
+  <div class="il">${T[LANG].shopArea}</div><input class="linput" id="daRegion" value="${esc(DA.region)}" maxlength="80" placeholder="${T[LANG].shopAreaPh}">
+  <div class="il">${T[LANG].specialties}</div><div class="chiprow">${chips}</div>
+  <div class="il">Instagram</div><input class="linput" id="daInsta" value="${esc(DA.insta)}" placeholder="@handle">
+  <div class="il">${T[LANG].career}</div><input class="linput" id="daCareer" value="${esc(DA.career)}" placeholder="${T[LANG].careerPh}">
+  <div class="il">${T[LANG].contact}</div><input class="linput" id="daContact" value="${esc(DA.contact)}" placeholder="${T[LANG].contactPh}">
+  <div class="il">${T[LANG].applyPortfolio}</div><div class="dapfs">${pf}${DA.photos.length<8?`<label class="dapadd" for="daPfFile"><i class="ti ti-plus"></i></label>`:''}</div>
+  <input type="file" id="daPfFile" accept="image/*" multiple style="display:none" onchange="daPhotos(this)">
+  <div class="il">${T[LANG].applyMsg}</div><textarea class="linput" id="daMsg" rows="2" style="resize:none" placeholder="${T[LANG].applyMsgPh}">${esc(DA.message)}</textarea>
+  <button class="lcont" style="width:100%;margin-top:16px" onclick="submitDesignerApply()"><i class="ti ti-send"></i> ${T[LANG].applySubmit}</button>`;
+}
+async function submitDesignerApply(){daSync();
+ if(!DA.name.trim()){toast(T[LANG].needNick);return;}
+ if(!DA.region.trim()){toast(T[LANG].applyNeedRegion);return;}
+ if(!DA.spec){toast(T[LANG].applyNeedSpec);return;}
+ if(!DA.insta.trim()&&!DA.photos.length){toast(T[LANG].applyNeedProof);return;}
+ if(DA.busy)return;DA.busy=true;
+ try{
+  var insta=DA.insta.trim().replace(/^@/,'').replace(/^https?:\/\/(www\.)?instagram\.com\//i,'').replace(/[/?#].*$/,'');
+  var res=await SB.from('designer_applications').insert({uid:ME.uid,name:DA.name.trim(),shop_name:DA.shop.trim(),region:DA.region.trim(),area:DA.region.trim(),specialty:DA.spec,insta:insta,career:DA.career.trim(),contact:DA.contact.trim(),message:DA.message.trim(),photos:DA.photos,status:'pending'});
+  if(res.error){toast(T[LANG].applyFail+': '+res.error.message);DA.busy=false;return;}
+  closeDApply();toast(T[LANG].applyDone);
+ }catch(e){toast(T[LANG].applyFail+': '+(e.message||e));}
+ DA.busy=false;
+}
 function suSteps(){return [1,2,3];}
 function renderSU(){const steps=suSteps(),idx=steps.indexOf(SU.step);
  const dots=steps.map((s,i)=>`<span class="dot ${i<=idx?'on':''}"></span>`).join('');

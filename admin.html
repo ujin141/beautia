@@ -42,6 +42,13 @@ button{cursor:pointer;border:none;background:none;font-family:inherit;}
 .tabs{display:flex;gap:7px;margin-bottom:16px;flex-wrap:wrap;}
 .tab{flex:1;min-width:0;font-size:13.5px;font-weight:800;padding:11px 4px;border-radius:11px;border:1px solid var(--line);background:#fff;color:var(--ink2);text-align:center;}
 .tab.on{background:var(--plum);color:#fff;border-color:var(--plum);}
+.tbadge{display:inline-flex;align-items:center;justify-content:center;min-width:18px;height:18px;padding:0 5px;margin-left:5px;border-radius:999px;background:var(--red);color:#fff;font-size:11px;font-weight:800;vertical-align:1px;}
+.apcard .apinfo{display:flex;flex-wrap:wrap;gap:8px 16px;margin-top:9px;}
+.apilink{display:inline-flex;align-items:center;gap:5px;font-size:12.5px;font-weight:700;color:var(--ink2);}
+.apilink i{font-size:15px;color:var(--accent);}
+.apthumbs{display:flex;flex-wrap:wrap;gap:7px;margin-top:11px;}
+.apthumb{width:66px;height:66px;border-radius:10px;background:var(--soft) center/cover;border:1px solid var(--line);cursor:zoom-in;}
+.apact{display:flex;gap:8px;justify-content:flex-end;margin-top:13px;}
 .searchbar{display:flex;gap:9px;margin-bottom:14px;}
 .searchbar .inp{flex:1;}
 .dlist{display:grid;grid-template-columns:repeat(auto-fill,minmax(255px,1fr));gap:12px;}
@@ -147,6 +154,7 @@ textarea.inp{resize:vertical;min-height:70px;line-height:1.5;}
     </div>
     <div class="tabs">
       <button class="tab on" id="tab-designers" onclick="tab('designers')">디자이너 관리</button>
+      <button class="tab" id="tab-applications" onclick="tab('applications')">신청<span class="tbadge hide" id="appBadge"></span></button>
       <button class="tab" id="tab-bookings" onclick="tab('bookings')">예약</button>
       <button class="tab" id="tab-reviews" onclick="tab('reviews')">후기</button>
     </div>
@@ -157,6 +165,7 @@ textarea.inp{resize:vertical;min-height:70px;line-height:1.5;}
       <div class="dlist" id="dlist"></div>
     </div>
 
+    <div id="sec-applications" class="hide"><div class="note" style="margin-bottom:12px"><i class="ti ti-info-circle"></i> 승인하면 신청자 계정이 <b>디자이너로 전환</b>되고 포트폴리오·정보가 프로필에 채워집니다.</div><div class="rowlist" id="aplist"></div></div>
     <div id="sec-bookings" class="hide"><div class="rowlist" id="bklist"></div></div>
     <div id="sec-reviews" class="hide"><div class="rowlist" id="rvlist"></div></div>
   </div>
@@ -230,7 +239,61 @@ async function loadAll(){
     };});
     PMAP={};DESIGNERS.forEach(d=>PMAP[d.id]=d);
     DESIGNERS.sort((a,b)=>((b.photos.length>0)-(a.photos.length>0))||(new Date(b.created)-new Date(a.created)));
-    renderStats();renderList();loadBookings();loadReviews();
+    renderStats();renderList();loadBookings();loadReviews();loadApplications();
+  }catch(e){toast('오류: '+e.message);}
+}
+let APPS=[];
+async function loadApplications(){
+  try{
+    const {data,error}=await SB.from('designer_applications').select('*').eq('status','pending').order('created_at',{ascending:false}).limit(200);
+    if(error){renderApplications(error.message);return;}
+    APPS=data||[];const b=$('appBadge');if(b){if(APPS.length){b.textContent=APPS.length;b.classList.remove('hide');}else b.classList.add('hide');}
+    renderApplications();
+  }catch(e){renderApplications(e.message);}
+}
+function renderApplications(err){
+  const box=$('aplist');if(!box)return;
+  if(err){box.innerHTML='<div class="empty"><i class="ti ti-lock"></i><p>신청을 불러올 수 없어요<br><span style="font-size:12px">db_enable_designer_applications.sql 실행 필요</span></p></div>';return;}
+  if(!APPS.length){box.innerHTML='<div class="empty"><i class="ti ti-inbox"></i><p>대기 중인 신청이 없어요</p></div>';return;}
+  const catKoL={Hair:'헤어',Makeup:'메이크업',Nail:'네일',Lash:'속눈썹',Skin:'스킨',Bridal:'브라이덜'};
+  box.innerHTML=APPS.map((a,idx)=>{
+    const photos=(a.photos||[]).slice(0,6).map(u=>`<div class="apthumb" style="background-image:url('${esc(u)}')" onclick="window.open('${esc(u)}','_blank')"></div>`).join('');
+    const meta=[catKoL[a.specialty]||a.specialty,a.region,a.career].filter(Boolean).join(' · ');
+    return `<div class="li apcard">
+      <div class="lh"><div><div class="ln">${esc(a.name||'신청자')} ${a.shop_name?`<span style="color:var(--sub);font-weight:600">· ${esc(a.shop_name)}</span>`:''}</div>
+        <div class="ls">${esc(meta||'—')}</div></div><span class="lbadge y">대기</span></div>
+      <div class="apinfo">${a.insta?`<a href="https://instagram.com/${esc(a.insta)}" target="_blank" class="apilink"><i class="ti ti-brand-instagram"></i> @${esc(a.insta)}</a>`:''}${a.contact?`<span class="apilink"><i class="ti ti-mail"></i> ${esc(a.contact)}</span>`:''}</div>
+      ${a.message?`<div class="ls" style="margin-top:8px;line-height:1.5">📝 ${esc(a.message)}</div>`:''}
+      ${photos?`<div class="apthumbs">${photos}</div>`:'<div class="ls" style="margin-top:8px;color:var(--sub)">첨부 사진 없음 (인스타 확인)</div>'}
+      <div class="apact"><button class="mini g" onclick="rejectApp(${idx})">거절</button><button class="mini" onclick="approveApp(${idx})"><i class="ti ti-check"></i> 승인</button></div>
+    </div>`;
+  }).join('');
+}
+async function approveApp(idx){
+  const a=APPS[idx];if(!a)return;
+  if(!confirm((a.name||'신청자')+' 님을 디자이너로 승인할까요?'))return;
+  try{
+    // 신청자 프로필을 디자이너로 전환 + 정보 채우기
+    const {data:pr}=await SB.from('profiles').select('shop').eq('id',a.uid).maybeSingle();
+    const shop=Object.assign({},(pr&&pr.shop)||{},{
+      name:a.shop_name||'', area:a.area||a.region||'', specialties:a.specialty?[a.specialty]:[],
+      photos:(a.photos||[]).filter(Boolean), career:a.career||'', insta:(a.insta||'').replace(/^@/,''), hidden:false
+    });
+    const {error:e1}=await SB.from('profiles').update({role:'designer',nickname:a.name||undefined,region:a.region||'',bio:a.message||'',shop}).eq('id',a.uid);
+    if(e1){toast('승인 실패: '+e1.message);return;}
+    const {error:e2}=await SB.from('designer_applications').update({status:'approved'}).eq('id',a.id);
+    if(e2){toast('상태 업데이트 실패: '+e2.message);}
+    toast('승인됐어요 ✓ 디자이너로 전환됨');
+    loadApplications();loadAll();
+  }catch(e){toast('오류: '+e.message);}
+}
+async function rejectApp(idx){
+  const a=APPS[idx];if(!a)return;
+  if(!confirm((a.name||'신청자')+' 님 신청을 거절할까요?'))return;
+  try{
+    const {error}=await SB.from('designer_applications').update({status:'rejected'}).eq('id',a.id);
+    if(error){toast('거절 실패: '+error.message);return;}
+    toast('거절 처리됨');loadApplications();
   }catch(e){toast('오류: '+e.message);}
 }
 function renderStats(){
@@ -426,7 +489,7 @@ function renderReviews(err){
 }
 
 function tab(t){
-  ['designers','bookings','reviews'].forEach(x=>{$('sec-'+x).classList.toggle('hide',x!==t);$('tab-'+x).classList.toggle('on',x===t);});
+  ['designers','applications','bookings','reviews'].forEach(x=>{$('sec-'+x).classList.toggle('hide',x!==t);$('tab-'+x).classList.toggle('on',x===t);});
 }
 
 (async function(){
