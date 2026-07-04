@@ -519,9 +519,15 @@ async function saveProfile(){
 
 // ---------- 이미지 업로드 ----------
 async function uploadImg(file,asPng){
-  const ext=asPng?'png':((file.name.split('.').pop()||'jpg').toLowerCase().replace('jpeg','jpg'));
+  // 이미지 화이트리스트: 확장자·content-type을 신뢰하지 않고 안전값으로 강제
+  // (text/html 등 임의 파일을 스토리지에 호스팅하는 것 차단)
+  const OK={jpg:'image/jpeg',jpeg:'image/jpeg',png:'image/png',webp:'image/webp',gif:'image/gif'};
+  let ext=asPng?'png':((file.name.split('.').pop()||'jpg').toLowerCase());
+  if(ext==='jpeg')ext='jpg';
+  const ctype=OK[ext];
+  if(!ctype){toast('이미지 파일(jpg·png·webp·gif)만 올릴 수 있어요');throw new Error('invalid file type');}
   const path=UID+'/'+Date.now()+'-'+Math.random().toString(36).slice(2,8)+'.'+ext;
-  const {error}=await SB.storage.from('beautia').upload(path,file,{contentType:file.type||('image/'+(ext==='jpg'?'jpeg':ext)),upsert:false});
+  const {error}=await SB.storage.from('beautia').upload(path,file,{contentType:ctype,upsert:false});
   if(error)throw error;
   return SB.storage.from('beautia').getPublicUrl(path).data.publicUrl;
 }

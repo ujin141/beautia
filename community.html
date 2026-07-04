@@ -1514,7 +1514,7 @@ async function refreshOwner(){try{var u=(await SB.auth.getUser()).data.user;if(M
 async function loadFeatured(){try{var rows=(await SB.from('featured').select('*').order('created_at',{ascending:false})).data;if(!rows)return;FEATURED.length=0;rows.forEach(function(r){FEATURED.push({insta:r.insta,cat:r.cat,city:r.city,area:r.area,imgs:r.imgs||[]});});buildTiles();render();}catch(e){}}
 // 가입한 모든 디자이너(포트폴리오 있는 프로필)를 갤러리에 로드
 async function loadDesigners(){try{
-  var rows=(await SB.from('profiles').select('id,nickname,role,region,bio,interests,shop,avatar_url,full_name,created_at').limit(300)).data;
+  var rows=(await SB.from('profiles').select('id,nickname,role,region,bio,interests,shop,avatar_url,created_at').limit(300)).data;
   if(!rows)return;
   var list=[];
   rows.forEach(function(p){
@@ -1522,7 +1522,7 @@ async function loadDesigners(){try{
     var s=p.shop||{};var photos=(s.photos||[]).filter(Boolean);
     if(!photos.length)return;                                       // 포폴 없는 프로필 제외
     if(s.hidden)return;                                             // 오너가 숨김 처리한 디자이너 제외
-    list.push({id:'u_'+p.id,uid:p.id,name:p.nickname||s.name||p.full_name||'Designer',ko:'',
+    list.push({id:'u_'+p.id,uid:p.id,name:p.nickname||s.name||'Designer',ko:'',
       cat:canonCat((s.specialties&&s.specialties[0])||(p.interests&&p.interests[0])||''),
       city:p.region||s.area||'',area:s.area||'',flag:roleIn(p.role)==='desg'?'🎨':'✨',
       rating:5.0,rev:0,years:s.career||'',ko_ok:1,ver:1,

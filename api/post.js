@@ -19,7 +19,7 @@ export default async function handler(req, res) {
   const p = rows && rows[0];
   if (!p) { res.status(404).setHeader('Content-Type', 'text/html; charset=utf-8'); res.end(page404()); return; }
 
-  const profs = p.author ? await sb(`profiles?id=eq.${p.author}&select=nickname,role,shop`) : null;
+  const profs = p.author ? await sb(`profiles?id=eq.${encodeURIComponent(p.author)}&select=nickname,role,shop`) : null;
   const author = (profs && profs[0]) || {};
   const nick = author.nickname || p.nickname || '익명';
   const comments = await sb(`comments?post_id=eq.${encodeURIComponent(id)}&select=nickname,content,created_at&order=created_at.asc`) || [];

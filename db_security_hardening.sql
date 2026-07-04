@@ -65,8 +65,18 @@ drop trigger if exists bk_ratelimit_trg on public.bookings;
 create trigger bk_ratelimit_trg before insert on public.bookings
   for each row execute function public.bk_ratelimit();
 
+-- ========== 5) 실명(full_name) 익명 노출 차단 (컬럼 단위 권한) ==========
+--  익명 사용자가 anon 키로 모든 회원의 구글 실명을 대량 수집하는 것 차단.
+--  anon 은 full_name 을 뺀 컬럼만 조회 가능 / 로그인 사용자(authenticated)는 기존대로.
+--  ※ 이 SQL 실행 전에 community.html 이 full_name 을 안 부르도록 이미 배포됨(순서 안전).
+revoke select on public.profiles from anon;
+grant select (id, nickname, role, region, bio, interests, shop, avatar_url, created_at)
+  on public.profiles to anon;
+grant select on public.profiles to authenticated;
+
 -- 완료!
 --  ✔ 고객은 예약을 스스로 완료 처리 못 함 → 허위 리뷰 차단
+--  ✔ 익명 사용자는 회원 실명(full_name) 조회 불가
 --  ✔ 디자이너 셀프 예약은 리뷰 대상 아님 → 평점 조작 차단
 --  ✔ 중복·대량 예약 스팸 제한
 --  ✔ 대시보드 수기 예약(디자이너 본인)은 그대로 동작
