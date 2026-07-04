@@ -78,6 +78,21 @@ textarea.inp{resize:vertical;min-height:80px;line-height:1.6;}
 .bk .bkmeta{font-size:12.5px;color:var(--sub);margin-top:3px;}
 .bkbadge{font-size:11.5px;font-weight:800;padding:5px 10px;border-radius:999px;}
 .st-pending{background:#FFF3E0;color:#B8894A;}.st-accepted{background:#E7F3EE;color:var(--green);}.st-done{background:var(--soft);color:var(--sub);}.st-declined{background:#FBEBE9;color:var(--red);}
+.bkcalhead{display:flex;align-items:center;justify-content:space-between;}
+.bkcaltitle{font-size:16px;font-weight:800;color:var(--plum);}
+.calnav{width:34px;height:34px;border-radius:10px;border:1px solid var(--line);background:#fff;color:var(--ink2);display:flex;align-items:center;justify-content:center;font-size:18px;cursor:pointer;}
+.calrow{display:grid;grid-template-columns:repeat(7,1fr);gap:4px;}
+.calhead{margin-bottom:5px;}
+.calhead span{text-align:center;font-size:11.5px;font-weight:800;color:var(--sub);padding:2px 0;}
+.calcell{position:relative;aspect-ratio:1;display:flex;align-items:flex-start;justify-content:center;padding-top:6px;font-size:13px;font-weight:700;color:var(--ink2);border-radius:11px;cursor:pointer;transition:.12s;}
+.calcell.empty{pointer-events:none;}
+.calcell.has{color:var(--plum);font-weight:800;}
+.calcell.today{box-shadow:inset 0 0 0 1.5px var(--accent);}
+.calcell.sel{background:var(--plum);color:#fff;}
+.calcell.sel.has{color:#fff;}
+.calcell:not(.empty):not(.sel):hover{background:var(--soft);}
+.caldot{position:absolute;bottom:5px;left:50%;transform:translateX(-50%);min-width:15px;height:15px;padding:0 4px;border-radius:999px;background:var(--accent);color:#fff;font-size:10px;font-weight:800;display:flex;align-items:center;justify-content:center;line-height:1;}
+.calcell.sel .caldot{background:#fff;color:var(--plum);}
 .empty{text-align:center;color:var(--sub);padding:40px 0;font-size:14px;}
 .empty i{font-size:36px;display:block;margin-bottom:10px;opacity:.5;}
 .toast{position:fixed;left:50%;bottom:26px;transform:translateX(-50%) translateY(20px);background:var(--ink);color:#fff;padding:14px 24px;border-radius:999px;font-size:14px;font-weight:700;opacity:0;transition:.25s;z-index:90;pointer-events:none;box-shadow:0 14px 40px -10px rgba(0,0,0,.5);}
@@ -215,6 +230,7 @@ textarea.inp{resize:vertical;min-height:80px;line-height:1.6;}
       <div class="row"><label>인스타그램 아이디 (@ 없이)</label><input class="inp" id="f_insta" placeholder="예: challengehair1"></div>
       <div class="row"><label>네이버 플레이스 링크</label><input class="inp" id="f_naver" placeholder="https://m.place.naver.com/…"></div>
       <div class="row"><label>블로그 링크</label><input class="inp" id="f_blog" placeholder="https://blog.naver.com/…"></div>
+      <div class="row"><label>외부 예약 링크 <span class="hint" style="display:inline;font-weight:600">· 네이버예약·카카오 등</span></label><input class="inp" id="f_booking" placeholder="https://booking.naver.com/…"><div class="hint" style="margin-top:5px">넣으면 손님 프로필에 "예약하기" 버튼으로 연결돼요.</div></div>
     </div>
     <div class="card">
       <h2>서비스 · 가격</h2><div class="hint">프로필에 표시돼요. 고객이 예약할 때 참고합니다.</div>
@@ -256,7 +272,12 @@ textarea.inp{resize:vertical;min-height:80px;line-height:1.6;}
   <!-- 예약 -->
   <div id="sec-bookings" class="hide">
     <div class="card">
-      <h2>받은 예약</h2><div class="hint">고객이 신청한 예약을 확인하고 수락·완료 처리하세요.</div>
+      <div class="bkcalhead"><button class="calnav" onclick="bkCalMove(-1)"><i class="ti ti-chevron-left"></i></button><span id="bkCalTitle" class="bkcaltitle"></span><button class="calnav" onclick="bkCalMove(1)"><i class="ti ti-chevron-right"></i></button></div>
+      <div class="hint" style="margin:2px 0 10px">고객이 예약하면 날짜에 표시돼요. 날짜를 눌러 그날 예약을 확인하세요.</div>
+      <div class="bkcal" id="bkCal"></div>
+    </div>
+    <div class="card">
+      <h2 id="bkListTitle">받은 예약</h2><div class="hint">수락·완료 처리하세요.</div>
       <div id="bkList"></div>
     </div>
   </div>
@@ -372,6 +393,7 @@ function fillProfile(){
   $('f_insta').value=(s.insta||'').replace(/^@/,'');
   $('f_naver').value=s.naver||'';
   $('f_blog').value=s.blog||'';
+  $('f_booking').value=s.bookingUrl||'';
   updateAvPreview();
 }
 function updateAvPreview(){$('avPreview').style.backgroundImage=state.avatar?"url('"+state.avatar+"')":'';}
@@ -423,7 +445,7 @@ async function saveProfile(){
       name:($('f_shop').value||'').trim(), area:($('f_area').value||'').trim(),
       avatar:state.avatar, photos:state.photos, career:($('f_career').value||'').trim(),
       specialties:state.spec.slice(), tags:state.tags.slice(), services:state.services.slice(),
-      insta:insta, naver:($('f_naver').value||'').trim(), blog:($('f_blog').value||'').trim(),
+      insta:insta, naver:($('f_naver').value||'').trim(), blog:($('f_blog').value||'').trim(), bookingUrl:($('f_booking').value||'').trim(),
       ba:(state.ba&&state.ba.length===2&&state.ba[0]&&state.ba[1])?state.ba.slice():[]
     });
     // 새 작업이 추가되면 시각 기록 → 팔로워 앱에 '새 작업' 알림
@@ -507,16 +529,41 @@ async function savePortfolio(){
 }
 
 // ---------- 예약 ----------
+let bkCal=new Date(); bkCal.setDate(1);
+let bkSelDate='';
+function fmtYmd(dt){return dt.getFullYear()+'-'+String(dt.getMonth()+1).padStart(2,'0')+'-'+String(dt.getDate()).padStart(2,'0');}
 async function loadBookings(){
-  const el=$('bkList');
   let rows=null;
-  try{rows=(await SB.from('bookings').select('*').eq('designer',UID).order('created_at',{ascending:false})).data;}catch(e){}
-  bkRows=rows;if(rows){var el2=$('stBk');if(el2)el2.textContent=rows.length;}
-  if(!rows){el.innerHTML='<div class="empty"><i class="ti ti-calendar"></i>예약 정보를 불러올 수 없어요</div>';return;}
-  if(!rows.length){el.innerHTML='<div class="empty"><i class="ti ti-calendar"></i>아직 받은 예약이 없어요</div>';return;}
+  try{rows=(await SB.from('bookings').select('*').eq('designer',UID).order('date',{ascending:true})).data;}catch(e){}
+  bkRows=rows;var el2=$('stBk');if(el2&&rows)el2.textContent=rows.length;
+  renderBkCalendar();renderBkList();
+}
+function bkMap(){var m={};(bkRows||[]).forEach(function(b){if(b.date){(m[b.date]=m[b.date]||[]).push(b);}});return m;}
+function renderBkCalendar(){
+  var cal=$('bkCal');if(!cal)return;
+  if(bkRows===null){cal.innerHTML='<div class="hint">예약 정보를 불러올 수 없어요 (db_setup_all.sql 필요할 수 있어요)</div>';$('bkCalTitle').textContent='';return;}
+  var y=bkCal.getFullYear(),mo=bkCal.getMonth();
+  $('bkCalTitle').textContent=y+'년 '+(mo+1)+'월';
+  var startDow=new Date(y,mo,1).getDay(),days=new Date(y,mo+1,0).getDate();
+  var map=bkMap(),todayStr=fmtYmd(new Date());
+  var head='<div class="calrow calhead">'+['일','월','화','수','목','금','토'].map(function(d){return '<span>'+d+'</span>';}).join('')+'</div>';
+  var cells=[];for(var i=0;i<startDow;i++)cells.push('<span class="calcell empty"></span>');
+  for(var d=1;d<=days;d++){var ds=y+'-'+String(mo+1).padStart(2,'0')+'-'+String(d).padStart(2,'0');var n=(map[ds]||[]).length;var cls='calcell'+(ds===bkSelDate?' sel':'')+(ds===todayStr?' today':'')+(n?' has':'');cells.push('<span class="'+cls+'" onclick="bkPickDate(\''+ds+'\')">'+d+(n?'<b class="caldot">'+n+'</b>':'')+'</span>');}
+  var body='';for(var i=0;i<cells.length;i+=7){body+='<div class="calrow">'+cells.slice(i,i+7).join('')+'</div>';}
+  cal.innerHTML=head+body;
+}
+function bkCalMove(dir){bkCal.setMonth(bkCal.getMonth()+dir);renderBkCalendar();}
+function bkPickDate(ds){bkSelDate=(bkSelDate===ds)?'':ds;renderBkCalendar();renderBkList();}
+function renderBkList(){
+  const el=$('bkList');if(!el)return;
+  if(bkRows===null){el.innerHTML='<div class="empty"><i class="ti ti-calendar"></i>예약 정보를 불러올 수 없어요</div>';return;}
+  var rows=bkRows.slice();
+  if(bkSelDate){rows=rows.filter(function(b){return b.date===bkSelDate;});$('bkListTitle').textContent=bkSelDate+' 예약';}
+  else{$('bkListTitle').textContent='받은 예약 ('+bkRows.length+')';}
+  if(!rows.length){el.innerHTML='<div class="empty"><i class="ti ti-calendar"></i>'+(bkSelDate?'이 날은 예약이 없어요':'아직 받은 예약이 없어요')+'</div>';return;}
   const statusL={pending:'대기중',accepted:'수락됨',done:'완료',completed:'완료',declined:'거절됨'};
   const statusC={pending:'st-pending',accepted:'st-accepted',done:'st-done',completed:'st-done',declined:'st-declined'};
-  el.innerHTML=rows.map(b=>{
+  el.innerHTML=rows.map(function(b){
     const st=b.status||'pending';
     const when=[b.date,b.time].filter(Boolean).join(' ');
     const acts=st==='pending'?`<button class="btn sm" onclick="setBk('${b.id}','accepted')">수락</button> <button class="btn ghost sm" onclick="setBk('${b.id}','declined')">거절</button>`
