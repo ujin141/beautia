@@ -68,7 +68,7 @@ export default async function handler(req, res) {
   const heroImg = photos[0] || avatar || `${SITE}/og-cover.png`;
   const titleBits = [name, specText, cityEN].filter(Boolean);
   const title = `${titleBits.join(' · ')} | Beautia`;
-  const desc = (bio || `${name} — ${specText ? specText + ' ' : ''}${t.designer}${cityEN ? ' · ' + cityEN : ''}. ${t.portfolio}`).slice(0, 155);
+  const desc = `${name} — ${specText ? specText + ' ' : ''}${t.designer}${cityEN ? ' · ' + cityEN : ''}. Browse the portfolio and book on Beautia.`.slice(0, 155);
 
   // 다른 디자이너(내부 링크 그래프) — 최대 8명
   const others = (await sb(`profiles?role=eq.designer&id=neq.${encodeURIComponent(u)}&select=id,nickname,region,shop&limit=8`)) || [];
