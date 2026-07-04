@@ -89,6 +89,24 @@ language sql security definer stable as $$
 $$;
 grant execute on function public.designer_stats(uuid) to anon, authenticated;
 
+-- ========== 8) 찜(saves): 저장한 작업 — 로그인 시 기기 간 동기화 ==========
+--  (없으면 찜이 브라우저 localStorage 에만 저장됨. 이 테이블이 있어야 기기 간 공유)
+create table if not exists public.saves (
+  user_id    uuid not null references auth.users(id) on delete cascade,
+  wid        text not null,
+  created_at timestamptz not null default now(),
+  primary key (user_id, wid)
+);
+create index if not exists saves_user_idx on public.saves(user_id);
+grant select, insert, delete on public.saves to authenticated;
+alter table public.saves enable row level security;
+drop policy if exists saves_self_read on public.saves;
+create policy saves_self_read on public.saves for select to authenticated using (auth.uid() = user_id);
+drop policy if exists saves_self_insert on public.saves;
+create policy saves_self_insert on public.saves for insert to authenticated with check (auth.uid() = user_id);
+drop policy if exists saves_self_delete on public.saves;
+create policy saves_self_delete on public.saves for delete to authenticated using (auth.uid() = user_id);
+
 -- 완료!
 --  ✔ 고객은 예약을 스스로 완료 처리 못 함 → 허위 리뷰 차단
 --  ✔ 익명 사용자는 회원 실명(full_name) 조회 불가
