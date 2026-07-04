@@ -49,6 +49,16 @@ button{cursor:pointer;border:none;background:none;font-family:inherit;}
 .apthumbs{display:flex;flex-wrap:wrap;gap:7px;margin-top:11px;}
 .apthumb{width:66px;height:66px;border-radius:10px;background:var(--soft) center/cover;border:1px solid var(--line);cursor:zoom-in;}
 .apact{display:flex;gap:8px;justify-content:flex-end;margin-top:13px;}
+.baPreview{display:flex;gap:10px;margin-top:4px;}
+.baSlot{flex:1;position:relative;}
+.baTag{position:absolute;top:8px;left:8px;z-index:2;font-size:11px;font-weight:800;color:#fff;background:rgba(30,15,22,.62);padding:4px 10px;border-radius:999px;letter-spacing:.04em;}
+.baTag.after{background:var(--plum);}
+.baImg{width:100%;aspect-ratio:4/3;border-radius:12px;background:var(--soft) center/cover;border:1px solid var(--line);}
+.balabel{font-size:12px;font-weight:800;color:var(--ink2);margin-top:13px;margin-bottom:5px;}
+.baPick{display:grid;grid-template-columns:repeat(auto-fill,minmax(56px,1fr));gap:7px;}
+.baThumb{aspect-ratio:1;border-radius:10px;background:var(--soft) center/cover;border:2px solid transparent;cursor:pointer;transition:.12s;}
+.baThumb.on{border-color:var(--plum);box-shadow:0 0 0 2px var(--rosebg);}
+.baThumb:hover{filter:brightness(.95);}
 .searchbar{display:flex;gap:9px;margin-bottom:14px;}
 .searchbar .inp{flex:1;}
 .dlist{display:grid;grid-template-columns:repeat(auto-fill,minmax(255px,1fr));gap:12px;}
@@ -235,6 +245,7 @@ async function loadAll(){
       shop:s, avatar:s.avatar||p.avatar_url||'', photos:(s.photos||[]).filter(Boolean),
       spec:(s.specialties&&s.specialties.length)?s.specialties.slice():[], tags:(s.tags||[]).slice(), services:(s.services||[]).slice(),
       shopName:s.name||'', area:s.area||'', career:s.career||'', insta:(s.insta||'').replace(/^@/,''), naver:s.naver||'', blog:s.blog||'',
+      ba:(s.ba&&s.ba.length===2&&s.ba[0]&&s.ba[1])?s.ba.slice():[],
       hidden:!!s.hidden, created:p.created_at||''
     };});
     PMAP={};DESIGNERS.forEach(d=>PMAP[d.id]=d);
@@ -340,7 +351,7 @@ function openEdit(id){
   const d=PMAP[id];if(!d)return;
   ed={id:d.id, nickname:d.nickname, region:d.region, bio:d.bio, shopName:d.shopName, area:d.area, career:d.career,
       insta:d.insta, naver:d.naver, blog:d.blog, avatar:d.avatar, photos:d.photos.slice(),
-      spec:d.spec.slice(), tags:d.tags.slice(), services:d.services.map(s=>Object.assign({},s)), hidden:d.hidden, shop:d.shop};
+      spec:d.spec.slice(), tags:d.tags.slice(), services:d.services.map(s=>Object.assign({},s)), ba:(d.ba&&d.ba.length===2)?d.ba.slice():[], hidden:d.hidden, shop:d.shop};
   $('edTitle').textContent=d.nickname;
   $('edView').href='https://beautia.io/d/'+d.id;
   renderEdit();
@@ -353,6 +364,9 @@ function renderEdit(){
   const tagChips=ed.tags.length?ed.tags.map((t,i)=>`<span class="tagc">${esc(t)}<button onclick="delTag(${i})"><i class="ti ti-x"></i></button></span>`).join(''):'<span style="font-size:12.5px;color:var(--sub);font-weight:600">태그 없음</span>';
   const svc=ed.services.length?ed.services.map((s,i)=>`<div class="svcitem"><div class="si"><div class="sn">${esc(s.n||'')}</div><div class="sd">${esc(s.du||'')}</div></div>${s.p?`<span class="sp">${esc(s.p)}</span>`:''}<button class="x" onclick="delSvc(${i})"><i class="ti ti-trash"></i></button></div>`).join(''):'<div style="font-size:12.5px;color:var(--sub);font-weight:600;padding:4px 0">등록된 서비스 없음</div>';
   const pf=ed.photos.map((p,i)=>`<div class="pf" style="background-image:url('${esc(p)}')"><button class="del" onclick="delPhoto(${i})"><i class="ti ti-x"></i></button><div class="ord">${i>0?`<button onclick="movePhoto(${i},-1)"><i class="ti ti-chevron-left"></i></button>`:''}${i<ed.photos.length-1?`<button onclick="movePhoto(${i},1)"><i class="ti ti-chevron-right"></i></button>`:''}</div></div>`).join('');
+  // 비포/애프터: 선택값이 유효하지 않으면 앞 2장 기본값
+  if(!(ed.ba&&ed.ba.length===2&&ed.photos.indexOf(ed.ba[0])>=0&&ed.photos.indexOf(ed.ba[1])>=0)){ed.ba=ed.photos.length?[ed.photos[0],ed.photos[Math.min(1,ed.photos.length-1)]]:[];}
+  const baCells=(which)=>ed.photos.map((u,i)=>`<div class="baThumb${ed.ba[which]===u?' on':''}" style="background-image:url('${esc(u)}')" onclick="setEdBA(${which},${i})"></div>`).join('');
   $('edBody').innerHTML=`
     <div class="card">
       <h3><i class="ti ti-user-circle"></i> 프로필 사진</h3>
@@ -388,6 +402,15 @@ function renderEdit(){
       <input id="pfIn" type="file" accept="image/*" multiple style="display:none" onchange="onPhotos(this)">
     </div>
     <div class="card">
+      <h3><i class="ti ti-arrows-left-right"></i> 비포 / 애프터 슬라이더</h3>
+      ${ed.photos.length?`<div class="baPreview">
+        <div class="baSlot"><span class="baTag">BEFORE</span><div class="baImg" style="background-image:url('${esc(ed.ba[0]||'')}')"></div></div>
+        <div class="baSlot"><span class="baTag after">AFTER</span><div class="baImg" style="background-image:url('${esc(ed.ba[1]||'')}')"></div></div>
+      </div>
+      <div class="balabel">비포로 쓸 사진</div><div class="baPick">${baCells(0)}</div>
+      <div class="balabel">애프터로 쓸 사진</div><div class="baPick">${baCells(1)}</div>`:`<div style="font-size:12.5px;color:var(--sub);font-weight:600;padding:4px 0">포폴 사진을 먼저 추가하세요</div>`}
+    </div>
+    <div class="card">
       <h3><i class="ti ti-clipboard-list"></i> 서비스·가격</h3>
       <div id="svcBox">${svc}</div>
       <div class="addrow" style="flex-wrap:wrap"><input class="inp" id="svN" placeholder="서비스명 (예: 컷+펌)" style="flex:1 1 100%"><input class="inp" id="svP" placeholder="가격 (예: 80,000원)"><input class="inp" id="svD" placeholder="시간 (예: 2시간)"><button class="mini" onclick="addSvc()">추가</button></div>
@@ -420,6 +443,7 @@ function addSvc(){const n=($('svN').value||'').trim();if(!n){toast('서비스명
 function delSvc(i){ed.services.splice(i,1);syncInputs();renderEdit();}
 function delPhoto(i){ed.photos.splice(i,1);syncInputs();renderEdit();}
 function movePhoto(i,dir){const j=i+dir;if(j<0||j>=ed.photos.length)return;const t=ed.photos[i];ed.photos[i]=ed.photos[j];ed.photos[j]=t;syncInputs();renderEdit();}
+function setEdBA(which,i){ed.ba=(ed.ba&&ed.ba.length===2)?ed.ba.slice():[ed.photos[0],ed.photos[0]];ed.ba[which]=ed.photos[i];syncInputs();renderEdit();}
 
 async function uploadImg(file,folderUid,asPng){
   const ext=asPng?'png':((file.name.split('.').pop()||'jpg').toLowerCase().replace('jpeg','jpg'));
@@ -461,6 +485,7 @@ async function saveEdit(){
     const shop=Object.assign({},ed.shop||{},{
       name:ed.shopName, area:ed.area, avatar:ed.avatar, photos:ed.photos, career:ed.career,
       specialties:ed.spec.slice(), tags:ed.tags.slice(), services:ed.services.slice(),
+      ba:(ed.ba&&ed.ba.length===2&&ed.ba[0]&&ed.ba[1])?ed.ba.slice():[],
       insta:insta, naver:ed.naver, blog:ed.blog, hidden:ed.hidden
     });
     const payload={id:ed.id, nickname:ed.nickname, region:ed.region, bio:ed.bio, shop:shop};
