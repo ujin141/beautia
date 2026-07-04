@@ -302,12 +302,15 @@ body.mlock{position:fixed;left:0;right:0;width:100%;overflow:hidden;}
 /* 모바일 앱: 하단 탭바 */
 .tabbar{display:none;}
 @media (max-width:860px){
-  .tabbar{position:fixed;left:0;right:0;bottom:0;z-index:58;display:flex;background:rgba(255,255,255,.97);backdrop-filter:blur(14px);border-top:1px solid var(--line);padding:5px 4px calc(4px + env(safe-area-inset-bottom));}
-  .tabbar .tb{flex:1;display:flex;flex-direction:column;align-items:center;gap:2px;padding:4px 0 2px;font-size:9.5px;font-weight:700;color:var(--sub);position:relative;cursor:pointer;transition:color .14s;}
-  .tabbar .tb i{font-size:19px;}
-  .tabbar .tb.on{color:var(--plum);}
-  .tabbar .tb .undot{position:absolute;top:1px;right:calc(50% - 15px);width:7px;height:7px;border-radius:50%;background:#e5484d;border:1.5px solid #fff;}
-  body{padding-bottom:calc(56px + env(safe-area-inset-bottom));}
+  .tabbar{position:fixed;left:0;right:0;bottom:0;z-index:58;display:flex;background:#fff;border-top:1px solid var(--line);padding:0 2px env(safe-area-inset-bottom);}
+  .tabbar .tb{flex:1;display:flex;align-items:center;justify-content:center;height:49px;color:var(--sub);position:relative;cursor:pointer;transition:color .12s;}
+  .tabbar .tb i{font-size:26px;line-height:1;}
+  .tabbar .tb .tbi-f{display:none;}
+  .tabbar .tb.on{color:var(--ink);}
+  .tabbar .tb.on .tbi-o{display:none;}
+  .tabbar .tb.on .tbi-f{display:inline-flex;}
+  .tabbar .tb .undot{position:absolute;top:8px;right:calc(50% - 15px);width:8px;height:8px;border-radius:50%;background:#e5484d;border:2px solid #fff;}
+  body{padding-bottom:calc(49px + env(safe-area-inset-bottom));}
   nav.main{display:none!important;}
   .join{display:none;}
   .umenu.frombar{top:auto!important;bottom:calc(80px + env(safe-area-inset-bottom));right:12px!important;left:auto!important;}
@@ -664,11 +667,11 @@ body.mlock{position:fixed;left:0;right:0;width:100%;overflow:hidden;}
   </div>
 </header>
 <nav class="tabbar" id="tabbar">
-  <a class="tb on" data-v="explore" onclick="tabGo('explore')"><i class="ti ti-home"></i><span data-t="explore">Explore</span></a>
-  <a class="tb" data-v="designers" onclick="tabGo('designers')"><i class="ti ti-sparkles"></i><span data-t="designers">Designers</span></a>
-  <a class="tb" onclick="tabBook()"><i class="ti ti-calendar-heart"></i><span data-t="myBookings">Bookings</span></a>
-  <a class="tb" id="tbMsg" onclick="tabMsg()"><i class="ti ti-message-2"></i><span data-t="messages">Messages</span></a>
-  <a class="tb" id="tbMy" onclick="tabMy(event)"><i class="ti ti-user"></i><span data-t="my">My</span></a>
+  <a class="tb on" data-v="explore" onclick="tabGo('explore')" aria-label="Explore"><i class="ti ti-home tbi-o"></i><i class="ti ti-home-filled tbi-f"></i></a>
+  <a class="tb" data-v="designers" onclick="tabGo('designers')" aria-label="Designers"><i class="ti ti-search tbi-o"></i><i class="ti ti-search tbi-f"></i></a>
+  <a class="tb" onclick="tabBook()" aria-label="Bookings"><i class="ti ti-calendar-heart tbi-o"></i><i class="ti ti-calendar-heart tbi-f"></i></a>
+  <a class="tb" id="tbMsg" onclick="tabMsg()" aria-label="Messages"><i class="ti ti-message-circle tbi-o"></i><i class="ti ti-message-circle-filled tbi-f"></i></a>
+  <a class="tb" id="tbMy" onclick="tabMy(event)" aria-label="My"><i class="ti ti-user tbi-o"></i><i class="ti ti-user-filled tbi-f"></i></a>
 </nav>
 
 <div class="fbanner" id="fbanner"></div>
