@@ -110,4 +110,21 @@ create policy "da_owner_all" on public.designer_applications
   using ((auth.jwt() ->> 'email') = 'ujin141@naver.com')
   with check ((auth.jwt() ->> 'email') = 'ujin141@naver.com');
 
--- 완료! 이제 어드민 편집/승인, 프로필 저장, 팔로우, 신청이 모두 실제로 저장됩니다.
+-- ========== 6) 예약 시간 중복 방지 ==========
+-- 손님이 다른 손님의 예약 정보는 못 보고, 특정 디자이너·날짜의 '이미 잡힌 시간'만 조회 (프라이버시 보호).
+-- 앱 예약 화면에서 이미 예약된 시간은 선택 못 하게 막는 데 사용.
+create or replace function public.booked_times(p_designer uuid, p_date text)
+returns setof text
+language sql
+security definer
+stable
+as $$
+  select time from public.bookings
+  where designer = p_designer
+    and date::text = p_date
+    and coalesce(status,'pending') not in ('declined','cancelled')
+    and time is not null and time <> '';
+$$;
+grant execute on function public.booked_times(uuid, text) to anon, authenticated;
+
+-- 완료! 이제 어드민 편집/승인, 프로필 저장, 팔로우, 신청, 예약 중복 방지가 모두 동작합니다.
