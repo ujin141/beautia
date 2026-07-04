@@ -29,6 +29,12 @@ const L = {
   en: { designer: 'Beauty designer', portfolio: 'Portfolio', career: 'Experience', spec: 'Specialties', book: 'Book / message on Beautia', insta: 'View on Instagram', blog: 'Blog', naver: 'NAVER', more: 'More designers', home: 'Home', work: 'work', worksIn: 'Area', by: 'work', locale: 'en_US', htmllang: 'en' },
 };
 
+// OG는 항상 영어로 — 전문분야·도시를 영어로 매핑(디자이너 상호명은 고유명사라 유지)
+const CATMAP_EN = { '속눈썹': 'Lash', '속눈썹펌': 'Lash perm', '래쉬': 'Lash', '래쉬리프트': 'Lash lift', '네일': 'Nail', '젤네일': 'Gel nail', '네일아트': 'Nail art', '헤어': 'Hair', '헤어컷': 'Hair', '펌': 'Perm', '염색': 'Color', '메이크업': 'Makeup', '메이크': 'Makeup', '스킨': 'Skin', '피부': 'Skin', '브라이덜': 'Bridal', '왁싱': 'Waxing', '케라틴': 'Keratin' };
+const CITYMAP_EN = { '서울': 'Seoul', '부산': 'Busan', '대구': 'Daegu', '인천': 'Incheon', '광주': 'Gwangju', '광명': 'Gwangmyeong', '김포': 'Gimpo', '분당': 'Bundang', '성남': 'Seongnam', '서현': 'Seohyun', '수원': 'Suwon', '오사카': 'Osaka', '大阪府': 'Osaka', '도쿄': 'Tokyo', '東京': 'Tokyo', '교토': 'Kyoto' };
+const engCat = s => CATMAP_EN[String(s || '').trim()] || String(s || '').trim();
+const engCity = s => { s = String(s || '').trim(); return CITYMAP_EN[s] || s; };
+
 const igClean = s => String(s || '').trim().replace(/^@/, '').replace(/^https?:\/\/(www\.)?instagram\.com\//i, '').replace(/[/?#].*$/, '');
 const photoUrls = shop => (Array.isArray(shop && shop.photos) ? shop.photos : [])
   .map(p => (p && typeof p === 'object') ? p.img : p)
@@ -45,8 +51,9 @@ export default async function handler(req, res) {
   const shop = pr.shop || {};
   const name = (shop.name && shop.name.trim()) || pr.nickname || 'Beautia designer';
   const city = (pr.region || shop.area || '').toString().trim();
+  const cityEN = engCity(city);
   const specs = Array.isArray(shop.specialties) ? shop.specialties.filter(Boolean) : [];
-  const specText = specs.join(' · ');
+  const specText = specs.map(engCat).join(' · ');
   const career = (shop.career || '').toString().trim();
   const bio = (pr.bio || '').toString().trim();
   const ig = igClean(shop.insta);
@@ -54,14 +61,14 @@ export default async function handler(req, res) {
   const naver = (typeof shop.naver === 'string' && /^https?:\/\//i.test(shop.naver)) ? shop.naver : '';
   const photos = photoUrls(shop);
   const avatar = (typeof shop.avatar === 'string' && shop.avatar.startsWith('http')) ? shop.avatar : '';
-  const t = L[pickLang(name + ' ' + city + ' ' + career + ' ' + (shop.area || ''))];
+  const t = L.en;   // OG는 항상 영어
 
   const canon = `${SITE}/d/${encodeURIComponent(u)}`;
   const appUrl = `/community?u=${encodeURIComponent(u)}`;
   const heroImg = photos[0] || avatar || `${SITE}/og-cover.png`;
-  const titleBits = [name, specText, city].filter(Boolean);
+  const titleBits = [name, specText, cityEN].filter(Boolean);
   const title = `${titleBits.join(' · ')} | Beautia`;
-  const desc = (bio || `${name} — ${specText ? specText + ' ' : ''}${t.designer}${city ? ' · ' + city : ''}. ${t.portfolio}`).slice(0, 155);
+  const desc = (bio || `${name} — ${specText ? specText + ' ' : ''}${t.designer}${cityEN ? ' · ' + cityEN : ''}. ${t.portfolio}`).slice(0, 155);
 
   // 다른 디자이너(내부 링크 그래프) — 최대 8명
   const others = (await sb(`profiles?role=eq.designer&id=neq.${encodeURIComponent(u)}&select=id,nickname,region,shop&limit=8`)) || [];
