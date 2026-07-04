@@ -302,17 +302,17 @@ body.mlock{position:fixed;left:0;right:0;width:100%;overflow:hidden;}
 /* 모바일 앱: 하단 탭바 */
 .tabbar{display:none;}
 @media (max-width:860px){
-  .tabbar{position:fixed;left:14px;right:14px;bottom:calc(10px + env(safe-area-inset-bottom));z-index:58;display:flex;background:#fff;border:1px solid var(--line);border-radius:28px;padding:4px;box-shadow:0 10px 26px -10px rgba(30,20,30,.26);}
-  .tabbar .tb{flex:1;display:flex;align-items:center;justify-content:center;height:46px;color:var(--sub);position:relative;cursor:pointer;transition:color .12s,transform .08s;}
-  .tabbar .tb:active{transform:scale(.84);}
+  .tabbar{position:fixed;left:14px;right:14px;bottom:calc(12px + env(safe-area-inset-bottom));z-index:58;display:flex;gap:2px;background:#1d1d1f;border-radius:32px;padding:7px 8px;box-shadow:0 14px 34px -12px rgba(0,0,0,.55);}
+  .tabbar .tb{flex:1;display:flex;align-items:center;justify-content:center;height:46px;color:#fff;position:relative;cursor:pointer;border-radius:23px;transition:background .16s,transform .08s;}
+  .tabbar .tb:active{transform:scale(.9);}
   .tabbar .tb i{font-size:25px;line-height:1;}
   .tabbar .tb .tbi-f{display:none;}
-  .tabbar .tb.on{color:var(--ink);}
+  .tabbar .tb.on{background:rgba(255,255,255,.16);}
   .tabbar .tb.on .tbi-o{display:none;}
   .tabbar .tb.on .tbi-f{display:inline-flex;}
   .tbav{display:none;}
-  .tabbar .tb .undot{position:absolute;top:5px;right:calc(50% - 14px);width:8px;height:8px;border-radius:50%;background:#e5484d;border:2px solid #fff;}
-  body{padding-bottom:calc(72px + env(safe-area-inset-bottom));}
+  .tabbar .tb .undot{position:absolute;top:4px;right:calc(50% - 16px);width:9px;height:9px;border-radius:50%;background:#e5484d;border:2px solid #1d1d1f;}
+  body{padding-bottom:calc(76px + env(safe-area-inset-bottom));}
   nav.main{display:none!important;}
   .join{display:none;}
   .umenu.frombar{top:auto!important;bottom:calc(80px + env(safe-area-inset-bottom));right:12px!important;left:auto!important;}
