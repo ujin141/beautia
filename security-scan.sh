@@ -41,6 +41,22 @@ ok "API(HTML출력) esc 규율 검사 완료"
 # 7) 시크릿 파일이 추적되는지
 if git ls-files 2>/dev/null | grep -qiE "sbkey|\.env$|service_role"; then red "시크릿 파일이 git에 추적됨"; else ok "시크릿 파일 미추적"; fi
 
+# ===== 어드민/대시보드 전용 회귀 검사 =====
+# 8) 어드민 오너 이메일 게이트 유지 (게이트 제거 시 누구나 /admin 접근 → 전 디자이너 편집)
+if grep -q "OWNER_EMAIL" admin.html 2>/dev/null && grep -qE "!==\s*OWNER_EMAIL|!=\s*OWNER_EMAIL" admin.html 2>/dev/null; then ok "어드민 오너 이메일 게이트 유지"; else red "admin.html 오너 이메일 게이트 제거/약화(무단 접근 회귀)"; fi
+
+# 9) 대시보드/어드민 동적 코드 실행 금지 (eval / new Function = 저장된 데이터로 XSS)
+if grep -nE "eval\(|new Function\(" dashboard.html admin.html 2>/dev/null; then red "대시보드/어드민에 eval/new Function 회귀(코드 인젝션 위험)"; else ok "대시보드/어드민 eval/new Function 없음"; fi
+
+# 10) DB 쓰기 스코프: dashboard/admin의 update/delete 는 반드시 .eq() 로 범위 지정 (대량 변경/삭제 방지)
+for f in dashboard.html admin.html; do
+  bad=$(grep -nE "\.(update|delete)\(" "$f" 2>/dev/null | grep -vE "\.eq\(")
+  if [ -n "$bad" ]; then red "$f: 범위(.eq) 없는 update/delete — 대량 변경/삭제 위험"; echo "$bad"; else ok "$f DB 쓰기 스코프(.eq) 유지"; fi
+done
+
+# 11) 어드민 후기 삭제가 클라이언트 service_role 이 아닌 RLS(오너 정책)로만 동작하는지 (service_role 은 위 1)에서 이미 차단)
+if grep -qE "from\('designer_reviews'\)\.delete\(\)" admin.html 2>/dev/null && ! grep -q "reviews_owner_delete" db_enable_owner_admin.sql 2>/dev/null; then red "어드민 후기삭제 존재하나 오너 삭제 RLS 정책(db_enable_owner_admin.sql) 누락"; else ok "후기 삭제-오너 RLS 정책 정합성 유지"; fi
+
 echo "-----"
 if [ "$FAIL" -eq 0 ]; then echo "🛡️ 보안 회귀 없음 — 통과"; else echo "⚠️ 보안 회귀 발견 — 위 [FAIL] 확인 필요"; fi
 exit $FAIL
