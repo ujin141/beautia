@@ -966,14 +966,14 @@ function openD(did,keep){const d=dById(did);if(!d)return;curD=did;const gi=D.ind
  const SNSBASE={instagram:'https://instagram.com/',tiktok:'https://tiktok.com/@',youtube:'https://youtube.com/@',x:'https://x.com/'};
  const handles=Object.assign({},d.handles||(d.insta?{instagram:d.insta}:{}));
  const snsHtml=Object.keys(SNSBASE).map(function(p){var h=igClean(handles[p]||'');return h?`<a href="${SNSBASE[p]}${h}" target="_blank" rel="noopener"><i class="ti ${SNSMETA[p][0]}"></i></a>`:'';}).join('');
- const naverHtml=(d.naver&&/^https?:\/\//.test(d.naver))?`<a href="${d.naver}" target="_blank" rel="noopener" class="sns-nv" title="네이버 예약">N</a>`:'';
- const bookingHtml=(function(){if(!(d.bookingUrl&&/^https?:\/\//.test(d.bookingUrl)))return '';var u=d.bookingUrl.toLowerCase();var lb=T[LANG].extBook,c='#6E4A50',ic='ti-calendar-check';
+ const naverHtml=(function(){var u=safeUrl(d.naver);return u?`<a href="${esc(u)}" target="_blank" rel="noopener" class="sns-nv" title="네이버 예약">N</a>`:'';})();
+ const bookingHtml=(function(){var bu=safeUrl(d.bookingUrl);if(!bu)return '';var u=bu.toLowerCase();var lb=T[LANG].extBook,c='#6E4A50',ic='ti-calendar-check';
   if(/line\.me|lin\.ee|liff/.test(u)){lb=(LANG==='ja'?'LINEで予約':(LANG==='ko'?'LINE으로 예약':'Book on LINE'));c='#06C755';ic='ti-brand-line';}
   else if(/naver\./.test(u)){lb=(LANG==='ja'?'NAVERで予約':(LANG==='ko'?'네이버 예약':'Book on NAVER'));c='#03C75A';}
   else if(/hotpepper|hpb\.jp|beauty\.hotpepper/.test(u)){lb='HotPepper 予約';c='#E9531F';}
   else if(/minimo/.test(u)){lb='minimo 予約';c='#FF7DA0';}
-  return '<a href="'+esc(d.bookingUrl)+'" target="_blank" rel="noopener" class="extbook" style="background:'+c+';box-shadow:0 8px 20px -10px '+c+'"><i class="ti '+ic+'"></i> '+esc(lb)+'</a>';})();
- const blogHtml=(d.blog&&/^https?:\/\//.test(d.blog))?`<a href="${d.blog}" target="_blank" rel="noopener" class="sns-nv" title="블로그"><i class="ti ti-notebook"></i></a>`:'';
+  return '<a href="'+esc(bu)+'" target="_blank" rel="noopener" class="extbook" style="background:'+c+';box-shadow:0 8px 20px -10px '+c+'"><i class="ti '+ic+'"></i> '+esc(lb)+'</a>';})();
+ const blogHtml=(function(){var u=safeUrl(d.blog);return u?`<a href="${esc(u)}" target="_blank" rel="noopener" class="sns-nv" title="블로그"><i class="ti ti-notebook"></i></a>`:'';})();
  $('dsheet').innerHTML=`
  <div class="dbody">
   <div class="dhero" style="background-image:url('${im(d.works[0],900)}')"><div class="sc"></div>
