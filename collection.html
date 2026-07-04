@@ -1656,13 +1656,13 @@ async function submitReview(bid,designer){var body=($('rvBody').value||'').slice
   if(r.error){toast(T[LANG].bkFail+': '+r.error.message);return;}
  }catch(e){toast(T[LANG].bkFail);return;}
  toast(T[LANG].rvThanks);openBookings();}
-// ===== 후기 번역 (구글 무료 gtx 엔드포인트, 자동 언어감지 → 현재 UI 언어) =====
+// ===== 후기 번역 (OpenAI/ChatGPT · /api/translate 서버 경유 · 모든 언어) =====
 async function translateText(text,target){
  target=target||LANG||'en';
  try{
-  var u='https://translate.googleapis.com/translate_a/single?client=gtx&sl=auto&tl='+encodeURIComponent(target)+'&dt=t&q='+encodeURIComponent(text);
-  var r=await fetch(u); if(!r.ok)return null; var j=await r.json();
-  return (j&&j[0]?j[0]:[]).map(function(x){return x&&x[0]?x[0]:'';}).join('');
+  var r=await fetch('/api/translate',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({text:text,target:target})});
+  if(!r.ok)return null; var j=await r.json();
+  return j&&j.translated?j.translated:null;
  }catch(e){return null;}
 }
 function trLabel(){return LANG==='ko'?'번역 보기':LANG==='ja'?'翻訳':LANG==='th'?'แปล':'Translate';}

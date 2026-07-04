@@ -25,7 +25,14 @@ export default async function handler(req, res) {
     let body = req.body;
     if (typeof body === 'string') { try { body = JSON.parse(body); } catch (e) { body = {}; } }
     const text = (body && body.text || '').toString().slice(0, 4000);
-    const target = (body && body.target) === 'ja' ? 'Japanese' : 'Korean';
+    const LANGS = {
+      ko:'Korean', en:'English', ja:'Japanese', 'zh':'Simplified Chinese', 'zh-cn':'Simplified Chinese',
+      'zh-tw':'Traditional Chinese', th:'Thai', vi:'Vietnamese', id:'Indonesian', ms:'Malay',
+      es:'Spanish', fr:'French', de:'German', pt:'Portuguese', it:'Italian', ru:'Russian',
+      ar:'Arabic', hi:'Hindi', tr:'Turkish', tl:'Tagalog'
+    };
+    const tcode = (body && body.target || 'ko').toString().toLowerCase();
+    const target = LANGS[tcode] || (body && body.target) || 'Korean';
     if (!text.trim()) { res.status(400).json({ error: 'no text' }); return; }
     const key = process.env.OPENAI_API_KEY;
     if (!key) { res.status(500).json({ error: 'OPENAI_API_KEY not set' }); return; }
@@ -36,7 +43,7 @@ export default async function handler(req, res) {
         model: 'gpt-4o-mini',
         temperature: 0.2,
         messages: [
-          { role: 'system', content: `You translate posts in a Korean–Japanese beauty community. Translate the user's text into ${target}. Keep it natural, casual and friendly. Preserve emojis and line breaks. Output ONLY the translation — no quotes, no explanations.` },
+          { role: 'system', content: `You translate reviews and posts on a global beauty-designer platform (hair, makeup, nail, lash, skin, bridal). Translate the user's text into ${target}. Keep it natural, casual and friendly, using natural beauty-industry wording. Preserve emojis and line breaks. If the text is already in ${target}, return it unchanged. Output ONLY the translation — no quotes, no explanations.` },
           { role: 'user', content: text }
         ]
       })
