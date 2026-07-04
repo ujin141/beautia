@@ -61,6 +61,16 @@ textarea.inp{resize:vertical;min-height:80px;line-height:1.6;}
 .pfitem .ord{position:absolute;bottom:5px;left:5px;display:flex;gap:4px;}
 .pfitem .ord button{width:24px;height:24px;border-radius:7px;background:rgba(255,255,255,.9);color:var(--ink);font-size:14px;display:flex;align-items:center;justify-content:center;}
 .upbtn{border:2px dashed var(--accent);border-radius:12px;color:var(--plum);font-weight:800;font-size:14px;padding:16px;display:flex;align-items:center;justify-content:center;gap:8px;background:var(--rosebg);width:100%;margin-top:12px;}
+.baPreview{display:flex;gap:10px;margin-top:12px;}
+.baSlot{flex:1;position:relative;}
+.baTag{position:absolute;top:8px;left:8px;z-index:2;font-size:11px;font-weight:800;color:#fff;background:rgba(30,15,22,.62);padding:4px 10px;border-radius:999px;letter-spacing:.04em;}
+.baTag.after{background:var(--plum);}
+.baImg{width:100%;aspect-ratio:4/3;border-radius:12px;background:var(--soft) center/cover;border:1px solid var(--line);}
+.balabel{font-size:12.5px;font-weight:800;color:var(--ink2);margin-top:13px;margin-bottom:2px;}
+.baPick{display:grid;grid-template-columns:repeat(auto-fill,minmax(60px,1fr));gap:7px;margin-top:6px;}
+.baThumb{aspect-ratio:1;border-radius:10px;background:var(--soft) center/cover;border:2px solid transparent;cursor:pointer;transition:.12s;}
+.baThumb.on{border-color:var(--plum);box-shadow:0 0 0 2px var(--rosebg);}
+.baThumb:hover{filter:brightness(.95);}
 /* 예약 */
 .bk{border:1px solid var(--line);border-radius:14px;padding:14px;margin-top:10px;display:flex;align-items:center;gap:12px;}
 .bk .bkinfo{flex:1;}
@@ -229,6 +239,17 @@ textarea.inp{resize:vertical;min-height:80px;line-height:1.6;}
       <input type="file" id="pfFile" accept="image/*" multiple style="display:none" onchange="onPfFiles(this)">
       <div class="pfgrid" id="pfGrid"></div>
     </div>
+    <div class="card">
+      <h2>비포 / 애프터 슬라이더</h2><div class="hint">디자이너 상세페이지의 비포·애프터 슬라이더에 쓸 사진 2장을 포폴에서 고르세요.</div>
+      <div class="baPreview">
+        <div class="baSlot"><span class="baTag">BEFORE</span><div class="baImg" id="baBeforeImg"></div></div>
+        <div class="baSlot"><span class="baTag after">AFTER</span><div class="baImg" id="baAfterImg"></div></div>
+      </div>
+      <div class="balabel">비포로 쓸 사진</div>
+      <div class="baPick" id="baPickBefore"></div>
+      <div class="balabel">애프터로 쓸 사진</div>
+      <div class="baPick" id="baPickAfter"></div>
+    </div>
     <div class="saveBar"><button class="btn" id="savePfBtn" onclick="savePortfolio()"><i class="ti ti-device-floppy"></i> 포트폴리오 저장</button></div>
   </div>
 
@@ -258,7 +279,7 @@ const SB=window.supabase.createClient(SB_URL,SB_KEY,{auth:{persistSession:true,a
 const SPECS=[['Hair','헤어'],['Makeup','메이크업'],['Nail','네일'],['Lash','속눈썹'],['Skin','스킨'],['Bridal','브라이덜']];
 const $=id=>document.getElementById(id);
 let ME=null, UID=null, EMAIL='';
-let state={avatar:'',photos:[],spec:[],tags:[],services:[]};
+let state={avatar:'',photos:[],spec:[],tags:[],services:[],ba:[]};
 let bkRows=null, revRows=null;
 const catKo={Hair:'헤어',Makeup:'메이크업',Nail:'네일',Lash:'속눈썹',Skin:'스킨',Bridal:'브라이덜'};
 
@@ -340,6 +361,7 @@ function renderHome(){
 function fillProfile(){
   const s=ME.shop||{};
   state.avatar=s.avatar||'';state.photos=(s.photos||[]).filter(x=>typeof x==='string'&&x.startsWith('http'));
+  state.ba=(s.ba&&s.ba.length===2&&s.ba[0]&&s.ba[1])?s.ba.slice():[];
   state.spec=(s.specialties||[]).slice();state.tags=(s.tags||[]).slice();state.services=(s.services||[]).slice();
   $('f_name').value=ME.nickname||'';
   $('f_shop').value=s.name||'';
@@ -401,7 +423,8 @@ async function saveProfile(){
       name:($('f_shop').value||'').trim(), area:($('f_area').value||'').trim(),
       avatar:state.avatar, photos:state.photos, career:($('f_career').value||'').trim(),
       specialties:state.spec.slice(), tags:state.tags.slice(), services:state.services.slice(),
-      insta:insta, naver:($('f_naver').value||'').trim(), blog:($('f_blog').value||'').trim()
+      insta:insta, naver:($('f_naver').value||'').trim(), blog:($('f_blog').value||'').trim(),
+      ba:(state.ba&&state.ba.length===2&&state.ba[0]&&state.ba[1])?state.ba.slice():[]
     });
     // 새 작업이 추가되면 시각 기록 → 팔로워 앱에 '새 작업' 알림
     if(state.photos.length>(((ME.shop&&ME.shop.photos)||[]).length))shop.lastWorkAt=Date.now();
@@ -456,12 +479,28 @@ function renderPf(){
     <div class="pact"><button onclick="delPf(${i})" title="삭제"><i class="ti ti-trash"></i></button></div>
     <div class="ord">${i>0?`<button onclick="movePf(${i},-1)"><i class="ti ti-chevron-left"></i></button>`:''}${i<state.photos.length-1?`<button onclick="movePf(${i},1)"><i class="ti ti-chevron-right"></i></button>`:''}</div>
   </div>`).join('')||'<div class="empty"><i class="ti ti-photo"></i>아직 사진이 없어요</div>';
+  renderBA();
 }
+function renderBA(){
+  const bBox=$('baBeforeImg'),aBox=$('baAfterImg'),pb=$('baPickBefore'),pa=$('baPickAfter');
+  if(!bBox)return;
+  const photos=state.photos;
+  if(!photos.length){state.ba=[];bBox.style.backgroundImage='';aBox.style.backgroundImage='';pb.innerHTML=pa.innerHTML='<div class="hint">포폴 사진을 먼저 올려주세요</div>';return;}
+  // 유효하지 않으면(삭제된 사진 등) 자동 기본값
+  if(!(state.ba&&state.ba.length===2&&photos.indexOf(state.ba[0])>=0&&photos.indexOf(state.ba[1])>=0)){state.ba=[photos[0],photos[Math.min(1,photos.length-1)]];}
+  bBox.style.backgroundImage="url('"+state.ba[0]+"')";
+  aBox.style.backgroundImage="url('"+state.ba[1]+"')";
+  const cells=(which)=>photos.map((u,i)=>`<div class="baThumb${state.ba[which]===u?' on':''}" style="background-image:url('${esc(u)}')" onclick="setBA(${which},${i})"></div>`).join('');
+  pb.innerHTML=cells(0);pa.innerHTML=cells(1);
+}
+function setBA(which,i){state.ba=(state.ba&&state.ba.length===2)?state.ba.slice():[state.photos[0],state.photos[0]];state.ba[which]=state.photos[i];renderBA();}
 function delPf(i){state.photos.splice(i,1);renderPf();}
 function movePf(i,d){const j=i+d;if(j<0||j>=state.photos.length)return;const t=state.photos[i];state.photos[i]=state.photos[j];state.photos[j]=t;renderPf();}
 async function savePortfolio(){
   const btn=$('savePfBtn');btn.disabled=true;
-  const shop=Object.assign({},ME.shop||{},{photos:state.photos});
+  const baOk=(state.ba&&state.ba.length===2&&state.ba[0]&&state.ba[1]);
+  const shop=Object.assign({},ME.shop||{},{photos:state.photos,ba:baOk?state.ba.slice():[]});
+  if(state.photos.length>(((ME.shop&&ME.shop.photos)||[]).length))shop.lastWorkAt=Date.now();
   const {error}=await SB.from('profiles').upsert({id:UID,nickname:ME.nickname,role:'designer',region:ME.region,bio:ME.bio,shop});
   if(error){toast('저장 실패: '+error.message);}else{ME.shop=shop;toast('포트폴리오 저장됨 ✓');}
   btn.disabled=false;
