@@ -870,11 +870,24 @@ let SAVED=JSON.parse(localStorage.getItem('beautia_coll_saved')||'[]');
 const isSaved=w=>SAVED.includes(w);
 function saveLocal(){try{localStorage.setItem('beautia_coll_saved',JSON.stringify(SAVED));}catch(e){}}
 async function loadSaves(){if(!ME||!ME.uid)return;try{var rows=(await SB.from('saves').select('wid').eq('user_id',ME.uid)).data||[];var remote=rows.map(function(r){return r.wid;});var localOnly=SAVED.filter(function(w){return remote.indexOf(w)<0;});if(localOnly.length){try{await SB.from('saves').upsert(localOnly.map(function(w){return {user_id:ME.uid,wid:w};}));}catch(e){}remote=remote.concat(localOnly);}SAVED=remote;render();}catch(e){}}
-function toggleSave(w,ev){if(ev){ev.stopPropagation();ev.preventDefault();}const i=SAVED.indexOf(w);
- if(i<0){SAVED.push(w);toast(T[LANG].saveT);if(ME&&ME.uid){try{SB.from('saves').upsert({user_id:ME.uid,wid:w}).then(function(){},function(){});}catch(e){}}}
- else{SAVED.splice(i,1);toast(T[LANG].unsaveT);if(ME&&ME.uid){try{SB.from('saves').delete().eq('user_id',ME.uid).eq('wid',w).then(function(){},function(){});}catch(e){}}}
- saveLocal();   // 로그인 여부와 무관하게 항상 로컬 저장(테이블 없어도 찜 유지)
- render();if(curD)openD(curD,true);}
+// 누른 하트만 즉시 갱신(옵티미스틱) — 전체 재렌더 없이 반응
+function syncSaveBtns(w,on){
+ document.querySelectorAll('.heart,.wheart,.cbtn.save').forEach(function(btn){
+  if((btn.getAttribute('onclick')||'').indexOf("toggleSave('"+w+"'")<0)return;
+  btn.classList.toggle('on',on);
+  var ic=btn.querySelector('i');if(ic)ic.className='ti ti-heart'+(on?'-filled':'');
+  var sp=btn.querySelector('span');if(sp&&btn.classList.contains('save'))sp.textContent=on?T[LANG].saved2:T[LANG].save;
+ });
+}
+function toggleSave(w,ev){if(ev){ev.stopPropagation();ev.preventDefault();}
+ const i=SAVED.indexOf(w),nowOn=i<0;
+ if(nowOn)SAVED.push(w);else SAVED.splice(i,1);
+ syncSaveBtns(w,nowOn);                 // ← 즉시 시각 반영
+ toast(nowOn?T[LANG].saveT:T[LANG].unsaveT);
+ saveLocal();                           // 항상 로컬 저장(테이블 없어도 찜 유지)
+ if(ME&&ME.uid){try{if(nowOn)SB.from('saves').upsert({user_id:ME.uid,wid:w}).then(function(){},function(){});else SB.from('saves').delete().eq('user_id',ME.uid).eq('wid',w).then(function(){},function(){});}catch(e){}}
+ if(VIEW==='saved')render();            // 저장 뷰일 때만 목록 재구성
+}
 // ===== 디자이너 팔로우 (손님) — 로컬 저장 + 로그인 시 DB 동기화 =====
 let FOLLOWS=JSON.parse(localStorage.getItem('beautia_coll_follows')||'[]');
 let dgFollowOnly=false;
