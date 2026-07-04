@@ -302,15 +302,20 @@ body.mlock{position:fixed;left:0;right:0;width:100%;overflow:hidden;}
 /* 모바일 앱: 하단 탭바 */
 .tabbar{display:none;}
 @media (max-width:860px){
-  .tabbar{position:fixed;left:0;right:0;bottom:0;z-index:58;display:flex;background:#fff;border-top:1px solid var(--line);padding:0 2px env(safe-area-inset-bottom);}
-  .tabbar .tb{flex:1;display:flex;align-items:center;justify-content:center;height:49px;color:var(--sub);position:relative;cursor:pointer;transition:color .12s;}
-  .tabbar .tb i{font-size:26px;line-height:1;}
+  .tabbar{position:fixed;left:14px;right:14px;bottom:calc(10px + env(safe-area-inset-bottom));z-index:58;display:flex;background:rgba(255,255,255,.8);backdrop-filter:blur(22px) saturate(1.6);-webkit-backdrop-filter:blur(22px) saturate(1.6);border:1px solid rgba(30,20,30,.07);border-radius:28px;padding:6px;box-shadow:0 12px 30px -10px rgba(30,20,30,.3);}
+  .tabbar .tb{flex:1;display:flex;align-items:center;justify-content:center;height:44px;color:var(--sub);position:relative;cursor:pointer;border-radius:18px;transition:background .14s,color .14s;}
+  .tabbar .tb i{font-size:24px;line-height:1;}
   .tabbar .tb .tbi-f{display:none;}
-  .tabbar .tb.on{color:var(--ink);}
+  .tabbar .tb.on{color:var(--ink);background:rgba(30,20,30,.06);}
   .tabbar .tb.on .tbi-o{display:none;}
   .tabbar .tb.on .tbi-f{display:inline-flex;}
-  .tabbar .tb .undot{position:absolute;top:8px;right:calc(50% - 15px);width:8px;height:8px;border-radius:50%;background:#e5484d;border:2px solid #fff;}
-  body{padding-bottom:calc(49px + env(safe-area-inset-bottom));}
+  .tbav{display:none;width:26px;height:26px;border-radius:50%;background:var(--soft) center/cover;}
+  .tabbar .tb.hasav .tbi-o,.tabbar .tb.hasav .tbi-f{display:none;}
+  .tabbar .tb.hasav .tbav{display:block;}
+  .tabbar .tb.hasav.on{background:transparent;}
+  .tabbar .tb.hasav.on .tbav{box-shadow:0 0 0 2px var(--ink);}
+  .tabbar .tb .undot{position:absolute;top:5px;right:calc(50% - 14px);width:8px;height:8px;border-radius:50%;background:#e5484d;border:2px solid #fff;}
+  body{padding-bottom:calc(72px + env(safe-area-inset-bottom));}
   nav.main{display:none!important;}
   .join{display:none;}
   .umenu.frombar{top:auto!important;bottom:calc(80px + env(safe-area-inset-bottom));right:12px!important;left:auto!important;}
@@ -671,7 +676,7 @@ body.mlock{position:fixed;left:0;right:0;width:100%;overflow:hidden;}
   <a class="tb" data-v="designers" onclick="tabGo('designers')" aria-label="Designers"><i class="ti ti-search tbi-o"></i><i class="ti ti-search tbi-f"></i></a>
   <a class="tb" onclick="tabBook()" aria-label="Bookings"><i class="ti ti-calendar-heart tbi-o"></i><i class="ti ti-calendar-heart tbi-f"></i></a>
   <a class="tb" id="tbMsg" onclick="tabMsg()" aria-label="Messages"><i class="ti ti-message-circle tbi-o"></i><i class="ti ti-message-circle-filled tbi-f"></i></a>
-  <a class="tb" id="tbMy" onclick="tabMy(event)" aria-label="My"><i class="ti ti-user tbi-o"></i><i class="ti ti-user-filled tbi-f"></i></a>
+  <a class="tb" id="tbMy" onclick="tabMy(event)" aria-label="My"><span class="tbav" id="tbAvatar"></span><i class="ti ti-user tbi-o"></i><i class="ti ti-user-filled tbi-f"></i></a>
 </nav>
 
 <div class="fbanner" id="fbanner"></div>
@@ -1261,7 +1266,9 @@ function renderMe(){var el=document.getElementById('mepage');if(!el)return;if(!M
  <div class="meacct"><a href="mailto:hello@beautia.io?subject=${encodeURIComponent('Beautia '+T[LANG].delAcct)}&body=${encodeURIComponent('uid: '+(ME.uid||''))}">${T[LANG].delAcct}</a></div>
  <div class="mever">Beautia · v1.0.0</div>`;}
 function savedCount(){return SAVED.length;}
-function renderAuth(){const li=$('loginBtn'),av=$('avatar'),jb=$('joinBtn');if(jb)jb.style.display=ME?'none':'';if(ME){li.style.display='none';av.style.display='flex';if(ME.avatar){av.style.backgroundImage="url('"+ME.avatar+"')";av.style.backgroundSize='cover';av.style.backgroundPosition='center';av.textContent='';}else{av.style.backgroundImage='';av.textContent=(ME.name||'U')[0].toUpperCase();}}else{li.style.display='inline-flex';av.style.display='none';closeUmenu();}}
+function renderAuth(){const li=$('loginBtn'),av=$('avatar'),jb=$('joinBtn');if(jb)jb.style.display=ME?'none':'';
+ var tm=$('tbMy'),ta=$('tbAvatar');if(tm){if(ME&&ME.avatar&&ta){ta.style.backgroundImage="url('"+im(ME.avatar,120)+"')";tm.classList.add('hasav');}else tm.classList.remove('hasav');}
+ if(ME){li.style.display='none';av.style.display='flex';if(ME.avatar){av.style.backgroundImage="url('"+ME.avatar+"')";av.style.backgroundSize='cover';av.style.backgroundPosition='center';av.textContent='';}else{av.style.backgroundImage='';av.textContent=(ME.name||'U')[0].toUpperCase();}}else{li.style.display='inline-flex';av.style.display='none';closeUmenu();}}
 function toggleUmenu(e){if(e)e.stopPropagation();const m=$('umenu');m.classList.remove('frombar');if(m.classList.contains('on')){closeUmenu();return;}
  m.innerHTML=`<div class="uh"><div class="un">${T[LANG].hi}, ${esc(ME?ME.name:'')}</div><div class="ur">${ME?roleLabel(ME.role):''}${ME&&ME.verified?' · '+T[LANG].verifiedMember:''}</div></div>
  <a onclick="openProfile();closeUmenu()"><i class="ti ti-user"></i> ${T[LANG].profile}</a>
