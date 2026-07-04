@@ -302,20 +302,16 @@ body.mlock{position:fixed;left:0;right:0;width:100%;overflow:hidden;}
 /* 모바일 앱: 하단 탭바 */
 .tabbar{display:none;}
 @media (max-width:860px){
-  .tabbar{position:fixed;left:14px;right:14px;bottom:calc(10px + env(safe-area-inset-bottom));z-index:58;display:flex;background:rgba(255,255,255,.8);backdrop-filter:blur(22px) saturate(1.6);-webkit-backdrop-filter:blur(22px) saturate(1.6);border:1px solid rgba(30,20,30,.07);border-radius:28px;padding:6px;box-shadow:0 12px 30px -10px rgba(30,20,30,.3);}
-  .tabbar .tb{flex:1;display:flex;align-items:center;justify-content:center;height:44px;color:var(--sub);position:relative;cursor:pointer;border-radius:18px;transition:background .14s,color .14s;}
-  .tabbar .tb i{font-size:24px;line-height:1;}
+  .tabbar{position:fixed;left:0;right:0;bottom:0;z-index:58;display:flex;background:#fff;border-top:1px solid var(--line);padding:0 2px env(safe-area-inset-bottom);}
+  .tabbar .tb{flex:1;display:flex;align-items:center;justify-content:center;height:50px;color:var(--sub);position:relative;cursor:pointer;transition:color .12s;}
+  .tabbar .tb i{font-size:25px;line-height:1;}
   .tabbar .tb .tbi-f{display:none;}
-  .tabbar .tb.on{color:var(--ink);background:rgba(30,20,30,.06);}
+  .tabbar .tb.on{color:var(--ink);}
   .tabbar .tb.on .tbi-o{display:none;}
   .tabbar .tb.on .tbi-f{display:inline-flex;}
-  .tbav{display:none;width:26px;height:26px;border-radius:50%;background:var(--soft) center/cover;}
-  .tabbar .tb.hasav .tbi-o,.tabbar .tb.hasav .tbi-f{display:none;}
-  .tabbar .tb.hasav .tbav{display:block;}
-  .tabbar .tb.hasav.on{background:transparent;}
-  .tabbar .tb.hasav.on .tbav{box-shadow:0 0 0 2px var(--ink);}
-  .tabbar .tb .undot{position:absolute;top:5px;right:calc(50% - 14px);width:8px;height:8px;border-radius:50%;background:#e5484d;border:2px solid #fff;}
-  body{padding-bottom:calc(72px + env(safe-area-inset-bottom));}
+  .tbav{display:none;}
+  .tabbar .tb .undot{position:absolute;top:8px;right:calc(50% - 15px);width:8px;height:8px;border-radius:50%;background:#e5484d;border:2px solid #fff;}
+  body{padding-bottom:calc(50px + env(safe-area-inset-bottom));}
   nav.main{display:none!important;}
   .join{display:none;}
   .umenu.frombar{top:auto!important;bottom:calc(80px + env(safe-area-inset-bottom));right:12px!important;left:auto!important;}
