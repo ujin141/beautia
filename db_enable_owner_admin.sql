@@ -35,3 +35,10 @@ drop policy if exists "reviews_owner_read" on public.designer_reviews;
 create policy "reviews_owner_read" on public.designer_reviews
   for select to authenticated
   using ((auth.jwt() ->> 'email') = 'ujin141@naver.com');
+
+-- ===== 오너: 후기 삭제(모더레이션) — 스팸/악성 후기 제거 =====
+grant delete on public.designer_reviews to authenticated;
+drop policy if exists "reviews_owner_delete" on public.designer_reviews;
+create policy "reviews_owner_delete" on public.designer_reviews
+  for delete to authenticated
+  using ((auth.jwt() ->> 'email') = 'ujin141@naver.com');

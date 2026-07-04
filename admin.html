@@ -81,6 +81,8 @@ button{cursor:pointer;border:none;background:none;font-family:inherit;}
 .li .ln{font-size:14px;font-weight:800;}
 .li .ls{font-size:12px;color:var(--sub);font-weight:600;margin-top:3px;}
 .li .lbadge{font-size:11px;font-weight:800;padding:3px 9px;border-radius:999px;background:var(--rosebg);color:var(--plum);white-space:nowrap;}
+.rvdel{flex-shrink:0;width:30px;height:30px;border-radius:9px;border:1px solid var(--line);background:#fff;color:var(--sub);font-size:15px;display:flex;align-items:center;justify-content:center;cursor:pointer;}
+.rvdel:hover{border-color:var(--red);color:var(--red);background:#fdf2f1;}
 .li .lbadge.g{background:rgba(62,124,106,.12);color:var(--green);}
 .li .lbadge.y{background:#fbf0dc;color:#9a6a1a;}
 .scrim{position:fixed;inset:0;background:rgba(30,15,25,.45);z-index:60;opacity:0;pointer-events:none;transition:.2s;}
@@ -511,8 +513,17 @@ function renderReviews(err){
   if(err){$('rvlist').innerHTML='<div class="empty"><i class="ti ti-lock"></i><p>후기를 불러올 권한이 없어요<br><span style="font-size:12px">'+esc(err)+'</span></p></div>';return;}
   if(!REVIEWS.length){$('rvlist').innerHTML='<div class="empty"><i class="ti ti-message"></i><p>후기가 없어요</p></div>';return;}
   $('rvlist').innerHTML=REVIEWS.map(r=>{const rate=r.rating||r.stars||5;
-    return `<div class="li"><div class="lh"><div><div class="ln">${esc(dName(r.designer||r.designer_id))} <span style="color:var(--gold)">${'★'.repeat(Math.max(1,Math.min(5,Math.round(rate))))}</span></div><div class="ls">${esc(fmtDate(r.created_at))}</div></div></div><div class="ls" style="margin-top:8px;color:var(--ink2);line-height:1.5">${esc(r.text||r.body||r.comment||'')}</div></div>`;
+    return `<div class="li"><div class="lh"><div><div class="ln">${esc(dName(r.designer||r.designer_id))} <span style="color:var(--gold)">${'★'.repeat(Math.max(1,Math.min(5,Math.round(rate))))}</span></div><div class="ls">${esc(fmtDate(r.created_at))}</div></div><button class="rvdel" title="후기 삭제" onclick="delReview('${esc(String(r.id))}',event)"><i class="ti ti-trash"></i></button></div><div class="ls" style="margin-top:8px;color:var(--ink2);line-height:1.5">${esc(r.text||r.body||r.comment||'')}</div></div>`;
   }).join('');
+}
+async function delReview(id,ev){
+  if(ev)ev.stopPropagation();
+  if(!id||id==='undefined'){toast('이 후기는 ID가 없어 삭제할 수 없어요');return;}
+  if(!confirm('이 후기를 삭제할까요? 되돌릴 수 없어요.'))return;
+  const {error}=await SB.from('designer_reviews').delete().eq('id',id);
+  if(error){toast('삭제 실패: '+error.message+' — db_enable_owner_admin.sql 재실행 필요');return;}
+  REVIEWS=REVIEWS.filter(r=>String(r.id)!==String(id));
+  $('stR').textContent=REVIEWS.length;renderReviews();toast('후기를 삭제했어요 ✓');
 }
 
 function tab(t){

@@ -40,6 +40,20 @@ header.top{position:sticky;top:0;z-index:20;background:rgba(255,255,255,.95);bac
 .card{background:#fff;border:1px solid var(--line);border-radius:18px;padding:20px;margin-top:14px;}
 .card h2{font-size:16px;letter-spacing:-.01em;margin-bottom:4px;}
 .card .hint{font-size:12.5px;color:var(--sub);margin-bottom:14px;}
+.hqr{display:flex;align-items:center;gap:12px;margin-top:14px;padding-top:14px;border-top:1px solid var(--line);}
+.hqr img{width:74px;height:74px;border-radius:12px;border:1px solid var(--line);background:#fff;flex-shrink:0;}
+.hqrt{font-size:12.5px;font-weight:600;color:var(--ink2);line-height:1.45;}
+.uprow{display:flex;align-items:center;gap:12px;padding:12px 0;border-bottom:1px solid var(--line);}
+.uprow:last-child{border-bottom:0;}
+.upday{flex-shrink:0;width:58px;text-align:center;line-height:1.2;}
+.upday b{display:block;font-size:15px;color:var(--plum);}
+.upday span{font-size:11px;color:var(--sub);font-weight:700;}
+.upmid{flex:1;min-width:0;}
+.upsvc{font-size:14px;font-weight:800;color:var(--ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.upsub{font-size:12px;color:var(--sub);margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.upst{flex-shrink:0;font-size:11.5px;font-weight:800;padding:5px 10px;border-radius:999px;}
+.upst.ok{background:var(--rosebg);color:var(--plum);}
+.upst.pend{background:#fdf3d8;color:#9a7b1a;}
 .row{margin-top:14px;}
 .row label{display:block;font-size:12.5px;font-weight:800;color:var(--ink2);margin-bottom:7px;}
 textarea.inp{resize:vertical;min-height:80px;line-height:1.6;}
@@ -206,6 +220,11 @@ textarea.inp{resize:vertical;min-height:80px;line-height:1.6;}
         <a class="btn ghost sm" id="hViewPub" target="_blank"><i class="ti ti-external-link"></i> 공개 프로필 보기</a>
         <button class="btn ghost sm" onclick="copyPub()"><i class="ti ti-link"></i> 공유 링크 복사</button>
       </div>
+      <div class="hqr"><img id="hQrImg" alt="프로필 QR"><div class="hqrt">QR을 매장에 붙여두면 손님이 스캔해 바로 예약해요</div></div>
+    </div>
+    <div class="card" id="upcomingCard" style="display:none">
+      <h2><i class="ti ti-calendar-heart"></i> 다가오는 예약 <span class="hint" id="upCount" style="display:inline;font-weight:600"></span></h2>
+      <div id="upcomingList"></div>
     </div>
     <div class="card revcard">
       <div class="revrow">
@@ -426,7 +445,9 @@ function renderHome(){
   $('hShop').textContent=s.name||ME.nickname||'';
   $('hMeta').textContent=[(state.spec.map(x=>catKo[x]||x).join('·')),ME.region].filter(Boolean).join(' · ');
   $('hViewPub').href=pubUrl();
+  var qi=$('hQrImg');if(qi)qi.src='https://api.qrserver.com/v1/create-qr-code/?size=160x160&margin=0&color=6E4A50&bgcolor=FFFFFF&data='+encodeURIComponent(pubUrl());
   $('stPhotos').textContent=state.photos.length;
+  renderUpcoming();
   loadFollowerCount();loadFollowerList();
   // 완성도
   const checks=[
@@ -658,7 +679,29 @@ async function loadBookings(){
   let rows=null;
   try{rows=(await SB.from('bookings').select('*').eq('designer',UID).order('date',{ascending:true})).data;}catch(e){}
   bkRows=rows;var el2=$('stBk');if(el2&&rows)el2.textContent=rows.length;
-  renderStats();renderBkCalendar();renderBkList();
+  renderStats();renderBkCalendar();renderBkList();renderUpcoming();
+}
+function renderUpcoming(){
+  var el=$('upcomingList'),card=$('upcomingCard'),cnt=$('upCount');if(!el)return;
+  if(bkRows===null){if(card)card.style.display='none';return;}
+  var today=fmtYmd(new Date());
+  var up=(bkRows||[]).filter(function(b){var st=b.status||'pending';return b.date&&b.date>=today&&(st==='pending'||st==='accepted');})
+    .sort(function(a,b){return (a.date+(a.time||'')).localeCompare(b.date+(b.time||''));}).slice(0,6);
+  if(!up.length){if(card)card.style.display='none';if(cnt)cnt.textContent='';return;}
+  if(card)card.style.display='';
+  var pend=up.filter(function(b){return (b.status||'pending')==='pending';}).length;
+  if(cnt)cnt.textContent=pend>0?('· 대기 '+pend+'건'):'';
+  var dn=['일','월','화','수','목','금','토'];
+  el.innerHTML=up.map(function(b){
+    var d=new Date((b.date||'')+'T00:00:00');var dow=isNaN(d.getTime())?'':dn[d.getDay()];
+    var md=(b.date||'').slice(5).replace('-','/');
+    var pending=(b.status||'pending')==='pending';
+    var st=pending?'<span class="upst pend">대기중</span>':'<span class="upst ok">확정</span>';
+    var who=esc(b.name||b.customer||'');
+    var sub=[who,b.note?esc(b.note):''].filter(Boolean).join(' · ');
+    return '<div class="uprow"><div class="upday"><b>'+esc(md)+'</b><span>'+dow+' '+esc(b.time||'')+'</span></div>'
+      +'<div class="upmid"><div class="upsvc">'+esc(bkSvcName(b))+'</div>'+(sub?'<div class="upsub">'+sub+'</div>':'')+'</div>'+st+'</div>';
+  }).join('');
 }
 // ---------- 통계·매출 ----------
 function bkSvcName(b){var s=b.service;if(s&&typeof s==='object')return s.n||'예약';if(typeof s==='string'){try{var o=JSON.parse(s);if(o&&typeof o==='object')return o.n||'예약';}catch(e){}return s||'예약';}return '예약';}
