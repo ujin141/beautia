@@ -303,17 +303,17 @@ body.mlock{position:fixed;left:0;right:0;width:100%;overflow:hidden;}
 /* 모바일 앱: 하단 탭바 */
 .tabbar{display:none;}
 @media (max-width:860px){
-  .tabbar{position:fixed;left:14px;right:14px;bottom:calc(12px + env(safe-area-inset-bottom));z-index:58;display:flex;gap:2px;background:#1d1d1f;border-radius:34px;padding:8px 10px;box-shadow:0 14px 34px -12px rgba(0,0,0,.55);}
-  .tabbar .tb{flex:1;display:flex;align-items:center;justify-content:center;height:50px;color:#fff;position:relative;cursor:pointer;border-radius:25px;transition:background .16s,transform .08s;}
-  .tabbar .tb:active{transform:scale(.9);background:rgba(255,255,255,.22);}
-  .tabbar .tb i{font-size:27px;line-height:1;}
-  .tabbar .tb.on{background:rgba(255,255,255,.17);}
+  .tabbar{position:fixed;left:0;right:0;bottom:0;z-index:58;display:flex;background:rgba(255,255,255,.94);-webkit-backdrop-filter:blur(16px);backdrop-filter:blur(16px);border-top:1px solid var(--line);padding:5px 4px calc(5px + env(safe-area-inset-bottom));}
+  .tabbar .tb{flex:1;display:flex;align-items:center;justify-content:center;height:46px;color:#b8adb0;position:relative;cursor:pointer;transition:color .15s,transform .08s;}
+  .tabbar .tb:active{transform:scale(.86);}
+  .tabbar .tb i{font-size:25px;line-height:1;}
+  .tabbar .tb.on{color:var(--plum);}
   .tbav{display:none;}
-  .tabbar .tb .undot{position:absolute;top:5px;right:calc(50% - 16px);width:9px;height:9px;border-radius:50%;background:#e5484d;border:2px solid #1d1d1f;}
-  body{padding-bottom:calc(82px + env(safe-area-inset-bottom));}
+  .tabbar .tb .undot{position:absolute;top:4px;right:calc(50% - 15px);width:9px;height:9px;border-radius:50%;background:#e5484d;border:2px solid #fff;}
+  body{padding-bottom:calc(64px + env(safe-area-inset-bottom));}
   nav.main{display:none!important;}
   .join{display:none;}
-  .umenu.frombar{top:auto!important;bottom:calc(80px + env(safe-area-inset-bottom));right:12px!important;left:auto!important;}
+  .umenu.frombar{top:auto!important;bottom:calc(66px + env(safe-area-inset-bottom));right:12px!important;left:auto!important;}
 }
 .idwrap{display:flex;flex-direction:column;align-items:center;gap:14px;transform-origin:center center;}
 .idcard{width:100%;max-width:360px;background:#fff;border-radius:26px;overflow:hidden;box-shadow:0 40px 90px -30px rgba(40,20,40,.55);border:1px solid var(--line);}

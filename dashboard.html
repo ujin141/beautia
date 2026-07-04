@@ -118,6 +118,15 @@ textarea.inp{resize:vertical;min-height:80px;line-height:1.6;}
 .stat{background:#fff;border:1px solid var(--line);border-radius:14px;padding:15px 4px;text-align:center;min-width:0;}
 .stat .sv{font-size:21px;font-weight:800;color:var(--plum);letter-spacing:-.02em;white-space:nowrap;}
 .stat .sl{font-size:11px;color:var(--sub);font-weight:700;margin-top:4px;}
+.revcard{background:linear-gradient(135deg,var(--plum),#8d5f66);border:none;color:#fff;box-shadow:0 12px 28px -14px rgba(110,74,80,.6);}
+.revcard .revrow{display:flex;gap:16px;}
+.revcard .revbox{flex:1;min-width:0;}
+.revcard .rl{font-size:12.5px;font-weight:700;opacity:.9;display:flex;align-items:center;gap:5px;}
+.revcard .rl i{font-size:15px;}
+.revcard .rv{font-size:23px;font-weight:800;margin-top:6px;letter-spacing:-.3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.revcard .revsub{display:flex;gap:18px;flex-wrap:wrap;margin-top:15px;padding-top:13px;border-top:1px solid rgba(255,255,255,.22);font-size:13px;opacity:.95;}
+.revcard .revsub b{font-weight:800;font-size:15px;}
+.revcard .revnote{font-size:11.5px;opacity:.75;margin-top:10px;line-height:1.5;}
 .prog{height:10px;background:var(--soft);border-radius:999px;overflow:hidden;margin-top:6px;}
 .progbar{height:100%;background:linear-gradient(90deg,var(--accent),var(--plum));border-radius:999px;transition:width .5s;width:0;}
 #progTips{margin-top:12px;display:flex;flex-direction:column;gap:7px;}
@@ -182,10 +191,22 @@ textarea.inp{resize:vertical;min-height:80px;line-height:1.6;}
         <button class="btn ghost sm" onclick="copyPub()"><i class="ti ti-link"></i> 공유 링크 복사</button>
       </div>
     </div>
+    <div class="card revcard">
+      <div class="revrow">
+        <div class="revbox"><div class="rl"><i class="ti ti-coin"></i> 총 매출</div><div class="rv" id="stRevTotal">—</div></div>
+        <div class="revbox"><div class="rl"><i class="ti ti-calendar-dollar"></i> 이번 달 매출</div><div class="rv" id="stRevMonth">—</div></div>
+      </div>
+      <div class="revsub">
+        <span><b id="stDone">0</b> 완료</span>
+        <span><b id="stMonthBk">0</b> 이번 달 예약</span>
+        <span><b id="stPend">0</b> 대기중</span>
+      </div>
+      <div class="revnote" id="revNote"></div>
+    </div>
     <div class="statgrid">
       <div class="stat"><div class="sv" id="stPhotos">0</div><div class="sl">포트폴리오</div></div>
       <div class="stat"><div class="sv" id="stFollowers">0</div><div class="sl">팔로워</div></div>
-      <div class="stat"><div class="sv" id="stBk">0</div><div class="sl">받은 예약</div></div>
+      <div class="stat"><div class="sv" id="stBk">0</div><div class="sl">총 예약</div></div>
       <div class="stat"><div class="sv" id="stRev">0</div><div class="sl">후기</div></div>
       <div class="stat"><div class="sv" id="stRating">—</div><div class="sl">평점</div></div>
     </div>
@@ -572,7 +593,34 @@ async function loadBookings(){
   let rows=null;
   try{rows=(await SB.from('bookings').select('*').eq('designer',UID).order('date',{ascending:true})).data;}catch(e){}
   bkRows=rows;var el2=$('stBk');if(el2&&rows)el2.textContent=rows.length;
-  renderBkCalendar();renderBkList();
+  renderStats();renderBkCalendar();renderBkList();
+}
+// ---------- 통계·매출 ----------
+function bkSvcName(b){var s=b.service;if(s&&typeof s==='object')return s.n||'예약';if(typeof s==='string'){try{var o=JSON.parse(s);if(o&&typeof o==='object')return o.n||'예약';}catch(e){}return s||'예약';}return '예약';}
+function bkAmount(b){var s=b.service,p='';if(s&&typeof s==='object')p=s.p||s.price||'';else if(typeof s==='string'){try{var o=JSON.parse(s);if(o&&typeof o==='object')p=o.p||o.price||'';}catch(e){}}var n=parseInt(String(p).replace(/[^0-9]/g,''),10);return isNaN(n)?0:n;}
+function bkCurrency(rows){for(var i=0;i<rows.length;i++){var s=rows[i].service;var p=(s&&typeof s==='object')?(s.p||''):'';if(/[¥￥円]/.test(p))return '¥';}return '₩';}
+function renderStats(){
+  var rows=bkRows||[];
+  var now=new Date();var ym=now.getFullYear()+'-'+String(now.getMonth()+1).padStart(2,'0');
+  var cur=bkCurrency(rows),total=0,month=0,done=0,pend=0,monthBk=0,priced=0;
+  rows.forEach(function(b){
+    var st=b.status||'pending';
+    var confirmed=(st==='accepted'||st==='done'||st==='completed');   // 매출 인정: 수락·완료
+    var amt=bkAmount(b);if(amt>0)priced++;
+    if(confirmed)total+=amt;
+    if(st==='done'||st==='completed')done++;
+    if(st==='pending')pend++;
+    if((b.date||'').slice(0,7)===ym){monthBk++;if(confirmed)month+=amt;}
+  });
+  var fmt=function(n){return cur+n.toLocaleString();};
+  if($('stRevTotal'))$('stRevTotal').textContent=fmt(total);
+  if($('stRevMonth'))$('stRevMonth').textContent=fmt(month);
+  if($('stDone'))$('stDone').textContent=done;
+  if($('stPend'))$('stPend').textContent=pend;
+  if($('stMonthBk'))$('stMonthBk').textContent=monthBk;
+  var nEl=$('revNote');
+  if(nEl){var noPrice=rows.length-priced;
+    nEl.textContent=rows.length?('수락·완료된 예약의 메뉴 가격 합계'+(noPrice>0?(' · 가격 없는 예약 '+noPrice+'건 제외'):'')):'예약이 쌓이면 매출이 자동 집계돼요';}
 }
 function bkMap(){var m={};(bkRows||[]).forEach(function(b){if(b.date){(m[b.date]=m[b.date]||[]).push(b);}});return m;}
 function renderBkCalendar(){
@@ -620,7 +668,7 @@ function renderBkList(){
     const when=[b.date,b.time].filter(Boolean).join(' ');
     const acts=st==='pending'?`<button class="btn sm" onclick="setBk('${b.id}','accepted')">수락</button> <button class="btn ghost sm" onclick="setBk('${b.id}','declined')">거절</button>`
       :(st==='accepted'?`<button class="btn sm" onclick="setBk('${b.id}','completed')">완료 처리</button>`:'');
-    return `<div class="bk"><div class="bkinfo"><div class="bkname">${esc(b.service||b.customer_name||'예약')}</div>
+    return `<div class="bk"><div class="bkinfo"><div class="bkname">${esc(bkSvcName(b))}</div>
       <div class="bkmeta">${esc(when||'')}${b.note?' · '+esc(b.note):''}</div><div style="margin-top:8px">${acts}</div></div>
       <span class="bkbadge ${statusC[st]||'st-pending'}">${statusL[st]||st}</span></div>`;
   }).join('');
