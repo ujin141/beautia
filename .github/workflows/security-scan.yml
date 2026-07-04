@@ -1,0 +1,20 @@
+name: Beautia Security Scan
+
+# PC/Claude가 꺼져 있어도 GitHub 서버에서 24/7 자동 실행되는 보안 회귀 감시.
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+  schedule:
+    - cron: '17 18 * * *'   # 매일 1회(UTC, off-minute)
+  workflow_dispatch: {}       # 수동 실행 버튼
+
+jobs:
+  security-scan:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Run security regression scan
+        run: bash security-scan.sh
