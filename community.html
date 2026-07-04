@@ -912,6 +912,16 @@ function maybeNotifyNewWork(){if(_notifiedNew)return;try{var n=allD().filter(isN
 function toast(m){const t=$('toast');t.textContent=m;t.classList.add('on');clearTimeout(window._t);window._t=setTimeout(()=>t.classList.remove('on'),2200);}
 const cl=c=>c==='All'?T[LANG].all:(T[LANG].Cat[c]||c);
 function chipsOf(d){return (d&&d.tags&&d.tags.length)?d.tags:((d&&d.spec)||[]);}
+// 나라 국기: shop.country(KR/JP/…) 우선, 없으면 지역·주소 텍스트로 판별
+function flagFor(country,region,area){
+  var c=String(country||'').toUpperCase();
+  if(c==='KR')return '🇰🇷';if(c==='JP')return '🇯🇵';if(c==='US')return '🇺🇸';if(c==='TH')return '🇹🇭';if(c==='VN')return '🇻🇳';
+  var r=String(region||'')+' '+String(area||'');
+  if(/大阪|大坂|東京|京都|福岡|札幌|名古屋|osaka|tokyo|kyoto|fukuoka|일본|japan|オオサカ|오사카|도쿄|교토|후쿠오카|삿포로|나고야/i.test(r))return '🇯🇵';
+  if(/[가-힣]/.test(r)||/korea|seoul|busan|daegu|incheon|gwangju|gimpo|bundang|seongnam/i.test(r))return '🇰🇷';
+  if(/thai|bangkok|방콕|태국/i.test(r))return '🇹🇭';
+  return '🌎';
+}
 
 function renderCats(){$('cats').innerHTML=CATS.map(c=>`<button class="cat ${CAT===c?'on':''}" onclick="setCat('${c}')">${cl(c)}</button>`).join('');}
 function renderCities(){const cs=[...new Set(allD().map(d=>d.city).filter(Boolean))];$('city').innerHTML=`<option value="">${T[LANG].allcity}</option>`+cs.map(c=>`<option value="${esc(c)}">${esc(c)}</option>`).join('');}
@@ -1612,7 +1622,7 @@ async function loadDesigners(){try{
     if(s.hidden)return;                                             // 오너가 숨김 처리한 디자이너 제외
     list.push({id:'u_'+p.id,uid:p.id,name:p.nickname||s.name||'Designer',ko:'',
       cat:canonCat((s.specialties&&s.specialties[0])||(p.interests&&p.interests[0])||''),
-      city:p.region||s.area||'',area:s.area||'',flag:roleIn(p.role)==='desg'?'🎨':'✨',
+      city:p.region||s.area||'',area:s.area||'',flag:flagFor(s.country,p.region,s.area),
       rating:5.0,rev:0,years:s.career||'',ko_ok:1,ver:1,
       spec:(s.specialties&&s.specialties.length)?s.specialties:((p.interests&&p.interests.length)?p.interests:['Hair']),
       bio:p.bio||'',avatar:s.avatar||p.avatar_url||'',insta:(s.insta||'').replace(/^@/,''),naver:s.naver||'',blog:s.blog||'',bookingUrl:s.bookingUrl||'',sched:s.sched||null,newAt:s.lastWorkAt||0,
