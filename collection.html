@@ -104,6 +104,11 @@ nav.main a.on{color:var(--plum);}
 .langmenu a{display:block;padding:11px 14px;font-size:14.5px;font-weight:600;color:var(--ink);border-radius:9px;cursor:pointer;}
 .langmenu a:hover{background:var(--soft);} .langmenu a.on{color:var(--plum);font-weight:800;background:var(--soft);}
 @media(max-width:860px){.langBtn span{display:none;} .langBtn{padding:8px;}}
+.bkremind{display:none;align-items:center;gap:10px;max-width:1320px;margin:12px auto 0;padding:12px 16px;background:linear-gradient(135deg,var(--plum),#8d5f66);color:#fff;border-radius:14px;font-size:14px;font-weight:700;cursor:pointer;box-shadow:0 12px 28px -16px rgba(110,74,80,.7);}
+.bkremind.on{display:flex;}
+.bkremind #bkremindTxt{flex:1;line-height:1.4;}
+.bkremind .brx{background:rgba(255,255,255,.22);border:none;color:#fff;width:26px;height:26px;border-radius:50%;cursor:pointer;flex:0 0 auto;display:flex;align-items:center;justify-content:center;font-size:15px;}
+@media(max-width:860px){.bkremind{margin:10px 12px 0;font-size:13px;}}
 .lmodal{position:fixed;inset:0;z-index:75;background:rgba(20,12,16,.55);backdrop-filter:blur(4px);display:none;align-items:flex-start;justify-content:center;padding:24px;overflow-y:auto;-webkit-overflow-scrolling:touch;overscroll-behavior:contain;}
 .lmodal.on{display:flex;}
 .lcard{background:#fff;border-radius:24px;width:100%;max-width:420px;margin:auto;padding:34px 32px 30px;box-shadow:0 40px 100px -30px rgba(0,0,0,.5);position:relative;text-align:center;}
@@ -692,6 +697,7 @@ body.mlock{position:fixed;left:0;right:0;width:100%;overflow:hidden;}
     <button class="join" id="joinBtn" onclick="openLogin('')"><i class="ti ti-user-plus"></i><span data-t="signup">Sign up</span></button>
   </div>
 </header>
+<div class="bkremind" id="bkremind" onclick="bkRemindClick()"><i class="ti ti-bell-ringing" style="font-size:19px;flex:0 0 auto"></i><span id="bkremindTxt"></span><button class="brx" onclick="event.stopPropagation();dismissRemind()" aria-label="Dismiss"><i class="ti ti-x"></i></button></div>
 <nav class="tabbar" id="tabbar">
   <a class="tb on" data-v="explore" onclick="tabGo('explore')" aria-label="Explore"><i class="ti ti-home"></i></a>
   <a class="tb" data-v="designers" onclick="tabGo('designers')" aria-label="Designers"><i class="ti ti-search"></i></a>
@@ -1216,6 +1222,9 @@ Object.assign(T.ja,{follow:'フォロー',following:'フォロー中',followedT:
 Object.assign(T.en,{applyDesigner:'Become a designer',applyTitle:'Apply as a designer',applySub:'Once approved, you can showcase your work and get clients.',applyPortfolio:'Portfolio photos',applyMsg:'Message (optional)',applyMsgPh:'Tell us about yourself…',applySubmit:'Submit application',applyLogin:'Please log in to apply',applyAlreadyDesigner:"You're already a designer",applyPending:'Already applied · under review ⏳',applyDone:"Applied! We'll review and get back to you ✨",applyFail:'Failed to apply',applyNeedRegion:'Enter your area',applyNeedSpec:'Choose your specialty',applyNeedProof:'Add your Instagram or portfolio photos',uploading:'Uploading…',extBook:'Book on their site'});
 Object.assign(T.ko,{applyDesigner:'디자이너 등록하기',applyTitle:'디자이너 등록 신청',applySub:'승인되면 작업을 보여주고 손님을 받을 수 있어요.',applyPortfolio:'포트폴리오 사진',applyMsg:'한마디 (선택)',applyMsgPh:'소개나 하고 싶은 말을 적어주세요…',applySubmit:'신청하기',applyLogin:'로그인 후 신청할 수 있어요',applyAlreadyDesigner:'이미 디자이너예요',applyPending:'이미 신청하셨어요 · 검토 중입니다 ⏳',applyDone:'신청 완료! 검토 후 알려드릴게요 ✨',applyFail:'신청 실패',applyNeedRegion:'지역을 입력해주세요',applyNeedSpec:'전문분야를 선택해주세요',applyNeedProof:'인스타그램 또는 포트폴리오 사진을 넣어주세요',uploading:'업로드 중…',extBook:'예약 사이트에서 예약하기'});
 Object.assign(T.ja,{applyDesigner:'デザイナー登録',applyTitle:'デザイナー登録申請',applySub:'承認されると作品を掲載して集客できます。',applyPortfolio:'ポートフォリオ写真',applyMsg:'ひとこと（任意）',applyMsgPh:'自己紹介などをどうぞ…',applySubmit:'申請する',applyLogin:'ログイン後に申請できます',applyAlreadyDesigner:'すでにデザイナーです',applyPending:'申請済み・審査中です ⏳',applyDone:'申請完了！審査後にお知らせします ✨',applyFail:'申請失敗',applyNeedRegion:'エリアを入力してください',applyNeedSpec:'専門分野を選択してください',applyNeedProof:'Instagramまたはポートフォリオ写真を入れてください',uploading:'アップロード中…',extBook:'外部サイトで予約する'});
+Object.assign(T.ko,{remToday:'오늘 {name} 예약이 있어요 · {t}',remTomorrow:'내일 {name} 예약이 있어요 · {t}',remReview:'{name} 시술은 어떠셨어요? 후기를 남겨주세요 →'});
+Object.assign(T.en,{remToday:'Booking with {name} today · {t}',remTomorrow:'Booking with {name} tomorrow · {t}',remReview:'How was {name}? Leave a review →'});
+Object.assign(T.ja,{remToday:'本日 {name} の予約 · {t}',remTomorrow:'明日 {name} の予約 · {t}',remReview:'{name} はいかがでしたか？レビューをどうぞ →'});
 // 태국어: 영어 전체를 상속받고 주요 문자열만 태국어로 (누락 키는 영어로 자동 폴백)
 T.th=Object.assign({},T.en,{
  explore:'สำรวจ',designers:'ดีไซเนอร์',saved:'บันทึกไว้',join:'สมัคร',my:'ฉัน',messages:'ข้อความ',
@@ -1752,8 +1761,35 @@ async function loadBkBadge(){bkPend=0;if(!(ME&&ME.uid)){renderChatBadge();return
  bkSub=SB.channel('gbk').on('postgres_changes',{event:'INSERT',schema:'public',table:'bookings'},function(p){var b=p.new;if(b&&b.designer===ME.uid){bkPend++;renderChatBadge();toast('📅 '+T[LANG].bkNew);}})
   .on('postgres_changes',{event:'UPDATE',schema:'public',table:'bookings'},function(p){var b=p.new;if(!b)return;
     if(b.designer===ME.uid){SB.from('bookings').select('id',{count:'exact',head:true}).eq('designer',ME.uid).eq('status','pending').then(function(r){bkPend=r.count||0;renderChatBadge();});}
-    if(b.customer===ME.uid)toast('📅 '+bkStatusLabel(b.status));
-  }).subscribe();}
+    if(b.customer===ME.uid){toast('📅 '+bkStatusLabel(b.status));checkBookingReminders();}
+  }).subscribe();
+ checkBookingReminders();}
+// ===== 예약 완결 루프: 하루 전 리마인더 + 완료 후 리뷰 요청 배너 =====
+var _remindAction=null;
+async function checkBookingReminders(){
+ if(!(ME&&ME.uid)){var el0=$('bkremind');if(el0)el0.classList.remove('on');return;}
+ try{
+  var rows=(await SB.from('bookings').select('id,designer,date,time,status').eq('customer',ME.uid).in('status',['accepted','done']).order('date',{ascending:true}).limit(40)).data||[];
+  if(!rows.length)return;
+  await fetchProfiles(rows.map(function(b){return b.designer;}));
+  var reviewed={};try{(await SB.from('designer_reviews').select('booking').eq('customer',ME.uid)).data.forEach(function(r){reviewed[r.booking]=1;});}catch(e){}
+  var ymd=function(dt){return dt.toISOString().slice(0,10);};var now=new Date();var todayS=ymd(now);var tmrS=ymd(new Date(now.getTime()+864e5));
+  var nm=function(uid){return (PROFCACHE[uid]||{}).name||'디자이너';};
+  var dismissed={};try{dismissed=JSON.parse(localStorage.getItem('beautia_remind_x')||'{}');}catch(e){}
+  var soon=rows.filter(function(b){return b.status==='accepted'&&(b.date===todayS||b.date===tmrS);});
+  var doneUnrev=rows.filter(function(b){return b.status==='done'&&!reviewed[b.id];});
+  var pick=null,txt='';
+  if(soon.length){var b=soon[0];var key='book_'+b.id+'_'+todayS;
+   if(!dismissed[key]){var tmpl=(b.date===todayS?T[LANG].remToday:T[LANG].remTomorrow);txt=tmpl.replace('{name}',nm(b.designer)).replace('{t}',b.time||'');pick={type:'book',key:key};}}
+  if(!pick&&doneUnrev.length){var b2=doneUnrev[0];var key2='rev_'+b2.id;
+   if(!dismissed[key2]){txt=T[LANG].remReview.replace('{name}',nm(b2.designer));pick={type:'review',key:key2,bid:b2.id,designer:b2.designer};}}
+  var el=$('bkremind');if(!el)return;
+  if(!pick){el.classList.remove('on');return;}
+  _remindAction=pick;$('bkremindTxt').textContent=txt;el.classList.add('on');
+ }catch(e){}
+}
+function bkRemindClick(){if(!_remindAction)return;if(_remindAction.type==='review'){var m=$('bkmodal');if(m)m.classList.add('on');openReview(_remindAction.bid,_remindAction.designer);}else{openBookings();}}
+function dismissRemind(){var el=$('bkremind');if(el)el.classList.remove('on');if(_remindAction){try{var d=JSON.parse(localStorage.getItem('beautia_remind_x')||'{}');d[_remindAction.key]=1;localStorage.setItem('beautia_remind_x',JSON.stringify(d));}catch(e){}}}
 async function submitFeatured(){var ig=igClean($('faIG')?$('faIG').value:'');var cat=$('faCat')?$('faCat').value:'Hair';var city=$('faCity')?$('faCity').value.trim():'';var imgs=($('faImgs')?$('faImgs').value:'').split(/\n+/).map(function(s){return s.trim();}).filter(function(s){return /^https?:\/\//.test(s);}).slice(0,12);if(!ig){toast('인스타 핸들을 입력하세요');return;}if(!imgs.length){toast('사진 URL을 넣으세요');return;}
   try{var r=await SB.from('featured').insert({insta:ig,cat:cat,city:city,imgs:imgs});if(r.error){toast('저장 실패: '+r.error.message);return;}}catch(e){toast('저장 실패');return;}
   closeFa();await loadFeatured();toast('추가됐어요 ✨');}
