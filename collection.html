@@ -80,6 +80,9 @@ nav.main a.on{color:var(--plum);background:var(--rosebg);}
 .join{background:var(--ink);color:#fff;font-size:14px;font-weight:800;padding:11px 20px;border-radius:999px;display:inline-flex;align-items:center;gap:7px;}
 .join:hover{background:var(--plum);}
 .loginBtn{font-size:14px;font-weight:700;color:var(--ink2);padding:11px 6px;}
+.applyBtn{display:inline-flex;align-items:center;gap:6px;font-size:13.5px;font-weight:800;color:var(--plum);background:#fff;border:1.5px solid var(--plum);border-radius:999px;padding:9px 16px;cursor:pointer;white-space:nowrap;transition:.14s;}
+.applyBtn:hover{background:var(--rosebg);}
+.applyBtn i{font-size:16px;}
 .loginBtn:hover{color:var(--ink);}
 .avt{position:relative;width:40px;height:40px;border-radius:50%;background:linear-gradient(135deg,#C99,#6E4A50);color:#fff;font-weight:700;font-size:17px;display:none;align-items:center;justify-content:center;cursor:pointer;font-family:'Pretendard','Malgun Gothic',sans-serif;}
 .avt .unread{position:absolute;top:-2px;right:-2px;min-width:11px;height:11px;border-radius:999px;background:#e5484d;border:2px solid #fff;box-shadow:0 1px 3px rgba(0,0,0,.25);}
@@ -610,7 +613,7 @@ body.mlock{position:fixed;left:0;right:0;width:100%;overflow:hidden;}
   .filterbar{top:0;} .fin{padding:12px 16px;} .citysel{display:none;} .wrap{padding:18px 16px 80px;}
   .dsec{padding:20px;} .dfoot{padding:14px 18px;}
   .modal{padding:0;align-items:stretch;} .sheet{max-width:100%;width:100%;height:100dvh;max-height:100dvh;border-radius:0;}
-  .join span{display:none;} .join{padding:11px 14px;} .brand .b1{font-size:20px;} .brand .blogo{height:34px;}
+  .join span{display:none;} .join{padding:11px 14px;} .applyBtn span{display:none;} .applyBtn{padding:9px 11px;} .brand .b1{font-size:20px;} .brand .blogo{height:34px;}
 }
 @media(max-width:600px){
   .hero h1{font-size:25px;} .hero p{font-size:14.5px;}
@@ -653,6 +656,7 @@ body.mlock{position:fixed;left:0;right:0;width:100%;overflow:hidden;}
     </nav>
     <div class="hsearch"><i class="ti ti-search"></i><input id="q" oninput="onSearchInput()" onfocus="renderSuggest()" onblur="hideSuggest()" autocomplete="off" data-tph="search"><div class="sugbox" id="sugbox"></div></div>
     <span class="nearby" id="nearby" style="display:none"></span>
+    <button class="applyBtn" id="applyBtn" onclick="openDesignerApply()"><i class="ti ti-briefcase"></i> <span data-t="applyDesigner">Become a designer</span></button>
     <button class="loginBtn" id="loginBtn" onclick="openLogin('')" data-t="login">Log in</button>
     <div class="avt" id="avatar" onclick="toggleUmenu(event)" style="display:none"></div>
     <button class="join" id="joinBtn" onclick="openLogin('')"><i class="ti ti-user-plus"></i><span data-t="signup">Sign up</span></button>
