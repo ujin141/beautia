@@ -74,6 +74,21 @@ grant select (id, nickname, role, region, bio, interests, shop, avatar_url, crea
   on public.profiles to anon;
 grant select on public.profiles to authenticated;
 
+-- ========== 6) 리뷰 사진 (신뢰 지표) ==========
+alter table public.designer_reviews add column if not exists photos jsonb not null default '[]';
+
+-- ========== 7) 디자이너 공개 신뢰지표 RPC (예약수 등, RLS 우회 안전 집계) ==========
+--  손님이 다른 손님의 예약 상세는 못 보되, 디자이너의 '완료 예약 수'만 공개.
+create or replace function public.designer_stats(p_designer uuid)
+returns table(done_count bigint, review_count bigint, avg_stars numeric)
+language sql security definer stable as $$
+  select
+    (select count(*) from public.bookings b where b.designer=p_designer and b.status='done' and b.customer<>b.designer),
+    (select count(*) from public.designer_reviews r where r.designer=p_designer),
+    (select round(avg(r.stars),1) from public.designer_reviews r where r.designer=p_designer);
+$$;
+grant execute on function public.designer_stats(uuid) to anon, authenticated;
+
 -- 완료!
 --  ✔ 고객은 예약을 스스로 완료 처리 못 함 → 허위 리뷰 차단
 --  ✔ 익명 사용자는 회원 실명(full_name) 조회 불가

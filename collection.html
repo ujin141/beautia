@@ -580,6 +580,14 @@ body.mlock{position:fixed;left:0;right:0;width:100%;overflow:hidden;}
 .rev .rt.trd{color:var(--ink);} .rev .rt.trd::after{content:'';}
 .trbtn{margin-top:6px;display:inline-flex;align-items:center;gap:4px;font-family:inherit;font-size:12px;font-weight:700;color:var(--plum);background:none;border:none;padding:2px 0;cursor:pointer;opacity:.8;}
 .trbtn:hover{opacity:1;text-decoration:underline;} .trbtn:disabled{opacity:.5;cursor:default;} .trbtn i{font-size:14px;}
+.rvaddph{display:inline-flex;align-items:center;gap:6px;margin-top:10px;font-family:inherit;font-size:13px;font-weight:700;color:var(--plum);background:var(--soft);border:1.5px dashed var(--rose);border-radius:12px;padding:10px 14px;cursor:pointer;}
+.rvphs{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px;}
+.rvph{width:64px;height:64px;border-radius:10px;background-size:cover;background-position:center;position:relative;flex:0 0 auto;}
+.rvph button{position:absolute;top:-6px;right:-6px;width:20px;height:20px;border-radius:50%;background:#1c1418;color:#fff;border:none;font-size:11px;display:flex;align-items:center;justify-content:center;cursor:pointer;}
+.revphs{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px;}
+.revph{width:72px;height:72px;border-radius:9px;background-size:cover;background-position:center;flex:0 0 auto;border:1px solid var(--line);display:block;}
+.trustbadge{display:inline-flex;align-items:center;gap:6px;background:#eaf5ef;color:#2b7a5b;font-size:13px;font-weight:800;padding:8px 13px;border-radius:999px;margin-bottom:12px;}
+.trustbadge i{font-size:16px;}
 .sns{display:flex;flex-wrap:wrap;gap:11px;}
 .sns a{width:54px;height:54px;border-radius:16px;background:var(--soft);border:1px solid var(--line);display:flex;align-items:center;justify-content:center;font-size:26px;color:var(--ink);transition:.15s;}
 .sns a:hover{background:var(--ink);color:#fff;transform:translateY(-2px);}
@@ -1225,6 +1233,7 @@ Object.assign(T.ja,{applyDesigner:'デザイナー登録',applyTitle:'デザイ�
 Object.assign(T.ko,{remToday:'오늘 {name} 예약이 있어요 · {t}',remTomorrow:'내일 {name} 예약이 있어요 · {t}',remReview:'{name} 시술은 어떠셨어요? 후기를 남겨주세요 →'});
 Object.assign(T.en,{remToday:'Booking with {name} today · {t}',remTomorrow:'Booking with {name} tomorrow · {t}',remReview:'How was {name}? Leave a review →'});
 Object.assign(T.ja,{remToday:'本日 {name} の予約 · {t}',remTomorrow:'明日 {name} の予約 · {t}',remReview:'{name} はいかがでしたか？レビューをどうぞ →'});
+Object.assign(T.ko,{doneCount:'{n}건 시술 완료'});Object.assign(T.en,{doneCount:'{n} services completed'});Object.assign(T.ja,{doneCount:'{n}件 施術完了'});
 // 태국어: 영어 전체를 상속받고 주요 문자열만 태국어로 (누락 키는 영어로 자동 폴백)
 T.th=Object.assign({},T.en,{
  explore:'สำรวจ',designers:'ดีไซเนอร์',saved:'บันทึกไว้',join:'สมัคร',my:'ฉัน',messages:'ข้อความ',
@@ -1708,15 +1717,22 @@ function renderBookings(){var isD=ME&&ME.role==='desg';
 async function setBk(id,status,cu,de){try{var r=await SB.from('bookings').update({status:status}).eq('id',id);if(r.error){toast(T[LANG].bkFail);return;}}catch(e){toast(T[LANG].bkFail);return;}
  if(cu&&de){bkNotifyConv(cu,de,'📅 '+bkStatusLabel(status));pushNotify(ME.uid===cu?de:cu,'📅 Beautia',bkStatusLabel(status));}
  toast(bkStatusLabel(status)+' ✓');loadBkBadge();openBookings();}
-function openReview(bid,designer){rvStars=5;
+var rvPhotos=[];
+function openReview(bid,designer){rvStars=5;rvPhotos=[];
  $('bkcard').innerHTML=`<button class="iclose" onclick="openBookings()" style="position:absolute;top:16px;right:20px;font-size:24px;color:var(--sub);z-index:2">×</button>
   <h3 class="serif">${T[LANG].rvTitle}</h3>
   <div class="rvstars" id="rvstars">${[1,2,3,4,5].map(n=>`<i class="ti ti-star-filled ${n<=rvStars?'on':''}" onclick="setRvStars(${n})"></i>`).join('')}</div>
   <textarea class="linput" id="rvBody" rows="4" style="resize:none;margin-top:8px" placeholder="${T[LANG].rvPh}"></textarea>
+  <input type="file" id="rvFile" accept="image/*" multiple hidden onchange="rvAddPhotos(event)">
+  <div class="rvphs" id="rvphs"></div>
+  <button class="rvaddph" type="button" onclick="document.getElementById('rvFile').click()"><i class="ti ti-camera"></i> ${T[LANG].addPhoto} (${rvPhotos.length}/4)</button>
   <button class="lcont" style="width:100%;margin-top:16px" onclick="submitReview('${bid}','${designer}')">${T[LANG].rvSend}</button>`;}
+function rvAddPhotos(e){var files=Array.prototype.slice.call(e.target.files);var room=4-rvPhotos.length;files.slice(0,room).forEach(function(f){if(!/^image\//.test(f.type))return;var rd=new FileReader();rd.onload=function(ev){pfDownscale(ev.target.result,1200,async function(d){var url=await uploadOne(d);if(url)rvPhotos.push(url);renderRvPhotos();});};rd.readAsDataURL(f);});e.target.value='';}
+function renderRvPhotos(){var el=$('rvphs');if(el)el.innerHTML=rvPhotos.map(function(u,i){return '<div class="rvph" style="background-image:url(\''+safeUrl(u)+'\')"><button type="button" onclick="rvRmPhoto('+i+')"><i class="ti ti-x"></i></button></div>';}).join('');var b=document.querySelector('.rvaddph');if(b)b.innerHTML='<i class="ti ti-camera"></i> '+T[LANG].addPhoto+' ('+rvPhotos.length+'/4)';}
+function rvRmPhoto(i){rvPhotos.splice(i,1);renderRvPhotos();}
 function setRvStars(n){rvStars=n;document.querySelectorAll('#rvstars i').forEach(function(el,i){el.classList.toggle('on',i<n);});}
 async function submitReview(bid,designer){var body=($('rvBody').value||'').slice(0,1000);
- try{var r=await SB.from('designer_reviews').insert({booking:bid,customer:ME.uid,designer:designer,stars:rvStars,body:body});
+ try{var r=await SB.from('designer_reviews').insert({booking:bid,customer:ME.uid,designer:designer,stars:rvStars,body:body,photos:rvPhotos});
   if(r.error){toast(T[LANG].bkFail+': '+r.error.message);return;}
  }catch(e){toast(T[LANG].bkFail);return;}
  toast(T[LANG].rvThanks);openBookings();}
@@ -1744,14 +1760,18 @@ async function transRev(btn){
  else{ btn.innerHTML=old; toast(LANG==='ko'?'번역 실패, 잠시 후 다시':'Translation failed'); }
 }
 async function loadRevsFor(d){try{
- var rows=(await SB.from('designer_reviews').select('stars,body,created_at,customer').eq('designer',d.uid).order('created_at',{ascending:false}).limit(20)).data||[];
- if(!rows.length)return;
+ var rows=(await SB.from('designer_reviews').select('*').eq('designer',d.uid).order('created_at',{ascending:false}).limit(20)).data||[];
+ var doneCount=0;try{var st=await SB.rpc('designer_stats',{p_designer:d.uid});if(!st.error&&st.data&&st.data[0])doneCount=+st.data[0].done_count||0;}catch(e){}
+ var trust=doneCount>0?`<div class="trustbadge"><i class="ti ti-circle-check-filled"></i> ${(T[LANG].doneCount||'{n} completed').replace('{n}',doneCount)}</div>`:'';
+ var el=document.getElementById('revsec');
+ if(!rows.length){if(el)el.innerHTML=trust;return;}
  await fetchProfiles(rows.map(function(r){return r.customer;}));
  var avg=(rows.reduce(function(a,r){return a+r.stars;},0)/rows.length).toFixed(1);
  var ds=document.getElementById('dstars');if(ds)ds.innerHTML='<span class="star">★</span> '+avg+' ('+rows.length+')';
- var el=document.getElementById('revsec');if(!el)return;
- el.innerHTML=`<div class="st">${T[LANG].reviews} · ${rows.length} · ★ ${avg}</div>`+rows.map(function(r,i){var p=PROFCACHE[r.customer]||{name:'User'};
-  return `<div class="rev"><div class="ra" style="background:${GR[i%GR.length]}">${esc((p.name||'?')[0])}</div><div><div class="rn">${esc(p.name)}</div><div class="rs">${stars(r.stars)}</div><div class="rt">${esc(r.body||'')}</div>${trBtnHtml(r.body)}</div></div>`;}).join('');
+ if(!el)return;
+ el.innerHTML=trust+`<div class="st">${T[LANG].reviews} · ${rows.length} · ★ ${avg}</div>`+rows.map(function(r,i){var p=PROFCACHE[r.customer]||{name:'User'};
+  var phs=(r.photos&&r.photos.length)?`<div class="revphs">${r.photos.slice(0,4).map(function(u){var su=safeUrl(u);return su?`<a class="revph" href="${esc(su)}" target="_blank" rel="noopener" style="background-image:url('${su}')"></a>`:'';}).join('')}</div>`:'';
+  return `<div class="rev"><div class="ra" style="background:${GR[i%GR.length]}">${esc((p.name||'?')[0])}</div><div style="flex:1"><div class="rn">${esc(p.name)}</div><div class="rs">${stars(r.stars)}</div><div class="rt">${esc(r.body||'')}</div>${trBtnHtml(r.body)}${phs}</div></div>`;}).join('');
 }catch(e){}}
 let bkSub=null;
 async function loadBkBadge(){bkPend=0;if(!(ME&&ME.uid)){renderChatBadge();return;}
