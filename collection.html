@@ -114,6 +114,9 @@ nav.main a.on{color:var(--plum);}
 .langwrap{position:relative;flex:0 0 auto;}
 .langBtn{display:inline-flex;align-items:center;gap:5px;background:none;border:1px solid var(--line);border-radius:999px;padding:8px 12px;font-weight:700;font-size:13px;color:var(--ink2);cursor:pointer;font-family:inherit;white-space:nowrap;}
 .langBtn i{font-size:17px;} .langBtn:hover{border-color:var(--plum);color:var(--plum);}
+.bellBtn{position:relative;flex:0 0 auto;display:inline-flex;align-items:center;justify-content:center;width:40px;height:40px;border-radius:50%;border:1px solid var(--line);background:none;color:var(--ink2);cursor:pointer;font-family:inherit;transition:.14s;}
+.bellBtn i{font-size:19px;} .bellBtn:hover{border-color:var(--plum);color:var(--plum);}
+.bellBtn .unread{position:absolute;top:-1px;right:-1px;min-width:10px;height:10px;border-radius:999px;background:#e5484d;border:2px solid #fff;box-shadow:0 1px 3px rgba(0,0,0,.25);}
 .langmenu{position:absolute;top:calc(100% + 8px);right:0;z-index:56;background:#fff;border:1px solid var(--line);border-radius:14px;box-shadow:0 20px 50px -18px rgba(0,0,0,.25);padding:6px;min-width:158px;display:none;}
 .langmenu.on{display:block;}
 .langmenu a{display:block;padding:11px 14px;font-size:14.5px;font-weight:600;color:var(--ink);border-radius:9px;cursor:pointer;}
@@ -401,7 +404,7 @@ body.mlock{position:fixed;left:0;right:0;width:100%;overflow:hidden;}
 .hero h1 em{font-style:normal;color:var(--accent);font-weight:800;}
 .hero p{font-size:16.5px;color:var(--ink2);margin-top:12px;max-width:720px;word-break:keep-all;text-wrap:pretty;}
 
-.filterbar{position:sticky;top:69px;z-index:30;background:rgba(255,255,255,.93);backdrop-filter:blur(12px);border-bottom:1px solid var(--line);margin-top:22px;}
+.filterbar{position:sticky;top:var(--hh,69px);z-index:30;background:rgba(255,255,255,.93);backdrop-filter:blur(12px);border-bottom:1px solid var(--line);margin-top:22px;}
 .fin{max-width:1320px;margin:0 auto;display:flex;align-items:center;gap:12px;padding:13px 28px;}
 .fin::-webkit-scrollbar{display:none;}
 .cats{display:flex;gap:8px;flex:1 1 auto;min-width:0;overflow-x:auto;scrollbar-width:none;}
@@ -669,13 +672,29 @@ body.mlock{position:fixed;left:0;right:0;width:100%;overflow:hidden;}
 .toast.on{opacity:1;transform:translateX(-50%);}
 
 @media(max-width:860px){
-  .hin{gap:12px;padding:13px 16px;flex-wrap:wrap;} nav.main{order:5;width:100%;margin-left:0;} .hsearch{order:6;width:100%;margin-left:0;}
-  .loginBtn,.avt{margin-left:auto;}
+  .hin{gap:9px;padding:10px 14px;flex-wrap:wrap;align-items:center;}
+  nav.main{display:none;} /* 모바일은 하단 탭바가 내비 담당 — 상단 텍스트 내비 제거 */
+  .brand{flex:1 1 auto;min-width:0;} .brand .blogo{height:32px;} .brand .b1{font-size:19px;}
+  .hsearch{order:6;flex:1 1 100%;width:100%;margin-left:0;padding:11px 16px;}
+  /* 우측 액션 클러스터: 균일한 40×40, 세로 중앙 정렬 */
+  .langwrap,#applyBtn,#bellBtn,#loginBtn,#avatar{order:5;}
+  .langBtn{width:40px;height:40px;padding:0;justify-content:center;border-radius:50%;border-color:var(--line);}
+  .langBtn i{font-size:18px;}
+  #applyBtn{width:40px;height:40px;padding:0;justify-content:center;border-radius:50%;}
+  #applyBtn i{font-size:18px;margin:0;}
+  #loginBtn{padding:10px 17px;background:var(--ink);color:#fff;border-radius:999px;font-size:13.5px;font-weight:800;}
+  #loginBtn:hover{background:var(--plum);color:#fff;}
+  #avatar{width:40px;height:40px;}
   .hero{padding:30px 16px 4px;} .hero h1{font-size:31px;}
-  .filterbar{top:0;} .fin{padding:12px 16px;} .citysel{display:none;} .wrap{padding:18px 16px 80px;}
+  .fin{padding:10px 0 10px 14px;gap:8px;}
+  .cats{gap:7px;padding-right:8px;}
+  .cat{padding:9px 15px;font-size:13.5px;}
+  .fsorts{margin-left:2px;padding-left:10px;padding-right:14px;border-left:1px solid var(--line);}
+  .sortsel{padding:8px 10px;}
+  .citysel{display:none;} .wrap{padding:18px 16px 80px;}
   .dsec{padding:20px;} .dfoot{padding:14px 18px;}
   .modal{padding:0;align-items:stretch;} .sheet{max-width:100%;width:100%;height:100dvh;max-height:100dvh;border-radius:0;padding-top:env(safe-area-inset-top);box-sizing:border-box;}
-  .join span{display:none;} .join{padding:11px 14px;} .applyBtn span{display:none;} .applyBtn{padding:9px 11px;} .brand .b1{font-size:20px;} .brand .blogo{height:34px;}
+  .join span{display:none;} .join{padding:11px 14px;} .applyBtn span{display:none;}
 }
 @media(max-width:600px){
   .hero h1{font-size:25px;} .hero p{font-size:14.5px;}
@@ -729,6 +748,7 @@ body.mlock{position:fixed;left:0;right:0;width:100%;overflow:hidden;}
         <a onclick="pickLang('th')">🇹🇭 ไทย</a>
       </div></div>
     <button class="applyBtn" id="applyBtn" onclick="openDesignerApply()"><i class="ti ti-briefcase"></i> <span data-t="applyDesigner">Become a designer</span></button>
+    <button class="bellBtn" id="bellBtn" onclick="tabMsg()" aria-label="Notifications"><i class="ti ti-bell"></i></button>
     <button class="loginBtn" id="loginBtn" onclick="openLogin('')" data-t="login">Log in</button>
     <div class="avt" id="avatar" onclick="toggleUmenu(event)" style="display:none"></div>
     <button class="join" id="joinBtn" onclick="openLogin('')"><i class="ti ti-user-plus"></i><span data-t="signup">Sign up</span></button>
@@ -1591,7 +1611,7 @@ function closeChat(){if(chatSub){try{SB.removeChannel(chatSub);}catch(e){}chatSu
 let chatUnread=0,chatGlobalSub=null;
 function chatSeenTs(){return parseInt(localStorage.getItem('beautia_chat_seen')||'0',10)||0;}
 function markChatSeen(){try{localStorage.setItem('beautia_chat_seen',''+Date.now());}catch(e){}chatUnread=0;renderChatBadge();}
-function renderChatBadge(){var has=chatUnread>0||bkPend>0;var a=$('avatar');if(a){var b=a.querySelector('.unread');if(has){if(!b){b=document.createElement('span');b.className='unread';a.appendChild(b);}}else if(b){b.remove();}}
+function renderChatBadge(){var has=chatUnread>0||bkPend>0;['avatar','bellBtn'].forEach(function(id){var a=$(id);if(!a)return;var b=a.querySelector('.unread');if(has){if(!b){b=document.createElement('span');b.className='unread';a.appendChild(b);}}else if(b){b.remove();}});
  var t=document.getElementById('tbMy');if(t){var d=t.querySelector('.undot');if(has){if(!d){d=document.createElement('span');d.className='undot';t.appendChild(d);}}else if(d){d.remove();}}
  var mt=document.getElementById('tbMsg');if(mt){var md=mt.querySelector('.undot');if(chatUnread>0){if(!md){md=document.createElement('span');md.className='undot';mt.appendChild(md);}}else if(md){md.remove();}}}
 async function checkUnread(){if(!ME||!ME.uid){chatUnread=0;renderChatBadge();return;}try{var since=new Date(chatSeenTs()||1).toISOString();var d=(await SB.from('messages').select('id,sender').gt('created_at',since)).data||[];chatUnread=d.filter(function(m){return m.sender!==ME.uid;}).length;}catch(e){}renderChatBadge();
@@ -1956,6 +1976,17 @@ fetch('https://ipapi.co/json/').then(function(r){return r.ok?r.json():null;}).th
    else if(!open&&locked){document.body.classList.remove('mlock');document.body.style.top='';locked=false;window.scrollTo(0,sy);}}
  var mo=new MutationObserver(sync);
  ['dmodal','wmodal','lmodal','imodal','idmodal','pfmodal','chatmodal','famodal','bkmodal'].forEach(function(id){var el=document.getElementById(id);if(el)mo.observe(el,{attributes:true,attributeFilter:['class']});});
+})();
+/* 필터바(sticky)가 헤더 실제 높이 바로 아래에 붙도록 --hh 동기화 */
+(function(){
+  var hdr=document.querySelector('header');
+  if(!hdr)return;
+  function setHH(){document.documentElement.style.setProperty('--hh',(hdr.offsetHeight||69)+'px');}
+  setHH();
+  window.addEventListener('resize',setHH,{passive:true});
+  window.addEventListener('load',setHH);
+  if(document.fonts&&document.fonts.ready)document.fonts.ready.then(setHH);
+  try{new ResizeObserver(setHH).observe(hdr);}catch(e){}
 })();
 </script>
 </body></html>
