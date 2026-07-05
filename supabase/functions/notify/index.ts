@@ -27,6 +27,28 @@ Deno.serve(async (req) => {
   try {
     const { to, title, body, url } = await req.json();
     if (!to || !/^[0-9a-fA-F-]{30,}$/.test(String(to))) return J({ error: "valid 'to' uid required" }, 400);
+
+    // === 발신자 인증: 유효한 로그인 사용자만 (익명/미인증 푸시 발송 차단) ===
+    const authz = req.headers.get("Authorization") || "";
+    const ures = await fetch(`${SUPABASE_URL}/auth/v1/user`, { headers: { Authorization: authz, apikey: SRK } });
+    const caller = ures.ok ? await ures.json() : null;
+    const callerId = caller && caller.id;
+    if (!callerId) return J({ error: "auth required" }, 401);
+
+    // === 권한: 발신자와 대상 사이에 대화 또는 예약이 있어야 발송 허용 (임의 유저 푸시 스팸/피싱 차단) ===
+    const H = { apikey: SRK, Authorization: `Bearer ${SRK}` };
+    const rel = `or=(and(customer.eq.${callerId},designer.eq.${to}),and(customer.eq.${to},designer.eq.${callerId}))`;
+    let allowed = callerId === String(to);
+    if (!allowed) {
+      const cv = await fetch(`${SUPABASE_URL}/rest/v1/conversations?select=id&${rel}&limit=1`, { headers: H });
+      allowed = cv.ok && ((await cv.json()) as unknown[]).length > 0;
+    }
+    if (!allowed) {
+      const bk = await fetch(`${SUPABASE_URL}/rest/v1/bookings?select=id&${rel}&limit=1`, { headers: H });
+      allowed = bk.ok && ((await bk.json()) as unknown[]).length > 0;
+    }
+    if (!allowed) return J({ error: "not authorized to notify this user" }, 403);
+
     const t = String(title || "Beautia").slice(0, 80);
     const b = String(body || "").slice(0, 180);
     const u = /^\/[\w\-/?=&.%]*$/.test(String(url || "")) ? String(url) : "/community";
