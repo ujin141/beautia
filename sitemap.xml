@@ -3,48 +3,81 @@
         xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">
   <url>
     <loc>https://beautia.io/</loc>
-    <lastmod>2026-07-01</lastmod>
+    <lastmod>2026-07-05</lastmod>
     <changefreq>weekly</changefreq>
     <priority>1.0</priority>
     <image:image>
       <image:loc>https://beautia.io/og-cover.png</image:loc>
-      <image:title>Beautia Collection — a global collection of beauty designers</image:title>
+      <image:title>Beautia — a global collection of beauty designers</image:title>
     </image:image>
   </url>
   <url>
     <loc>https://beautia.io/community</loc>
-    <lastmod>2026-07-01</lastmod>
+    <lastmod>2026-07-05</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
-    <loc>https://beautia.io/d/21a1661c-4974-477a-8d0d-f806457db5a4</loc>
-    <lastmod>2026-07-03</lastmod>
+    <loc>https://beautia.io/d/b2d28131-820b-44f2-87da-acbcb97569d5</loc>
+    <lastmod>2026-07-05</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
+    <image:image><image:loc>https://pzbxcktaljhesrfnqwzq.supabase.co/storage/v1/object/public/beautia/b2d28131-820b-44f2-87da-acbcb97569d5/1783250628707-f2d0a401.jpg</image:loc><image:title>청담뮤아이</image:title></image:image>
   </url>
   <url>
-    <loc>https://beautia.io/d/e579ff23-4b1a-43c9-b9e2-49e6061668d6</loc>
-    <lastmod>2026-07-03</lastmod>
+    <loc>https://beautia.io/d/52ef9f07-6eb1-46b7-9871-7f4ece43ebd7</loc>
+    <lastmod>2026-07-05</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
+    <image:image><image:loc>https://pzbxcktaljhesrfnqwzq.supabase.co/storage/v1/object/public/beautia/52ef9f07-6eb1-46b7-9871-7f4ece43ebd7/1783212515143-f2eedd5c.jpg</image:loc><image:title>더필뷰티</image:title></image:image>
   </url>
   <url>
-    <loc>https://beautia.io/d/fa9263ea-3a9f-4f11-aaaa-71bd4bb3ea09</loc>
-    <lastmod>2026-07-03</lastmod>
+    <loc>https://beautia.io/d/c913cc02-5ee3-417d-82cf-3181a2fa77cc</loc>
+    <lastmod>2026-07-05</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
+    <image:image><image:loc>https://pzbxcktaljhesrfnqwzq.supabase.co/storage/v1/object/public/beautia/c913cc02-5ee3-417d-82cf-3181a2fa77cc/1783166455312-f06803c2.jpg</image:loc><image:title>로엔뷰티</image:title></image:image>
   </url>
   <url>
-    <loc>https://beautia.io/d/1ceea1d7-b76f-4899-b023-62e87c749b3b</loc>
-    <lastmod>2026-07-03</lastmod>
+    <loc>https://beautia.io/d/eeec71d9-0ef7-4e54-97e7-bc9e05fda5bd</loc>
+    <lastmod>2026-07-05</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
+    <image:image><image:loc>https://pzbxcktaljhesrfnqwzq.supabase.co/storage/v1/object/public/beautia/eeec71d9-0ef7-4e54-97e7-bc9e05fda5bd/1783173590906-63468cb6.jpg</image:loc><image:title>이조살롱</image:title></image:image>
   </url>
   <url>
     <loc>https://beautia.io/d/dac6bc12-64dc-4e3e-888f-67e330b5a628</loc>
-    <lastmod>2026-07-03</lastmod>
+    <lastmod>2026-07-05</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
+    <image:image><image:loc>https://pzbxcktaljhesrfnqwzq.supabase.co/storage/v1/object/public/beautia/dac6bc12-64dc-4e3e-888f-67e330b5a628/1783089570338-fdf578bf.jpg</image:loc><image:title>STYLELINE</image:title></image:image>
+  </url>
+  <url>
+    <loc>https://beautia.io/d/1ceea1d7-b76f-4899-b023-62e87c749b3b</loc>
+    <lastmod>2026-07-05</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <image:image><image:loc>https://pzbxcktaljhesrfnqwzq.supabase.co/storage/v1/object/public/beautia/1ceea1d7-b76f-4899-b023-62e87c749b3b/1783083162848-00d5f040.jpg</image:loc><image:title>챌린지헤어</image:title></image:image>
+  </url>
+  <url>
+    <loc>https://beautia.io/d/fa9263ea-3a9f-4f11-aaaa-71bd4bb3ea09</loc>
+    <lastmod>2026-07-05</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <image:image><image:loc>https://pzbxcktaljhesrfnqwzq.supabase.co/storage/v1/object/public/beautia/fa9263ea-3a9f-4f11-aaaa-71bd4bb3ea09/1783171659867-ce6b64fc.jpg</image:loc><image:title>Beautia designer</image:title></image:image>
+  </url>
+  <url>
+    <loc>https://beautia.io/d/21a1661c-4974-477a-8d0d-f806457db5a4</loc>
+    <lastmod>2026-07-05</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <image:image><image:loc>https://pzbxcktaljhesrfnqwzq.supabase.co/storage/v1/object/public/beautia/21a1661c-4974-477a-8d0d-f806457db5a4/1782731424179-6dzmzs.jpg</image:loc><image:title>soin eyelash salon</image:title></image:image>
+  </url>
+  <url>
+    <loc>https://beautia.io/d/e579ff23-4b1a-43c9-b9e2-49e6061668d6</loc>
+    <lastmod>2026-07-05</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <image:image><image:loc>https://pzbxcktaljhesrfnqwzq.supabase.co/storage/v1/object/public/beautia/e579ff23-4b1a-43c9-b9e2-49e6061668d6/1782655359147-aepfe2.jpg</image:loc><image:title>Beautia designer</image:title></image:image>
   </url>
 </urlset>
