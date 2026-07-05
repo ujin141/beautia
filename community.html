@@ -687,7 +687,7 @@ body.mlock{position:fixed;left:0;right:0;width:100%;overflow:hidden;}
 .ba input{position:absolute;inset:0;width:100%;height:100%;opacity:0;cursor:ew-resize;margin:0;}
 .dgrid{column-count:3;column-gap:12px;}
 @media(max-width:640px){.dgrid{column-count:2;}.dhero{height:230px;}.dhcap .dn{font-size:26px;}}
-.dgrid img{width:100%;border-radius:12px;margin-bottom:12px;break-inside:avoid;cursor:zoom-in;}
+.dgrid img{width:100%;border-radius:12px;margin-bottom:12px;break-inside:avoid;cursor:zoom-in;background:var(--soft);}
 .rev{display:flex;gap:14px;padding:16px 0;border-bottom:1px solid var(--line);}
 .rev:last-child{border:none;} .rev .ra{width:46px;height:46px;border-radius:50%;flex:0 0 auto;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-family:'Pretendard','Malgun Gothic',sans-serif;}
 .rev .rn{font-weight:800;font-size:15px;} .rev .rs{color:var(--gold);font-size:13px;margin-top:2px;} .rev .rt{font-size:14.5px;color:var(--ink2);margin-top:5px;line-height:1.5;}
@@ -1256,7 +1256,7 @@ function openD(did,keep){const d=dById(did);if(!d)return;curD=did;const gi=D.ind
    </div>
   </div>
   ${(d.services&&d.services.length)?`<div class="dsec"><div class="st">${T[LANG].svcTitle}</div>${d.services.map((s,i)=>`<div class="svc"><div class="svci"><div class="svcn">${esc(s.n)}</div><div class="svcm">${s.du?esc(s.du)+' · ':''}<b>${esc(s.p)}</b></div></div>${d.uid&&!d.isMe?`<button class="svcbk" onclick="openBook('${d.id}',${i})">${T[LANG].book2}</button>`:''}</div>`).join('')}</div>`:''}
-  <div class="dsec"><div class="st">${T[LANG].portfolio}</div><div class="dgrid">${d.works.map(w=>`<img src="${im(w,500)}" loading="lazy" onclick="window.open('${im(w,1200)}','_blank')">`).join('')}</div></div>
+  <div class="dsec"><div class="st">${T[LANG].portfolio}</div><div class="dgrid">${d.works.map(w=>`<img src="${im(w,500)}" onclick="window.open('${im(w,1200)}','_blank')">`).join('')}</div></div>
   <div class="dsec" id="revsec"><div class="st">${T[LANG].reviews} · ${esc(d.rev)}</div>${d.reviews.map((r,i)=>`<div class="rev"><div class="ra" style="background:${GR[(gi+i)%GR.length]}">${esc((r.n||'?')[0])}</div><div><div class="rn">${esc(r.n)}</div><div class="rs">${stars(r.s)}</div><div class="rt">${esc(r.t)}</div></div></div>`).join('')}</div>
   ${(snsHtml||naverHtml||blogHtml||bookingHtml)?`<div class="dsec" style="border:none"><div class="st">${T[LANG].connect}</div>${bookingHtml}<div class="sns">${snsHtml}${naverHtml}${blogHtml}</div></div>`:''}
   ${mapHtml}
