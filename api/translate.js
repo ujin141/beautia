@@ -32,7 +32,8 @@ export default async function handler(req, res) {
       ar:'Arabic', hi:'Hindi', tr:'Turkish', tl:'Tagalog'
     };
     const tcode = (body && body.target || 'ko').toString().toLowerCase();
-    const target = LANGS[tcode] || (body && body.target) || 'Korean';
+    // 프롬프트 인젝션 방지: 화이트리스트에 없으면 원시 입력을 프롬프트에 넣지 않고 안전 기본값으로 폴백
+    const target = LANGS[tcode] || 'English';
     if (!text.trim()) { res.status(400).json({ error: 'no text' }); return; }
     const key = process.env.OPENAI_API_KEY;
     if (!key) { res.status(500).json({ error: 'OPENAI_API_KEY not set' }); return; }
