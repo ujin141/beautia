@@ -1482,6 +1482,14 @@ let ME=null,SU=null;
 const SB_URL='https://pzbxcktaljhesrfnqwzq.supabase.co';
 const SB_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InB6Ynhja3RhbGpoZXNyZm5xd3pxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjgxNjc1MjYsImV4cCI6MjA4Mzc0MzUyNn0.aUZbTgfWbjEISNr1-cu9YJnOGj1lzjXeRVifHygAplc';
 const SB=window.supabase.createClient(SB_URL,SB_KEY,{auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:true}});
+/* 방문 로깅 — 기기별 하루 1회 (어드민 방문자 통계용) */
+(function logVisit(){try{
+  var kst=new Date(Date.now()+9*3600000).toISOString().slice(0,10);
+  var key='beautia_vlog_'+kst;
+  if(localStorage.getItem(key))return;
+  var vid=localStorage.getItem('beautia_vid');if(!vid){vid=Math.random().toString(36).slice(2,12);try{localStorage.setItem('beautia_vid',vid);}catch(e){}}
+  SB.from('page_visits').insert({visitor:vid,path:location.pathname}).then(function(r){if(!r||!r.error){try{localStorage.setItem(key,'1');}catch(e){}}},function(){});
+}catch(e){}})();
 function roleIn(r){return (r==='designer'||r==='owner'||r==='desg')?'desg':'cust';}
 function profToMe(p){const s=p.shop||{};const photos=[];(s.photos||[]).forEach(function(x){if(x&&photos.indexOf(x)<0)photos.push(x);});
  return {uid:p.id,role:roleIn(p.role),name:p.nickname||p.full_name||'',country:s.country||'',city:p.region||s.area||'',area:s.area||'',spec:(s.specialties||p.interests||[]),career:s.career||'',avatar:s.avatar||p.avatar_url||'',insta:(s.insta||'').replace(/^@/,''),sns:s.sns||(s.insta?{instagram:(s.insta||'').replace(/^@/,'')}:{}),naver:s.naver||'',shopName:s.name||'',bio:p.bio||'',works:photos,ba:(s.ba&&s.ba.length===2)?s.ba.slice():null,shopRaw:s,idCols:s.idCols||2,idColor:s.idColor||'',idTheme:s.idTheme||'light',services:s.services||[],tags:s.tags||[],verified:true,provider:'email',joined:p.created_at?new Date(p.created_at).getTime():Date.now()};}
