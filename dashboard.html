@@ -125,6 +125,26 @@ textarea.inp{resize:vertical;min-height:80px;line-height:1.6;}
 .caldot{position:absolute;bottom:5px;left:50%;transform:translateX(-50%);min-width:15px;height:15px;padding:0 4px;border-radius:999px;background:var(--accent);color:#fff;font-size:10px;font-weight:800;display:flex;align-items:center;justify-content:center;line-height:1;}
 .calcell.sel .caldot{background:#fff;color:var(--plum);}
 .empty{text-align:center;color:var(--sub);padding:40px 0;font-size:14px;}
+.tbadge{display:inline-flex;align-items:center;justify-content:center;min-width:16px;height:16px;padding:0 4px;margin-left:5px;border-radius:999px;background:var(--red);color:#fff;font-size:10px;font-weight:800;vertical-align:1px;}
+.convit{display:flex;align-items:center;gap:12px;padding:12px 2px;border-bottom:1px solid var(--line);cursor:pointer;}
+.convit:last-child{border-bottom:0;}
+.convit .cav{width:46px;height:46px;border-radius:50%;background:var(--soft) center/cover;flex:0 0 auto;display:flex;align-items:center;justify-content:center;color:var(--plum);font-weight:800;font-size:18px;border:1px solid var(--line);}
+.convit .cbody{flex:1;min-width:0;}
+.convit .cn{font-size:14.5px;font-weight:800;display:flex;align-items:center;gap:6px;}
+.convit .cp{font-size:12.5px;color:var(--sub);margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.convit.unread .cn{color:var(--plum);} .convit.unread .cp{color:var(--ink2);font-weight:600;}
+.convit .undot{width:8px;height:8px;border-radius:50%;background:var(--red);display:inline-block;flex:0 0 auto;}
+.thead{display:flex;align-items:center;gap:10px;margin-bottom:12px;}
+.thead b{font-size:16px;letter-spacing:-.01em;}
+.dthread{display:flex;flex-direction:column;gap:8px;max-height:54vh;overflow-y:auto;padding:4px 2px;}
+.mrow{display:flex;flex-direction:column;align-items:flex-start;max-width:82%;}
+.mrow.me{align-self:flex-end;align-items:flex-end;}
+.mbub{padding:10px 14px;border-radius:16px;font-size:14.5px;line-height:1.45;background:var(--soft);color:var(--ink);border-bottom-left-radius:5px;white-space:pre-wrap;word-break:break-word;}
+.mrow.me .mbub{background:var(--plum);color:#fff;border-bottom-left-radius:16px;border-bottom-right-radius:5px;}
+.mtr{font-size:11px;font-weight:700;color:var(--accent);margin-top:3px;background:none;padding:2px 0;}
+.dcinput{display:flex;gap:8px;margin-top:12px;}
+.dcinput .inp{flex:1;}
+.dcinput .btn{width:50px;flex:0 0 auto;padding:0;}
 .empty i{font-size:36px;display:block;margin-bottom:10px;opacity:.5;}
 .toast{position:fixed;left:50%;bottom:26px;transform:translateX(-50%) translateY(20px);background:var(--ink);color:#fff;padding:14px 24px;border-radius:999px;font-size:14px;font-weight:700;opacity:0;transition:.25s;z-index:90;pointer-events:none;box-shadow:0 14px 40px -10px rgba(0,0,0,.5);}
 .toast.on{opacity:1;transform:translateX(-50%);}
@@ -228,6 +248,7 @@ textarea.inp{resize:vertical;min-height:80px;line-height:1.6;}
     <button class="tab" data-tab="profile" onclick="tab('profile')" data-t="profile">프로필</button>
     <button class="tab" data-tab="portfolio" onclick="tab('portfolio')" data-t="portfolio">포폴</button>
     <button class="tab" data-tab="bookings" onclick="tab('bookings')" data-t="bookings">예약</button>
+    <button class="tab" data-tab="messages" onclick="tab('messages')"><span data-t="msgTab">메시지</span><span class="tbadge hide" id="msgBadge"></span></button>
     <button class="tab" data-tab="reviews" onclick="tab('reviews')" data-t="reviews">후기</button>
   </div>
 
@@ -394,6 +415,19 @@ textarea.inp{resize:vertical;min-height:80px;line-height:1.6;}
       <div id="revList"></div>
     </div>
   </div>
+
+  <!-- 메시지 -->
+  <div id="sec-messages" class="hide">
+    <div class="card" id="convCard">
+      <h2 data-t="msgTab">메시지</h2><div class="hint" data-t="msgHint">고객이 보낸 메시지에 답장하세요.</div>
+      <div id="convList"></div>
+    </div>
+    <div class="card hide" id="threadCard">
+      <div class="thead"><button class="btn ghost sm" onclick="backToConvos()"><i class="ti ti-chevron-left"></i></button><b id="threadName"></b></div>
+      <div class="dthread" id="dthread"></div>
+      <div class="dcinput"><input class="inp" id="dmsg" maxlength="1000" data-tph="typeMsg" placeholder="메시지 입력…" onkeydown="if(event.key==='Enter')sendReply()"><button class="btn" onclick="sendReply()"><i class="ti ti-send"></i></button></div>
+    </div>
+  </div>
 </div>
 
 <div class="toast" id="toast"></div>
@@ -418,6 +452,10 @@ const T={
  ja:{home:'ホーム',profile:'プロフィール',portfolio:'ポートフォリオ',bookings:'予約',reviews:'レビュー',logout:'ログアウト',loginTitle:'デザイナーログイン',loginDesc:'登録メールに認証コードを送ってログインしてください。初めての場合はまずアプリでデザイナー登録してください。',emailL:'メール',code6L:'認証コード6桁',sendCode:'認証コードを送る',loginBtn:'ログイン',resendCode:'コード再送',sendingCode:'コード送信中…',enterCodeMsg:'メールで送った6桁のコードを入力してください。',verifying:'確認中…',codeWrong:'コードが違います',checkEmail:'メールをご確認ください',enterCodeT:'コードを入力してください',sendFailPre:'送信失敗: ',sendFailPost:' — 先にアプリでデザイナー登録したかご確認ください。',noProfile:'プロフィールがありません。先にアプリで登録してください。',greetHi:'こんにちは、',greetSuffix:'さん 👋',viewPub:'公開プロフィールを見る',copyLink:'共有リンクをコピー',copied:'共有リンクをコピーしました ✨',qrHint:'QRを店舗に貼っておくと、お客様がスキャンしてすぐ予約できます。',upcoming:'今後の予約',upPendCnt:'· 保留 {n}件',revTotal:'総売上',revMonth:'今月の売上',sfDone:'完了',sfMonthBk:'今月の予約',sfPend:'保留中',statPortfolio:'ポートフォリオ',statFollowers:'フォロワー',statBk:'総予約',statReviews:'レビュー',statRating:'評価',completeness:'プロフィール完成度',pctDone:'{pct}% 完了 ({done}/{total})',fillTip:'{label}を追加',profileComplete:'プロフィールが完成しました！',followers:'フォロワー',loadingFollowers:'読み込み中…',flwrN:'· {n}人',noFollowers:'まだフォロワーがいません。プロフィールを共有してフォロワーを増やしましょう ✨',followErr:'フォロワー機能を有効にするにはdb_enable_follows.sqlを実行してください',followLoadErr:'フォロワーを読み込めません',c_photo:'プロフィール写真',c_name:'名前',c_shop:'店名',c_region:'地域',c_spec:'専門分野',c_bio:'紹介文',c_pf3:'ポートフォリオ3枚+',c_tags:'タグ',c_svc:'サービス・価格',c_contact:'連絡リンク',pfPhoto:'プロフィール写真',pfPhotoHint:'ロゴまたは顔写真。円形で表示されます。',changePhoto:'写真を変更',trimLogo:'ロゴの余白を自動除去',basicInfo:'基本情報',nameL:'名前 / 活動名',namePh:'例：ソア',shopL:'店・サロン名',shopPh:'例：チャレンジヘア',regionL:'地域（都市）',regionPh:'例：金浦',addrL:'住所・詳細',addrPh:'例：京畿道金浦市…',specL:'専門分野',tagsL:'タグ（Enterで追加・最大8個）',tagsPh:'例：マジックストレート, レイヤードカット',careerL:'経歴',careerPh:'例：6年',bioL:'紹介',bioPh:'施術スタイルや強みなどを紹介してください',contactLinks:'連絡・リンク',instaL:'Instagram ID（@なし）',instaPh:'例：challengehair1',naverL:'Naverプレイスリンク',blogL:'ブログリンク',bookingL:'外部予約リンク',bookingSuffix:'· Naver予約・LINE・ホットペッパー等',bookingPh:'https://booking.naver.com/… またはLINE・ホットペッパー予約リンク',bookingHint:'入力するとお客様プロフィールに「予約する」ボタンが表示されます（リンク種類を自動判別）。',svcTitle:'サービス・価格',svcHint:'プロフィールに表示されます。予約時の参考になります。',svcNamePh:'サービス名（例：カット+パーマ）',svcPricePh:'価格（例：8,000円）',svcDurPh:'時間（例：2時間）',addSvc:'サービス追加',saveProfile:'プロフィール保存',noTags:'まだタグがありません',noSvc:'まだ登録したサービスがありません',enterSvcName:'サービス名を入力してください',saveOk:'保存しました ✓',saveFailPre:'保存失敗: ',errPre:'エラー: ',pfTitle:'ポートフォリオ写真',pfHint:'代表作をアップしましょう。ギャラリー・プロフィール・IDカードにすぐ表示されます。',addPhoto:'写真を追加',baTitle:'ビフォー / アフタースライダー',baHint:'詳細ページのビフォー・アフタースライダー用の写真2枚をポートフォリオから選んでください。',baBeforeLbl:'ビフォー用の写真',baAfterLbl:'アフター用の写真',savePortfolio:'ポートフォリオ保存',noPhotos:'まだ写真がありません',baNeedPhotos:'先にポートフォリオ写真をアップしてください',uploading:'アップロード中…',photoUploaded:'写真をアップしました。保存を押して反映してください。',uploadFailPre:'アップロード失敗: ',uploadingN:'{n}枚アップロード中…',someFailPre:'一部失敗: ',photosUploaded:'アップしました。ポートフォリオ保存を押して反映してください。',onlyImages:'画像ファイル（jpg・png・webp・gif）のみアップできます',savePfOk:'ポートフォリオを保存しました ✓',schedTitle:'スケジュール管理',schedHint:'ここで設定した営業時間・休憩・休業<b>以外はお客様が予約できません。</b>',breakTitle:'休憩時間',breakSuffix:'· 毎日繰り返し',addBreak:'休憩を追加',holTitle:'臨時休業日',holSuffix:'· 特定の日を休み',addBtn:'追加',saveSched:'スケジュール保存',calHint:'お客様が予約すると日付に表示されます。日付を押してその日の予約を確認してください。',addBk:'予約を手動追加',addBkSuffix:'· Naver・電話・ウォークイン等',custName:'お客様の名前',custNamePh:'例：山田',dateL:'日付',timeL:'時間',svcL:'サービス',svcPh:'例：カット+パーマ',memoL:'メモ（任意）',memoPh:'例：Naver予約 / 連絡先等',addToCal:'カレンダーに追加',receivedBk:'受けた予約',receivedHint:'受諾・完了処理してください。',open:'営業',closed:'休業',noHol:'まだなし',selDateBk:'{date} の予約',receivedN:'受けた予約 ({n})',noBkDay:'この日は予約がありません',noBkYet:'まだ予約がありません',st_pending:'保留中',st_accepted:'受諾済み',st_done:'完了',st_declined:'辞退',actAccept:'受諾',actDecline:'辞退',actComplete:'完了処理',pickDate:'日付を選択してください',addBkOk:'カレンダーに追加しました ✓',addBkFailPre:'追加失敗: ',addBkRls:'⚠️ 追加できません — RLS権限が必要。Supabaseでdb_setup_all.sqlを実行',processOk:'処理しました ✓',processFailPre:'処理失敗: ',calLoadErr:'予約情報を読み込めません（db_setup_all.sqlが必要な場合があります）',bkListLoadErr:'予約情報を読み込めません',revNote:'受諾・完了した予約のメニュー価格の合計',revNoteExcl:' · 価格なしの予約 {n}件を除く',revNoteEmpty:'予約がたまると売上が自動集計されます',saveSchedOk:'スケジュールを保存しました ✓',saveRls:'⚠️ 保存できません — RLS権限が必要。Supabaseでdb_setup_all.sqlを実行',bkDefault:'予約',upPending:'保留中',upConfirmed:'確定',reviewsTitle:'受けたレビュー',reviewsHint:'お客様が残したレビューです。',revLoadErr:'レビューを読み込めません',noReviews:'まだレビューがありません',trView:'翻訳を見る',trOrig:'原文を見る',trSame:'原文と同じ',trFail:'翻訳失敗、しばらくして再度',member:'会員',cat_Hair:'ヘア',cat_Makeup:'メイク',cat_Nail:'ネイル',cat_Lash:'まつげ',cat_Skin:'スキン',cat_Bridal:'ブライダル',mon:['1月','2月','3月','4月','5月','6月','7月','8月','9月','10月','11月','12月'],wd:['日','月','火','水','木','金','土'],calY:'年',calM:'月'},
  th:{home:'หน้าหลัก',profile:'โปรไฟล์',portfolio:'ผลงาน',bookings:'การจอง',reviews:'รีวิว',logout:'ออกจากระบบ',loginTitle:'เข้าสู่ระบบดีไซเนอร์',loginDesc:'รับรหัสเข้าสู่ระบบทางอีเมลที่ลงทะเบียนไว้ ครั้งแรกใช่ไหม? สมัครเป็นดีไซเนอร์ในแอปก่อน',emailL:'อีเมล',code6L:'รหัส 6 หลัก',sendCode:'ส่งรหัส',loginBtn:'เข้าสู่ระบบ',resendCode:'ส่งรหัสอีกครั้ง',sendingCode:'กำลังส่งรหัส…',enterCodeMsg:'กรอกรหัส 6 หลักที่เราส่งไปทางอีเมล',verifying:'กำลังตรวจสอบ…',codeWrong:'รหัสไม่ถูกต้อง',checkEmail:'กรุณาตรวจสอบอีเมล',enterCodeT:'กรอกรหัส',sendFailPre:'ส่งไม่สำเร็จ: ',sendFailPost:' — ตรวจสอบว่าคุณสมัครเป็นดีไซเนอร์ในแอปแล้ว',noProfile:'ไม่พบโปรไฟล์ กรุณาสมัครในแอปก่อน',greetHi:'สวัสดี',greetSuffix:' 👋',viewPub:'ดูโปรไฟล์สาธารณะ',copyLink:'คัดลอกลิงก์แชร์',copied:'คัดลอกลิงก์แชร์แล้ว ✨',qrHint:'ติด QR ไว้ที่ร้าน ลูกค้าสแกนแล้วจองได้ทันที',upcoming:'การจองที่กำลังมาถึง',upPendCnt:'· รอ {n} รายการ',revTotal:'รายได้รวม',revMonth:'เดือนนี้',sfDone:'เสร็จสิ้น',sfMonthBk:'จองเดือนนี้',sfPend:'รอดำเนินการ',statPortfolio:'ผลงาน',statFollowers:'ผู้ติดตาม',statBk:'การจอง',statReviews:'รีวิว',statRating:'คะแนน',completeness:'ความสมบูรณ์ของโปรไฟล์',pctDone:'{pct}% เสร็จ ({done}/{total})',fillTip:'เพิ่ม{label}',profileComplete:'โปรไฟล์ของคุณสมบูรณ์แล้ว!',followers:'ผู้ติดตาม',loadingFollowers:'กำลังโหลด…',flwrN:'· {n} คน',noFollowers:'ยังไม่มีผู้ติดตาม แชร์โปรไฟล์เพื่อเพิ่มผู้ติดตาม ✨',followErr:'รัน db_enable_follows.sql เพื่อเปิดใช้ผู้ติดตาม',followLoadErr:'โหลดผู้ติดตามไม่ได้',c_photo:'รูปโปรไฟล์',c_name:'ชื่อ',c_shop:'ชื่อร้าน',c_region:'พื้นที่',c_spec:'ความเชี่ยวชาญ',c_bio:'แนะนำตัว',c_pf3:'รูปผลงาน 3+ รูป',c_tags:'แท็ก',c_svc:'บริการ·ราคา',c_contact:'ลิงก์ติดต่อ',pfPhoto:'รูปโปรไฟล์',pfPhotoHint:'โลโก้หรือรูปหน้า แสดงเป็นวงกลม',changePhoto:'เปลี่ยนรูป',trimLogo:'ตัดขอบขาวโลโก้อัตโนมัติ',basicInfo:'ข้อมูลพื้นฐาน',nameL:'ชื่อ / ชื่อที่ใช้',namePh:'เช่น โซอา',shopL:'ชื่อร้าน · ซาลอน',shopPh:'เช่น Challenge Hair',regionL:'พื้นที่ (เมือง)',regionPh:'เช่น กิมโพ',addrL:'ที่อยู่ · รายละเอียด',addrPh:'เช่น 301 Asta Plaza, Gurae-dong, Gimpo',specL:'ความเชี่ยวชาญ',tagsL:'แท็ก (Enter เพื่อเพิ่ม · สูงสุด 8)',tagsPh:'เช่น ยืดผมแม่เหล็ก, ตัดเลเยอร์',careerL:'ประสบการณ์',careerPh:'เช่น 6 ปี',bioL:'แนะนำตัว',bioPh:'แนะนำสไตล์การทำ จุดเด่น ฯลฯ',contactLinks:'ติดต่อ · ลิงก์',instaL:'Instagram (ไม่ต้องมี @)',instaPh:'เช่น challengehair1',naverL:'ลิงก์ Naver Place',blogL:'ลิงก์บล็อก',bookingL:'ลิงก์จองภายนอก',bookingSuffix:'· Naver, LINE, HotPepper ฯลฯ',bookingPh:'https://booking.naver.com/… หรือลิงก์ LINE/HotPepper',bookingHint:'ใส่แล้วจะมีปุ่ม "จอง" บนโปรไฟล์ลูกค้า (ตรวจชนิดลิงก์อัตโนมัติ)',svcTitle:'บริการ · ราคา',svcHint:'แสดงบนโปรไฟล์ ลูกค้าดูตอนจอง',svcNamePh:'บริการ (เช่น ตัด + ดัด)',svcPricePh:'ราคา (เช่น ฿800)',svcDurPh:'เวลา (เช่น 2 ชม.)',addSvc:'เพิ่มบริการ',saveProfile:'บันทึกโปรไฟล์',noTags:'ยังไม่มีแท็ก',noSvc:'ยังไม่มีบริการ',enterSvcName:'กรอกชื่อบริการ',saveOk:'บันทึกแล้ว ✓',saveFailPre:'บันทึกไม่สำเร็จ: ',errPre:'ข้อผิดพลาด: ',pfTitle:'รูปผลงาน',pfHint:'อัปโหลดผลงานเด่น แสดงในแกลเลอรี โปรไฟล์ และบัตร ID ทันที',addPhoto:'เพิ่มรูป',baTitle:'สไลเดอร์ ก่อน / หลัง',baHint:'เลือกรูป 2 รูปจากผลงานสำหรับสไลเดอร์ก่อน/หลังในหน้ารายละเอียด',baBeforeLbl:'รูป "ก่อน"',baAfterLbl:'รูป "หลัง"',savePortfolio:'บันทึกผลงาน',noPhotos:'ยังไม่มีรูป',baNeedPhotos:'อัปโหลดรูปผลงานก่อน',uploading:'กำลังอัปโหลด…',photoUploaded:'อัปโหลดรูปแล้ว กดบันทึกเพื่อใช้งาน',uploadFailPre:'อัปโหลดไม่สำเร็จ: ',uploadingN:'กำลังอัปโหลด {n} รูป…',someFailPre:'บางส่วนไม่สำเร็จ: ',photosUploaded:'อัปโหลดแล้ว กดบันทึกผลงานเพื่อใช้งาน',onlyImages:'อัปโหลดได้เฉพาะไฟล์รูป (jpg·png·webp·gif)',savePfOk:'บันทึกผลงานแล้ว ✓',schedTitle:'จัดการตารางเวลา',schedHint:'ลูกค้าจองได้เฉพาะ<b>ในเวลาทำการ พักเบรก และวันหยุดที่ตั้งไว้เท่านั้น</b>',breakTitle:'เวลาพัก',breakSuffix:'· ทุกวัน',addBreak:'เพิ่มเวลาพัก',holTitle:'วันหยุดชั่วคราว',holSuffix:'· วันที่ระบุ',addBtn:'เพิ่ม',saveSched:'บันทึกตาราง',calHint:'เมื่อลูกค้าจอง จะแสดงบนวันที่ กดวันที่เพื่อดูการจองวันนั้น',addBk:'เพิ่มการจองเอง',addBkSuffix:'· Naver, โทร, วอล์กอิน ฯลฯ',custName:'ชื่อลูกค้า',custNamePh:'เช่น สมชาย',dateL:'วันที่',timeL:'เวลา',svcL:'บริการ',svcPh:'เช่น ตัด+ดัด',memoL:'หมายเหตุ (ไม่บังคับ)',memoPh:'เช่น จอง Naver / ติดต่อ',addToCal:'เพิ่มลงปฏิทิน',receivedBk:'การจองที่ได้รับ',receivedHint:'ตอบรับหรือทำเครื่องหมายเสร็จ',open:'เปิด',closed:'ปิด',noHol:'ยังไม่มี',selDateBk:'การจอง {date}',receivedN:'การจองที่ได้รับ ({n})',noBkDay:'วันนี้ไม่มีการจอง',noBkYet:'ยังไม่มีการจอง',st_pending:'รอดำเนินการ',st_accepted:'รับแล้ว',st_done:'เสร็จสิ้น',st_declined:'ปฏิเสธ',actAccept:'ตอบรับ',actDecline:'ปฏิเสธ',actComplete:'ทำเครื่องหมายเสร็จ',pickDate:'เลือกวันที่',addBkOk:'เพิ่มลงปฏิทินแล้ว ✓',addBkFailPre:'เพิ่มไม่สำเร็จ: ',addBkRls:'⚠️ เพิ่มไม่ได้ — ต้องมี RLS รัน db_setup_all.sql ใน Supabase',processOk:'ดำเนินการแล้ว ✓',processFailPre:'ไม่สำเร็จ: ',calLoadErr:'โหลดข้อมูลการจองไม่ได้ (อาจต้องใช้ db_setup_all.sql)',bkListLoadErr:'โหลดข้อมูลการจองไม่ได้',revNote:'ผลรวมราคาเมนูของการจองที่รับ/เสร็จแล้ว',revNoteExcl:' · ไม่รวมการจองไม่มีราคา {n} รายการ',revNoteEmpty:'รายได้จะรวมอัตโนมัติเมื่อมีการจองเข้ามา',saveSchedOk:'บันทึกตารางแล้ว ✓',saveRls:'⚠️ บันทึกไม่ได้ — ต้องมี RLS รัน db_setup_all.sql ใน Supabase',bkDefault:'การจอง',upPending:'รอดำเนินการ',upConfirmed:'ยืนยันแล้ว',reviewsTitle:'รีวิวที่ได้รับ',reviewsHint:'รีวิวจากลูกค้า',revLoadErr:'โหลดรีวิวไม่ได้',noReviews:'ยังไม่มีรีวิว',trView:'แปล',trOrig:'ดูต้นฉบับ',trSame:'เหมือนต้นฉบับ',trFail:'แปลไม่สำเร็จ ลองใหม่',member:'สมาชิก',cat_Hair:'ผม',cat_Makeup:'เมคอัพ',cat_Nail:'เล็บ',cat_Lash:'ขนตา',cat_Skin:'ผิว',cat_Bridal:'เจ้าสาว',mon:['ม.ค.','ก.พ.','มี.ค.','เม.ย.','พ.ค.','มิ.ย.','ก.ค.','ส.ค.','ก.ย.','ต.ค.','พ.ย.','ธ.ค.'],wd:['อา','จ','อ','พ','พฤ','ศ','ส'],calY:'',calM:''}
 };
+Object.assign(T.ko,{msgTab:'메시지',msgHint:'고객이 보낸 메시지에 답장하세요.',noChats:'아직 받은 메시지가 없어요',typeMsg:'메시지 입력…',msgLoadErr:'메시지를 불러올 수 없어요',youPrefix:'나: ',msgSendFail:'전송 실패'});
+Object.assign(T.en,{msgTab:'Messages',msgHint:'Reply to messages from clients.',noChats:'No messages yet',typeMsg:'Type a message…',msgLoadErr:"Couldn't load messages",youPrefix:'You: ',msgSendFail:'Send failed'});
+Object.assign(T.ja,{msgTab:'メッセージ',msgHint:'お客様からのメッセージに返信しましょう。',noChats:'まだメッセージがありません',typeMsg:'メッセージを入力…',msgLoadErr:'メッセージを読み込めません',youPrefix:'自分: ',msgSendFail:'送信失敗'});
+Object.assign(T.th,{msgTab:'ข้อความ',msgHint:'ตอบข้อความจากลูกค้า',noChats:'ยังไม่มีข้อความ',typeMsg:'พิมพ์ข้อความ…',msgLoadErr:'โหลดข้อความไม่ได้',youPrefix:'คุณ: ',msgSendFail:'ส่งไม่สำเร็จ'});
 function t(k){var o=T[LANG]||T.ko;return (k in o)?o[k]:(T.ko[k]!=null?T.ko[k]:k);}
 function tf(k,map){var s=t(k);for(var x in (map||{}))s=String(s).split('{'+x+'}').join(map[x]);return s;}
 function catLabel(en){return t('cat_'+en)||en;}
@@ -466,7 +504,7 @@ async function afterLogin(user){
   $('loginView').classList.add('hide');$('dashView').classList.remove('hide');
   $('who').textContent=EMAIL;$('logoutBtn').classList.remove('hide');
   fillProfile();renderSpec();renderTags();renderPf();renderServices();
-  renderHome();loadBookings();loadReviews();applyI18n();
+  renderHome();loadBookings();loadReviews();initMessages();applyI18n();
 }
 function pubUrl(){return 'https://beautia.io/d/'+UID;}
 function copyPub(){navigator.clipboard&&navigator.clipboard.writeText(pubUrl()).then(()=>toast(t('copied')),()=>toast(pubUrl()));}
@@ -835,10 +873,82 @@ async function setBk(id,status){
 }
 
 // ---------- 탭 ----------
+// ---------- 메시지(고객 채팅) ----------
+let CONVS=[], curConv=null, mProf={}, chatSub=null, chatGlobalSub=null, unreadCount=0;
+function chatSeenTs(){try{return parseInt(localStorage.getItem('beautia_dash_chat_seen')||'0',10)||0;}catch(e){return 0;}}
+function markChatSeen(){try{localStorage.setItem('beautia_dash_chat_seen',String(Date.now()));}catch(e){}unreadCount=0;renderMsgBadge();}
+function renderMsgBadge(){var b=$('msgBadge');if(!b)return;if(unreadCount>0){b.textContent=unreadCount>99?'99+':unreadCount;b.classList.remove('hide');}else b.classList.add('hide');}
+async function fetchCustProfiles(ids){var need=ids.filter(function(x){return x&&!mProf[x];});if(need.length){try{var d=(await SB.from('profiles').select('id,nickname,shop,avatar_url').in('id',need)).data||[];d.forEach(function(p){mProf[p.id]={name:p.nickname||(p.shop&&p.shop.name)||t('member'),avatar:(p.shop&&p.shop.avatar)||p.avatar_url||''};});}catch(e){}}need.forEach(function(x){if(!mProf[x])mProf[x]={name:t('member'),avatar:''};});}
+async function loadConvos(){
+  if(!UID)return;
+  if($('threadCard'))$('threadCard').classList.add('hide'); if($('convCard'))$('convCard').classList.remove('hide');
+  var el=$('convList');if(!el)return;
+  var data=null;try{data=(await SB.from('conversations').select('*').eq('designer',UID).order('last_at',{ascending:false})).data;}catch(e){}
+  if(data===null){el.innerHTML='<div class="empty"><i class="ti ti-message-2"></i>'+esc(t('msgLoadErr'))+'</div>';return;}
+  CONVS=data; await fetchCustProfiles(data.map(function(c){return c.customer;}));
+  if(!data.length){el.innerHTML='<div class="empty"><i class="ti ti-message-2"></i>'+esc(t('noChats'))+'</div>';unreadCount=0;renderMsgBadge();return;}
+  var ids=data.map(function(c){return c.id;}),last={};
+  try{var msgs=(await SB.from('messages').select('conversation,sender,body,created_at').in('conversation',ids).order('created_at',{ascending:false})).data||[];msgs.forEach(function(m){if(!last[m.conversation])last[m.conversation]=m;});}catch(e){}
+  var seen=chatSeenTs(),unread=0;
+  el.innerHTML=data.map(function(c){var p=mProf[c.customer]||{name:t('member'),avatar:''};var m=last[c.id];
+    var isUn=m&&m.sender!==UID&&new Date(m.created_at).getTime()>seen; if(isUn)unread++;
+    var prev=m?((m.sender===UID?t('youPrefix'):'')+(m.body||'')):'';
+    return '<div class="convit'+(isUn?' unread':'')+'" onclick="openConvo(\''+c.id+'\')"><div class="cav" style="'+(p.avatar?"background-image:url('"+esc(p.avatar)+"')":'')+'">'+(p.avatar?'':esc((p.name||'?')[0]))+'</div><div class="cbody"><div class="cn">'+esc(p.name)+(isUn?' <span class="undot"></span>':'')+'</div><div class="cp">'+esc(prev)+'</div></div></div>';
+  }).join('');
+  unreadCount=unread;renderMsgBadge();
+}
+function openConvo(id){var c=CONVS.find(function(x){return x.id===id;});if(!c)return;curConv=c;
+  if($('convCard'))$('convCard').classList.add('hide'); if($('threadCard'))$('threadCard').classList.remove('hide');
+  var p=mProf[c.customer]||{name:t('member')}; if($('threadName'))$('threadName').textContent=p.name;
+  loadThread(c);
+}
+async function loadThread(c){var msgs=[];try{msgs=(await SB.from('messages').select('*').eq('conversation',c.id).order('created_at',{ascending:true})).data||[];}catch(e){}c._msgs=msgs;renderThread();markChatSeen();
+  if(chatSub){try{SB.removeChannel(chatSub);}catch(e){}}
+  try{chatSub=SB.channel('dmsg-'+c.id).on('postgres_changes',{event:'INSERT',schema:'public',table:'messages',filter:'conversation=eq.'+c.id},function(pl){var m=pl.new;if((c._msgs||[]).some(function(x){return x.id===m.id;}))return;c._msgs.push(m);renderThread();if(m.sender!==UID)markChatSeen();}).subscribe();}catch(e){}
+}
+function dmsgText(m){if(!m.lang||m.lang===LANG)return m.body;return (m.tr&&m.tr[LANG])?m.tr[LANG]:m.body;}
+function renderThread(){var c=curConv;if(!c)return;var el=$('dthread');if(!el)return;
+  el.innerHTML=(c._msgs||[]).map(function(m){var mine=m.sender===UID;return '<div class="mrow'+(mine?' me':'')+'"><div class="mbub">'+esc(dmsgText(m))+'</div>'+((!mine&&m.body)?'<button class="mtr" onclick="transMsg(this)">'+esc(t('trView'))+'</button>':'')+'</div>';}).join('')||'<div class="empty">'+esc(t('noChats'))+'</div>';
+  el.scrollTop=el.scrollHeight;
+}
+async function sendReply(){var inp=$('dmsg');if(!inp||!curConv)return;var v=(inp.value||'').trim();if(!v)return;inp.value='';
+  curConv._msgs=curConv._msgs||[];
+  try{var data=(await SB.from('messages').insert({conversation:curConv.id,sender:UID,body:v,lang:LANG,tr:{}}).select('*').maybeSingle()).data;if(data&&!curConv._msgs.some(function(x){return x.id===data.id;}))curConv._msgs.push(data);else if(!data)toast(t('msgSendFail'));}catch(e){toast(t('msgSendFail'));}
+  try{SB.from('conversations').update({last_at:new Date().toISOString()}).eq('id',curConv.id).then(function(){},function(){});}catch(e){}
+  try{SB.functions.invoke('notify',{body:{to:curConv.customer,title:'💬 '+((ME&&ME.nickname)||'Beautia'),body:v.slice(0,80),url:'/community'}}).then(function(){},function(){});}catch(e){}
+  renderThread();
+}
+function backToConvos(){if(chatSub){try{SB.removeChannel(chatSub);}catch(e){}chatSub=null;}curConv=null;loadConvos();}
+async function transMsg(btn){var wrap=btn.parentNode,bub=wrap.querySelector('.mbub');if(!bub)return;
+  if(btn.dataset.on==='1'){bub.textContent=bub.dataset.o||bub.textContent;btn.dataset.on='0';btn.textContent=t('trView');return;}
+  if(!bub.dataset.o)bub.dataset.o=bub.textContent;
+  btn.disabled=true;var old=btn.textContent;btn.textContent='…';
+  var tr=await translateText(bub.dataset.o,LANG);btn.disabled=false;
+  if(tr&&tr.trim()&&tr.trim()!==(bub.dataset.o||'').trim()){bub.textContent=tr;btn.dataset.on='1';btn.textContent=t('trOrig');}
+  else if(tr&&tr.trim()){bub.textContent=tr;btn.textContent=t('trSame');btn.disabled=true;}
+  else{btn.textContent=old;toast(t('trFail'));}
+}
+async function initMessages(){ // afterLogin에서 배지+실시간 구독
+  if(!UID)return;
+  try{var convs=(await SB.from('conversations').select('id').eq('designer',UID)).data||[];CONVS.length||(CONVS=[]);
+    var ids=convs.map(function(c){return c.id;});
+    if(ids.length){var since=new Date(chatSeenTs()||1).toISOString();
+      var d=(await SB.from('messages').select('sender,created_at').in('conversation',ids).gt('created_at',since)).data||[];
+      unreadCount=d.filter(function(m){return m.sender!==UID;}).length;}
+  }catch(e){}
+  renderMsgBadge();
+  if(chatGlobalSub){try{SB.removeChannel(chatGlobalSub);}catch(e){}}
+  try{chatGlobalSub=SB.channel('dgmsg').on('postgres_changes',{event:'INSERT',schema:'public',table:'messages'},function(pl){var m=pl.new;if(!m||m.sender===UID)return;
+    if(curConv&&m.conversation===curConv.id&&!$('sec-messages').classList.contains('hide')){markChatSeen();return;}
+    unreadCount++;renderMsgBadge();
+  }).subscribe();}catch(e){}
+}
+
 function tab(t){
   document.querySelectorAll('.tab').forEach(b=>b.classList.toggle('on',b.dataset.tab===t));
-  ['home','profile','portfolio','bookings','reviews'].forEach(s=>$('sec-'+s).classList.toggle('hide',s!==t));
+  ['home','profile','portfolio','bookings','reviews','messages'].forEach(s=>$('sec-'+s).classList.toggle('hide',s!==t));
   if(t==='home')renderHome();
+  else if(t==='messages')loadConvos();
   window.scrollTo({top:0});
 }
 
