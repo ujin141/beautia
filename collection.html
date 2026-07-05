@@ -117,6 +117,25 @@ nav.main a.on{color:var(--plum);}
 .bellBtn{position:relative;flex:0 0 auto;display:inline-flex;align-items:center;justify-content:center;width:40px;height:40px;border-radius:50%;border:1px solid var(--line);background:none;color:var(--ink2);cursor:pointer;font-family:inherit;transition:.14s;}
 .bellBtn i{font-size:19px;} .bellBtn:hover{border-color:var(--plum);color:var(--plum);}
 .bellBtn .unread{position:absolute;top:-1px;right:-1px;min-width:10px;height:10px;border-radius:999px;background:#e5484d;border:2px solid #fff;box-shadow:0 1px 3px rgba(0,0,0,.25);}
+.notifpanel{position:fixed;top:var(--hh,66px);right:14px;z-index:57;background:#fff;border:1px solid var(--line);border-radius:16px;box-shadow:0 24px 60px -18px rgba(0,0,0,.28);width:min(340px,calc(100vw - 28px));max-height:72vh;display:none;flex-direction:column;overflow:hidden;}
+.notifpanel.on{display:flex;}
+.nfhead{display:flex;align-items:center;justify-content:space-between;padding:14px 16px 11px;border-bottom:1px solid var(--line);flex:0 0 auto;}
+.nfhead b{font-size:16px;font-weight:800;color:var(--ink);}
+.nfhead .nfx{background:none;border:none;font-size:21px;line-height:1;color:var(--sub);cursor:pointer;padding:0 2px;}
+.nflist{overflow-y:auto;-webkit-overflow-scrolling:touch;}
+.nfitem{display:flex;gap:11px;align-items:center;padding:12px 14px;cursor:pointer;border-bottom:1px solid var(--line);}
+.nfitem:hover{background:var(--soft);}
+.nfic{flex:0 0 auto;width:42px;height:42px;border-radius:50%;display:flex;align-items:center;justify-content:center;background:var(--rosebg);color:var(--plum);font-size:21px;}
+.nfmid{flex:1 1 auto;min-width:0;}
+.nfnm{font-size:14px;font-weight:700;color:var(--ink);display:flex;align-items:baseline;gap:6px;}
+.nfnm .nft{font-size:11.5px;font-weight:600;color:#b0a6a9;flex:0 0 auto;}
+.nfpv{font-size:13px;color:var(--sub);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-top:1px;}
+.nfdot{width:9px;height:9px;border-radius:50%;background:#e5484d;flex:0 0 auto;}
+.nfempty{padding:40px 20px;text-align:center;color:var(--sub);font-size:14px;}
+.nfempty i{font-size:36px;color:#dccdd0;display:block;margin-bottom:12px;}
+.nffoot{flex:0 0 auto;padding:10px;border-top:1px solid var(--line);}
+.nffoot button{width:100%;padding:12px;border-radius:11px;background:var(--soft);border:none;font-weight:700;font-size:13.5px;color:var(--plum);cursor:pointer;font-family:inherit;}
+.nffoot button:hover{background:var(--rosebg);}
 .langmenu{position:absolute;top:calc(100% + 8px);right:0;z-index:56;background:#fff;border:1px solid var(--line);border-radius:14px;box-shadow:0 20px 50px -18px rgba(0,0,0,.25);padding:6px;min-width:158px;display:none;}
 .langmenu.on{display:block;}
 .langmenu a{display:block;padding:11px 14px;font-size:14.5px;font-weight:600;color:var(--ink);border-radius:9px;cursor:pointer;}
@@ -748,7 +767,7 @@ body.mlock{position:fixed;left:0;right:0;width:100%;overflow:hidden;}
         <a onclick="pickLang('th')">🇹🇭 ไทย</a>
       </div></div>
     <button class="applyBtn" id="applyBtn" onclick="openDesignerApply()"><i class="ti ti-briefcase"></i> <span data-t="applyDesigner">Become a designer</span></button>
-    <button class="bellBtn" id="bellBtn" onclick="tabMsg()" aria-label="Notifications"><i class="ti ti-bell"></i></button>
+    <button class="bellBtn" id="bellBtn" onclick="openNotif(event)" aria-label="Notifications"><i class="ti ti-bell"></i></button>
     <button class="loginBtn" id="loginBtn" onclick="openLogin('')" data-t="login">Log in</button>
     <div class="avt" id="avatar" onclick="toggleUmenu(event)" style="display:none"></div>
     <button class="join" id="joinBtn" onclick="openLogin('')"><i class="ti ti-user-plus"></i><span data-t="signup">Sign up</span></button>
@@ -792,6 +811,7 @@ body.mlock{position:fixed;left:0;right:0;width:100%;overflow:hidden;}
 
 <div class="imodal" id="imodal" onclick="if(event.target===this)closeI()"><div class="icard" id="icard"></div></div>
 <div class="umenu" id="umenu"></div>
+<div class="notifpanel" id="notifPanel" onclick="event.stopPropagation()"></div>
 <div class="lmodal" id="lmodal" onclick="if(event.target===this)closeLogin()"><div class="lcard" id="lcard"></div></div>
 <div class="idmodal" id="idmodal" onclick="if(event.target===this)closeId()"><div class="idwrap" id="idwrap"><div class="idcard" id="idcard"></div><div class="idcfg" id="idcfg"></div><div class="idbtns"><button class="pri" onclick="dlId()"><i class="ti ti-download"></i> <span id="idDlT">Download</span></button><button onclick="shareId()"><i class="ti ti-link"></i> <span id="idShT">Share</span></button><button onclick="closeId()"><i class="ti ti-x"></i></button></div></div></div>
 <div class="pfmodal" id="pfmodal" onclick="if(event.target===this)closePf()"><div class="pfcard" id="pfcard"></div></div>
@@ -1318,7 +1338,7 @@ function openI(did){const d=dById(did);iLang=LANG==='en'?'ko':LANG;
 }
 function setILang(l){iLang=l;document.querySelectorAll('#iselrow button').forEach(b=>b.classList.toggle('on',b.textContent.toLowerCase()===l));$('imsg').placeholder=T[l].inqPH;}
 function closeI(){$('imodal').classList.remove('on');}
-document.addEventListener('keydown',e=>{if(e.key==='Escape'){closeBk();closeFa();closeChat();closeWork();closePf();closeId();closeI();closeD();closeLogin();closeUmenu();}});
+document.addEventListener('keydown',e=>{if(e.key==='Escape'){closeBk();closeFa();closeChat();closeWork();closePf();closeId();closeI();closeD();closeLogin();closeUmenu();closeNotif();}});
 Object.assign(T.en,{idCard:'ID Card',idDl:'Download',idShare:'Share',idPrep:'Creating image…',idFail:'Download failed (try Share)',linkCopied:'Link copied ✨',saveHint:'Press & hold the image to save it 📥',done:'Done',idKind:'ID CARD',idScan:'SCAN TO VIEW & BOOK',fbKick:'Featured work',fbView:'View portfolio'});
 Object.assign(T.ko,{idCard:'ID 카드',idDl:'다운로드',idShare:'공유',idPrep:'이미지 만드는 중…',idFail:'다운로드 실패 (공유로 시도)',linkCopied:'링크 복사됨 ✨',saveHint:'이미지를 꾹 눌러 저장하세요 📥',done:'닫기',idKind:'ID 카드',idScan:'스캔해서 예약하기',fbKick:'추천 작업',fbView:'포트폴리오 보기'});
 Object.assign(T.ja,{idCard:'IDカード',idDl:'保存',idShare:'シェア',idPrep:'画像を作成中…',idFail:'保存失敗（シェアでお試し）',linkCopied:'リンクをコピー ✨',saveHint:'画像を長押しして保存してください 📥',done:'閉じる',idKind:'IDカード',idScan:'スキャンして予約',fbKick:'注目の作品',fbView:'ポートフォリオを見る'});
@@ -1574,7 +1594,7 @@ async function suFinish(){const wasEdit=SU.edit;
  try{localStorage.removeItem('beautia_coll_pending');}catch(e){}
  closeLogin();renderAuth();buildTiles();render();
  toast(wasEdit?'✅':(T[LANG].joinDone+(SU.role==='desg'?' — '+T[LANG].joinToast:'')));}
-async function logout(){if($('dmodal'))$('dmodal').classList.remove('on');try{await SB.auth.signOut();}catch(e){}ME=null;SAVED=JSON.parse(localStorage.getItem('beautia_coll_saved')||'[]');chatUnread=0;bkPend=0;if(chatGlobalSub){try{SB.removeChannel(chatGlobalSub);}catch(e){}chatGlobalSub=null;}if(bkSub){try{SB.removeChannel(bkSub);}catch(e){}bkSub=null;}renderAuth();buildTiles();render();renderChatBadge();toast(T[LANG].logoutToast);}
+async function logout(){if($('dmodal'))$('dmodal').classList.remove('on');try{await SB.auth.signOut();}catch(e){}ME=null;SAVED=JSON.parse(localStorage.getItem('beautia_coll_saved')||'[]');chatUnread=0;bkPend=0;NOTIFS=[];notifUnread=0;if(chatGlobalSub){try{SB.removeChannel(chatGlobalSub);}catch(e){}chatGlobalSub=null;}if(bkSub){try{SB.removeChannel(bkSub);}catch(e){}bkSub=null;}renderAuth();buildTiles();render();renderChatBadge();renderNotifBadge();toast(T[LANG].logoutToast);}
 
 function openProfile(){if(!ME){openLogin('');return;}const since=ME.joined?new Date(ME.joined).toLocaleDateString():'';
  $('dsheet').innerHTML=`<div class="dbody"><div class="pmhead">
@@ -1611,9 +1631,82 @@ function closeChat(){if(chatSub){try{SB.removeChannel(chatSub);}catch(e){}chatSu
 let chatUnread=0,chatGlobalSub=null;
 function chatSeenTs(){return parseInt(localStorage.getItem('beautia_chat_seen')||'0',10)||0;}
 function markChatSeen(){try{localStorage.setItem('beautia_chat_seen',''+Date.now());}catch(e){}chatUnread=0;renderChatBadge();}
-function renderChatBadge(){var has=chatUnread>0||bkPend>0;['avatar','bellBtn'].forEach(function(id){var a=$(id);if(!a)return;var b=a.querySelector('.unread');if(has){if(!b){b=document.createElement('span');b.className='unread';a.appendChild(b);}}else if(b){b.remove();}});
+function renderChatBadge(){var has=chatUnread>0||bkPend>0;['avatar'].forEach(function(id){var a=$(id);if(!a)return;var b=a.querySelector('.unread');if(has){if(!b){b=document.createElement('span');b.className='unread';a.appendChild(b);}}else if(b){b.remove();}});
  var t=document.getElementById('tbMy');if(t){var d=t.querySelector('.undot');if(has){if(!d){d=document.createElement('span');d.className='undot';t.appendChild(d);}}else if(d){d.remove();}}
  var mt=document.getElementById('tbMsg');if(mt){var md=mt.querySelector('.undot');if(chatUnread>0){if(!md){md=document.createElement('span');md.className='undot';mt.appendChild(md);}}else if(md){md.remove();}}}
+/* ===== 알림 패널 (벨 버튼) — 예약/리뷰 이벤트 피드 (메시지 아님) ===== */
+var NOTIFT={
+ ko:{title:'알림',empty:'아직 알림이 없어요',reqD:'새 예약 요청이 왔어요',accepted:'예약이 수락되었어요',declined:'예약이 아쉽게 거절됐어요',done:'시술이 완료되었어요',cancelled:'예약이 취소되었어요',sent:'예약 요청을 보냈어요',review:'새 리뷰가 달렸어요'},
+ en:{title:'Notifications',empty:'No notifications yet',reqD:'New booking request',accepted:'Your booking was accepted',declined:'Your booking was declined',done:'Your appointment is complete',cancelled:'A booking was cancelled',sent:'Booking request sent',review:'You got a new review'},
+ ja:{title:'通知',empty:'通知はまだありません',reqD:'新しい予約リクエスト',accepted:'予約が承認されました',declined:'予約がお断りされました',done:'施術が完了しました',cancelled:'予約がキャンセルされました',sent:'予約リクエストを送信しました',review:'新しいレビューが届きました'},
+ th:{title:'การแจ้งเตือน',empty:'ยังไม่มีการแจ้งเตือน',reqD:'มีคำขอจองใหม่',accepted:'การจองได้รับการยืนยัน',declined:'การจองถูกปฏิเสธ',done:'บริการเสร็จสิ้นแล้ว',cancelled:'การจองถูกยกเลิก',sent:'ส่งคำขอจองแล้ว',review:'คุณได้รับรีวิวใหม่'}
+};
+function ntf(){return NOTIFT[LANG]||NOTIFT.en;}
+var NOTIFS=[],notifUnread=0;
+function notifSeenTs(){try{return +(localStorage.getItem('beautia_notif_seen')||0);}catch(e){return 0;}}
+function markNotifSeen(){try{localStorage.setItem('beautia_notif_seen',''+Date.now());}catch(e){}notifUnread=0;renderNotifBadge();}
+function renderNotifBadge(){var el=$('bellBtn');if(!el)return;var b=el.querySelector('.unread');if(notifUnread>0){if(!b){b=document.createElement('span');b.className='unread';el.appendChild(b);}}else if(b){b.remove();}}
+async function buildNotifs(){
+ var list=[];
+ if(!(ME&&ME.uid)){NOTIFS=[];notifUnread=0;renderNotifBadge();return list;}
+ var N=ntf();
+ var bks=[];try{bks=(await SB.from('bookings').select('*').or('customer.eq.'+ME.uid+',designer.eq.'+ME.uid).order('created_at',{ascending:false}).limit(30)).data||[];}catch(e){}
+ var others=bks.map(function(b){return b.designer===ME.uid?b.customer:b.designer;});
+ try{await fetchProfiles(others);}catch(e){}
+ bks.forEach(function(b){
+  var iAmD=b.designer===ME.uid;
+  var oname=(PROFCACHE[iAmD?b.customer:b.designer]||{}).name||'';
+  var svcN=(b.service&&b.service.n)?b.service.n:'';
+  var when=((b.date||'')+' '+(b.time||'')).trim();
+  var icon='ti-calendar-heart',title='';
+  if(iAmD){
+   if(b.status==='pending')title=N.reqD;
+   else if(b.status==='cancelled'){title=N.cancelled;icon='ti-calendar-x';}
+   else return;
+  }else{
+   if(b.status==='accepted'){title=N.accepted;icon='ti-calendar-check';}
+   else if(b.status==='declined'){title=N.declined;icon='ti-calendar-x';}
+   else if(b.status==='done'){title=N.done;icon='ti-circle-check';}
+   else if(b.status==='cancelled'){title=N.cancelled;icon='ti-calendar-x';}
+   else if(b.status==='pending')title=N.sent;
+   else return;
+  }
+  var sub=[oname,svcN,when].filter(Boolean).join(' · ');
+  list.push({icon:icon,title:title,sub:sub,ts:b.created_at,onclick:'closeNotif();openBookings()'});
+ });
+ if(ME.role==='desg'){
+  var revs=[];try{revs=(await SB.from('designer_reviews').select('stars,body,created_at').eq('designer',ME.uid).order('created_at',{ascending:false}).limit(10)).data||[];}catch(e){}
+  revs.forEach(function(r){list.push({icon:'ti-star',title:N.review+' ★'+(r.stars||5),sub:(r.body||'').slice(0,44),ts:r.created_at,onclick:'closeNotif()'});});
+ }
+ list.sort(function(a,b){return new Date(b.ts)-new Date(a.ts);});
+ list=list.slice(0,25);
+ NOTIFS=list;
+ var seen=notifSeenTs();
+ notifUnread=list.filter(function(n){return new Date(n.ts).getTime()>seen;}).length;
+ renderNotifBadge();
+ return list;
+}
+async function loadNotifs(){try{await buildNotifs();}catch(e){}}
+function closeNotif(){var p=$('notifPanel');if(p)p.classList.remove('on');}
+async function openNotif(e){if(e)e.stopPropagation();
+ if(!(ME&&ME.uid)){openLogin('');return;}
+ var p=$('notifPanel');if(!p)return;
+ if(p.classList.contains('on')){closeNotif();return;}
+ closeUmenu();var lm=$('langmenu');if(lm)lm.classList.remove('on');
+ p.classList.add('on');
+ await renderNotif();
+ markNotifSeen();
+}
+function notifItemHtml(n){return '<div class="nfitem" onclick="'+n.onclick+'"><div class="nfic"><i class="ti '+n.icon+'"></i></div><div class="nfmid"><div class="nfnm">'+esc(n.title)+'<span class="nft">'+esc(timeAgo(n.ts))+'</span></div>'+(n.sub?'<div class="nfpv">'+esc(n.sub)+'</div>':'')+'</div></div>';}
+async function renderNotif(){
+ var p=$('notifPanel');if(!p)return;var N=ntf();
+ var head='<div class="nfhead"><b>'+esc(N.title)+'</b><button class="nfx" onclick="closeNotif()" aria-label="Close">×</button></div>';
+ p.innerHTML=head+'<div class="nflist"><div class="nfempty"><i class="ti ti-loader-2"></i></div></div>';
+ var list=await buildNotifs();
+ var body=list.length?list.map(notifItemHtml).join(''):'<div class="nfempty"><i class="ti ti-bell-off"></i>'+esc(N.empty)+'</div>';
+ p.innerHTML=head+'<div class="nflist">'+body+'</div>';
+}
+document.addEventListener('click',function(){closeNotif();});
 async function checkUnread(){if(!ME||!ME.uid){chatUnread=0;renderChatBadge();return;}try{var since=new Date(chatSeenTs()||1).toISOString();var d=(await SB.from('messages').select('id,sender').gt('created_at',since)).data||[];chatUnread=d.filter(function(m){return m.sender!==ME.uid;}).length;}catch(e){}renderChatBadge();
  if(chatGlobalSub){try{SB.removeChannel(chatGlobalSub);}catch(e){}}
  chatGlobalSub=SB.channel('gmsg').on('postgres_changes',{event:'INSERT',schema:'public',table:'messages'},function(p){var m=p.new;if(!m||m.sender===ME.uid)return;if(curConv&&m.conversation===curConv.id&&$('chatmodal')&&$('chatmodal').classList.contains('on')){markChatSeen();return;}chatUnread++;renderChatBadge();}).subscribe();}
@@ -1878,12 +1971,13 @@ async function loadRevsFor(d){try{
 let bkSub=null;
 async function loadBkBadge(){bkPend=0;if(!(ME&&ME.uid)){renderChatBadge();return;}
  try{var r=await SB.from('bookings').select('id',{count:'exact',head:true}).eq('designer',ME.uid).eq('status','pending');bkPend=r.count||0;}catch(e){}
- renderChatBadge();
+ renderChatBadge();loadNotifs();
  if(bkSub){try{SB.removeChannel(bkSub);}catch(e){}}
- bkSub=SB.channel('gbk').on('postgres_changes',{event:'INSERT',schema:'public',table:'bookings'},function(p){var b=p.new;if(b&&b.designer===ME.uid){bkPend++;renderChatBadge();toast('📅 '+T[LANG].bkNew);}})
+ bkSub=SB.channel('gbk').on('postgres_changes',{event:'INSERT',schema:'public',table:'bookings'},function(p){var b=p.new;if(b&&b.designer===ME.uid){bkPend++;renderChatBadge();loadNotifs();toast('📅 '+T[LANG].bkNew);}})
   .on('postgres_changes',{event:'UPDATE',schema:'public',table:'bookings'},function(p){var b=p.new;if(!b)return;
     if(b.designer===ME.uid){SB.from('bookings').select('id',{count:'exact',head:true}).eq('designer',ME.uid).eq('status','pending').then(function(r){bkPend=r.count||0;renderChatBadge();});}
     if(b.customer===ME.uid){toast('📅 '+bkStatusLabel(b.status));checkBookingReminders();}
+    loadNotifs();
   }).subscribe();
  checkBookingReminders();}
 // ===== 예약 완결 루프: 하루 전 리마인더 + 완료 후 리뷰 요청 배너 =====
