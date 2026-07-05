@@ -1736,6 +1736,8 @@ async function submitBooking(){const d=dById(bkSel.did);if(!d||!d.uid||!ME||!ME.
  var date=bkSel.date,time=bkSel.time;var nt=$('bkNote');bkSel.note=nt?nt.value:'';var note=(bkSel.note||'').slice(0,1000);
  if(!date){toast(T[LANG].bkNeedDate);return;}
  if(!time){toast(T[LANG].bkPickSlot);return;}
+ var _slots=bkSlotsFor(d,date),_taken=(bkTaken[date]||[]),_today=date===new Date().toISOString().slice(0,10),_nm=new Date().getHours()*60+new Date().getMinutes();
+ if(_slots.indexOf(time)<0||_taken.indexOf(time)>=0||(_today&&toMin(time)<=_nm)){bkSel.time='';toast(T[LANG].bkPickSlot);bkRender();return;}
  try{var r=await SB.from('bookings').insert({customer:ME.uid,designer:d.uid,service:svc,date:date,time:time,note:note});
   if(r.error){toast(T[LANG].bkFail+': '+r.error.message);return;}
  }catch(e){toast(T[LANG].bkFail);return;}
