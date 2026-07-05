@@ -1934,7 +1934,7 @@ fetch('https://ipapi.co/json/').then(function(r){return r.ok?r.json():null;}).th
  if(typeof j.latitude==='number'&&typeof j.longitude==='number')USERLOC={lat:j.latitude,lng:j.longitude,city:j.city||'',country:j.country_code||''};
  updateNearby();
  var cc=(j.country_code||'').toUpperCase();var l=cc==='KR'?'ko':cc==='JP'?'ja':cc==='TH'?'th':(cc?'en':LANG);
- if(l!==LANG)setLang(l);else render();
+ var _sl='';try{_sl=localStorage.getItem('beautia_lang')||'';}catch(e){}if(_sl){render();}else if(l!==LANG){setLang(l);}else{render();}
 }).catch(function(){});
 // 모달 열리면 스크롤 위치 보존하며 배경 잠금
 (function(){var sy=0,locked=false;
