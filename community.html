@@ -356,11 +356,11 @@ body.mlock{position:fixed;left:0;right:0;width:100%;overflow:hidden;}
 .ic-brand{font-family:'Outfit',sans-serif;font-weight:800;font-size:15px;letter-spacing:.26em;color:var(--ink);}
 .ic-kind{font-family:'Outfit',sans-serif;font-size:10px;font-weight:800;letter-spacing:.2em;padding:5px 11px;border-radius:999px;}
 .ic-rule{height:2px;margin:0 22px;border-radius:2px;}
-.ic-cover{position:relative;height:60px;padding:0 24px;display:flex;align-items:center;justify-content:space-between;overflow:hidden;}
-.ic-cover .ic-cbwrap{display:flex;align-items:center;gap:10px;}
+.ic-cover{position:relative;padding:20px 24px 16px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--line);}
+.ic-cover .ic-cbwrap{display:flex;align-items:center;gap:9px;}
 .ic-cover .ic-clogo{height:26px;width:auto;display:block;}
-.ic-cover .ic-cbrand{color:#fff;font-family:'Outfit',sans-serif;font-weight:600;font-size:16.5px;letter-spacing:.12em;}
-.ic-cover .ic-ckind{color:rgba(255,255,255,.9);font-family:'Outfit',sans-serif;font-size:9px;font-weight:700;letter-spacing:.26em;padding:4px 0;border-top:1px solid rgba(255,255,255,.4);border-bottom:1px solid rgba(255,255,255,.4);}
+.ic-cover .ic-cbrand{font-family:'Outfit',sans-serif;font-weight:600;font-size:17px;letter-spacing:.1em;color:var(--ink);}
+.ic-cover .ic-ckind{font-family:'Outfit',sans-serif;font-size:9.5px;font-weight:800;letter-spacing:.24em;}
 .ic-avring{display:inline-flex;padding:2.5px;border-radius:50%;flex:0 0 auto;}
 .ic-avring .ic-av{border:2px solid #fff;}
 .ic-footlogo{height:18px;width:auto;opacity:.85;}
@@ -1135,7 +1135,7 @@ function openIdCard(did){const d=dById(did||curD);if(!d)return;idDid=d.id;
  const name=(LANG==='ko'&&d.ko)?d.ko:d.name;var cuts=d.works.slice(0,ncut);while(cuts.length<ncut&&d.works.length)cuts.push(d.works[cuts.length%d.works.length]);
  $('idDlT').textContent=T[LANG].idDl;$('idShT').textContent=T[LANG].idShare;
  var card=$('idcard');card.style.background='#fff';
- var header=bold?`<div class="ic-cover" style="background:linear-gradient(135deg,${accent} 0%,${dark} 100%)"><div class="ic-cbwrap"><img src="logo-mark-white.png" class="ic-clogo" crossorigin="anonymous" alt=""><span class="ic-cbrand">Beautia</span></div><span class="ic-ckind">${esc(T[LANG].idKind)}</span></div>`:`<div class="ic-top"><div class="ic-brandwrap"><img src="logo-mark.png" class="ic-logo" alt="Beautia"><span class="ic-brand">BEAUTIA</span></div><span class="ic-kind" style="color:${accent};background:${tag}">${esc(T[LANG].idKind)}</span></div><div class="ic-rule" style="background:${accent}"></div>`;
+ var header=bold?`<div class="ic-cover"><div class="ic-cbwrap"><img src="logo-mark.png" class="ic-clogo" crossorigin="anonymous" alt=""><span class="ic-cbrand">Beautia</span></div><span class="ic-ckind" style="color:${accent}">${esc(T[LANG].idKind)}</span></div>`:`<div class="ic-top"><div class="ic-brandwrap"><img src="logo-mark.png" class="ic-logo" alt="Beautia"><span class="ic-brand">BEAUTIA</span></div><span class="ic-kind" style="color:${accent};background:${tag}">${esc(T[LANG].idKind)}</span></div><div class="ic-rule" style="background:${accent}"></div>`;
  card.innerHTML=header+`
   <div class="ic-cuts" style="grid-template-columns:repeat(${cols},1fr)">${cuts.map(w=>`<div class="ic-cut"><img src="${im(w,900)}" crossorigin="anonymous" alt=""></div>`).join('')}</div>
   <div class="ic-info"><div class="ic-namerow"><span class="ic-avring" style="background:${accent}">${d.avatar?`<img class="ic-av" src="${im(d.avatar,600)}" crossorigin="anonymous" alt="">`:avHtml(d,'ic-av')}</span><div><div class="ic-name" style="color:${accent}">${esc(d.flag)} ${esc(name)} ${d.ver?`<i class="ti ti-rosette-discount-check-filled" style="color:${accent};font-size:20px"></i>`:''}</div>
