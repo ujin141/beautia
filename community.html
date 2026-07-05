@@ -794,7 +794,13 @@ function safeUrl(u){u=String(u==null?'':u);if(/^https:\/\/[A-Za-z0-9._~:\/?#@!$&
 function igClean(h){return String(h==null?'':h).replace(/^@/,'').replace(/[^A-Za-z0-9._]/g,'').slice(0,40);}
 function workImg(w){return (w&&typeof w==='object')?(w.img||''):(w||'');}
 function workText(w){return (w&&typeof w==='object')?(w.text||''):'';}
-const im=(id,w)=>{if(id&&typeof id==='object')id=id.img||'';return safeUrl(/^(data:|https?:)/.test(id)?id:`${PH}${id}?auto=format&fit=crop&w=${w||600}&q=72`);};
+const im=(id,w)=>{if(id&&typeof id==='object')id=id.img||'';id=String(id||'');
+ // 스토리지/외부 https 이미지는 weserv로 리사이즈(모바일 대역폭·메모리 절감 → 사진 누락 방지). 실패 시 아래 error 핸들러가 원본으로 폴백.
+ if(/^https:\/\//.test(id))return safeUrl('https://images.weserv.nl/?url='+encodeURIComponent('ssl:'+id.replace(/^https:\/\//,''))+'&w='+(w||600)+'&q=78&output=jpg');
+ if(/^data:/.test(id))return safeUrl(id);
+ return safeUrl(`${PH}${id}?auto=format&fit=crop&w=${w||600}&q=72`);};
+// weserv 리사이즈 실패 시 원본 이미지로 자동 폴백 (capture 단계 — img error는 버블 안 함)
+document.addEventListener('error',function(e){var t=e.target;if(t&&t.tagName==='IMG'&&/images\.weserv\.nl/.test(t.src||'')&&!t.dataset.wf){t.dataset.wf='1';try{var q=new URL(t.src).searchParams.get('url');if(q)t.src=q.replace(/^ssl:/,'https://');}catch(err){}}},true);
 const GR=['linear-gradient(135deg,#C99,#7E5A6A)','linear-gradient(135deg,#B5828C,#6E4A50)','linear-gradient(135deg,#D8A48F,#9C6A5A)','linear-gradient(135deg,#A892B8,#6E5A86)','linear-gradient(135deg,#90B0C0,#5A7E92)','linear-gradient(135deg,#C7A26E,#8A6A3A)','linear-gradient(135deg,#C99BAE,#8A5A72)','linear-gradient(135deg,#86B59E,#4E7C6A)'];
 const stars=n=>'★'.repeat(Math.round(n))+'☆'.repeat(5-Math.round(n));
 
