@@ -357,10 +357,10 @@ body.mlock{position:fixed;left:0;right:0;width:100%;overflow:hidden;}
 .ic-kind{font-family:'Outfit',sans-serif;font-size:10px;font-weight:800;letter-spacing:.2em;padding:5px 11px;border-radius:999px;}
 .ic-rule{height:2px;margin:0 22px;border-radius:2px;}
 .ic-cover{position:relative;padding:20px 24px 16px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--line);}
-.ic-cover .ic-cbwrap{display:flex;align-items:center;gap:9px;}
-.ic-cover .ic-clogo{height:26px;width:auto;display:block;}
-.ic-cover .ic-cbrand{font-family:'Outfit',sans-serif;font-weight:600;font-size:17px;letter-spacing:.1em;color:var(--ink);}
-.ic-cover .ic-ckind{font-family:'Outfit',sans-serif;font-size:9.5px;font-weight:800;letter-spacing:.24em;}
+.ic-cover .ic-cbwrap{display:table;height:28px;}
+.ic-cover .ic-clogo{display:table-cell;vertical-align:middle;height:28px;width:auto;}
+.ic-cover .ic-cbrand{display:table-cell;vertical-align:middle;padding-left:9px;white-space:nowrap;font-family:'Outfit',sans-serif;font-weight:600;font-size:17px;letter-spacing:.1em;color:var(--ink);}
+.ic-cover .ic-ckind{font-family:'Outfit',sans-serif;font-size:9.5px;font-weight:800;letter-spacing:.24em;line-height:28px;}
 .ic-avring{display:inline-flex;padding:2.5px;border-radius:50%;flex:0 0 auto;}
 .ic-avring .ic-av{border:2px solid #fff;}
 .ic-footlogo{height:18px;width:auto;opacity:.85;}
@@ -1171,11 +1171,14 @@ function renderIdCanvas(){return new Promise(function(resolve,reject){
   // html2canvas는 aspect-ratio 미지원 → 캡처 직전 사진칸을 실제 너비대로 정사각형 높이 고정(화면과 동일하게)
   var cuts=el.querySelectorAll('.ic-cut'),saved=[];
   cuts.forEach(function(c,i){saved[i]=c.style.height;c.style.height=c.offsetWidth+'px';});
-  function restore(){if(iw)iw.style.transform=t;cuts.forEach(function(c,i){c.style.height=saved[i];});}
+  // html2canvas는 헤더 로고 이미지를 브라우저보다 위로 그림 → 캡처 순간에만 살짝 내려 텍스트와 정렬 보정
+  var lg=el.querySelector('.ic-clogo'),lgPos=lg?lg.style.position:'',lgTop=lg?lg.style.top:'';
+  if(lg){lg.style.position='relative';lg.style.top='7px';}
+  function restore(){if(iw)iw.style.transform=t;cuts.forEach(function(c,i){c.style.height=saved[i];});if(lg){lg.style.position=lgPos;lg.style.top=lgTop;}}
   // 폰트(Pretendard) 로딩을 보장한 뒤 캡처 — 폰에서 폴백폰트로 렌더돼 글자 위치가 틀어지는 것 방지
   var fr=(document.fonts&&document.fonts.ready)?document.fonts.ready:Promise.resolve();
   Promise.resolve(fr).then(function(){
-    return html2canvas(el,{useCORS:true,scale:4,backgroundColor:'#ffffff',imageTimeout:0});
+    return html2canvas(el,{useCORS:true,scale:5,backgroundColor:'#ffffff',imageTimeout:0});
   }).then(function(cv){restore();resolve(cv);}).catch(function(e){restore();reject(e);});
 });}
 function idSaveOverlay(url){var ov=document.createElement('div');ov.className='idsave';
