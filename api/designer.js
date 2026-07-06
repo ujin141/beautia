@@ -36,9 +36,14 @@ const engCat = s => CATMAP_EN[String(s || '').trim()] || String(s || '').trim();
 const engCity = s => { s = String(s || '').trim(); return CITYMAP_EN[s] || s; };
 
 const igClean = s => String(s || '').trim().replace(/^@/, '').replace(/^https?:\/\/(www\.)?instagram\.com\//i, '').replace(/[/?#].*$/, '');
-const photoUrls = shop => (Array.isArray(shop && shop.photos) ? shop.photos : [])
-  .map(p => (p && typeof p === 'object') ? p.img : p)
-  .filter(x => typeof x === 'string' && x.startsWith('http'));
+const VIDRE = /\.(mp4|webm|mov|m4v|ogv)(\?|#|$)/i;
+// 작업 목록(영상/이미지) — 영상은 poster를 별도로 보관
+const workList = shop => (Array.isArray(shop && shop.photos) ? shop.photos : [])
+  .map(p => (p && typeof p === 'object') ? { src: p.img, poster: p.poster } : { src: p, poster: '' })
+  .filter(w => typeof w.src === 'string' && w.src.startsWith('http'))
+  .map(w => ({ src: w.src, poster: (typeof w.poster === 'string' && w.poster.startsWith('http')) ? w.poster : '', vid: VIDRE.test(w.src) }));
+// SEO/OG용 대표 이미지 URL: 영상이면 포스터(없으면 제외), 이미지는 자신
+const imgOf = w => (w.vid ? w.poster : w.src);
 
 export default async function handler(req, res) {
   const u = (req.query && req.query.u || '').toString();
@@ -59,13 +64,14 @@ export default async function handler(req, res) {
   const ig = igClean(shop.insta);
   const blog = (typeof shop.blog === 'string' && /^https?:\/\//i.test(shop.blog)) ? shop.blog : '';
   const naver = (typeof shop.naver === 'string' && /^https?:\/\//i.test(shop.naver)) ? shop.naver : '';
-  const photos = photoUrls(shop);
+  const works = workList(shop);
+  const imgs = works.map(imgOf).filter(Boolean);   // 이미지 URL만(영상은 포스터)
   const avatar = (typeof shop.avatar === 'string' && shop.avatar.startsWith('http')) ? shop.avatar : '';
   const t = L.en;   // OG는 항상 영어
 
   const canon = `${SITE}/d/${encodeURIComponent(u)}`;
   const appUrl = `/community?u=${encodeURIComponent(u)}`;
-  const heroImg = photos[0] || avatar || `${SITE}/og-cover.png`;
+  const heroImg = imgs[0] || avatar || `${SITE}/og-cover.png`;
   const titleBits = [name, specText, cityEN].filter(Boolean);
   const title = `${titleBits.join(' · ')} | Beautia`;
   const desc = `${name} — ${specText ? specText + ' ' : ''}${t.designer}${cityEN ? ' · ' + cityEN : ''}. Browse the portfolio and book on Beautia.`.slice(0, 155);
@@ -97,10 +103,10 @@ export default async function handler(req, res) {
     { '@type': 'ProfilePage', '@id': canon, url: canon, name: title,
       inLanguage: t.htmllang, isPartOf: { '@id': `${SITE}/#website` }, mainEntity: person },
   ];
-  if (photos.length) {
+  if (imgs.length) {
     graph.push({
       '@type': 'ImageGallery', name: `${name} — ${t.portfolio}`, url: canon,
-      image: photos.map((src, i) => ({
+      image: imgs.map((src, i) => ({
         '@type': 'ImageObject', contentUrl: src, url: src,
         name: `${name} ${specText || t.designer} ${t.by} ${i + 1}${city ? ' · ' + city : ''}`,
         caption: `${name} — ${specText || t.designer}${city ? ' · ' + city : ''} | Beautia`,
@@ -111,9 +117,13 @@ export default async function handler(req, res) {
   const ld = { '@context': 'https://schema.org', '@graph': graph };
 
   // ── 갤러리 마크업 ─────────────────────────────────────────────
-  const gallery = photos.map((src, i) =>
-    `<figure class="w"><img src="${esc(src)}" loading="${i < 2 ? 'eager' : 'lazy'}" decoding="async" alt="${esc(`${name} — ${specText || t.designer} ${t.by} ${i + 1}${city ? ' · ' + city : ''} | Beautia`)}"></figure>`
-  ).join('');
+  const gallery = works.map((w, i) => {
+    const altTxt = esc(`${name} — ${specText || t.designer} ${t.by} ${i + 1}${city ? ' · ' + city : ''} | Beautia`);
+    if (w.vid) {
+      return `<figure class="w vid"><video controls preload="none" playsinline${w.poster ? ` poster="${esc(w.poster)}"` : ''}><source src="${esc(w.src)}" type="video/mp4"></video></figure>`;
+    }
+    return `<figure class="w"><img src="${esc(w.src)}" loading="${i < 2 ? 'eager' : 'lazy'}" decoding="async" alt="${altTxt}"></figure>`;
+  }).join('');
 
   const chips = specs.map(s => `<span class="chip">${esc(s)}</span>`).join('');
   const moreLinks = others.map(o => {
@@ -162,6 +172,7 @@ h2.sec{font-size:19px;letter-spacing:-.02em;margin:38px 0 16px}
 .gal{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
 .gal .w{margin:0;border-radius:18px;overflow:hidden;background:var(--soft);aspect-ratio:4/5}
 .gal .w img{width:100%;height:100%;object-fit:cover}
+.gal .w video{width:100%;height:100%;object-fit:cover;display:block;background:#000}
 .more{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin-top:14px}
 .more-card{border:1px solid var(--line);border-radius:16px;padding:16px 18px;display:flex;flex-direction:column;gap:4px}
 .more-card:hover{border-color:var(--plum)}
@@ -184,7 +195,7 @@ footer{border-top:1px solid var(--line);margin-top:56px;padding:28px 0;color:var
 ${chips ? `<div class="chips">${chips}</div>` : ''}
 ${bio ? `<p class="bio">${esc(bio)}</p>` : ''}
 <div><a class="cta" href="${esc(appUrl)}">${esc(t.book)} →</a>${ig ? `<a class="cta ghost" href="https://instagram.com/${esc(ig)}" rel="nofollow" target="_blank">${esc(t.insta)}</a>` : ''}</div>
-${photos.length ? `<h2 class="sec">${esc(t.portfolio)}</h2><div class="gal">${gallery}</div>` : ''}
+${works.length ? `<h2 class="sec">${esc(t.portfolio)}</h2><div class="gal">${gallery}</div>` : ''}
 ${moreLinks ? `<h2 class="sec">${esc(t.more)}</h2><div class="more">${moreLinks}</div>` : ''}
 <footer>© Beautia — <a href="/community">beautia.io</a></footer>
 </div>
