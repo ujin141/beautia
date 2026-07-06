@@ -688,6 +688,13 @@ body.mlock{position:fixed;left:0;right:0;width:100%;overflow:hidden;}
 .dgrid{column-count:3;column-gap:12px;}
 @media(max-width:640px){.dgrid{column-count:2;}.dhero{height:230px;}.dhcap .dn{font-size:26px;}}
 .dgrid img{width:100%;border-radius:12px;margin-bottom:12px;break-inside:avoid;cursor:zoom-in;background:var(--soft);}
+.dgrid video{width:100%;border-radius:12px;margin-bottom:12px;break-inside:avoid;background:var(--soft);display:block;}
+.tile video{width:100%;display:block;}
+.tvid{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:52px;height:52px;border-radius:50%;background:rgba(20,12,16,.5);color:#fff;display:flex;align-items:center;justify-content:center;font-size:22px;pointer-events:none;}
+.thv{position:relative;overflow:hidden;background:linear-gradient(135deg,#B5828C,#6E4A50);}
+.thv video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;}
+.thvb{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:30px;height:30px;border-radius:50%;background:rgba(20,12,16,.5);color:#fff;display:flex;align-items:center;justify-content:center;font-size:14px;pointer-events:none;z-index:2;}
+.wimgvid{width:100%;max-height:74vh;background:#000;display:block;border-radius:16px 16px 0 0;}
 .rev{display:flex;gap:14px;padding:16px 0;border-bottom:1px solid var(--line);}
 .rev:last-child{border:none;} .rev .ra{width:46px;height:46px;border-radius:50%;flex:0 0 auto;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-family:'Pretendard','Malgun Gothic',sans-serif;}
 .rev .rn{font-weight:800;font-size:15px;} .rev .rs{color:var(--gold);font-size:13px;margin-top:2px;} .rev .rt{font-size:14.5px;color:var(--ink2);margin-top:5px;line-height:1.5;}
@@ -906,6 +913,14 @@ function safeUrl(u){u=String(u==null?'':u);if(/^https:\/\/[A-Za-z0-9._~:\/?#@!$&
 function igClean(h){return String(h==null?'':h).replace(/^@/,'').replace(/[^A-Za-z0-9._]/g,'').slice(0,40);}
 function workImg(w){return (w&&typeof w==='object')?(w.img||''):(w||'');}
 function workText(w){return (w&&typeof w==='object')?(w.text||''):'';}
+function isVid(w){var u=(w&&typeof w==='object')?(w.img||''):(w||'');return /\.(mp4|webm|mov|m4v|ogv)(\?|#|$)/i.test(String(u));}
+function vsrc(w){return safeUrl(workImg(w));}
+function imgWorks(ws){return (ws||[]).filter(function(w){return !isVid(w);});}
+function firstImg(ws){var iw=imgWorks(ws);return iw.length?iw[0]:((ws&&ws[0])||'');}
+// 썸네일용: 영상은 첫 프레임(#t=0.1)을 커버로 보여줌, 이미지는 배경. play 배지 포함.
+function thumbBg(w,size,cls,extra){cls=cls||'';extra=extra||'';
+ if(isVid(w))return '<div class="'+cls+' thv" '+extra+'><video src="'+vsrc(w)+'#t=0.1" muted playsinline preload="metadata"></video><span class="thvb"><i class="ti ti-player-play-filled"></i></span></div>';
+ return '<div class="'+cls+'" style="background-image:url(\''+im(w,size)+'\')" '+extra+'></div>';}
 const im=(id,w)=>{if(id&&typeof id==='object')id=id.img||'';id=String(id||'');
  // 스토리지/외부 https 이미지는 weserv로 리사이즈(모바일 대역폭·메모리 절감 → 사진 누락 방지). 실패 시 아래 error 핸들러가 원본으로 폴백.
  if(/^https:\/\//.test(id))return safeUrl('https://images.weserv.nl/?url='+encodeURIComponent('ssl:'+id.replace(/^https:\/\//,''))+'&w='+(w||600)+'&q=80&output=webp');
@@ -962,12 +977,14 @@ function renderPopular(){var el=$('popwrap');if(!el)return;
  el.innerHTML='<div class="pophead"><h3 class="serif">'+esc(L.popular)+'</h3><span class="popsub">'+esc(L.popularSub)+'</span></div>'+
   '<div class="poprow">'+ds.map(function(d){var uid=d.uid;var nm=(LANG==='ko'&&d.ko)?d.ko:d.name;var tot=d.works.length;
    var rest=d.works.slice(1,4);var more=tot-1-rest.length;
-   var thumbs=rest.map(function(w,i){var last=(i===rest.length-1&&more>0);
-     return '<div class="pth" onclick="event.stopPropagation();openWork(\''+d.id+'_'+(i+1)+'\')" style="background-image:url(\''+im(w,220)+'\')">'+(last?'<span class="pmore">+'+more+'</span>':'')+'</div>';}).join('');
+   var thumbs=rest.map(function(w,i){var last=(i===rest.length-1&&more>0);var mo=last?'<span class="pmore">+'+more+'</span>':'';var oc='event.stopPropagation();openWork(\''+d.id+'_'+(i+1)+'\')';
+     if(isVid(w))return '<div class="pth thv" onclick="'+oc+'"><video src="'+vsrc(w)+'#t=0.1" muted playsinline preload="metadata"></video><span class="thvb"><i class="ti ti-player-play-filled"></i></span>'+mo+'</div>';
+     return '<div class="pth" onclick="'+oc+'" style="background-image:url(\''+im(w,220)+'\')">'+mo+'</div>';}).join('');
    // 썸네일 칸 3개 고정(빈칸 채움)
    for(var k=rest.length;k<3;k++)thumbs+='<div class="pth pthx"></div>';
+   var w0=d.works[0];var w0v=isVid(w0);
    return '<div class="pcard" onclick="openD(\''+d.id+'\')">'+
-     '<div class="pcimg" onclick="event.stopPropagation();openWork(\''+d.id+'_0\')" style="background-image:url(\''+im(d.works[0],500)+'\')">'+(d.featured?'<span class="pcbadge"><i class="ti ti-flame-filled"></i> HOT</span>':'')+'<span class="pccount"><i class="ti ti-photo"></i> '+tot+'</span></div>'+
+     '<div class="pcimg'+(w0v?' thv':'')+'" onclick="event.stopPropagation();openWork(\''+d.id+'_0\')"'+(w0v?'':' style="background-image:url(\''+im(w0,500)+'\')"')+'>'+(w0v?'<video src="'+vsrc(w0)+'#t=0.1" muted playsinline preload="metadata"></video><span class="thvb"><i class="ti ti-player-play-filled"></i></span>':'')+(d.featured?'<span class="pcbadge"><i class="ti ti-flame-filled"></i> HOT</span>':'')+'<span class="pccount"><i class="ti ti-photo"></i> '+tot+'</span></div>'+
      '<div class="pthumbs">'+thumbs+'</div>'+
      '<div class="pcb"><div class="pcn">'+esc(d.flag)+' '+esc(nm)+'</div>'+
       '<div class="pcm"><span class="star">★ '+esc(d.rating||'5')+'</span> · '+esc(cl(d.cat))+(d.city?' · '+esc(d.city):'')+'</div>'+
@@ -1091,7 +1108,7 @@ function tileHtml(t){return `<div class="tile" onclick="openWork('${t.wid}')">
  <button class="heart ${isSaved(t.wid)?'on':''}" onclick="toggleSave('${t.wid}',event)"><i class="ti ti-heart${isSaved(t.wid)?'-filled':''}"></i></button>
  ${t.text?'<span class="tpost"><i class="ti ti-align-left"></i></span>':''}
  ${t.featured?`<span class="tfeat"><i class="ti ti-external-link"></i> @${esc(t.insta)}</span>`:''}
- <img src="${im(t.img,600)}" loading="lazy" alt="">
+ ${isVid(t.img)?`<video src="${vsrc(t.img)}#t=0.1" muted loop playsinline preload="metadata" onmouseover="this.play()" onmouseout="this.pause()"></video><span class="tvid"><i class="ti ti-player-play-filled"></i></span>`:`<img src="${im(t.img,600)}" loading="lazy" alt="">`}
  <div class="ov"></div>
  <div class="meta"><div class="nm">${esc(t.flag)} ${esc(t.name)}</div><div class="ct"><span class="star" style="color:#C9A063">★ ${esc(t.rating)}</span> · ${esc(cl(t.cat))} · ${t.area?esc(t.area)+', ':''}${esc(t.city||'')}</div></div>
 </div>`;}
@@ -1106,7 +1123,7 @@ function renderStories(){var el=document.getElementById('stories');if(!el)return
  el.innerHTML=allD().map(function(d){var nm=(LANG==='ko'&&d.ko)?d.ko:d.name;var img=safeUrl(d.avatar||'')||(d.works&&d.works.length?im(d.works[0],200):'');
   return `<div class="sty" onclick="openD('${d.id}')"><div class="ring"><div style="${img?`background-image:url('${img}')`:`background:${gradFor(nm)}`}">${img?'':esc((nm||'?')[0])}</div></div><div class="sn">${esc(nm)}</div></div>`;}).join('');}
 let fbTimer=null,fbIdx=0;
-function bannerSlides(){var out=[];var ds=allD();if(FOLLOWS.length)ds=ds.slice().sort(function(a,b){return (isFollowing(b.uid)?1:0)-(isFollowing(a.uid)?1:0);});ds.forEach(function(d,di){(d.works||[]).slice(0,1).forEach(function(w){out.push({did:d.id,name:(LANG==='ko'&&d.ko)?d.ko:d.name,cat:cl(d.cat),city:d.city||'',img:workImg(w),avatar:d.avatar||'',flag:d.flag||'',ver:d.ver,rating:d.rating||'5',tag:(isNewWork(d)?'new':((d.featured||di<3)?'pick':'hot'))});});});return out;}
+function bannerSlides(){var out=[];var ds=allD();if(FOLLOWS.length)ds=ds.slice().sort(function(a,b){return (isFollowing(b.uid)?1:0)-(isFollowing(a.uid)?1:0);});ds.forEach(function(d,di){var w=firstImg(d.works);if(!w)return;out.push({did:d.id,name:(LANG==='ko'&&d.ko)?d.ko:d.name,cat:cl(d.cat),city:d.city||'',img:workImg(w),avatar:d.avatar||'',flag:d.flag||'',ver:d.ver,rating:d.rating||'5',tag:(isNewWork(d)?'new':((d.featured||di<3)?'pick':'hot'))});});return out;}
 function fbTagHtml(x){var m={pick:['','ti-award',T[LANG].fbTagPick],hot:['hot','ti-flame',T[LANG].fbTagHot],new:['new','ti-sparkles',T[LANG].fbTagNew]};var t=m[x.tag]||m.hot;return '<div class="fbtag '+t[0]+'"><i class="ti '+t[1]+'"></i> '+esc(t[2])+'</div>';}
 function renderBanner(){var el=document.getElementById('fbanner');if(!el)return;
  if(VIEW!=='explore'){el.classList.remove('on');el.innerHTML='';if(fbTimer){clearInterval(fbTimer);fbTimer=null;}return;}
@@ -1191,7 +1208,7 @@ function renderDesigners(q,city){var g=$('grid');g.classList.add('dgview');
     rev>0?`<span class="tb"><i class="ti ti-message-star"></i> ${esc(L.reviews)} ${rev}</span>`:'',
     d.uid?`<span class="tb tb-f"><i class="ti ti-bolt"></i> ${esc(L.fast)}</span>`:''].filter(Boolean).join('');
   return `<div class="dcard">
-    <div class="dcthumbs" onclick="openD('${d.id}')">${isNewWork(d)?`<span class="dcnew"><i class="ti ti-sparkles"></i> ${T[LANG].newBadge}</span>`:''}${thumbs.map(function(w){return `<div class="dcth" style="background-image:url('${im(w,400)}')"></div>`;}).join('')}${d.featured?`<span class="dcfeat"><i class="ti ti-external-link"></i></span>`:''}${d.uid?`<button class="followBtn dcfollow${isFollowing(d.uid)?' on':''}" data-follow="${d.uid}" onclick="toggleFollow('${d.uid}',event)" title="${T[LANG].follow}"><i class="ti ${isFollowing(d.uid)?'ti-user-check':'ti-user-plus'}"></i></button>`:''}</div>
+    <div class="dcthumbs" onclick="openD('${d.id}')">${isNewWork(d)?`<span class="dcnew"><i class="ti ti-sparkles"></i> ${T[LANG].newBadge}</span>`:''}${thumbs.map(function(w){return thumbBg(w,400,'dcth');}).join('')}${d.featured?`<span class="dcfeat"><i class="ti ti-external-link"></i></span>`:''}${d.uid?`<button class="followBtn dcfollow${isFollowing(d.uid)?' on':''}" data-follow="${d.uid}" onclick="toggleFollow('${d.uid}',event)" title="${T[LANG].follow}"><i class="ti ${isFollowing(d.uid)?'ti-user-check':'ti-user-plus'}"></i></button>`:''}</div>
     <div class="dcbody" onclick="openD('${d.id}')">
       ${avHtml(d,'dcav')}
       <div class="dci"><div class="dcn">${esc(d.flag)} ${esc(nm)} ${d.ver?`<i class="ti ti-rosette-discount-check-filled" style="color:var(--green);font-size:15px"></i>`:''}</div>
@@ -1206,7 +1223,7 @@ let curW=null;
 function openWork(wid){const t=TILES.find(x=>x.wid===wid);if(!t)return;const d=dById(t.did);if(!d)return;curW=wid;const nm=(LANG==='ko'&&d.ko)?d.ko:d.name;const feat=d.featured,ig=igClean(d.insta);
  $('wcard').innerHTML=`<button class="wclose" onclick="closeWork()">×</button>
   <button class="wheart ${isSaved(t.wid)?'on':''}" onclick="toggleSave('${t.wid}',event)"><i class="ti ti-heart${isSaved(t.wid)?'-filled':''}"></i></button>
-  <img class="wimg" src="${im(t.img,1200)}" alt="">
+  ${isVid(t.img)?`<video class="wimg wimgvid" src="${vsrc(t.img)}" controls autoplay loop playsinline></video>`:`<img class="wimg" src="${im(t.img,1200)}" alt="">`}
   ${t.text?`<div class="wtext">${esc(t.text)}</div>`:''}
   <div class="wbar">${avHtml(d,'wav')}
    <div class="wbinfo">${feat?`<div class="wkick"><i class="ti ti-external-link"></i> ${T[LANG].featured} · @${esc(ig)}</div><div class="wname">@${esc(ig)}</div><div class="wsub">${esc(cl(t.cat))}${t.city?' · '+esc(t.city):''}</div>`:`<div class="wkick"><i class="ti ti-photo"></i> ${T[LANG].byDesigner.replace('{n}',esc(nm))}</div><div class="wname">${esc(d.flag)} ${esc(nm)} ${d.ver?'<i class="ti ti-rosette-discount-check-filled" style="color:var(--green);font-size:17px"></i>':''}</div><div class="wsub">${esc(cl(t.cat))}${t.area?' · '+esc(t.area):''}${t.city?', '+esc(t.city):''}</div>`}</div>
@@ -1236,7 +1253,7 @@ function openD(did,keep){const d=dById(did);if(!d)return;curD=did;const gi=D.ind
    <a class="dmapbtn" href="https://www.google.com/maps/search/?api=1&query=${q}" target="_blank" rel="noopener"><i class="ti ti-map-pin"></i> ${esc(addr)} · ${T[LANG].mapOpen||'지도에서 열기'}</a></div>`;})();
  $('dsheet').innerHTML=`
  <div class="dbody">
-  <div class="dhero" style="background-image:url('${im(d.works[0],900)}')"><div class="sc"></div>
+  <div class="dhero" style="background-image:url('${im(firstImg(d.works),900)}')"><div class="sc"></div>
    <button class="dclose" onclick="closeD()">×</button>
    <div class="dhcap">
      ${avHtml(d,'dav-c')}
@@ -1256,7 +1273,7 @@ function openD(did,keep){const d=dById(did);if(!d)return;curD=did;const gi=D.ind
    </div>
   </div>
   ${(d.services&&d.services.length)?`<div class="dsec"><div class="st">${T[LANG].svcTitle}</div>${d.services.map((s,i)=>`<div class="svc"><div class="svci"><div class="svcn">${esc(s.n)}</div><div class="svcm">${s.du?esc(s.du)+' · ':''}<b>${esc(s.p)}</b></div></div>${d.uid&&!d.isMe?`<button class="svcbk" onclick="openBook('${d.id}',${i})">${T[LANG].book2}</button>`:''}</div>`).join('')}</div>`:''}
-  <div class="dsec"><div class="st">${T[LANG].portfolio}</div><div class="dgrid">${d.works.map(w=>`<img src="${im(w,500)}" onclick="window.open('${im(w,1200)}','_blank')">`).join('')}</div></div>
+  <div class="dsec"><div class="st">${T[LANG].portfolio}</div><div class="dgrid">${d.works.map(w=>isVid(w)?`<video src="${vsrc(w)}" controls playsinline preload="metadata"></video>`:`<img src="${im(w,500)}" onclick="window.open('${im(w,1200)}','_blank')">`).join('')}</div></div>
   <div class="dsec" id="revsec"><div class="st">${T[LANG].reviews} · ${esc(d.rev)}</div>${d.reviews.map((r,i)=>`<div class="rev"><div class="ra" style="background:${GR[(gi+i)%GR.length]}">${esc((r.n||'?')[0])}</div><div><div class="rn">${esc(r.n)}</div><div class="rs">${stars(r.s)}</div><div class="rt">${esc(r.t)}</div></div></div>`).join('')}</div>
   ${(snsHtml||naverHtml||blogHtml||bookingHtml)?`<div class="dsec" style="border:none"><div class="st">${T[LANG].connect}</div>${bookingHtml}<div class="sns">${snsHtml}${naverHtml}${blogHtml}</div></div>`:''}
   ${mapHtml}
@@ -1287,7 +1304,7 @@ function openIdCard(did){const d=dById(did||curD);if(!d)return;idDid=d.id;
  var theme=(own&&ME&&ME.idTheme)?ME.idTheme:'tint';
  var bold=(theme!=='light');var dark=shade(accent,-0.30),tag=hexA(accent,0.13);
  var ncut=cols===1?3:(cols===3?6:4);
- const name=(LANG==='ko'&&d.ko)?d.ko:d.name;var cuts=d.works.slice(0,ncut);while(cuts.length<ncut&&d.works.length)cuts.push(d.works[cuts.length%d.works.length]);
+ const name=(LANG==='ko'&&d.ko)?d.ko:d.name;var iw=imgWorks(d.works);var cuts=iw.slice(0,ncut);while(cuts.length<ncut&&iw.length)cuts.push(iw[cuts.length%iw.length]);
  $('idDlT').textContent=T[LANG].idDl;$('idShT').textContent=T[LANG].idShare;
  var card=$('idcard');card.style.background='#fff';
  var header=bold?`<div class="ic-cover"><div class="ic-cbwrap"><img src="logo-mark.png" class="ic-clogo" crossorigin="anonymous" alt=""><span class="ic-cbrand">Beautia</span></div><span class="ic-ckind" style="color:${accent}">${esc(T[LANG].idKind)}</span></div>`:`<div class="ic-top"><div class="ic-brandwrap"><img src="logo-mark.png" class="ic-logo" alt="Beautia"><span class="ic-brand">BEAUTIA</span></div><span class="ic-kind" style="color:${accent};background:${tag}">${esc(T[LANG].idKind)}</span></div><div class="ic-rule" style="background:${accent}"></div>`;
@@ -1402,8 +1419,8 @@ function closePf(){$('pfmodal').classList.remove('on');}
 function renderPf(){const w=ME.works||[];
  $('pfcard').innerHTML=`<button class="iclose" onclick="closePf()">×</button>
   <h3 class="serif">${T[LANG].pfManage}</h3><div class="pfsub">${T[LANG].pfHint}</div>
-  <input type="file" id="pfFile" accept="image/*" multiple style="display:none" onchange="addPfPhotos(event)">
-  <div class="pfgrid">${w.map((s,i)=>`<div class="pfitem"><div class="pft" style="background-image:url('${im(s,400)}')"><button class="pfdel" onclick="delPfPhoto(${i})">×</button></div><textarea class="pfcap" rows="2" maxlength="600" placeholder="${T[LANG].pfCaption}" onchange="pfSetCaption(${i},this.value)">${esc(workText(s))}</textarea></div>`).join('')}${w.length<12?`<div class="pfitem"><div class="pfadd" onclick="document.getElementById('pfFile').click()"><i class="ti ti-camera-plus"></i><span>${T[LANG].addPhoto}</span></div></div>`:''}</div>
+  <input type="file" id="pfFile" accept="image/*,video/mp4,video/webm,video/quicktime" multiple style="display:none" onchange="addPfPhotos(event)">
+  <div class="pfgrid">${w.map((s,i)=>`<div class="pfitem"><div class="pft${isVid(s)?' thv':''}"${isVid(s)?'':` style="background-image:url('${im(s,400)}')"`}>${isVid(s)?`<video src="${vsrc(s)}#t=0.1" muted playsinline preload="metadata"></video><span class="thvb"><i class="ti ti-player-play-filled"></i></span>`:''}<button class="pfdel" onclick="delPfPhoto(${i})">×</button></div><textarea class="pfcap" rows="2" maxlength="600" placeholder="${T[LANG].pfCaption}" onchange="pfSetCaption(${i},this.value)">${esc(workText(s))}</textarea></div>`).join('')}${w.length<12?`<div class="pfitem"><div class="pfadd" onclick="document.getElementById('pfFile').click()"><i class="ti ti-camera-plus"></i><span>${T[LANG].addPhoto}</span></div></div>`:''}</div>
   <div class="pfcount">${w.length}/12</div>
   <div class="il" style="margin-top:18px">${T[LANG].svcTitle} <span style="font-weight:600;color:var(--sub)">· ${T[LANG].svcHint}</span></div>
   <div id="svclist">${(ME.services||[]).map((s,i)=>`<div class="svcrow"><input class="linput sn" value="${esc(s.n||'')}" placeholder="${T[LANG].svcName}" onchange="svcSet(${i},'n',this.value)"><input class="linput sp" value="${esc(s.p||'')}" placeholder="${T[LANG].svcPrice}" onchange="svcSet(${i},'p',this.value)"><input class="linput sd" value="${esc(s.du||'')}" placeholder="${T[LANG].svcDur}" onchange="svcSet(${i},'du',this.value)"><button class="svcdel" onclick="svcDel(${i})">×</button></div>`).join('')}</div>
@@ -1413,7 +1430,23 @@ function svcAdd(){ME.services=ME.services||[];ME.services.push({n:'',p:'',du:''}
 function svcSet(i,k,v){if(!ME.services||!ME.services[i])return;ME.services[i][k]=(v||'').slice(0,80);persistShop();buildTiles();}
 function svcDel(i){ME.services.splice(i,1);renderPf();persistShop();}
 function pfDownscale(dataUrl,max,cb){const img=new Image();img.onload=function(){let w=img.width,h=img.height;if(w>=h&&w>max){h=Math.round(h*max/w);w=max;}else if(h>w&&h>max){w=Math.round(w*max/h);h=max;}const c=document.createElement('canvas');c.width=w;c.height=h;c.getContext('2d').drawImage(img,0,0,w,h);try{cb(c.toDataURL('image/jpeg',0.82));}catch(e){cb(dataUrl);}};img.onerror=function(){cb(dataUrl);};img.src=dataUrl;}
-function addPfPhotos(e){const files=Array.prototype.slice.call(e.target.files);const room=12-(ME.works||[]).length;files.slice(0,room).forEach(function(f){if(!/^image\//.test(f.type))return;const r=new FileReader();r.onload=function(ev){pfDownscale(ev.target.result,1000,async function(d){const url=await uploadOne(d);ME.works=ME.works||[];ME.works.push({img:url,text:''});renderPf();buildTiles();render();await persistShop();});};r.readAsDataURL(f);});e.target.value='';}
+function addPfPhotos(e){const files=Array.prototype.slice.call(e.target.files);const room=12-(ME.works||[]).length;files.slice(0,room).forEach(function(f){
+  if(/^video\//.test(f.type)||/\.(mp4|webm|mov|m4v)$/i.test(f.name)){
+    if(f.size>50*1024*1024){toast(T[LANG].vidTooBig||'영상은 50MB 이하만 올릴 수 있어요');return;}
+    (async function(){try{const url=await uploadVid(f);if(!url)return;ME.works=ME.works||[];ME.works.push({img:url,text:''});renderPf();buildTiles();render();await persistShop();}catch(err){toast((T[LANG].uploadFail||'업로드 실패')+' '+((err&&err.message)||err));}})();
+    return;
+  }
+  if(!/^image\//.test(f.type))return;const r=new FileReader();r.onload=function(ev){pfDownscale(ev.target.result,1000,async function(d){const url=await uploadOne(d);ME.works=ME.works||[];ME.works.push({img:url,text:''});renderPf();buildTiles();render();await persistShop();});};r.readAsDataURL(f);});e.target.value='';}
+async function uploadVid(file){const sess=(await SB.auth.getSession()).data.session;if(!sess)return '';const uid=sess.user.id;
+  const OK={'video/mp4':'mp4','video/webm':'webm','video/quicktime':'mov'};var ext=OK[file.type];
+  if(!ext){var m=(file.name.split('.').pop()||'').toLowerCase();if(['mp4','webm','mov','m4v'].indexOf(m)>=0)ext=(m==='m4v'?'mp4':m);}
+  if(!ext){toast(T[LANG].onlyMedia||'이미지 또는 영상만 올릴 수 있어요');return '';}
+  const ctype=ext==='mov'?'video/quicktime':(ext==='webm'?'video/webm':'video/mp4');
+  const path=uid+'/'+Date.now()+'-'+Math.random().toString(36).slice(2,8)+'.'+ext;
+  toast(T[LANG].uploading||'업로드 중…');
+  const up=await SB.storage.from('beautia').upload(path,file,{contentType:ctype,upsert:false});
+  if(up.error)throw up.error;
+  const pu=SB.storage.from('beautia').getPublicUrl(path);return (pu.data&&pu.data.publicUrl)||'';}
 function pfSetCaption(i,val){if(!ME||!ME.works||!ME.works[i])return;var w=ME.works[i];if(typeof w!=='object')w=ME.works[i]={img:w,text:''};w.text=(val||'').slice(0,600);buildTiles();render();persistShop();}
 function delPfPhoto(i){ME.works.splice(i,1);renderPf();buildTiles();render();persistShop();}
 Object.assign(T.en,{pfHint:'Upload your best work. It appears in the gallery, your profile, and your ID card.',addPhoto:'Add photo',nearYou:'Sorted by distance from your location',photoL:'Add profile photo',changePhoto:'Change photo',byDesigner:"{n}'s portfolio",viewDesigner:'View designer',otpSentToast:'Code sent to your email ✉️',welcomeBack:'Welcome back 👋',needCode:'Enter the code',needLogin:'Please sign in',sending:'Sending…',emailPh:'you@email.com',emailL:'Email',messages:'Messages',noChats:'No conversations yet',sayHi:'Say hello to start the chat',typeMsg:'Type a message…',showOrig:'Show original',showTr:'Show translation',cantChat:'Chat is not available for this designer yet',cantChatSelf:"That's you",loginTitle:'Log in or sign up',orEmail:'or with email',loginHint:'New here? Verifying your email signs you up automatically.',myIdCard:'My ID card',columns:'Columns',color:'Color',cover:'Cover',coverLight:'Minimal',coverTint:'Color',custom:'Custom',snsL:'Social links (optional)',pfCaption:'Write a caption (optional)',featured:'Featured',claimQ:'Is this your work?',claimBtn:'Claim your profile',removeReq:'Request removal',claimToast:'Sign up to add this to your profile ✨',

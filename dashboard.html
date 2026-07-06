@@ -87,6 +87,7 @@ textarea.inp{resize:vertical;min-height:80px;line-height:1.6;}
 .pfgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:12px;}
 .pfitem{position:relative;aspect-ratio:3/4;border-radius:12px;overflow:hidden;background:var(--soft);}
 .pfitem img{width:100%;height:100%;object-fit:cover;}
+.pfitem .pfvid{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:34px;height:34px;border-radius:50%;background:rgba(20,12,16,.5);color:#fff;display:flex;align-items:center;justify-content:center;font-size:16px;pointer-events:none;}
 .pfitem .pact{position:absolute;top:5px;right:5px;display:flex;gap:4px;}
 .pfitem .pact button{width:26px;height:26px;border-radius:8px;background:rgba(20,12,16,.62);color:#fff;font-size:15px;display:flex;align-items:center;justify-content:center;}
 .pfitem .ord{position:absolute;bottom:5px;left:5px;display:flex;gap:4px;}
@@ -355,7 +356,7 @@ textarea.inp{resize:vertical;min-height:80px;line-height:1.6;}
     <div class="card">
       <h2 data-t="pfTitle">포트폴리오 사진</h2><div class="hint" data-t="pfHint">대표 작업을 올리세요. 갤러리·프로필·ID카드에 바로 보여요.</div>
       <button class="upbtn" onclick="document.getElementById('pfFile').click()"><i class="ti ti-photo-plus"></i> <span data-t="addPhoto">사진 추가</span></button>
-      <input type="file" id="pfFile" accept="image/*" multiple style="display:none" onchange="onPfFiles(this)">
+      <input type="file" id="pfFile" accept="image/*,video/mp4,video/webm,video/quicktime" multiple style="display:none" onchange="onPfFiles(this)">
       <div class="pfgrid" id="pfGrid"></div>
     </div>
     <div class="card">
@@ -656,11 +657,12 @@ async function saveProfile(){
 async function uploadImg(file,asPng){
   // 이미지 화이트리스트: 확장자·content-type을 신뢰하지 않고 안전값으로 강제
   // (text/html 등 임의 파일을 스토리지에 호스팅하는 것 차단)
-  const OK={jpg:'image/jpeg',jpeg:'image/jpeg',png:'image/png',webp:'image/webp',gif:'image/gif'};
+  const OK={jpg:'image/jpeg',jpeg:'image/jpeg',png:'image/png',webp:'image/webp',gif:'image/gif',mp4:'video/mp4',webm:'video/webm',mov:'video/quicktime',m4v:'video/mp4'};
   let ext=asPng?'png':((file.name.split('.').pop()||'jpg').toLowerCase());
   if(ext==='jpeg')ext='jpg';
   const ctype=OK[ext];
   if(!ctype){toast(t('onlyImages'));throw new Error('invalid file type');}
+  if(/^video\//.test(ctype)&&file.size>50*1024*1024){toast('영상은 50MB 이하만 올릴 수 있어요');throw new Error('video too large');}
   const path=UID+'/'+Date.now()+'-'+Math.random().toString(36).slice(2,8)+'.'+ext;
   const {error}=await SB.storage.from('beautia').upload(path,file,{contentType:ctype,upsert:false});
   if(error)throw error;
@@ -693,9 +695,10 @@ async function onPfFiles(input){
   for(const f of files){try{const url=await uploadImg(f,false);state.photos.push(url);}catch(e){toast(t('someFailPre')+(e.message||e));}}
   renderPf();toast(t('photosUploaded'));
 }
+function isVidU(u){return /\.(mp4|webm|mov|m4v|ogv)(\?|#|$)/i.test(String(u||''));}
 function renderPf(){
   const g=$('pfGrid');
-  g.innerHTML=state.photos.map((u,i)=>`<div class="pfitem"><img src="${esc(u)}">
+  g.innerHTML=state.photos.map((u,i)=>`<div class="pfitem">${isVidU(u)?`<video src="${esc(u)}#t=0.1" muted playsinline preload="metadata" style="width:100%;height:100%;object-fit:cover;display:block"></video><span class="pfvid"><i class="ti ti-player-play-filled"></i></span>`:`<img src="${esc(u)}">`}
     <div class="pact"><button onclick="delPf(${i})" title="삭제"><i class="ti ti-trash"></i></button></div>
     <div class="ord">${i>0?`<button onclick="movePf(${i},-1)"><i class="ti ti-chevron-left"></i></button>`:''}${i<state.photos.length-1?`<button onclick="movePf(${i},1)"><i class="ti ti-chevron-right"></i></button>`:''}</div>
   </div>`).join('')||`<div class="empty"><i class="ti ti-photo"></i>${esc(t('noPhotos'))}</div>`;
@@ -704,16 +707,16 @@ function renderPf(){
 function renderBA(){
   const bBox=$('baBeforeImg'),aBox=$('baAfterImg'),pb=$('baPickBefore'),pa=$('baPickAfter');
   if(!bBox)return;
-  const photos=state.photos;
+  const photos=state.photos.filter(u=>!isVidU(u));
   if(!photos.length){state.ba=[];bBox.style.backgroundImage='';aBox.style.backgroundImage='';pb.innerHTML=pa.innerHTML='<div class="hint">'+esc(t('baNeedPhotos'))+'</div>';return;}
   // 유효하지 않으면(삭제된 사진 등) 자동 기본값
   if(!(state.ba&&state.ba.length===2&&photos.indexOf(state.ba[0])>=0&&photos.indexOf(state.ba[1])>=0)){state.ba=[photos[0],photos[Math.min(1,photos.length-1)]];}
   bBox.style.backgroundImage="url('"+state.ba[0]+"')";
   aBox.style.backgroundImage="url('"+state.ba[1]+"')";
-  const cells=(which)=>photos.map((u,i)=>`<div class="baThumb${state.ba[which]===u?' on':''}" style="background-image:url('${esc(u)}')" onclick="setBA(${which},${i})"></div>`).join('');
+  const cells=(which)=>photos.map((u)=>`<div class="baThumb${state.ba[which]===u?' on':''}" style="background-image:url('${esc(u)}')" onclick="setBAurl(${which},'${esc(u)}')"></div>`).join('');
   pb.innerHTML=cells(0);pa.innerHTML=cells(1);
 }
-function setBA(which,i){state.ba=(state.ba&&state.ba.length===2)?state.ba.slice():[state.photos[0],state.photos[0]];state.ba[which]=state.photos[i];renderBA();}
+function setBAurl(which,u){var imgs=state.photos.filter(x=>!isVidU(x));var f=imgs[0]||'';state.ba=(state.ba&&state.ba.length===2)?state.ba.slice():[f,f];state.ba[which]=u;renderBA();}
 function delPf(i){state.photos.splice(i,1);renderPf();}
 function movePf(i,d){const j=i+d;if(j<0||j>=state.photos.length)return;const t=state.photos[i];state.photos[i]=state.photos[j];state.photos[j]=t;renderPf();}
 async function savePortfolio(){
