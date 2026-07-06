@@ -24,9 +24,16 @@ export default async function handler(req, res) {
   const shop = pr.shop || {};
   const nick = pr.nickname || '회원';
   const cardImg = `${SB_URL}/storage/v1/object/public/beautia/${encodeURIComponent(u)}/card.png`;
-  // 폴백 순서: 저장된 네컷 카드 → 첫 포트폴리오 사진(실사진) → 아바타 → 기본 OG
+  // 폴백 순서: 저장된 네컷 카드 → 첫 포트폴리오 사진(영상은 포스터) → 아바타 → 기본 OG
+  const VIDRE = /\.(mp4|webm|mov|m4v|ogv)(\?|#|$)/i;
   const photos = Array.isArray(shop.photos) ? shop.photos : [];
-  const firstWork = photos.map(p => (p && typeof p === 'object') ? p.img : p).find(x => typeof x === 'string' && x.startsWith('http'));
+  const firstWork = photos.map(p => {
+    const src = (p && typeof p === 'object') ? p.img : p;
+    const poster = (p && typeof p === 'object') ? p.poster : '';
+    if (typeof src !== 'string' || !src.startsWith('http')) return '';
+    if (VIDRE.test(src)) return (typeof poster === 'string' && poster.startsWith('http')) ? poster : '';  // 영상은 포스터, 없으면 skip
+    return src;
+  }).find(Boolean);
   const av = (typeof shop.avatar === 'string' && shop.avatar.startsWith('http')) ? shop.avatar : '';
   const og = (await exists(cardImg)) ? cardImg : (firstWork || av || `${SITE}/og-default.png`);
   const appUrl = `/community?u=${encodeURIComponent(u)}`;
