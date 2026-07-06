@@ -267,7 +267,7 @@ body.mlock{position:fixed;left:0;right:0;width:100%;overflow:hidden;}
 .fbanner.on{display:block;max-width:1320px;margin:18px auto 0;padding:0 28px;}
 .fbslides{position:relative;width:100%;height:396px;border-radius:30px;overflow:hidden;background:var(--soft);box-shadow:0 26px 60px -26px rgba(60,30,50,.4);}
 .fbslides::after{content:'';position:absolute;inset:0;border-radius:30px;box-shadow:inset 0 0 0 1px rgba(255,255,255,.14);pointer-events:none;z-index:3;}
-.fbslide{position:absolute;inset:0;background-size:cover;background-position:center;opacity:0;transition:opacity .7s ease;cursor:pointer;pointer-events:none;}
+.fbslide{position:absolute;inset:0;background-size:cover;background-position:center 22%;opacity:0;transition:opacity .7s ease;cursor:pointer;pointer-events:none;}
 .fbslide.on{opacity:1;pointer-events:auto;}
 .fbsc{position:absolute;inset:0;background:linear-gradient(100deg,rgba(26,14,20,.88) 0%,rgba(26,14,20,.66) 32%,rgba(26,14,20,.22) 58%,rgba(26,14,20,.04) 100%),linear-gradient(0deg,rgba(22,11,17,.5) 0%,rgba(22,11,17,0) 42%);}
 .fbcamp{position:absolute;left:52px;right:44%;top:0;bottom:0;z-index:1;display:flex;flex-direction:column;justify-content:center;color:#fff;}
@@ -930,6 +930,11 @@ const im=(id,w)=>{if(id&&typeof id==='object')id=id.img||'';id=String(id||'');
 document.addEventListener('error',function(e){var t=e.target;if(t&&t.tagName==='IMG'&&/images\.weserv\.nl/.test(t.src||'')&&!t.dataset.wf){t.dataset.wf='1';try{var q=new URL(t.src).searchParams.get('url');if(q)t.src=q.replace(/^ssl:/,'https://');}catch(err){}}},true);
 const GR=['linear-gradient(135deg,#C99,#7E5A6A)','linear-gradient(135deg,#B5828C,#6E4A50)','linear-gradient(135deg,#D8A48F,#9C6A5A)','linear-gradient(135deg,#A892B8,#6E5A86)','linear-gradient(135deg,#90B0C0,#5A7E92)','linear-gradient(135deg,#C7A26E,#8A6A3A)','linear-gradient(135deg,#C99BAE,#8A5A72)','linear-gradient(135deg,#86B59E,#4E7C6A)'];
 const stars=n=>'★'.repeat(Math.round(n))+'☆'.repeat(5-Math.round(n));
+const FRLZ={ko:'프리랜서',en:'Freelance',ja:'フリーランス',th:'ฟรีแลนซ์'};
+const SUWT={ko:{t:'활동 형태',shop:'샵 소속',free:'프리랜서',shopFree:'브랜드 · 활동명 (선택)',areaFree:'활동 지역 · 출장 가능 (선택)'},
+ en:{t:'Work type',shop:'At a salon',free:'Freelance',shopFree:'Brand · working name (optional)',areaFree:'Area · mobile service (optional)'},
+ ja:{t:'活動形態',shop:'サロン所属',free:'フリーランス',shopFree:'ブランド・活動名（任意）',areaFree:'活動エリア・出張可（任意）'},
+ th:{t:'รูปแบบการทำงาน',shop:'อยู่ในร้าน',free:'ฟรีแลนซ์',shopFree:'แบรนด์ · ชื่อที่ใช้ (ไม่บังคับ)',areaFree:'พื้นที่ · บริการนอกสถานที่ (ไม่บังคับ)'}};
 
 const D=[
  {id:'r1',name:'Woojin',ko:'우진',cat:'Hair',city:'서울',area:'서울',flag:'🇰🇷',rating:5.0,rev:0,years:'',ko_ok:1,ver:1,uid:'e579ff23-4b1a-43c9-b9e2-49e6061668d6',
@@ -947,7 +952,7 @@ const D=[
 ];
 // 비포/애프터: 저장된 shop.ba(2장) 우선, 없으면 포폴 앞 2장 자동
 function baFrom(ba,works){var w=(works||[]).filter(Boolean);var b=ba&&ba[0],a=ba&&ba[1];if(b&&a&&safeUrl(b)&&safeUrl(a))return [b,a];return [w[0],w[Math.min(1,w.length-1)]];}
-function meDesigner(){if(ME&&ME.uid&&ME.works&&ME.works.length){return {id:'me',uid:ME.uid,name:ME.name||'You',ko:'',cat:canonCat((ME.spec&&ME.spec[0])||'Hair'),city:ME.city||'',area:ME.area||'',flag:flagFor(ME.country,ME.city,ME.area),rating:5.0,rev:0,years:ME.career||'',ko_ok:1,ver:ME.verified?1:0,spec:(ME.spec&&ME.spec.length?ME.spec.slice():['Hair']),bio:ME.bio||'',avatar:ME.avatar||'',insta:ME.insta||'',handles:ME.sns||{},works:ME.works.slice(),ba:baFrom(ME.ba,ME.works),sns:Object.keys(ME.sns||{}).filter(function(k){return ME.sns[k];}),services:(ME.services||[]).slice(),tags:(ME.tags||[]).slice(),shopName:ME.shopName||'',reviews:[],isMe:1};}return null;}
+function meDesigner(){if(ME&&ME.uid&&ME.works&&ME.works.length){return {id:'me',uid:ME.uid,name:ME.name||'You',ko:'',cat:canonCat((ME.spec&&ME.spec[0])||'Hair'),city:ME.city||'',area:ME.area||'',flag:flagFor(ME.country,ME.city,ME.area),rating:5.0,rev:0,years:ME.career||'',ko_ok:1,ver:ME.verified?1:0,spec:(ME.spec&&ME.spec.length?ME.spec.slice():['Hair']),bio:ME.bio||'',avatar:ME.avatar||'',insta:ME.insta||'',handles:ME.sns||{},works:ME.works.slice(),ba:baFrom(ME.ba,ME.works),sns:Object.keys(ME.sns||{}).filter(function(k){return ME.sns[k];}),services:(ME.services||[]).slice(),tags:(ME.tags||[]).slice(),shopName:ME.shopName||'',freelancer:!!ME.freelancer,reviews:[],isMe:1};}return null;}
 function gradFor(s){return GR[Math.abs((s||'B').charCodeAt(0))%GR.length];}
 function avHtml(d,cls){var nm=(LANG==='ko'&&d.ko)?d.ko:(d.name||'U');return d.avatar?`<div class="${cls}" style="background-image:url('${im(d.avatar,240)}')"></div>`:`<div class="${cls} mono" style="background:${gradFor(d.name)}">${esc(nm[0]||'U')}</div>`;}
 // ===== Featured(발견한 작업): 원작자 인스타 크레딧+링크, 사칭 X. {insta, cat, city, area, imgs:[...]} 로 채우기 =====
@@ -1265,7 +1270,7 @@ function openD(did,keep){const d=dById(did);if(!d)return;curD=did;const gi=D.ind
    <button class="dclose" onclick="closeD()">×</button>
    <div class="dhcap">
      ${avHtml(d,'dav-c')}
-     <div class="dn">${esc(d.flag)} ${esc(name)} ${d.ver?`<span class="vbadge"><i class="ti ti-rosette-discount-check-filled"></i>${T[LANG].verified}</span>`:''}</div>${d.shopName?`<div class="dshop"><i class="ti ti-building-store"></i> ${esc(d.shopName)}</div>`:''}
+     <div class="dn">${esc(d.flag)} ${esc(name)} ${d.ver?`<span class="vbadge"><i class="ti ti-rosette-discount-check-filled"></i>${T[LANG].verified}</span>`:''}</div>${d.shopName?`<div class="dshop"><i class="ti ti-building-store"></i> ${esc(d.shopName)}${d.freelancer?' · '+esc(FRLZ[LANG]||FRLZ.ko):''}</div>`:(d.freelancer?`<div class="dshop"><i class="ti ti-user-star"></i> ${esc(FRLZ[LANG]||FRLZ.ko)}</div>`:'')}
      <div class="dmeta"><span id="dstars"><span class="star">★</span> ${esc(d.rating)} (${esc(d.rev)})</span>${d.cat?`<span>${esc(cl(d.cat))}</span>`:''}<span><i class="ti ti-map-pin" style="font-size:16px"></i> ${esc(d.city||d.area)}</span>${d.years?`<span><i class="ti ti-briefcase" style="font-size:16px"></i> ${esc(d.years)}${LANG==='en'?' ':''}${T[LANG].years}</span>`:''}</div>
      ${(d.uid&&!d.isMe)?followBtnHtml(d.uid,'dhfollow'):''}
    </div>
@@ -1555,9 +1560,9 @@ const SB=window.supabase.createClient(SB_URL,SB_KEY,{auth:{persistSession:true,a
 }catch(e){}})();
 function roleIn(r){return (r==='designer'||r==='owner'||r==='desg')?'desg':'cust';}
 function profToMe(p){const s=p.shop||{};const photos=[];(s.photos||[]).forEach(function(x){if(x&&photos.indexOf(x)<0)photos.push(x);});
- return {uid:p.id,role:roleIn(p.role),name:p.nickname||p.full_name||'',country:s.country||'',city:p.region||s.area||'',area:s.area||'',spec:(s.specialties||p.interests||[]),career:s.career||'',avatar:s.avatar||p.avatar_url||'',insta:(s.insta||'').replace(/^@/,''),sns:s.sns||(s.insta?{instagram:(s.insta||'').replace(/^@/,'')}:{}),naver:s.naver||'',shopName:s.name||'',bio:p.bio||'',works:photos,ba:(s.ba&&s.ba.length===2)?s.ba.slice():null,shopRaw:s,idCols:s.idCols||2,idColor:s.idColor||'',idTheme:s.idTheme||'light',services:s.services||[],tags:s.tags||[],verified:true,provider:'email',joined:p.created_at?new Date(p.created_at).getTime():Date.now()};}
+ return {uid:p.id,role:roleIn(p.role),name:p.nickname||p.full_name||'',country:s.country||'',city:p.region||s.area||'',area:s.area||'',spec:(s.specialties||p.interests||[]),career:s.career||'',avatar:s.avatar||p.avatar_url||'',insta:(s.insta||'').replace(/^@/,''),sns:s.sns||(s.insta?{instagram:(s.insta||'').replace(/^@/,'')}:{}),naver:s.naver||'',shopName:s.name||'',freelancer:!!s.freelancer,bio:p.bio||'',works:photos,ba:(s.ba&&s.ba.length===2)?s.ba.slice():null,shopRaw:s,idCols:s.idCols||2,idColor:s.idColor||'',idTheme:s.idTheme||'light',services:s.services||[],tags:s.tags||[],verified:true,provider:'email',joined:p.created_at?new Date(p.created_at).getTime():Date.now()};}
 async function uploadOne(dataUrl){try{const sess=(await SB.auth.getSession()).data.session;if(!sess||dataUrl.indexOf('data:')!==0)return dataUrl;const uid=sess.user.id;const blob=await (await fetch(dataUrl)).blob();const path=uid+'/'+Date.now()+'-'+Math.random().toString(36).slice(2,8)+'.jpg';const up=await SB.storage.from('beautia').upload(path,blob,{contentType:'image/jpeg',upsert:false});if(up.error){console.warn('[beautia] storage upload failed → base64 fallback:',up.error&&up.error.message);return dataUrl;}const pu=SB.storage.from('beautia').getPublicUrl(path);return (pu.data&&pu.data.publicUrl)||dataUrl;}catch(e){return dataUrl;}}
-async function persistShop(){if(!ME||!ME.uid)return;try{await SB.from('profiles').update({shop:{name:ME.shopName||'',area:ME.city||'',specialties:ME.spec||[],avatar:ME.avatar||'',photos:ME.works||[],ba:(ME.ba&&ME.ba.length===2)?ME.ba:[],career:ME.career||'',insta:ME.insta||'',sns:ME.sns||{},idCols:ME.idCols||2,idColor:ME.idColor||'',idTheme:ME.idTheme||'light',services:ME.services||[],tags:ME.tags||[]}}).eq('id',ME.uid);}catch(e){}}
+async function persistShop(){if(!ME||!ME.uid)return;try{await SB.from('profiles').update({shop:Object.assign({},ME.shopRaw||{},{name:ME.shopName||'',area:ME.city||'',freelancer:!!ME.freelancer,specialties:ME.spec||[],avatar:ME.avatar||'',photos:ME.works||[],ba:(ME.ba&&ME.ba.length===2)?ME.ba:[],career:ME.career||'',insta:ME.insta||'',sns:ME.sns||{},idCols:ME.idCols||2,idColor:ME.idColor||'',idTheme:ME.idTheme||'light',services:ME.services||[],tags:ME.tags||[]})}).eq('id',ME.uid);}catch(e){}}
 async function onAuth(session){
  if(!session){ME=null;renderAuth();buildTiles();render();return;}
  let prof=null;try{prof=(await SB.from('profiles').select('id,nickname,role,region,bio,interests,shop,avatar_url,full_name,created_at').eq('id',session.user.id).maybeSingle()).data;}catch(e){}
@@ -1702,8 +1707,9 @@ function suBody(){
   <div class="il">${T[LANG].nick}</div><input class="linput" id="suNick" maxlength="24" placeholder="${T[LANG].nickPh}" value="${(SU.name||'').replace(/"/g,'&quot;')}">
   <div class="il">${T[LANG].country}</div><select class="linput" id="suCountry"><option value="">—</option>${COUNTRIES.map(c=>`<option ${SU.country===c?'selected':''}>${c}</option>`).join('')}</select>
   <div class="il">${T[LANG].city}</div><input class="linput" id="suCity" maxlength="40" placeholder="${T[LANG].cityPh}" value="${(SU.city||'').replace(/"/g,'&quot;')}">
-  ${SU.role==='desg'?`<div class="il">${T[LANG].shopName}</div><input class="linput" id="suShop" maxlength="60" placeholder="${T[LANG].shopNamePh}" value="${(SU.shopName||'').replace(/"/g,'&quot;')}">
-  <div class="il">${T[LANG].shopArea}</div><input class="linput" id="suArea" maxlength="80" placeholder="${T[LANG].shopAreaPh}" value="${(SU.area||'').replace(/"/g,'&quot;')}">
+  ${SU.role==='desg'?`<div class="il">${(SUWT[LANG]||SUWT.ko).t}</div><div class="chiprow"><span class="wchip ${!SU.freelancer?'on':''}" onclick="suSetFree(0)">${(SUWT[LANG]||SUWT.ko).shop}</span><span class="wchip ${SU.freelancer?'on':''}" onclick="suSetFree(1)">${(SUWT[LANG]||SUWT.ko).free}</span></div>
+  <div class="il">${SU.freelancer?(SUWT[LANG]||SUWT.ko).shopFree:T[LANG].shopName}</div><input class="linput" id="suShop" maxlength="60" placeholder="${T[LANG].shopNamePh}" value="${(SU.shopName||'').replace(/"/g,'&quot;')}">
+  <div class="il">${SU.freelancer?(SUWT[LANG]||SUWT.ko).areaFree:T[LANG].shopArea}</div><input class="linput" id="suArea" maxlength="80" placeholder="${T[LANG].shopAreaPh}" value="${(SU.area||'').replace(/"/g,'&quot;')}">
   <div class="il">${T[LANG].specialties}</div><div class="chiprow">${CATS.slice(1).map(c=>`<span class="wchip ${SU.spec.includes(c)?'on':''}" onclick="suToggleSpec('${c}')">${cl(c)}</span>`).join('')}</div>
   <div class="il">${T[LANG].tagsL} <span style="font-weight:600;color:var(--sub)">· ${T[LANG].tagsHint}</span></div>
   <div class="tagbox">${(SU.tags||[]).map((t,i)=>`<span class="tagchip">${esc(t)}<button type="button" onclick="suDelTag(${i})">×</button></span>`).join('')}<input id="suTagIn" class="taginput" placeholder="${T[LANG].tagsPh}" maxlength="20" onkeydown="suTagKey(event)">${(SU.tags||[]).length<8?`<button type="button" class="tagadd" onclick="suAddTagBtn()">＋</button>`:''}</div>
@@ -1719,6 +1725,7 @@ function suBody(){
  return '';}
 function suSnapshot(){if(SU.step===1&&$('suContact')&&!SU.code)SU.contact=$('suContact').value.trim();if(SU.step===2){if($('suNick'))SU.name=$('suNick').value.trim();if($('suCountry'))SU.country=$('suCountry').value;if($('suCity'))SU.city=$('suCity').value.trim();if($('suShop'))SU.shopName=$('suShop').value.trim();if($('suArea'))SU.area=$('suArea').value.trim();if($('suTagIn')&&$('suTagIn').value.trim())suPushTag($('suTagIn').value);if($('suCareer'))SU.career=$('suCareer').value.trim();if($('suIG')||$('suTT')||$('suYT')){SU.sns={instagram:igClean($('suIG')?$('suIG').value:''),tiktok:igClean($('suTT')?$('suTT').value:''),youtube:igClean($('suYT')?$('suYT').value:'')};}}}
 function suToggleSpec(c){const i=SU.spec.indexOf(c);if(i<0)SU.spec.push(c);else SU.spec.splice(i,1);renderSU();}
+function suSetFree(v){try{suSnapshot();}catch(e){}SU.freelancer=!!v;renderSU();}
 function suPushTag(v){v=(v||'').trim();if(!v)return;SU.tags=SU.tags||[];if(SU.tags.length<8&&SU.tags.indexOf(v)<0)SU.tags.push(v);}
 function suTagKey(e){if(e.key==='Enter'||e.key===','){e.preventDefault();suPushTag(e.target.value);e.target.value='';renderSU();setTimeout(function(){var el=document.getElementById('suTagIn');if(el)el.focus();},0);}}
 function suAddTagBtn(){var el=document.getElementById('suTagIn');if(el){suPushTag(el.value);el.value='';}renderSU();setTimeout(function(){var e2=document.getElementById('suTagIn');if(e2)e2.focus();},0);}
@@ -1756,7 +1763,7 @@ async function suFinish(){const wasEdit=SU.edit;
  const sns=Object.assign({},(wasEdit&&ME?ME.sns:{})||{},SU.sns||{});Object.keys(sns).forEach(function(k){sns[k]=igClean(sns[k]);if(!sns[k])delete sns[k];});
  const insta=sns.instagram||(SU.insta||(wasEdit&&ME?ME.insta:'')||'').replace(/^@/,'');if(insta)sns.instagram=igClean(insta);
  const payload={id:uid,nickname:SU.name,role:SU.role==='desg'?'designer':'customer',region:SU.city||SU.country||'',bio:SU.bio||'',
-  shop:Object.assign({},(wasEdit&&ME&&ME.shopRaw)||{},{name:SU.shopName||'',area:SU.area||SU.city||'',specialties:(SU.spec||[]).slice(),avatar:avatar,photos:oldWorks,career:SU.career||'',insta:insta,sns:sns,idCols:(wasEdit&&ME?ME.idCols:2)||2,idColor:(wasEdit&&ME?ME.idColor:'')||'',idTheme:(wasEdit&&ME?ME.idTheme:'')||'tint',services:(wasEdit&&ME?ME.services:[])||[],tags:(SU.tags||[]).slice()})};
+  shop:Object.assign({},(wasEdit&&ME&&ME.shopRaw)||{},{name:SU.shopName||'',area:SU.area||SU.city||'',freelancer:!!SU.freelancer,specialties:(SU.spec||[]).slice(),avatar:avatar,photos:oldWorks,career:SU.career||'',insta:insta,sns:sns,idCols:(wasEdit&&ME?ME.idCols:2)||2,idColor:(wasEdit&&ME?ME.idColor:'')||'',idTheme:(wasEdit&&ME?ME.idTheme:'')||'tint',services:(wasEdit&&ME?ME.services:[])||[],tags:(SU.tags||[]).slice()})};
  const {error}=await SB.from('profiles').upsert(payload);
  if(error){toast('저장 실패: '+error.message);return;}
  let prof=(await SB.from('profiles').select('id,nickname,role,region,bio,interests,shop,avatar_url,full_name,created_at').eq('id',uid).maybeSingle()).data;
@@ -1780,7 +1787,7 @@ function openProfile(){if(!ME){openLogin('');return;}const since=ME.joined?new D
   </div>
   <div class="dfoot"><button class="cbtn save" style="width:auto;flex:1" onclick="editProfile()"><i class="ti ti-pencil"></i> <span>${T[LANG].edit}</span></button><button class="cbtn book" style="flex:1" onclick="logout()"><i class="ti ti-logout"></i> ${T[LANG].logout}</button></div>`;
  $('dmodal').classList.add('on');curD=null;}
-function editProfile(){if(!ME)return;closeD();SU={role:ME.role,name:ME.name,country:ME.country||'',city:ME.city,area:ME.area||'',spec:(ME.spec||[]).slice(),tags:(ME.tags||[]).slice(),career:ME.career||'',avatar:ME.avatar||'',insta:ME.insta||'',sns:Object.assign({},ME.sns||{}),shopName:ME.shopName||'',uid:ME.uid,contact:'x',verified:true,code:'x',tos:true,priv:true,mktg:ME.mktg,provider:ME.provider,step:2,edit:true};$('lmodal').classList.add('on');renderSU();}
+function editProfile(){if(!ME)return;closeD();SU={role:ME.role,name:ME.name,country:ME.country||'',city:ME.city,area:ME.area||'',spec:(ME.spec||[]).slice(),tags:(ME.tags||[]).slice(),career:ME.career||'',avatar:ME.avatar||'',insta:ME.insta||'',sns:Object.assign({},ME.sns||{}),shopName:ME.shopName||'',freelancer:!!ME.freelancer,uid:ME.uid,contact:'x',verified:true,code:'x',tos:true,priv:true,mktg:ME.mktg,provider:ME.provider,step:2,edit:true};$('lmodal').classList.add('on');renderSU();}
 function suAvatar(e){var f=e.target.files[0];if(!f||!/^image\//.test(f.type))return;var r=new FileReader();r.onload=function(ev){pfDownscale(ev.target.result,500,function(d){SU.avatar=d;renderSU();});};r.readAsDataURL(f);e.target.value='';}
 document.addEventListener('click',function(){closeUmenu();});
 
@@ -1949,7 +1956,7 @@ function applyDesignerRows(rows){
       bio:p.bio||'',avatar:s.avatar||p.avatar_url||'',insta:(s.insta||'').replace(/^@/,''),naver:s.naver||'',blog:s.blog||'',bookingUrl:s.bookingUrl||'',sched:s.sched||null,newAt:s.lastWorkAt||0,
       handles:s.sns||(s.insta?{instagram:(s.insta||'').replace(/^@/,'')}:{}),
       works:photos,ba:baFrom(s.ba,photos),
-      sns:Object.keys(s.sns||{}).filter(function(k){return (s.sns||{})[k];}),services:(s.services||[]),tags:s.tags||[],shopName:s.name||'',reviews:[]});
+      sns:Object.keys(s.sns||{}).filter(function(k){return (s.sns||{})[k];}),services:(s.services||[]),tags:s.tags||[],shopName:s.name||'',freelancer:!!s.freelancer,reviews:[]});
   });
   DUSERS=list;buildTiles();renderCities();render();maybeNotifyNewWork();
   var _pu=new URLSearchParams(location.search).get('u');if(_pu&&!document.querySelector('.dmodal.on'))openByUid(_pu);
