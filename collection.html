@@ -718,6 +718,29 @@ body.mlock{position:fixed;left:0;right:0;width:100%;overflow:hidden;}
 .reelhint{text-align:center;color:var(--sub);font-size:12.5px;padding:8px 0 2px;}
 @media(min-width:721px){.reels{height:calc(100dvh - 120px);}}
 body.reels-mode #fbanner,body.reels-mode #hero,body.reels-mode #popwrap,body.reels-mode .filterbar,body.reels-mode .hsearch{display:none!important;}
+/* ===== 문의하기 플로팅 버튼 + 폼 ===== */
+.askfab{position:fixed;right:18px;bottom:calc(20px + env(safe-area-inset-bottom));z-index:57;width:56px;height:56px;border-radius:50%;background:var(--plum);color:#fff;border:none;box-shadow:0 12px 30px -8px rgba(110,74,80,.65);font-size:26px;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:transform .12s;}
+.askfab:active{transform:scale(.9);}
+.askfab .adot{position:absolute;top:2px;right:2px;width:12px;height:12px;border-radius:50%;background:var(--gold);border:2px solid #fff;}
+@media(max-width:720px){.askfab{bottom:calc(74px + env(safe-area-inset-bottom));width:52px;height:52px;font-size:24px;}}
+body.reels-mode .askfab{display:none;}
+.askmodal{position:fixed;inset:0;z-index:200;background:rgba(20,12,16,.5);display:none;align-items:flex-end;justify-content:center;}
+.askmodal.on{display:flex;}
+.askcard{background:#fff;width:min(440px,100%);border-radius:22px 22px 0 0;padding:24px 20px calc(24px + env(safe-area-inset-bottom));position:relative;box-shadow:0 -20px 60px -20px rgba(0,0,0,.4);}
+@media(min-width:721px){.askmodal{align-items:center;}.askcard{border-radius:22px;}}
+.askx{position:absolute;top:14px;right:16px;background:none;border:none;font-size:26px;color:var(--sub);cursor:pointer;line-height:1;}
+.askhead{display:flex;gap:12px;align-items:center;margin-bottom:16px;}
+.asklogo{height:40px;width:auto;}
+.askt{font-weight:800;font-size:18px;color:var(--ink);letter-spacing:-.02em;}
+.asksub{font-size:12.5px;color:var(--sub);margin-top:3px;line-height:1.4;}
+.askinp{width:100%;border:1px solid var(--line);border-radius:12px;padding:12px 14px;font-size:15px;font-family:inherit;margin-bottom:10px;background:#faf7f6;color:var(--ink);}
+.askinp:focus{outline:none;border-color:var(--accent);background:#fff;}
+textarea.askinp{resize:vertical;min-height:100px;}
+.asksend{width:100%;background:var(--plum);color:#fff;border:none;border-radius:12px;padding:14px;font-weight:800;font-size:15px;cursor:pointer;}
+.asksend:disabled{opacity:.6;}
+.askdone{text-align:center;padding:22px 6px;color:var(--ink);}
+.askdone i{font-size:46px;color:var(--green);}
+.askdone div{margin-top:12px;font-weight:600;font-size:14.5px;line-height:1.5;word-break:keep-all;}
 .rev{display:flex;gap:14px;padding:16px 0;border-bottom:1px solid var(--line);}
 .rev:last-child{border:none;} .rev .ra{width:46px;height:46px;border-radius:50%;flex:0 0 auto;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-family:'Pretendard','Malgun Gothic',sans-serif;}
 .rev .rn{font-weight:800;font-size:15px;} .rev .rs{color:var(--gold);font-size:13px;margin-top:2px;} .rev .rt{font-size:14.5px;color:var(--ink2);margin-top:5px;line-height:1.5;}
@@ -884,6 +907,19 @@ body.reels-mode #fbanner,body.reels-mode #hero,body.reels-mode #popwrap,body.ree
   <a class="tb" id="tbMsg" onclick="tabMsg()" aria-label="Messages"><i class="ti ti-message-circle"></i></a>
   <a class="tb" id="tbMy" data-v="me" onclick="tabMy(event)" aria-label="My"><i class="ti ti-user"></i></a>
 </nav>
+
+<button class="askfab" id="askFab" onclick="openAsk()" aria-label="문의하기"><i class="ti ti-message-dots"></i></button>
+<div class="askmodal" id="askModal" onclick="if(event.target===this)closeAsk()">
+  <div class="askcard">
+    <button class="askx" onclick="closeAsk()" aria-label="close">×</button>
+    <div class="askhead"><img src="logo-mark.png" class="asklogo" alt="Beautia"><div><div class="askt" data-t="askTitle">문의하기</div><div class="asksub" data-t="askSub">궁금한 점을 남겨주세요. 확인 후 답변드릴게요.</div></div></div>
+    <div id="askBody">
+      <textarea class="askinp" id="askMsg" rows="4" maxlength="2000" data-tph="askMsgPh" placeholder="문의 내용을 적어주세요…"></textarea>
+      <input class="askinp" id="askContact" maxlength="120" data-tph="askContactPh" placeholder="답변받을 이메일·연락처·인스타 (선택)">
+      <button class="asksend" onclick="submitAsk()" data-t="askSend">보내기</button>
+    </div>
+  </div>
+</div>
 
 <div class="fbanner" id="fbanner"></div>
 <div class="hero" id="hero"><h1 class="serif"></h1><p data-t="tagline"></p></div>
@@ -1208,6 +1244,24 @@ function legacyCopy(u){try{var i=$('invlinkInput');if(i){i.focus();i.select();do
 function copyInvite(){var u=inviteUrl();var done=function(){toast(T[LANG].inviteCopied);};
  try{if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(u).then(done,function(){legacyCopy(u);done();});return;}}catch(e){}
  legacyCopy(u);done();}
+// ===== 문의하기 =====
+function openAsk(){$('askModal').classList.add('on');setTimeout(function(){var m=$('askMsg');if(m)m.focus();},120);try{if(window.gtag)gtag('event','inquiry_open');}catch(e){}}
+function closeAsk(){$('askModal').classList.remove('on');}
+async function submitAsk(){
+  var msg=($('askMsg').value||'').trim();
+  if(!msg){toast(T[LANG].askNeedMsg||'문의 내용을 입력해주세요');var m=$('askMsg');if(m)m.focus();return;}
+  var contact=($('askContact').value||'').trim();
+  var btn=document.querySelector('.asksend');if(btn)btn.disabled=true;
+  try{
+    var uid=(typeof ME!=='undefined'&&ME&&ME.uid)?ME.uid:null;
+    var name=(typeof ME!=='undefined'&&ME&&(ME.name||ME.nickname))?(ME.name||ME.nickname):'';
+    var res=await SB.from('inquiries').insert({uid:uid,name:name||null,contact:contact||null,message:msg.slice(0,2000),page:location.pathname,lang:LANG});
+    if(res.error)throw res.error;
+    $('askBody').innerHTML='<div class="askdone"><i class="ti ti-circle-check"></i><div>'+esc(T[LANG].askSent||'문의가 접수됐어요 ✨ 확인 후 답변드릴게요.')+'</div></div>';
+    try{if(window.gtag)gtag('event','inquiry_submit');}catch(e){}
+    setTimeout(closeAsk,2600);
+  }catch(e){toast((T[LANG].askFail||'전송 실패')+': '+((e&&e.message)||e));if(btn)btn.disabled=false;}
+}
 function shareInvite(){var u=inviteUrl();if(navigator.share){navigator.share({title:'Beautia',text:T[LANG].inviteTitle,url:u}).catch(function(){});}else copyInvite();try{if(window.gtag)gtag('event','invite_share');}catch(e){}}
 (function(){try{var r=new URLSearchParams(location.search).get('ref');if(r){localStorage.setItem('beautia_ref',r);setTimeout(function(){try{toast(T[LANG].refWelcome);}catch(e){}},1200);try{if(window.gtag)gtag('event','ref_visit',{ref:String(r).slice(0,24)});}catch(e){}}}catch(e){}})();
 /* ===== 소셜프루프 통계 스트립 ===== */
@@ -1588,6 +1642,10 @@ function closeI(){$('imodal').classList.remove('on');}
 document.addEventListener('keydown',e=>{if(e.key==='Escape'){closeBk();closeFa();closeChat();closeWork();closePf();closeId();closeI();closeD();closeLogin();closeUmenu();closeNotif();closeInvite();}});
 Object.assign(T.en,{idCard:'ID Card',idDl:'Download',idShare:'Share',idPrep:'Creating image…',idFail:'Download failed (try Share)',linkCopied:'Link copied ✨',saveHint:'Press & hold the image to save it 📥',done:'Done',idKind:'ID CARD',idScan:'SCAN TO VIEW & BOOK',fbKick:'Featured work',fbView:'View portfolio'});
 Object.assign(T.ko,{idCard:'ID 카드',idDl:'다운로드',idShare:'공유',idPrep:'이미지 만드는 중…',idFail:'다운로드 실패 (공유로 시도)',linkCopied:'링크 복사됨 ✨',saveHint:'이미지를 꾹 눌러 저장하세요 📥',done:'닫기',idKind:'ID 카드',idScan:'스캔해서 예약하기',fbKick:'추천 작업',fbView:'포트폴리오 보기'});
+Object.assign(T.ko,{askTitle:'문의하기',askSub:'궁금한 점을 남겨주세요. 확인 후 답변드릴게요.',askMsgPh:'문의 내용을 적어주세요…',askContactPh:'답변받을 이메일·연락처·인스타 (선택)',askSend:'보내기',askNeedMsg:'문의 내용을 입력해주세요',askSent:'문의가 접수됐어요 ✨ 확인 후 답변드릴게요.',askFail:'전송 실패'});
+Object.assign(T.en,{askTitle:'Contact us',askSub:"Leave your question — we'll get back to you.",askMsgPh:'Write your message…',askContactPh:'Email · phone · Instagram to reach you (optional)',askSend:'Send',askNeedMsg:'Please enter your message',askSent:"Got it! ✨ We'll get back to you soon.",askFail:'Failed to send'});
+Object.assign(T.ja,{askTitle:'お問い合わせ',askSub:'ご質問をどうぞ。確認してご返信します。',askMsgPh:'お問い合わせ内容を入力…',askContactPh:'返信先メール・電話・Instagram（任意）',askSend:'送信',askNeedMsg:'内容を入力してください',askSent:'受け付けました ✨ 確認してご返信します。',askFail:'送信に失敗しました'});
+Object.assign(T.th,{askTitle:'ติดต่อเรา',askSub:'ฝากคำถามไว้ได้เลย เราจะติดต่อกลับ',askMsgPh:'พิมพ์ข้อความของคุณ…',askContactPh:'อีเมล·เบอร์·Instagram สำหรับติดต่อกลับ (ไม่บังคับ)',askSend:'ส่ง',askNeedMsg:'กรุณากรอกข้อความ',askSent:'รับเรื่องแล้ว ✨ เราจะติดต่อกลับเร็ว ๆ นี้',askFail:'ส่งไม่สำเร็จ'});
 Object.assign(T.ja,{idCard:'IDカード',idDl:'保存',idShare:'シェア',idPrep:'画像を作成中…',idFail:'保存失敗（シェアでお試し）',linkCopied:'リンクをコピー ✨',saveHint:'画像を長押しして保存してください 📥',done:'閉じる',idKind:'IDカード',idScan:'スキャンして予約',fbKick:'注目の作品',fbView:'ポートフォリオを見る'});
 /* 광고성 배너 카피 */
 Object.assign(T.ko,{fbBook:'지금 예약하기',fbTagPick:'이번 주 추천',fbTagNew:'새 작업 업데이트',fbTagHot:'인기 급상승',fbHook:'실제 작업 보고 바로 예약하세요',fbHead:'내 스타일을 아는\n뷰티 디자이너',fbSub:'전 세계 디자이너의 실제 작업을 보고, 저장하고, 바로 예약하세요.',fbCredit:'추천',fbHead2:'진짜 후기로\n고르세요',fbSub2:'믿을 수 있는 후기와 포트폴리오로 선택하세요.',fbHead3:'오늘 예약 가능한\n디자이너',fbSub3:'지금 바로 예약할 수 있는 디자이너를 만나보세요.',fbHead4:'포트폴리오 보고\n마음에 들면 예약',fbSub4:'먼저 작업을 보고 확신이 서면 예약하세요.',fbHead5:'가까운 곳의\n실력파 디자이너',fbSub5:'내 근처, 내 취향의 디자이너를 찾아보세요.',fbHead6:'전 세계 뷰티,\n한 곳에서',fbSub6:'한국·일본·전 세계 뷰티 디자이너를 한 곳에서.'});

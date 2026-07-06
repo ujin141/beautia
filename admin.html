@@ -97,6 +97,7 @@ button{cursor:pointer;border:none;background:none;font-family:inherit;}
 .ubadge{font-size:11px;font-weight:800;padding:3px 9px;border-radius:999px;}
 .ubadge.c{background:#eef3f0;color:#3E7C6A;}
 .ubadge.d{background:var(--rosebg);color:var(--plum);}
+.li.idone{opacity:.5;}
 .tbadge{display:inline-flex;align-items:center;justify-content:center;min-width:18px;height:18px;padding:0 5px;margin-left:5px;border-radius:999px;background:var(--red);color:#fff;font-size:11px;font-weight:800;vertical-align:1px;}
 .apcard .apinfo{display:flex;flex-wrap:wrap;gap:8px 16px;margin-top:9px;}
 .apilink{display:inline-flex;align-items:center;gap:5px;font-size:12.5px;font-weight:700;color:var(--ink2);}
@@ -229,6 +230,7 @@ textarea.inp{resize:vertical;min-height:70px;line-height:1.5;}
       <button class="tab on" id="tab-designers" onclick="tab('designers')">디자이너 관리</button>
       <button class="tab" id="tab-applications" onclick="tab('applications')">신청<span class="tbadge hide" id="appBadge"></span></button>
       <button class="tab" id="tab-users" onclick="tab('users')">사용자</button>
+      <button class="tab" id="tab-inquiries" onclick="tab('inquiries')">문의<span class="tbadge hide" id="inqBadge"></span></button>
       <button class="tab" id="tab-bookings" onclick="tab('bookings')">예약</button>
       <button class="tab" id="tab-reviews" onclick="tab('reviews')">후기</button>
     </div>
@@ -250,6 +252,7 @@ textarea.inp{resize:vertical;min-height:70px;line-height:1.5;}
       <div class="note" style="margin-bottom:12px"><i class="ti ti-info-circle"></i> 가입한 사용자 목록. <b>행을 누르면</b> 관심분야·연락처·활동 등 설정한 정보를 볼 수 있어요.</div>
       <div class="rowlist" id="ulist"></div>
     </div>
+    <div id="sec-inquiries" class="hide"><div class="note" style="margin-bottom:12px"><i class="ti ti-info-circle"></i> 사이트 <b>문의하기</b> 버튼으로 들어온 고객 문의입니다. 처리하면 <b>완료</b>로 표시하세요.</div><div class="rowlist" id="inqlist"></div></div>
     <div id="sec-bookings" class="hide"><div class="rowlist" id="bklist"></div></div>
     <div id="sec-reviews" class="hide"><div class="rowlist" id="rvlist"></div></div>
   </div>
@@ -324,7 +327,7 @@ async function loadAll(){
     };});
     PMAP={};DESIGNERS.forEach(d=>PMAP[d.id]=d);
     DESIGNERS.sort((a,b)=>((b.photos.length>0)-(a.photos.length>0))||(new Date(b.created)-new Date(a.created)));
-    renderStats();renderList();renderUsers();loadBookings();loadReviews();loadApplications();loadVisits();loadDashboard();
+    renderStats();renderList();renderUsers();loadBookings();loadReviews();loadApplications();loadInquiries();loadVisits();loadDashboard();
   }catch(e){toast('오류: '+e.message);}
 }
 let APPS=[];
@@ -475,6 +478,32 @@ async function loadReviews(){
   }catch(e){renderReviews(e.message);}
 }
 
+let INQUIRIES=[];
+async function loadInquiries(){
+  try{
+    const {data,error}=await SB.from('inquiries').select('*').order('created_at',{ascending:false}).limit(300);
+    if(error){renderInquiries(error.message);return;}
+    INQUIRIES=data||[];
+    var nu=INQUIRIES.filter(x=>x.status!=='done').length;var b=$('inqBadge');
+    if(b){if(nu>0){b.textContent=nu;b.classList.remove('hide');}else b.classList.add('hide');}
+    renderInquiries();
+  }catch(e){renderInquiries(e.message);}
+}
+function renderInquiries(err){
+  if(err){$('inqlist').innerHTML='<div class="empty"><i class="ti ti-lock"></i><p>문의를 불러올 수 없어요<br><span style="font-size:12px">'+esc(err)+'<br>(db_inquiries.sql 실행이 필요할 수 있어요)</span></p></div>';return;}
+  if(!INQUIRIES.length){$('inqlist').innerHTML='<div class="empty"><i class="ti ti-message-2"></i><p>아직 문의가 없어요</p></div>';return;}
+  $('inqlist').innerHTML=INQUIRIES.map(q=>{var done=q.status==='done';
+    return `<div class="li${done?' idone':''}"><div class="lh"><div><div class="ln">${esc(q.name||'익명')}${q.contact?` <span class="ls" style="display:inline">· ${esc(q.contact)}</span>`:''}</div><div class="ls">${esc(fmtDate(q.created_at))}${q.lang?' · '+esc(q.lang):''}${q.page?' · '+esc(q.page):''}</div></div>${done?'<span class="lbadge">완료</span>':`<button class="mini g" onclick="markInquiry('${q.id}')">완료</button>`}</div><div class="ls" style="margin-top:8px;white-space:pre-wrap">${esc(q.message||'')}</div></div>`;
+  }).join('');
+}
+async function markInquiry(id){
+  try{const {error}=await SB.from('inquiries').update({status:'done'}).eq('id',id);
+    if(error){toast('처리 실패: '+error.message);return;}
+    var q=INQUIRIES.find(x=>x.id===id);if(q)q.status='done';renderInquiries();
+    var nu=INQUIRIES.filter(x=>x.status!=='done').length;var b=$('inqBadge');if(b){if(nu>0)b.textContent=nu;else b.classList.add('hide');}
+    toast('완료 처리됨 ✓');
+  }catch(e){toast('오류: '+e.message);}
+}
 function renderList(){
   const q=($('q').value||'').toLowerCase().trim();
   let list=DESIGNERS.filter(isDesigner);
@@ -712,8 +741,8 @@ async function delReview(id,ev){
 }
 
 function tab(t){
-  ['designers','applications','users','bookings','reviews'].forEach(x=>{$('sec-'+x).classList.toggle('hide',x!==t);$('tab-'+x).classList.toggle('on',x===t);});
-  if(t==='users')renderUsers();
+  ['designers','applications','users','inquiries','bookings','reviews'].forEach(x=>{$('sec-'+x).classList.toggle('hide',x!==t);$('tab-'+x).classList.toggle('on',x===t);});
+  if(t==='users')renderUsers();if(t==='inquiries')renderInquiries();
 }
 
 (async function(){
