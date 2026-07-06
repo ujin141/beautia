@@ -18,6 +18,17 @@
     <priority>0.9</priority>
   </url>
   <url>
+    <loc>https://beautia.io/guides</loc>
+    <lastmod>2026-07-07</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url><loc>https://beautia.io/guide/eyebrow-semi-permanent</loc><lastmod>2026-07-07</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://beautia.io/guide/eyelash-extension-vs-perm</loc><lastmod>2026-07-07</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://beautia.io/guide/gel-nail-long-lasting</loc><lastmod>2026-07-07</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://beautia.io/guide/bridal-beauty-checklist</loc><lastmod>2026-07-07</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://beautia.io/guide/find-korean-speaking-salon-japan</loc><lastmod>2026-07-07</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url>
     <loc>https://beautia.io/d/b2d28131-820b-44f2-87da-acbcb97569d5</loc>
     <lastmod>2026-07-05</lastmod>
     <changefreq>weekly</changefreq>

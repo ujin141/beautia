@@ -27,6 +27,8 @@
   "rewrites": [
     { "source": "/c/:u", "destination": "/api/card?u=:u" },
     { "source": "/d/:u", "destination": "/api/designer?u=:u" },
+    { "source": "/guides", "destination": "/api/guides" },
+    { "source": "/guide/:slug", "destination": "/api/guide?slug=:slug" },
     { "source": "/sitemap-designers.xml", "destination": "/api/sitemap-designers" }
   ],
   "headers": [
