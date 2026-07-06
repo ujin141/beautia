@@ -1,7 +1,7 @@
 {
   "name": "Beautia — Beauty Designer Collection",
   "short_name": "Beautia",
-  "description": "A global collection of beauty designers. Browse real portfolios, save looks, book the artist.",
+  "description": "Beauty designers, worldwide. Browse real portfolios, save your favorites, and book the designer directly.",
   "id": "/community",
   "start_url": "/community",
   "scope": "/",
