@@ -98,6 +98,15 @@ button{cursor:pointer;border:none;background:none;font-family:inherit;}
 .ubadge.c{background:#eef3f0;color:#3E7C6A;}
 .ubadge.d{background:var(--rosebg);color:var(--plum);}
 .li.idone{opacity:.5;}
+.dstats{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;}
+.dstats .dst{background:var(--soft);border-radius:12px;padding:12px 4px;text-align:center;}
+.dstats .dst b{display:block;font-size:20px;font-weight:800;color:var(--plum);}
+.dstats .dst span{font-size:11.5px;color:var(--sub);font-weight:700;}
+.todobar{display:flex;flex-wrap:wrap;gap:8px;align-items:center;background:#fff6ef;border:1px solid #f0dcc8;border-radius:14px;padding:11px 14px;margin-bottom:14px;}
+.todobar.ok{background:#eef7f2;border-color:#cfe8db;color:#3E7C6A;font-weight:700;font-size:13.5px;}
+.todobar .todol{font-weight:800;font-size:12.5px;color:#a8631f;display:flex;align-items:center;gap:5px;}
+.todobar .todoi{background:#fff;border:1px solid #f0dcc8;border-radius:999px;padding:6px 13px;font-size:13px;font-weight:700;color:var(--ink2);cursor:pointer;text-decoration:none;}
+.todobar .todoi b{color:#c0564b;margin-right:3px;}
 .tbadge{display:inline-flex;align-items:center;justify-content:center;min-width:18px;height:18px;padding:0 5px;margin-left:5px;border-radius:999px;background:var(--red);color:#fff;font-size:11px;font-weight:800;vertical-align:1px;}
 .apcard .apinfo{display:flex;flex-wrap:wrap;gap:8px 16px;margin-top:9px;}
 .apilink{display:inline-flex;align-items:center;gap:5px;font-size:12.5px;font-weight:700;color:var(--ink2);}
@@ -233,6 +242,7 @@ textarea.inp{resize:vertical;min-height:70px;line-height:1.5;}
       <button class="tab" id="tab-applications" onclick="tab('applications')">신청<span class="tbadge hide" id="appBadge"></span></button>
       <button class="tab" id="tab-users" onclick="tab('users')">사용자</button>
       <button class="tab" id="tab-inquiries" onclick="tab('inquiries')">문의<span class="tbadge hide" id="inqBadge"></span></button>
+      <button class="tab" id="tab-announce" onclick="tab('announce')">공지</button>
       <button class="tab" id="tab-bookings" onclick="tab('bookings')">예약</button>
       <button class="tab" id="tab-reviews" onclick="tab('reviews')">후기</button>
     </div>
@@ -255,8 +265,24 @@ textarea.inp{resize:vertical;min-height:70px;line-height:1.5;}
       <div class="note" style="margin-bottom:12px"><i class="ti ti-info-circle"></i> 가입한 사용자 목록. <b>행을 누르면</b> 관심분야·연락처·활동 등 설정한 정보를 볼 수 있어요.</div>
       <div class="rowlist" id="ulist"></div>
     </div>
-    <div id="sec-inquiries" class="hide"><div class="note" style="margin-bottom:12px"><i class="ti ti-info-circle"></i> 사이트 <b>문의하기</b> 버튼으로 들어온 고객 문의입니다. 처리하면 <b>완료</b>로 표시하세요.</div><div class="rowlist" id="inqlist"></div></div>
-    <div id="sec-bookings" class="hide"><div class="rowlist" id="bklist"></div></div>
+    <div id="sec-inquiries" class="hide">
+      <div class="searchbar"><input class="inp" id="inqq" placeholder="이름·연락처·내용 검색…" oninput="renderInquiries()"></div>
+      <div class="ufilter" style="margin-bottom:12px"><button class="uf on" data-if="open" onclick="setIF('open')">미처리</button><button class="uf" data-if="done" onclick="setIF('done')">완료</button><button class="uf" data-if="all" onclick="setIF('all')">전체</button></div>
+      <div class="note" style="margin-bottom:12px"><i class="ti ti-info-circle"></i> 사이트 <b>문의하기</b> 버튼으로 들어온 고객 문의입니다. 처리하면 <b>완료</b>로 표시하세요.</div><div class="rowlist" id="inqlist"></div></div>
+    <div id="sec-announce" class="hide">
+      <div class="card">
+        <h3><i class="ti ti-speakerphone"></i> 새 공지 작성</h3>
+        <div class="note" style="margin:2px 0 12px"><i class="ti ti-info-circle"></i> 작성하면 <b>모든 사용자</b>의 알림(🔔)에 표시됩니다.</div>
+        <div class="row"><label>제목</label><input class="inp" id="annT" placeholder="예: 신규 디자이너 대거 입점 🎉"></div>
+        <div class="row"><label>내용 (선택)</label><textarea class="inp" id="annB" rows="3" placeholder="공지 내용을 적어주세요"></textarea></div>
+        <div class="saveBar" style="margin-top:12px"><button class="mini" onclick="postAnnounce()"><i class="ti ti-send"></i> 공지 발송</button></div>
+      </div>
+      <div class="rowlist" id="annlist"></div>
+    </div>
+    <div id="sec-bookings" class="hide">
+      <div class="searchbar"><input class="inp" id="bkq" placeholder="디자이너·서비스·메모 검색…" oninput="renderBookings()"></div>
+      <div class="ufilter" style="margin-bottom:12px"><button class="uf on" data-bf="all" onclick="setBF('all')">전체</button><button class="uf" data-bf="pending" onclick="setBF('pending')">대기</button><button class="uf" data-bf="accepted" onclick="setBF('accepted')">확정</button><button class="uf" data-bf="done" onclick="setBF('done')">완료</button><button class="uf" data-bf="cancelled" onclick="setBF('cancelled')">취소</button></div>
+      <div class="rowlist" id="bklist"></div></div>
     <div id="sec-reviews" class="hide"><div class="rowlist" id="rvlist"></div></div>
   </div>
 </div>
@@ -330,7 +356,7 @@ async function loadAll(){
     };});
     PMAP={};DESIGNERS.forEach(d=>PMAP[d.id]=d);
     DESIGNERS.sort((a,b)=>((b.photos.length>0)-(a.photos.length>0))||(new Date(b.created)-new Date(a.created)));
-    renderStats();renderList();renderUsers();loadBookings();loadReviews();loadApplications();loadInquiries();loadVisits();loadDashboard();
+    renderStats();renderList();renderUsers();loadBookings();loadReviews();loadApplications();loadInquiries();loadAnnounce();loadVisits();loadDashboard();
   }catch(e){toast('오류: '+e.message);}
 }
 let APPS=[];
@@ -445,12 +471,21 @@ async function loadDashboard(){
   const kpi=(l,v,d,s)=>'<div class="dk"><div class="dkl">'+l+'</div><div class="dkv">'+v+(d||'')+'</div><div class="dks">'+s+'</div></div>';
   let mx=1; days.forEach(d=>{ if((dc[d]||0)>mx)mx=dc[d]||0; });
   const bars=days.map(d=>{ const c=dc[d]||0, h=Math.round(c/mx*100), lab=d.slice(5).replace('-','/'), td=(d===kdate(now)?' today':''); return '<div class="db"><div class="dbv">'+(vOk?c:'')+'</div><div class="dbtrack"><div class="dbbar'+td+'" style="height:'+Math.max(4,h)+'%"></div></div><div class="dbl">'+lab+'</div></div>'; }).join('');
+  var inqNew=(typeof INQUIRIES!=='undefined'?INQUIRIES.filter(function(x){return x.status!=='done';}).length:0);
+  var inqTot=(typeof INQUIRIES!=='undefined'?INQUIRIES.length:'—');
+  var todo=[];
+  if(inqNew>0)todo.push('<a onclick="tab(\'inquiries\')" class="todoi"><b>'+inqNew+'</b> 신규 문의</a>');
+  if(aPend>0)todo.push('<a onclick="tab(\'applications\')" class="todoi"><b>'+aPend+'</b> 대기 신청</a>');
+  if(bPend>0)todo.push('<a onclick="tab(\'bookings\')" class="todoi"><b>'+bPend+'</b> 대기 예약</a>');
+  var todoHtml=todo.length?('<div class="todobar"><span class="todol"><i class="ti ti-bell-ringing"></i> 처리 필요</span>'+todo.join('')+'</div>'):'<div class="todobar ok"><i class="ti ti-circle-check"></i> 처리할 항목이 없어요 👍</div>';
   el.innerHTML='<div class="dh"><b>성과 대시보드</b><span>검증 추적 · 지난주 대비</span></div>'
+   +todoHtml
    +'<div class="dkpis">'
    +kpi('이번 주 방문', vOk?vWeek:'—', delta(vWeek,vLast), vOk?('오늘 '+vToday+' · 누적 '+vTotal):'db_page_visits.sql 실행 필요')
    +kpi('이번 주 예약', bWeek, delta(bWeek,bLast), '대기 '+bPend+' · 누적 '+(bTotal===null?'—':bTotal))
    +kpi('디자이너 신청', aPend, '', '누적 '+aTotal)
    +kpi('활성 디자이너', dCount, '', '포폴 보유')
+   +kpi('신규 문의', inqNew, '', '누적 '+inqTot)
    +'</div>'
    +'<div class="dchart"><div class="dct">최근 7일 방문 추이'+(vOk?'':' — SQL 실행 후 표시')+'</div><div class="dbars">'+bars+'</div></div>';
 }
@@ -482,6 +517,9 @@ async function loadReviews(){
 }
 
 let INQUIRIES=[];
+var BK_FILTER='all', INQ_FILTER='open';
+function setBF(f){BK_FILTER=f;document.querySelectorAll('[data-bf]').forEach(b=>b.classList.toggle('on',b.dataset.bf===f));renderBookings();}
+function setIF(f){INQ_FILTER=f;document.querySelectorAll('[data-if]').forEach(b=>b.classList.toggle('on',b.dataset.if===f));renderInquiries();}
 async function loadInquiries(){
   try{
     const {data,error}=await SB.from('inquiries').select('*').order('created_at',{ascending:false}).limit(300);
@@ -495,7 +533,10 @@ async function loadInquiries(){
 function renderInquiries(err){
   if(err){$('inqlist').innerHTML='<div class="empty"><i class="ti ti-lock"></i><p>문의를 불러올 수 없어요<br><span style="font-size:12px">'+esc(err)+'<br>(db_inquiries.sql 실행이 필요할 수 있어요)</span></p></div>';return;}
   if(!INQUIRIES.length){$('inqlist').innerHTML='<div class="empty"><i class="ti ti-message-2"></i><p>아직 문의가 없어요</p></div>';return;}
-  $('inqlist').innerHTML=INQUIRIES.map(q=>{var done=q.status==='done';
+  var qq=(($('inqq')&&$('inqq').value)||'').toLowerCase().trim();
+  var flist=INQUIRIES.filter(function(x){var okS=(INQ_FILTER==='all')||(INQ_FILTER==='done'&&x.status==='done')||(INQ_FILTER==='open'&&x.status!=='done');if(!okS)return false;if(!qq)return true;return ((x.name||'')+' '+(x.contact||'')+' '+(x.message||'')).toLowerCase().indexOf(qq)>=0;});
+  if(!flist.length){$('inqlist').innerHTML='<div class="empty"><i class="ti ti-message-2"></i><p>해당 문의가 없어요</p></div>';return;}
+  $('inqlist').innerHTML=flist.map(q=>{var done=q.status==='done';
     return `<div class="li${done?' idone':''}"><div class="lh"><div><div class="ln">${esc(q.name||'익명')}${q.contact?` <span class="ls" style="display:inline">· ${esc(q.contact)}</span>`:''}</div><div class="ls">${esc(fmtDate(q.created_at))}${q.lang?' · '+esc(q.lang):''}${q.page?' · '+esc(q.page):''}</div></div>${done?'<span class="lbadge">완료</span>':`<button class="mini g" onclick="markInquiry('${q.id}')">완료</button>`}</div><div class="ls" style="margin-top:8px;white-space:pre-wrap">${esc(q.message||'')}</div></div>`;
   }).join('');
 }
@@ -505,6 +546,33 @@ async function markInquiry(id){
     var q=INQUIRIES.find(x=>x.id===id);if(q)q.status='done';renderInquiries();
     var nu=INQUIRIES.filter(x=>x.status!=='done').length;var b=$('inqBadge');if(b){if(nu>0)b.textContent=nu;else b.classList.add('hide');}
     toast('완료 처리됨 ✓');
+  }catch(e){toast('오류: '+e.message);}
+}
+let ANNS=[];
+async function loadAnnounce(){
+  try{const {data,error}=await SB.from('announcements').select('*').order('created_at',{ascending:false}).limit(100);
+    if(error){renderAnnounce(error.message);return;}
+    ANNS=data||[];renderAnnounce();
+  }catch(e){renderAnnounce(e.message);}
+}
+function renderAnnounce(err){
+  if(err){$('annlist').innerHTML='<div class="empty"><i class="ti ti-lock"></i><p>공지를 불러올 수 없어요<br><span style="font-size:12px">'+esc(err)+'<br>(db_announcements.sql 실행이 필요할 수 있어요)</span></p></div>';return;}
+  if(!ANNS.length){$('annlist').innerHTML='<div class="empty"><i class="ti ti-speakerphone"></i><p>발송한 공지가 없어요</p></div>';return;}
+  $('annlist').innerHTML=ANNS.map(a=>`<div class="li${a.active?'':' idone'}"><div class="lh"><div><div class="ln">${esc(a.title||'')}</div><div class="ls">${esc(fmtDate(a.created_at))} · ${a.active?'게시중':'숨김'}</div></div><button class="mini ${a.active?'r':'g'}" onclick="toggleAnn('${a.id}',${a.active?'false':'true'})">${a.active?'숨기기':'다시 게시'}</button></div>${a.body?`<div class="ls" style="margin-top:8px;white-space:pre-wrap">${esc(a.body)}</div>`:''}</div>`).join('');
+}
+async function postAnnounce(){
+  var t=($('annT').value||'').trim();if(!t){toast('제목을 입력하세요');return;}
+  var b=($('annB').value||'').trim();
+  try{const {error}=await SB.from('announcements').insert({title:t,body:b||null,active:true});
+    if(error){toast('발송 실패: '+error.message);return;}
+    $('annT').value='';$('annB').value='';toast('공지 발송됨 ✓ 모든 사용자 알림에 표시돼요');loadAnnounce();
+  }catch(e){toast('오류: '+e.message);}
+}
+async function toggleAnn(id,val){
+  val=(val===true||val==='true');
+  try{const {error}=await SB.from('announcements').update({active:val}).eq('id',id);
+    if(error){toast('실패: '+error.message);return;}
+    var a=ANNS.find(x=>x.id===id);if(a)a.active=val;renderAnnounce();toast(val?'게시됨':'숨김 처리됨');
   }catch(e){toast('오류: '+e.message);}
 }
 function renderList(){
@@ -565,6 +633,7 @@ function renderUserDetail(p, restricted){
     ${row('최근 활동', p.updated_at?fmtJoin(p.updated_at):'')}
     ${row('사용자 ID', '<span style="font-size:12px;color:var(--sub)">'+esc(p.id)+'</span>')}
     ${restricted?'<div class="note" style="margin-top:14px"><i class="ti ti-info-circle"></i> 이메일 등 일부 항목은 권한상 표시되지 않을 수 있어요.</div>':''}
+    <div class="udrow"><span class="k">포인트 조정</span><span class="v" style="display:flex;gap:5px;flex-wrap:wrap;justify-content:flex-end"><button class="mini g" style="padding:6px 10px" onclick="adjustPoints('${p.id}',-100)">−100</button><button class="mini g" style="padding:6px 10px" onclick="adjustPoints('${p.id}',100)">+100</button><button class="mini g" style="padding:6px 10px" onclick="adjustPoints('${p.id}',1000)">+1000</button><button class="mini g" style="padding:6px 10px" onclick="promptPoints('${p.id}')">직접</button></span></div>
     <div style="margin-top:18px;display:flex;justify-content:flex-end"><button class="mini ${p.blocked?'g':'r'}" onclick="toggleBlock('${p.id}',${p.blocked?'false':'true'})"><i class="ti ti-${p.blocked?'lock-open':'ban'}"></i> ${p.blocked?'차단 해제':'사용자 차단'}</button></div>
   </div>`;
 }
@@ -577,6 +646,17 @@ async function toggleBlock(id,val){
     toast(val?'차단됐어요':'차단 해제됐어요');renderUsers();openUser(id);
   }catch(e){toast('오류: '+e.message);}
 }
+async function adjustPoints(id,delta){
+  try{
+    const {data}=await SB.from('profiles').select('points').eq('id',id).maybeSingle();
+    var cur=(data&&data.points)||0; var nv=Math.max(0,cur+delta);
+    const {error}=await SB.from('profiles').update({points:nv}).eq('id',id);
+    if(error){toast('실패: '+error.message);return;}
+    var d=PMAP[id];if(d)d.points=nv;
+    toast('포인트 '+(delta>0?'+':'')+delta+' → '+nv);openUser(id);
+  }catch(e){toast('오류: '+e.message);}
+}
+function promptPoints(id){var v=prompt('조정할 포인트(+지급 / -차감, 예: 500 또는 -200)');if(v==null)return;var n=parseInt(v,10);if(isNaN(n)){toast('숫자를 입력하세요');return;}adjustPoints(id,n);}
 // ===== CSV 내보내기 =====
 function csvCell(v){return '"'+String(v==null?'':v).replace(/"/g,'""').replace(/\r?\n/g,' ')+'"';}
 function csvDL(name,header,rows){var csv=[header.map(csvCell).join(',')].concat(rows.map(function(r){return r.map(csvCell).join(',');})).join('\r\n');var blob=new Blob(['﻿'+csv],{type:'text/csv;charset=utf-8'});var a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=name;a.click();setTimeout(function(){URL.revokeObjectURL(a.href);},1000);toast('CSV 내보냄 ✓');}
@@ -597,8 +677,12 @@ function openEdit(id){
       spec:d.spec.slice(), tags:d.tags.slice(), services:d.services.map(s=>Object.assign({},s)), ba:(d.ba&&d.ba.length===2)?d.ba.slice():[], hidden:d.hidden, shop:d.shop};
   $('edTitle').textContent=d.nickname;
   $('edView').href='https://beautia.io/d/'+d.id;$('edView').style.display='';
-  renderEdit();
+  renderEdit();loadDesignerStats(d.id);
   $('scrim').classList.add('on');$('drawer').classList.add('on');document.body.style.overflow='hidden';
+}
+async function loadDesignerStats(id){
+  try{var v=await cnt(SB.from('page_visits').select('id',{count:'exact',head:true}).ilike('path','%'+id+'%'));var e=$('edViews');if(e)e.textContent=(v==null?'—':v);}catch(e){var el=$('edViews');if(el)el.textContent='—';}
+  try{var s=await cnt(SB.from('saves').select('id',{count:'exact',head:true}).ilike('wid',id+'%'));var e2=$('edSaves');if(e2)e2.textContent=(s==null?'—':s);}catch(e){var el2=$('edSaves');if(el2)el2.textContent='—';}
 }
 function closeEdit(){$('scrim').classList.remove('on');$('drawer').classList.remove('on');document.body.style.overflow='';ed=null;}
 
@@ -611,6 +695,16 @@ function renderEdit(){
   if(!(ed.ba&&ed.ba.length===2&&ed.photos.indexOf(ed.ba[0])>=0&&ed.photos.indexOf(ed.ba[1])>=0)){ed.ba=ed.photos.length?[ed.photos[0],ed.photos[Math.min(1,ed.photos.length-1)]]:[];}
   const baCells=(which)=>ed.photos.map((u,i)=>`<div class="baThumb${ed.ba[which]===u?' on':''}" style="background-image:url('${esc(u)}')" onclick="setEdBA(${which},${i})"></div>`).join('');
   $('edBody').innerHTML=`
+    <div class="card">
+      <h3><i class="ti ti-chart-bar"></i> 통계</h3>
+      <div class="dstats">
+        <div class="dst"><b>${BOOKINGS.filter(b=>b.designer===ed.id).length}</b><span>예약</span></div>
+        <div class="dst"><b>${REVIEWS.filter(r=>(r.designer||r.designer_id)===ed.id).length}</b><span>후기</span></div>
+        <div class="dst"><b>${ed.photos.length}</b><span>포폴</span></div>
+        <div class="dst"><b id="edViews">…</b><span>조회</span></div>
+        <div class="dst"><b id="edSaves">…</b><span>저장</span></div>
+      </div>
+    </div>
     <div class="card">
       <h3><i class="ti ti-user-circle"></i> 프로필 사진</h3>
       <div class="avwrap">
@@ -745,7 +839,10 @@ function renderBookings(err){
   if(err){$('bklist').innerHTML='<div class="empty"><i class="ti ti-lock"></i><p>예약을 불러올 권한이 없어요<br><span style="font-size:12px">'+esc(err)+'</span></p></div>';return;}
   if(!BOOKINGS.length){$('bklist').innerHTML='<div class="empty"><i class="ti ti-calendar"></i><p>예약이 없어요</p></div>';return;}
   const st={pending:['대기','y'],confirmed:['확정','g'],accepted:['확정','g'],done:['완료',''],completed:['완료',''],declined:['거절',''],cancelled:['취소','']};
-  $('bklist').innerHTML=BOOKINGS.map(b=>{const s=st[b.status]||[b.status||'대기','y'];let svc=b.service;if(svc&&typeof svc==='object')svc=svc.n||'상담';
+  var q=(($('bkq')&&$('bkq').value)||'').toLowerCase().trim();
+  var list=BOOKINGS.filter(function(b){var okS=(BK_FILTER==='all')||b.status===BK_FILTER||(BK_FILTER==='accepted'&&b.status==='confirmed')||(BK_FILTER==='done'&&b.status==='completed');if(!okS)return false;if(!q)return true;var sv=(b.service&&typeof b.service==='object')?(b.service.n||''):(b.service||'');return (dName(b.designer)+' '+sv+' '+(b.note||'')+' '+(b.date||'')).toLowerCase().indexOf(q)>=0;});
+  if(!list.length){$('bklist').innerHTML='<div class="empty"><i class="ti ti-calendar"></i><p>해당 예약이 없어요</p></div>';return;}
+  $('bklist').innerHTML=list.map(b=>{const s=st[b.status]||[b.status||'대기','y'];let svc=b.service;if(svc&&typeof svc==='object')svc=svc.n||'상담';
     return `<div class="li"><div class="lh"><div><div class="ln">${esc(dName(b.designer))}</div><div class="ls">${esc(svc||'상담')} · ${esc(b.date||'')} ${esc(b.time||'')}</div></div><span class="lbadge ${s[1]}">${esc(s[0])}</span></div>${b.note?`<div class="ls" style="margin-top:8px">📝 ${esc(b.note)}</div>`:''}</div>`;
   }).join('');
 }
@@ -769,8 +866,8 @@ async function delReview(id,ev){
 var CURTAB='designers';
 function tab(t){
   CURTAB=t;
-  ['designers','applications','users','inquiries','bookings','reviews'].forEach(x=>{$('sec-'+x).classList.toggle('hide',x!==t);$('tab-'+x).classList.toggle('on',x===t);});
-  if(t==='users')renderUsers();if(t==='inquiries')renderInquiries();
+  ['designers','applications','users','inquiries','announce','bookings','reviews'].forEach(x=>{$('sec-'+x).classList.toggle('hide',x!==t);$('tab-'+x).classList.toggle('on',x===t);});
+  if(t==='users')renderUsers();if(t==='inquiries')renderInquiries();if(t==='announce')renderAnnounce();
 }
 
 (async function(){

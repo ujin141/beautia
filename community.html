@@ -1975,7 +1975,10 @@ function markNotifSeen(){try{localStorage.setItem('beautia_notif_seen',''+Date.n
 function renderNotifBadge(){var el=$('bellBtn');if(!el)return;var b=el.querySelector('.unread');if(notifUnread>0){if(!b){b=document.createElement('span');b.className='unread';el.appendChild(b);}}else if(b){b.remove();}}
 async function buildNotifs(){
  var list=[];
- if(!(ME&&ME.uid)){NOTIFS=[];notifUnread=0;renderNotifBadge();return list;}
+ try{var anns=(await SB.from('announcements').select('title,body,created_at').eq('active',true).order('created_at',{ascending:false}).limit(5)).data||[];
+   anns.forEach(function(a){list.push({icon:'ti-speakerphone',title:a.title||'공지',sub:(a.body||'').slice(0,80),ts:a.created_at,onclick:'closeNotif()'});});
+ }catch(e){}
+ if(!(ME&&ME.uid)){NOTIFS=list.slice();var seen0=notifSeenTs();notifUnread=list.filter(function(n){return new Date(n.ts).getTime()>seen0;}).length;renderNotifBadge();return list;}
  var N=ntf();
  var bks=[];try{bks=(await SB.from('bookings').select('*').or('customer.eq.'+ME.uid+',designer.eq.'+ME.uid).order('created_at',{ascending:false}).limit(30)).data||[];}catch(e){}
  var others=bks.map(function(b){return b.designer===ME.uid?b.customer:b.designer;});
