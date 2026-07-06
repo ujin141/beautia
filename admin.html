@@ -107,6 +107,23 @@ button{cursor:pointer;border:none;background:none;font-family:inherit;}
 .todobar .todol{font-weight:800;font-size:12.5px;color:#a8631f;display:flex;align-items:center;gap:5px;}
 .todobar .todoi{background:#fff;border:1px solid #f0dcc8;border-radius:999px;padding:6px 13px;font-size:13px;font-weight:700;color:var(--ink2);cursor:pointer;text-decoration:none;}
 .todobar .todoi b{color:#c0564b;margin-right:3px;}
+.dsec2{background:#fff;border:1px solid var(--line);border-radius:14px;padding:14px 16px;margin-top:12px;}
+.dsec2 .dct{font-size:13px;font-weight:800;color:var(--ink2);margin-bottom:10px;}
+.topd{display:flex;align-items:center;gap:11px;padding:8px 0;border-top:1px solid var(--line);}
+.topd:first-of-type{border-top:none;}
+.topd .topr{width:22px;font-weight:800;color:var(--plum);font-size:14px;flex:0 0 auto;text-align:center;}
+.topd .topav{width:38px;height:38px;border-radius:50%;background:var(--soft) center/cover;flex:0 0 auto;}
+.topd .topi{flex:1;min-width:0;}
+.topd .topn{font-size:14px;font-weight:800;color:var(--ink);}
+.topd .tops{font-size:12px;color:var(--sub);margin-top:2px;}
+.topd .topsc{font-size:13px;font-weight:800;color:var(--accent);}
+.ddist{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+@media(max-width:560px){.ddist{grid-template-columns:1fr;}}
+.distrow{display:flex;align-items:center;gap:8px;margin:7px 0;font-size:13px;}
+.distrow .distl{width:88px;flex:0 0 auto;color:var(--ink2);font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.distrow .distbar{flex:1;height:8px;background:var(--soft);border-radius:999px;overflow:hidden;}
+.distrow .distbar>span{display:block;height:100%;background:var(--accent);border-radius:999px;}
+.distrow .distv{width:24px;text-align:right;font-weight:800;color:var(--plum);flex:0 0 auto;}
 .tbadge{display:inline-flex;align-items:center;justify-content:center;min-width:18px;height:18px;padding:0 5px;margin-left:5px;border-radius:999px;background:var(--red);color:#fff;font-size:11px;font-weight:800;vertical-align:1px;}
 .apcard .apinfo{display:flex;flex-wrap:wrap;gap:8px 16px;margin-top:9px;}
 .apilink{display:inline-flex;align-items:center;gap:5px;font-size:12.5px;font-weight:700;color:var(--ink2);}
@@ -478,6 +495,21 @@ async function loadDashboard(){
   if(aPend>0)todo.push('<a onclick="tab(\'applications\')" class="todoi"><b>'+aPend+'</b> 대기 신청</a>');
   if(bPend>0)todo.push('<a onclick="tab(\'bookings\')" class="todoi"><b>'+bPend+'</b> 대기 예약</a>');
   var todoHtml=todo.length?('<div class="todobar"><span class="todol"><i class="ti ti-bell-ringing"></i> 처리 필요</span>'+todo.join('')+'</div>'):'<div class="todobar ok"><i class="ti ti-circle-check"></i> 처리할 항목이 없어요 👍</div>';
+  // 추가 지표
+  var desList=DESIGNERS.filter(isDesigner);
+  var totalUsers=DESIGNERS.length;
+  var newWeek=DESIGNERS.filter(function(d){return d.created&&(new Date(d.created).getTime()>now-7*D);}).length;
+  var bkBy={},rvBy={};
+  (typeof BOOKINGS!=='undefined'?BOOKINGS:[]).forEach(function(b){if(b.designer)bkBy[b.designer]=(bkBy[b.designer]||0)+1;});
+  (typeof REVIEWS!=='undefined'?REVIEWS:[]).forEach(function(r){var id=r.designer||r.designer_id;if(id)rvBy[id]=(rvBy[id]||0)+1;});
+  var topD=desList.map(function(d){var bk=bkBy[d.id]||0,rv=rvBy[d.id]||0;return {d:d,bk:bk,rv:rv,ph:d.photos.length,sc:bk*3+rv*2+d.photos.length};}).sort(function(a,b){return b.sc-a.sc;}).slice(0,5);
+  var topHtml=topD.length?('<div class="dsec2"><div class="dct">인기 디자이너 <span style="font-weight:600;color:var(--sub)">· 예약·후기·포폴</span></div>'+topD.map(function(t,i){return '<div class="topd"><span class="topr">'+(i+1)+'</span><div class="topav" style="background-image:url(\''+esc(t.d.avatar)+'\')"></div><div class="topi"><div class="topn">'+esc(t.d.nickname)+'</div><div class="tops">예약 '+t.bk+' · 후기 '+t.rv+' · 포폴 '+t.ph+'</div></div><span class="topsc">'+t.sc+'</span></div>';}).join('')+'</div>'):'';
+  function distBlock(title,arr){if(!arr.length)return '';var mx=arr[0][1]||1;return '<div class="dsec2"><div class="dct">'+title+'</div>'+arr.map(function(c){return '<div class="distrow"><span class="distl">'+esc(c[0])+'</span><span class="distbar"><span style="width:'+Math.round(c[1]/mx*100)+'%"></span></span><span class="distv">'+c[1]+'</span></div>';}).join('')+'</div>';}
+  var catCnt={};desList.forEach(function(d){var c=catKo[d.spec[0]]||d.spec[0]||'기타';catCnt[c]=(catCnt[c]||0)+1;});
+  var catArr=Object.keys(catCnt).map(function(k){return [k,catCnt[k]];}).sort(function(a,b){return b[1]-a[1];});
+  var cityCnt={};desList.forEach(function(d){var c=(d.region||'미설정');cityCnt[c]=(cityCnt[c]||0)+1;});
+  var cityArr=Object.keys(cityCnt).map(function(k){return [k,cityCnt[k]];}).sort(function(a,b){return b[1]-a[1];}).slice(0,6);
+  var distHtml='<div class="ddist">'+distBlock('카테고리 분포',catArr)+distBlock('지역 분포 · 상위',cityArr)+'</div>';
   el.innerHTML='<div class="dh"><b>성과 대시보드</b><span>검증 추적 · 지난주 대비</span></div>'
    +todoHtml
    +'<div class="dkpis">'
@@ -486,8 +518,11 @@ async function loadDashboard(){
    +kpi('디자이너 신청', aPend, '', '누적 '+aTotal)
    +kpi('활성 디자이너', dCount, '', '포폴 보유')
    +kpi('신규 문의', inqNew, '', '누적 '+inqTot)
+   +kpi('총 사용자', totalUsers, '', '고객+디자이너')
+   +kpi('이번 주 신규', newWeek, '', '가입')
    +'</div>'
-   +'<div class="dchart"><div class="dct">최근 7일 방문 추이'+(vOk?'':' — SQL 실행 후 표시')+'</div><div class="dbars">'+bars+'</div></div>';
+   +'<div class="dchart"><div class="dct">최근 7일 방문 추이'+(vOk?'':' — SQL 실행 후 표시')+'</div><div class="dbars">'+bars+'</div></div>'
+   +topHtml+distHtml;
 }
 async function loadVisits(){
   try{
