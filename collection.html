@@ -961,30 +961,38 @@ function openByUid(uid){if(!uid)return false;var d=allD().find(function(x){retur
 let TILES=[];
 function buildTiles(){TILES=[];var ds=allD().slice().sort(function(a,b){return ((b.featured?1:0)-(a.featured?1:0))||((parseFloat(b.rating)||0)-(parseFloat(a.rating)||0));});var mx=0;ds.forEach(function(d){if(d.works&&d.works.length>mx)mx=d.works.length;});for(var r=0;r<mx;r++){ds.forEach(function(d){var w=d.works&&d.works[r];if(w===undefined||w===null)return;TILES.push({wid:d.id+'_'+r,did:d.id,uid:d.uid||'',img:workImg(w),text:workText(w),cat:d.cat,cats:(d.cats&&d.cats.length?d.cats:[d.cat]),city:d.city,area:d.area,name:d.name,flag:d.flag,rating:d.rating,newAt:d.newAt||0,featured:d.featured,insta:d.insta});});}}
 const HYB={
- ko:{popular:'이번 주 인기 스타일',popularSub:'지금 가장 주목받는 포트폴리오',book:'바로 예약',prof:'프로필',viewProfile:'프로필 보기',verified:'인증 디자이너',reviews:'후기',fast:'빠른 예약 가능'},
- en:{popular:'Trending styles this week',popularSub:'Most-loved portfolios right now',book:'Book',prof:'Profile',viewProfile:'View profile',verified:'Verified',reviews:'reviews',fast:'Instant booking'},
- ja:{popular:'今週の人気スタイル',popularSub:'いま最も注目のポートフォリオ',book:'予約する',prof:'プロフィール',viewProfile:'プロフィール',verified:'認証済み',reviews:'口コミ',fast:'即時予約OK'},
- th:{popular:'สไตล์ยอดนิยมสัปดาห์นี้',popularSub:'ผลงานที่คนรักมากที่สุดตอนนี้',book:'จอง',prof:'โปรไฟล์',viewProfile:'ดูโปรไฟล์',verified:'ยืนยันแล้ว',reviews:'รีวิว',fast:'จองได้ทันที'}
+ ko:{popular:'오늘의 인기 스타일',popularSub:'매일 새로 큐레이션되는 포트폴리오',book:'바로 예약',prof:'프로필',viewProfile:'프로필 보기',verified:'인증 디자이너',reviews:'후기',fast:'빠른 예약 가능'},
+ en:{popular:'Trending styles today',popularSub:'Freshly curated portfolios, every day',book:'Book',prof:'Profile',viewProfile:'View profile',verified:'Verified',reviews:'reviews',fast:'Instant booking'},
+ ja:{popular:'今日の人気スタイル',popularSub:'毎日新しくキュレーション',book:'予約する',prof:'プロフィール',viewProfile:'プロフィール',verified:'認証済み',reviews:'口コミ',fast:'即時予約OK'},
+ th:{popular:'สไตล์ยอดนิยมวันนี้',popularSub:'ผลงานคัดสรรใหม่ทุกวัน',book:'จอง',prof:'โปรไฟล์',viewProfile:'ดูโปรไฟล์',verified:'ยืนยันแล้ว',reviews:'รีวิว',fast:'จองได้ทันที'}
 };
 function hyb(){return HYB[LANG]||HYB.en;}
+// 인기 스타일 일일 로테이션: KST 날짜를 시드로 매일 순서·대표컷이 바뀜(품질은 약하게 가점, 팔로우는 상단 고정)
+function daySeedKST(){var n=new Date(Date.now()+9*3600*1000);return ''+n.getUTCFullYear()+'-'+(n.getUTCMonth()+1)+'-'+n.getUTCDate();}
+function hstr(s){s=String(s||'');var h=2166136261;for(var i=0;i<s.length;i++){h^=s.charCodeAt(i);h=Math.imul(h,16777619);}return (h>>>0);}
+function popRank(d){var base=hstr((d.uid||d.id||'')+'@'+daySeedKST())%10000;var boost=((d.featured?1:0)*1500)+((parseFloat(d.rating)||0)*300)+Math.min((d.works?d.works.length:0),8)*80;return base-boost;}
 function renderPopular(){var el=$('popwrap');if(!el)return;
  var show=(VIEW==='explore'&&CAT==='All'&&!(($('q').value||'').trim())&&!$('city').value);
- // 디자이너 중복 없이(1명당 카드 1개), 인기순 정렬
+ // 디자이너 중복 없이(1명당 카드 1개), 매일 바뀌는 인기 로테이션(팔로우 우선)
  var ds=show?allD().filter(function(d){return d.works&&d.works.length;}):[];
- ds=ds.slice().sort(function(a,b){return ((isFollowing(b.uid)?1:0)-(isFollowing(a.uid)?1:0))||((b.featured?1:0)-(a.featured?1:0))||((parseFloat(b.rating)||0)-(parseFloat(a.rating)||0))||((b.works?b.works.length:0)-(a.works?a.works.length:0));}).slice(0,12);
+ ds=ds.slice().sort(function(a,b){return ((isFollowing(b.uid)?1:0)-(isFollowing(a.uid)?1:0))||(popRank(a)-popRank(b));}).slice(0,12);
  if(!show||ds.length<3){el.classList.add('off');el.innerHTML='';return;}
  el.classList.remove('off');var L=hyb();
  el.innerHTML='<div class="pophead"><h3 class="serif">'+esc(L.popular)+'</h3><span class="popsub">'+esc(L.popularSub)+'</span></div>'+
   '<div class="poprow">'+ds.map(function(d){var uid=d.uid;var nm=(LANG==='ko'&&d.ko)?d.ko:d.name;var tot=d.works.length;
-   var rest=d.works.slice(1,4);var more=tot-1-rest.length;
-   var thumbs=rest.map(function(w,i){var last=(i===rest.length-1&&more>0);var mo=last?'<span class="pmore">+'+more+'</span>':'';var oc='event.stopPropagation();openWork(\''+d.id+'_'+(i+1)+'\')';
+   // 매일 대표컷 회전: 시작 오프셋을 날짜 시드로 정하고 원본 인덱스는 유지(openWork wid 정합)
+   var off=tot?(hstr((d.uid||d.id||'')+'#'+daySeedKST())%tot):0;
+   var oi=function(j){return (off+j)%tot;};
+   var dw=[];for(var _j=0;_j<tot;_j++)dw.push(d.works[oi(_j)]);
+   var rest=dw.slice(1,4);var more=tot-1-rest.length;
+   var thumbs=rest.map(function(w,i){var last=(i===rest.length-1&&more>0);var mo=last?'<span class="pmore">+'+more+'</span>':'';var oc='event.stopPropagation();openWork(\''+d.id+'_'+oi(i+1)+'\')';
      if(isVid(w))return '<div class="pth thv" onclick="'+oc+'"><video src="'+vsrc(w)+'#t=0.1" muted playsinline preload="metadata"></video><span class="thvb"><i class="ti ti-player-play-filled"></i></span>'+mo+'</div>';
      return '<div class="pth" onclick="'+oc+'" style="background-image:url(\''+im(w,220)+'\')">'+mo+'</div>';}).join('');
    // 썸네일 칸 3개 고정(빈칸 채움)
    for(var k=rest.length;k<3;k++)thumbs+='<div class="pth pthx"></div>';
-   var w0=d.works[0];var w0v=isVid(w0);
+   var w0=dw[0];var w0v=isVid(w0);
    return '<div class="pcard" onclick="openD(\''+d.id+'\')">'+
-     '<div class="pcimg'+(w0v?' thv':'')+'" onclick="event.stopPropagation();openWork(\''+d.id+'_0\')"'+(w0v?'':' style="background-image:url(\''+im(w0,500)+'\')"')+'>'+(w0v?'<video src="'+vsrc(w0)+'#t=0.1" muted playsinline preload="metadata"></video><span class="thvb"><i class="ti ti-player-play-filled"></i></span>':'')+(d.featured?'<span class="pcbadge"><i class="ti ti-flame-filled"></i> HOT</span>':'')+'<span class="pccount"><i class="ti ti-photo"></i> '+tot+'</span></div>'+
+     '<div class="pcimg'+(w0v?' thv':'')+'" onclick="event.stopPropagation();openWork(\''+d.id+'_'+off+'\')"'+(w0v?'':' style="background-image:url(\''+im(w0,500)+'\')"')+'>'+(w0v?'<video src="'+vsrc(w0)+'#t=0.1" muted playsinline preload="metadata"></video><span class="thvb"><i class="ti ti-player-play-filled"></i></span>':'')+(d.featured?'<span class="pcbadge"><i class="ti ti-flame-filled"></i> HOT</span>':'')+'<span class="pccount"><i class="ti ti-photo"></i> '+tot+'</span></div>'+
      '<div class="pthumbs">'+thumbs+'</div>'+
      '<div class="pcb"><div class="pcn">'+esc(d.flag)+' '+esc(nm)+'</div>'+
       '<div class="pcm"><span class="star">★ '+esc(d.rating||'5')+'</span> · '+esc(cl(d.cat))+(d.city?' · '+esc(d.city):'')+'</div>'+
