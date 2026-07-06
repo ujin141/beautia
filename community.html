@@ -698,6 +698,26 @@ body.mlock{position:fixed;left:0;right:0;width:100%;overflow:hidden;}
 .thv video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;}
 .thvb{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:30px;height:30px;border-radius:50%;background:rgba(20,12,16,.5);color:#fff;display:flex;align-items:center;justify-content:center;font-size:14px;pointer-events:none;z-index:2;}
 .wimgvid{width:100%;max-height:74vh;background:#000;display:block;border-radius:16px 16px 0 0;}
+/* ===== 릴스(숏폼) 세로 피드 ===== */
+.reels{max-width:460px;margin:0 auto;height:calc(100dvh - 150px);overflow-y:auto;scroll-snap-type:y mandatory;-webkit-overflow-scrolling:touch;scrollbar-width:none;border-radius:20px;}
+.reels::-webkit-scrollbar{display:none;}
+.reel{position:relative;height:100%;scroll-snap-align:start;background:#1a0e14;background-size:cover;background-position:center;border-radius:20px;overflow:hidden;margin-bottom:12px;cursor:pointer;}
+.reel .reelvid{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;background:#000;}
+.reelsc{position:absolute;inset:0;background:linear-gradient(0deg,rgba(10,5,8,.74) 0%,rgba(10,5,8,.05) 40%,rgba(10,5,8,.28) 100%);pointer-events:none;z-index:1;}
+.reelplay{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;color:rgba(255,255,255,.92);font-size:64px;pointer-events:none;z-index:2;text-shadow:0 4px 24px rgba(0,0,0,.5);transition:opacity .2s;}
+.reel.playing .reelplay{opacity:0;}
+.reelheart{position:absolute;top:16px;right:16px;width:44px;height:44px;border-radius:50%;background:rgba(20,12,16,.42);color:#fff;border:none;font-size:21px;z-index:3;cursor:pointer;display:flex;align-items:center;justify-content:center;-webkit-backdrop-filter:blur(4px);backdrop-filter:blur(4px);}
+.reelheart.on{color:#ff5a7a;}
+.reelmute{position:absolute;top:16px;left:16px;width:40px;height:40px;border-radius:50%;background:rgba(20,12,16,.42);color:#fff;border:none;font-size:18px;z-index:3;cursor:pointer;display:none;align-items:center;justify-content:center;}
+.reel.playing .reelmute{display:flex;}
+.reelinfo{position:absolute;left:18px;right:18px;bottom:22px;display:flex;align-items:center;gap:11px;color:#fff;z-index:3;}
+.reelinfo .reelav{width:46px;height:46px;border-radius:50%;background-size:cover;background-position:center;border:2px solid rgba(255,255,255,.9);flex:0 0 auto;display:flex;align-items:center;justify-content:center;font-weight:800;color:#fff;}
+.reeln{font-weight:800;font-size:15.5px;letter-spacing:-.01em;text-shadow:0 1px 8px rgba(0,0,0,.5);}
+.reelsub{font-size:12.5px;opacity:.9;margin-top:1px;text-shadow:0 1px 8px rgba(0,0,0,.5);}
+.reelbook{margin-left:auto;background:#fff;color:var(--plum);border:none;border-radius:999px;padding:10px 18px;font-weight:800;font-size:13.5px;cursor:pointer;flex:0 0 auto;box-shadow:0 8px 20px -8px rgba(0,0,0,.5);}
+.reelhint{text-align:center;color:var(--sub);font-size:12.5px;padding:8px 0 2px;}
+@media(min-width:721px){.reels{height:calc(100dvh - 120px);}}
+body.reels-mode #fbanner,body.reels-mode #hero,body.reels-mode #popwrap,body.reels-mode .filterbar,body.reels-mode .hsearch{display:none!important;}
 .rev{display:flex;gap:14px;padding:16px 0;border-bottom:1px solid var(--line);}
 .rev:last-child{border:none;} .rev .ra{width:46px;height:46px;border-radius:50%;flex:0 0 auto;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-family:'Pretendard','Malgun Gothic',sans-serif;}
 .rev .rn{font-weight:800;font-size:15px;} .rev .rs{color:var(--gold);font-size:13px;margin-top:2px;} .rev .rt{font-size:14.5px;color:var(--ink2);margin-top:5px;line-height:1.5;}
@@ -836,6 +856,7 @@ body.mlock{position:fixed;left:0;right:0;width:100%;overflow:hidden;}
     <nav class="main" id="nav">
       <a data-v="explore" class="on" onclick="setView('explore')" data-t="explore">Explore</a>
       <a data-v="designers" onclick="setView('designers')" data-t="designers">Designers</a>
+      <a data-v="reels" id="navReels" onclick="setView('reels')" data-t="reels" style="display:none">Reels</a>
       <a data-v="saved" onclick="setView('saved')" data-t="saved">Saved</a>
     </nav>
     <div class="hsearch"><i class="ti ti-search"></i><input id="q" oninput="onSearchInput()" onfocus="renderSuggest()" onblur="hideSuggest()" autocomplete="off" data-tph="search"><div class="sugbox" id="sugbox"></div></div>
@@ -858,6 +879,7 @@ body.mlock{position:fixed;left:0;right:0;width:100%;overflow:hidden;}
 <nav class="tabbar" id="tabbar">
   <a class="tb on" data-v="explore" onclick="tabGo('explore')" aria-label="Explore"><i class="ti ti-home"></i></a>
   <a class="tb" data-v="designers" onclick="tabGo('designers')" aria-label="Designers"><i class="ti ti-search"></i></a>
+  <a class="tb" id="tabReels" data-v="reels" onclick="tabGo('reels')" aria-label="Reels" style="display:none"><i class="ti ti-player-play"></i></a>
   <a class="tb" onclick="tabBook()" aria-label="Bookings"><i class="ti ti-calendar-heart"></i></a>
   <a class="tb" id="tbMsg" onclick="tabMsg()" aria-label="Messages"><i class="ti ti-message-circle"></i></a>
   <a class="tb" id="tbMy" data-v="me" onclick="tabMy(event)" aria-label="My"><i class="ti ti-user"></i></a>
@@ -1032,19 +1054,19 @@ function matchCat(x){if(!x)return '';if(CATS.indexOf(x)>=0)return x;var s=String
 function canonCat(x){return matchCat(x)||'Hair';}
 function catsOf(arr){var out=[];(arr||[]).forEach(function(x){var c=matchCat(x);if(c&&out.indexOf(c)<0)out.push(c);});return out;}
 const T={
- en:{explore:'Explore',designers:'Designers',saved:'Saved',join:'Join',search:'Search designers, styles…',all:'All',tagline:'Beauty designers, worldwide. Browse real work, save your favorites, and book or message the designer directly.',h1:'Find a designer who <em>gets your style.</em>',
+ en:{explore:'Explore',designers:'Designers',reels:'Reels',reelsEmpty:'No videos yet',saved:'Saved',join:'Join',search:'Search designers, styles…',all:'All',tagline:'Beauty designers, worldwide. Browse real work, save your favorites, and book or message the designer directly.',h1:'Find a designer who <em>gets your style.</em>',
   verified:'Verified',portfolio:'PORTFOLIO',beforeafter:'BEFORE / AFTER',reviews:'REVIEWS',connect:'CONNECT',before:'BEFORE',after:'AFTER',years:'yrs',allcity:'All cities',
   save:'Save',saved2:'Saved',book:'Book / Message',inq:'Send inquiry',inqL:'Language',inqM:'Your message',inqPH:'Hi! I love your work. I would like to book…',send:'Send',
   emptyS:'No saved looks yet — tap ♡ on any work.',noRes:'No results.',saveT:'Saved to your collection ♡',unsaveT:'Removed from saved',bookT:'Opening chat ✨',inqT:'Message sent ✨',joinToast:'Welcome, designer — upload your portfolio ✨',Cat:{Hair:'Hair',Makeup:'Makeup',Nail:'Nail',Lash:'Lash',Skin:'Skin',Bridal:'Bridal'}},
- ko:{explore:'둘러보기',designers:'디자이너',saved:'저장',join:'등록',search:'디자이너·스타일 검색…',all:'전체',tagline:'세계 어디서든 내 스타일을 아는 뷰티 디자이너를 찾으세요. 실제 작업을 보고, 저장하고, 예약하거나 문의하세요.',h1:'내 스타일을 아는 <em>뷰티 디자이너</em>를 찾으세요.',
+ ko:{explore:'둘러보기',designers:'디자이너',reels:'릴스',reelsEmpty:'아직 영상이 없어요',saved:'저장',join:'등록',search:'디자이너·스타일 검색…',all:'전체',tagline:'세계 어디서든 내 스타일을 아는 뷰티 디자이너를 찾으세요. 실제 작업을 보고, 저장하고, 예약하거나 문의하세요.',h1:'내 스타일을 아는 <em>뷰티 디자이너</em>를 찾으세요.',
   verified:'인증',portfolio:'포트폴리오',beforeafter:'비포 / 애프터',reviews:'후기',connect:'바로 연결',before:'비포',after:'애프터',years:'년',allcity:'전체 도시',
   save:'저장',saved2:'저장됨',book:'예약 · 문의',inq:'문의 보내기',inqL:'언어',inqM:'메시지',inqPH:'안녕하세요! 작업 너무 마음에 들어요. 예약하고 싶어요…',send:'보내기',
   emptyS:'아직 저장한 룩이 없어요 — 작업에 ♡를 눌러보세요.',noRes:'결과가 없어요.',saveT:'컬렉션에 저장했어요 ♡',unsaveT:'저장에서 제거했어요',bookT:'채팅을 여는 중 ✨',inqT:'메시지를 보냈어요 ✨',joinToast:'디자이너로 가입 완료! 포트폴리오를 올려보세요 ✨',Cat:{Hair:'헤어',Makeup:'메이크업',Nail:'네일',Lash:'속눈썹',Skin:'스킨',Bridal:'브라이덜'}},
- ja:{explore:'探す',designers:'デザイナー',saved:'保存',join:'登録',search:'デザイナー・スタイル検索…',all:'すべて',tagline:'世界中どこでも、あなたのスタイルを分かるビューティーデザイナーを見つけよう。作品を見て、保存して、予約・問い合わせ。',h1:'あなたのスタイルを分かる<em>デザイナー</em>を。',
+ ja:{explore:'探す',designers:'デザイナー',reels:'リール',reelsEmpty:'まだ動画がありません',saved:'保存',join:'登録',search:'デザイナー・スタイル検索…',all:'すべて',tagline:'世界中どこでも、あなたのスタイルを分かるビューティーデザイナーを見つけよう。作品を見て、保存して、予約・問い合わせ。',h1:'あなたのスタイルを分かる<em>デザイナー</em>を。',
   verified:'認証',portfolio:'ポートフォリオ',beforeafter:'ビフォー / アフター',reviews:'レビュー',connect:'つながる',before:'BEFORE',after:'AFTER',years:'年',allcity:'すべての都市',
   save:'保存',saved2:'保存済み',book:'予約・問い合わせ',inq:'問い合わせ送信',inqL:'言語',inqM:'メッセージ',inqPH:'こんにちは！作品が素敵です。予約したいです…',send:'送信',
   emptyS:'保存した作品がありません — ♡を押してください。',noRes:'結果がありません。',saveT:'コレクションに保存 ♡',unsaveT:'保存から削除',bookT:'チャットを開いています ✨',inqT:'メッセージを送信しました ✨',joinToast:'デザイナー登録完了！ポートフォリオをアップしましょう ✨',Cat:{Hair:'ヘア',Makeup:'メイク',Nail:'ネイル',Lash:'まつげ',Skin:'スキン',Bridal:'ブライダル'}},
- th:{explore:'สำรวจ',designers:'ดีไซเนอร์',saved:'บันทึกไว้',join:'เข้าร่วม',search:'ค้นหาดีไซเนอร์ สไตล์…',all:'ทั้งหมด',tagline:'ค้นหาผู้เชี่ยวชาญด้านความงามที่เข้าใจสไตล์ของคุณ — จากทั่วโลก ดูผลงานจริง บันทึกที่ชอบ จองหรือส่งข้อความถึงดีไซเนอร์ได้เลย',h1:'ค้นหาผู้เชี่ยวชาญความงามที่<em>เข้าใจสไตล์ของคุณ</em>',
+ th:{explore:'สำรวจ',designers:'ดีไซเนอร์',reels:'รีลส์',reelsEmpty:'ยังไม่มีวิดีโอ',saved:'บันทึกไว้',join:'เข้าร่วม',search:'ค้นหาดีไซเนอร์ สไตล์…',all:'ทั้งหมด',tagline:'ค้นหาผู้เชี่ยวชาญด้านความงามที่เข้าใจสไตล์ของคุณ — จากทั่วโลก ดูผลงานจริง บันทึกที่ชอบ จองหรือส่งข้อความถึงดีไซเนอร์ได้เลย',h1:'ค้นหาผู้เชี่ยวชาญความงามที่<em>เข้าใจสไตล์ของคุณ</em>',
   verified:'ยืนยันแล้ว',portfolio:'ผลงาน',beforeafter:'ก่อน / หลัง',reviews:'รีวิว',connect:'เชื่อมต่อ',before:'ก่อน',after:'หลัง',years:'ปี',allcity:'ทุกเมือง',
   save:'บันทึก',saved2:'บันทึกแล้ว',book:'จอง · ส่งข้อความ',inq:'ส่งคำถาม',inqL:'ภาษา',inqM:'ข้อความของคุณ',inqPH:'สวัสดีค่ะ! ชอบผลงานมากเลย อยากจองคิว…',send:'ส่ง',
   emptyS:'ยังไม่มีลุคที่บันทึก — แตะ ♡ ที่ผลงานใดก็ได้',noRes:'ไม่พบผลลัพธ์',saveT:'บันทึกลงคอลเลกชันแล้ว ♡',unsaveT:'นำออกจากที่บันทึกแล้ว',bookT:'กำลังเปิดแชท ✨',inqT:'ส่งข้อความแล้ว ✨',joinToast:'ยินดีต้อนรับดีไซเนอร์ — อัปโหลดผลงานของคุณ ✨',Cat:{Hair:'ผม',Makeup:'เมคอัพ',Nail:'เล็บ',Lash:'ขนตา',Skin:'ผิว',Bridal:'เจ้าสาว'}},
@@ -1195,11 +1217,48 @@ function renderStats(){var el=$('statstrip');if(!el)return;
  if(designers<1){el.classList.remove('on');el.innerHTML='';return;}
  el.innerHTML='<div class="statin"><div class="statit"><b>'+designers+'</b><span>'+esc(T[LANG].statDesigners)+'</span></div><div class="statit"><b>'+works+'</b><span>'+esc(T[LANG].statWorks)+'</span></div><div class="statit"><b>'+nc+'</b><span>'+esc(T[LANG].statCountries)+'</span></div></div>';
  el.classList.add('on');}
+// ===== 릴스(숏폼) 세로 피드 — 영상이 일정 수 이상 쌓이면 탭 자동 노출 =====
+var REELS_MIN=6, _reelIO=null;
+function reelVideos(){return TILES.filter(function(t){return t.vid;});}
+function reelsReady(){return reelVideos().length>=REELS_MIN;}
+function updateReelsTab(){var on=reelsReady();var a=$('navReels'),b=$('tabReels');if(a)a.style.display=on?'':'none';if(b)b.style.display=on?'':'none';}
+function teardownReels(){if(_reelIO){try{_reelIO.disconnect();}catch(e){}_reelIO=null;}}
+function renderReels(){
+  var vids=reelVideos();var g=$('grid');g.classList.remove('dgview');
+  if(!vids.length){g.innerHTML='<div class="empty"><i class="ti ti-player-play"></i><p>'+esc(T[LANG].reelsEmpty||'아직 영상이 없어요')+'</p></div>';return;}
+  g.innerHTML='<div class="reels" id="reels">'+vids.map(function(t){var d=dById(t.did)||{};var nm=(LANG==='ko'&&d.ko)?d.ko:(d.name||t.name||'');
+    return '<div class="reel" data-wid="'+esc(t.wid)+'" data-src="'+esc(vsrc(t.img))+'"'+(t.poster?(' style="background-image:url(\''+im(t.poster,720)+'\')"'):'')+'>'+
+      '<div class="reelsc"></div>'+
+      '<button class="reelheart'+(isSaved(t.wid)?' on':'')+'" onclick="toggleSave(\''+esc(t.wid)+'\',event)" aria-label="save"><i class="ti ti-heart'+(isSaved(t.wid)?'-filled':'')+'"></i></button>'+
+      '<button class="reelmute" onclick="reelToggleMute(event,this)" aria-label="sound"><i class="ti ti-volume-off"></i></button>'+
+      '<span class="reelplay"><i class="ti ti-player-play-filled"></i></span>'+
+      '<div class="reelinfo">'+avHtml(d,'reelav')+'<div><div class="reeln">'+esc(d.flag||t.flag||'')+' '+esc(nm)+'</div><div class="reelsub">'+esc(cl(t.cat))+(t.city?(' · '+esc(t.city)):'')+'</div></div>'+
+      (d.uid?('<button class="reelbook" onclick="event.stopPropagation();openBook(\''+esc(d.id)+'\')">'+esc(T[LANG].book)+'</button>'):('<button class="reelbook" onclick="event.stopPropagation();openD(\''+esc(t.did)+'\')">'+esc(T[LANG].viewProfile||'프로필')+'</button>'))+'</div>'+
+    '</div>';}).join('')+'</div>';
+  initReelsIO();
+}
+function initReelsIO(){teardownReels();var host=$('reels');if(!host)return;
+  var slides=[].slice.call(host.querySelectorAll('.reel'));
+  _reelIO=new IntersectionObserver(function(ents){ents.forEach(function(en){
+    if(en.isIntersecting&&en.intersectionRatio>=0.6)reelPlay(en.target);else reelStop(en.target);});},{root:host,threshold:[0,0.6,1]});
+  slides.forEach(function(s){_reelIO.observe(s);
+    s.onclick=function(){var v=s.querySelector('video');if(!v)return;if(v.paused)v.play().catch(function(){});else v.pause();};});
+}
+function reelPlay(el){var v=el.querySelector('video');
+  if(!v){v=document.createElement('video');v.className='reelvid';v.src=el.dataset.src;v.loop=true;v.muted=true;v.playsInline=true;v.setAttribute('preload','auto');el.insertBefore(v,el.firstChild);}
+  el.classList.add('playing');var p=v.play();if(p&&p.catch)p.catch(function(){});}
+function reelStop(el){var v=el.querySelector('video');if(v){try{v.pause();v.removeAttribute('src');v.load();}catch(e){}v.remove();}el.classList.remove('playing');}
+function reelToggleMute(e,btn){e.stopPropagation();var el=btn.parentNode;var v=el&&el.querySelector('video');if(!v)return;v.muted=!v.muted;btn.innerHTML='<i class="ti ti-volume'+(v.muted?'-off':'')+'"></i>';}
 function render(){renderBanner();renderStories();renderPopular();
+ updateReelsTab();
  var mep=document.getElementById('mepage');
  var fb=document.querySelector('.filterbar');
  if(VIEW==='me'&&!ME)VIEW='explore';
+ if(VIEW==='reels'&&!reelsReady())VIEW='explore';
+ document.body.classList.toggle('reels-mode',VIEW==='reels');
+ if(VIEW!=='reels')teardownReels();
  var hsb=document.querySelector('.hsearch');
+ if(VIEW==='reels'){if(mep)mep.style.display='none';$('grid').style.display='';$('grid').classList.remove('dgview');renderReels();syncTabs('reels');window.scrollTo({top:0});return;}
  if(VIEW==='me'){$('grid').style.display='none';if(fb)fb.style.display='none';if(hsb)hsb.style.display='none';if(mep)mep.style.display='block';renderMe();syncTabs('me');window.scrollTo({top:0});return;}
  if(mep)mep.style.display='none';$('grid').style.display='';if(fb)fb.style.display='';if(hsb)hsb.style.display='';
  const q=($('q').value||'').toLowerCase(),city=$('city').value;
@@ -1553,7 +1612,7 @@ Object.assign(T.en,{doneCount:'{n} services completed',sortRec:'Recommended',sor
 Object.assign(T.ja,{doneCount:'{n}件 施術完了',sortRec:'おすすめ',sortNew:'新着',sortRating:'高評価',sortNear:'近い順',location:'場所',mapOpen:'地図で開く'});
 // 태국어: 영어 전체를 상속받고 주요 문자열만 태국어로 (누락 키는 영어로 자동 폴백)
 T.th=Object.assign({},T.th,{
- explore:'สำรวจ',designers:'ดีไซเนอร์',saved:'บันทึกไว้',join:'สมัคร',my:'ฉัน',messages:'ข้อความ',
+ explore:'สำรวจ',designers:'ดีไซเนอร์',reels:'รีลส์',reelsEmpty:'ยังไม่มีวิดีโอ',saved:'บันทึกไว้',join:'สมัคร',my:'ฉัน',messages:'ข้อความ',
  search:'ค้นหาดีไซเนอร์ สไตล์…',all:'ทั้งหมด',allcity:'ทุกเมือง',
  tagline:'ค้นหาช่างความงามที่เข้าใจสไตล์ของคุณ — ทั่วโลก ดูผลงานจริง บันทึกที่ชอบ จองหรือทักแชทได้เลย',
  h1:'ค้นหาช่างความงามที่ <em>เข้าใจสไตล์คุณ</em>',
