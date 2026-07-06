@@ -77,6 +77,16 @@ button{cursor:pointer;border:none;background:none;font-family:inherit;}
 .tabs{display:flex;gap:7px;margin-bottom:16px;flex-wrap:wrap;}
 .tab{flex:1;min-width:0;font-size:13.5px;font-weight:800;padding:11px 4px;border-radius:11px;border:1px solid var(--line);background:#fff;color:var(--ink2);text-align:center;}
 .tab.on{background:var(--plum);color:#fff;border-color:var(--plum);}
+.ufilter .uf{font-size:12.5px;font-weight:700;padding:8px 15px;border-radius:999px;border:1px solid var(--line);background:#fff;color:var(--ink2);cursor:pointer;}
+.ufilter .uf.on{background:var(--rosebg);border-color:var(--accent);color:var(--plum);}
+.urow{display:flex;align-items:center;gap:12px;padding:12px;border:1px solid var(--line);border-radius:14px;margin-bottom:9px;background:#fff;}
+.urow .uav{width:44px;height:44px;border-radius:50%;flex:0 0 auto;background:var(--soft) center/cover;display:flex;align-items:center;justify-content:center;color:var(--sub);font-size:20px;}
+.urow .ui{flex:1;min-width:0;}
+.urow .un{font-size:14.5px;font-weight:800;color:var(--ink);display:flex;align-items:center;gap:7px;}
+.urow .um{font-size:12.5px;color:var(--sub);margin-top:3px;}
+.ubadge{font-size:11px;font-weight:800;padding:3px 9px;border-radius:999px;}
+.ubadge.c{background:#eef3f0;color:#3E7C6A;}
+.ubadge.d{background:var(--rosebg);color:var(--plum);}
 .tbadge{display:inline-flex;align-items:center;justify-content:center;min-width:18px;height:18px;padding:0 5px;margin-left:5px;border-radius:999px;background:var(--red);color:#fff;font-size:11px;font-weight:800;vertical-align:1px;}
 .apcard .apinfo{display:flex;flex-wrap:wrap;gap:8px 16px;margin-top:9px;}
 .apilink{display:inline-flex;align-items:center;gap:5px;font-size:12.5px;font-weight:700;color:var(--ink2);}
@@ -200,6 +210,7 @@ textarea.inp{resize:vertical;min-height:70px;line-height:1.5;}
       <div class="stat"><div class="sv" id="stVT">–</div><div class="sl">오늘 방문자</div></div>
       <div class="stat"><div class="sv" id="stV">–</div><div class="sl">총 방문</div></div>
       <div class="stat"><div class="sv" id="stD">0</div><div class="sl">디자이너</div></div>
+      <div class="stat"><div class="sv" id="stU">0</div><div class="sl">고객</div></div>
       <div class="stat"><div class="sv" id="stP">0</div><div class="sl">총 포트폴리오</div></div>
       <div class="stat"><div class="sv" id="stB">0</div><div class="sl">예약</div></div>
       <div class="stat"><div class="sv" id="stR">0</div><div class="sl">후기</div></div>
@@ -207,6 +218,7 @@ textarea.inp{resize:vertical;min-height:70px;line-height:1.5;}
     <div class="tabs">
       <button class="tab on" id="tab-designers" onclick="tab('designers')">디자이너 관리</button>
       <button class="tab" id="tab-applications" onclick="tab('applications')">신청<span class="tbadge hide" id="appBadge"></span></button>
+      <button class="tab" id="tab-users" onclick="tab('users')">사용자</button>
       <button class="tab" id="tab-bookings" onclick="tab('bookings')">예약</button>
       <button class="tab" id="tab-reviews" onclick="tab('reviews')">후기</button>
     </div>
@@ -218,6 +230,16 @@ textarea.inp{resize:vertical;min-height:70px;line-height:1.5;}
     </div>
 
     <div id="sec-applications" class="hide"><div class="note" style="margin-bottom:12px"><i class="ti ti-info-circle"></i> 승인하면 신청자 계정이 <b>디자이너로 전환</b>되고 포트폴리오·정보가 프로필에 채워집니다.</div><div class="rowlist" id="aplist"></div></div>
+    <div id="sec-users" class="hide">
+      <div class="searchbar"><input class="inp" id="uq" placeholder="이름·지역 검색…" oninput="renderUsers()"><button class="mini g" onclick="loadAll()">새로고침</button></div>
+      <div class="ufilter" style="display:flex;gap:6px;margin-bottom:12px">
+        <button class="uf on" data-uf="customer" onclick="setUF('customer')">고객</button>
+        <button class="uf" data-uf="designer" onclick="setUF('designer')">디자이너</button>
+        <button class="uf" data-uf="all" onclick="setUF('all')">전체</button>
+      </div>
+      <div class="note" style="margin-bottom:12px"><i class="ti ti-info-circle"></i> 가입한 사용자 목록. 이메일은 인증 시스템(auth)에만 있어 여기선 표시되지 않아요.</div>
+      <div class="rowlist" id="ulist"></div>
+    </div>
     <div id="sec-bookings" class="hide"><div class="rowlist" id="bklist"></div></div>
     <div id="sec-reviews" class="hide"><div class="rowlist" id="rvlist"></div></div>
   </div>
@@ -292,7 +314,7 @@ async function loadAll(){
     };});
     PMAP={};DESIGNERS.forEach(d=>PMAP[d.id]=d);
     DESIGNERS.sort((a,b)=>((b.photos.length>0)-(a.photos.length>0))||(new Date(b.created)-new Date(a.created)));
-    renderStats();renderList();loadBookings();loadReviews();loadApplications();loadVisits();loadDashboard();
+    renderStats();renderList();renderUsers();loadBookings();loadReviews();loadApplications();loadVisits();loadDashboard();
   }catch(e){toast('오류: '+e.message);}
 }
 let APPS=[];
@@ -350,9 +372,30 @@ async function rejectApp(idx){
     toast('거절 처리됨');loadApplications();
   }catch(e){toast('오류: '+e.message);}
 }
+function isDesigner(d){return d.role==='designer'||d.role==='desg'||d.photos.length>0||!!d.shopName;}
+function fmtJoin(s){if(!s)return '—';try{var d=new Date(s);if(isNaN(d))return '—';return d.getFullYear()+'.'+(d.getMonth()+1)+'.'+d.getDate();}catch(e){return '—';}}
 function renderStats(){
   $('stD').textContent=DESIGNERS.filter(d=>d.photos.length&&!d.hidden).length;
+  $('stU').textContent=DESIGNERS.filter(d=>!isDesigner(d)).length;
   $('stP').textContent=DESIGNERS.reduce((n,d)=>n+d.photos.length,0);
+}
+var USER_FILTER='customer';
+function setUF(f){USER_FILTER=f;document.querySelectorAll('.uf').forEach(b=>b.classList.toggle('on',b.dataset.uf===f));renderUsers();}
+function renderUsers(){
+  var q=($('uq').value||'').toLowerCase().trim();
+  var list=DESIGNERS.slice();
+  if(USER_FILTER==='customer')list=list.filter(d=>!isDesigner(d));
+  else if(USER_FILTER==='designer')list=list.filter(isDesigner);
+  if(q)list=list.filter(d=>(d.nickname+d.region).toLowerCase().includes(q));
+  list.sort((a,b)=>new Date(b.created)-new Date(a.created));
+  if(!list.length){$('ulist').innerHTML='<div class="empty"><i class="ti ti-user"></i><p>해당 사용자가 없어요</p></div>';return;}
+  $('ulist').innerHTML=list.map(d=>{var isD=isDesigner(d);
+    return `<div class="urow">
+      <div class="uav" style="${d.avatar?`background-image:url('${esc(d.avatar)}')`:''}">${d.avatar?'':'<i class="ti ti-user"></i>'}</div>
+      <div class="ui"><div class="un">${esc(d.nickname||'이름 없음')} <span class="ubadge ${isD?'d':'c'}">${isD?'디자이너':'고객'}</span></div>
+        <div class="um">${esc(d.region||'지역 미설정')} · 가입 ${fmtJoin(d.created)}</div></div>
+      ${isD?`<a class="mini g" href="https://beautia.io/d/${d.id}" target="_blank" onclick="event.stopPropagation()">프로필</a>`:''}
+    </div>`;}).join('');
 }
 function kdate(ms){return new Date(ms+9*3600000).toISOString().slice(0,10);}
 async function cnt(q){try{const r=await q;return r.error?null:(r.count||0);}catch(e){return null;}}
@@ -424,7 +467,7 @@ async function loadReviews(){
 
 function renderList(){
   const q=($('q').value||'').toLowerCase().trim();
-  let list=DESIGNERS;
+  let list=DESIGNERS.filter(isDesigner);
   if(q)list=list.filter(d=>(d.nickname+d.region+d.area+d.spec.join('')+d.shopName+d.insta).toLowerCase().includes(q));
   if(!list.length){$('dlist').innerHTML='<div class="empty" style="grid-column:1/-1"><i class="ti ti-users"></i><p>디자이너가 없어요</p></div>';return;}
   $('dlist').innerHTML=list.map(d=>{
@@ -618,7 +661,8 @@ async function delReview(id,ev){
 }
 
 function tab(t){
-  ['designers','applications','bookings','reviews'].forEach(x=>{$('sec-'+x).classList.toggle('hide',x!==t);$('tab-'+x).classList.toggle('on',x===t);});
+  ['designers','applications','users','bookings','reviews'].forEach(x=>{$('sec-'+x).classList.toggle('hide',x!==t);$('tab-'+x).classList.toggle('on',x===t);});
+  if(t==='users')renderUsers();
 }
 
 (async function(){
