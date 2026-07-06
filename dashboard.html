@@ -91,6 +91,7 @@ textarea.inp{resize:vertical;min-height:80px;line-height:1.6;}
 .pfitem{position:relative;aspect-ratio:3/4;border-radius:12px;overflow:hidden;background:var(--soft);}
 .pfitem img{width:100%;height:100%;object-fit:cover;}
 .pfitem .pfvid{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:34px;height:34px;border-radius:50%;background:rgba(20,12,16,.5);color:#fff;display:flex;align-items:center;justify-content:center;font-size:16px;pointer-events:none;}
+.pfitem .pfvidbg{width:100%;height:100%;background:linear-gradient(135deg,#B5828C,#6E4A50);}
 .pfitem .pact{position:absolute;top:5px;right:5px;display:flex;gap:4px;}
 .pfitem .pact button{width:26px;height:26px;border-radius:8px;background:rgba(20,12,16,.62);color:#fff;font-size:15px;display:flex;align-items:center;justify-content:center;}
 .pfitem .ord{position:absolute;bottom:5px;left:5px;display:flex;gap:4px;}
@@ -560,7 +561,7 @@ function renderHome(){
 // ---------- 프로필 채우기/저장 ----------
 function fillProfile(){
   const s=ME.shop||{};
-  state.avatar=s.avatar||'';state.photos=(s.photos||[]).filter(x=>typeof x==='string'&&x.startsWith('http'));
+  state.avatar=s.avatar||'';state.photos=(s.photos||[]).filter(x=>(typeof x==='string'&&x.startsWith('http'))||(x&&typeof x==='object'&&x.img));
   state.ba=(s.ba&&s.ba.length===2&&s.ba[0]&&s.ba[1])?s.ba.slice():[];
   state.spec=(s.specialties||[]).slice();state.tags=(s.tags||[]).slice();state.services=(s.services||[]).slice();
   state.sched=s.sched||defaultSched();renderSched();
@@ -688,7 +689,7 @@ async function uploadImg(file,asPng){
   if(!ctype){toast(t('onlyImages'));throw new Error('invalid file type');}
   if(/^video\//.test(ctype)&&file.size>50*1024*1024){toast('영상은 50MB 이하만 올릴 수 있어요');throw new Error('video too large');}
   const path=UID+'/'+Date.now()+'-'+Math.random().toString(36).slice(2,8)+'.'+ext;
-  const {error}=await SB.storage.from('beautia').upload(path,file,{contentType:ctype,upsert:false});
+  const {error}=await SB.storage.from('beautia').upload(path,file,{contentType:ctype,cacheControl:'31536000',upsert:false});
   if(error)throw error;
   return SB.storage.from('beautia').getPublicUrl(path).data.publicUrl;
 }
@@ -716,22 +717,42 @@ async function onAvatar(input){
 async function onPfFiles(input){
   const files=Array.from(input.files||[]);if(!files.length)return;input.value='';
   toast(tf('uploadingN',{n:files.length}));
-  for(const f of files){try{const url=await uploadImg(f,false);state.photos.push(url);}catch(e){toast(t('someFailPre')+(e.message||e));}}
+  for(const f of files){try{
+    const isV=/^video\//.test(f.type)||/\.(mp4|webm|mov|m4v)$/i.test(f.name);
+    const url=await uploadImg(f,false);
+    if(isV){let poster='';try{const pb=await capturePoster(f);if(pb)poster=await uploadPoster(pb);}catch(_){}state.photos.push({img:url,poster:poster});}
+    else state.photos.push(url);
+  }catch(e){toast(t('someFailPre')+(e.message||e));}}
   renderPf();toast(t('photosUploaded'));
 }
 function isVidU(u){return /\.(mp4|webm|mov|m4v|ogv)(\?|#|$)/i.test(String(u||''));}
+function pUrl(x){return (x&&typeof x==='object')?(x.img||''):(x||'');}
+function pPoster(x){return (x&&typeof x==='object'&&x.poster)?x.poster:'';}
+function isVidP(x){return isVidU(pUrl(x));}
+// 영상 첫 프레임 → 포스터 jpg(≤720px). 피드/썸네일엔 이 이미지만 표시(영상 바이트 절약).
+function capturePoster(file){return new Promise(function(res){try{
+  var url=URL.createObjectURL(file);var v=document.createElement('video');v.muted=true;v.playsInline=true;v.preload='metadata';v.src=url;var done=false;
+  function grab(){if(done)return;done=true;try{var w=v.videoWidth||720,h=v.videoHeight||1280,mx=720;
+    if(w>=h&&w>mx){h=Math.round(h*mx/w);w=mx;}else if(h>w&&h>mx){w=Math.round(w*mx/h);h=mx;}
+    var c=document.createElement('canvas');c.width=w;c.height=h;c.getContext('2d').drawImage(v,0,0,w,h);
+    c.toBlob(function(b){try{URL.revokeObjectURL(url);}catch(e){}res(b||null);},'image/jpeg',0.78);
+  }catch(e){try{URL.revokeObjectURL(url);}catch(_){}res(null);}}
+  v.onloadeddata=function(){try{v.currentTime=Math.min(0.1,(v.duration||2)/3);}catch(e){grab();}};
+  v.onseeked=grab;v.onerror=function(){res(null);};setTimeout(function(){if(!done)res(null);},5000);
+}catch(e){res(null);}});}
+async function uploadPoster(blob){try{const path=UID+'/'+Date.now()+'-'+Math.random().toString(36).slice(2,8)+'.jpg';const up=await SB.storage.from('beautia').upload(path,blob,{contentType:'image/jpeg',cacheControl:'31536000',upsert:false});if(up.error)return '';return SB.storage.from('beautia').getPublicUrl(path).data.publicUrl;}catch(e){return '';}}
 function renderPf(){
   const g=$('pfGrid');
-  g.innerHTML=state.photos.map((u,i)=>`<div class="pfitem">${isVidU(u)?`<video src="${esc(u)}#t=0.1" muted playsinline preload="metadata" style="width:100%;height:100%;object-fit:cover;display:block"></video><span class="pfvid"><i class="ti ti-player-play-filled"></i></span>`:`<img src="${esc(u)}">`}
+  g.innerHTML=state.photos.map((u,i)=>{var ps=pPoster(u),vid=isVidP(u);return `<div class="pfitem">${vid?`${ps?`<img src="${esc(ps)}">`:`<div class="pfvidbg"></div>`}<span class="pfvid"><i class="ti ti-player-play-filled"></i></span>`:`<img src="${esc(pUrl(u))}">`}
     <div class="pact"><button onclick="delPf(${i})" title="삭제"><i class="ti ti-trash"></i></button></div>
     <div class="ord">${i>0?`<button onclick="movePf(${i},-1)"><i class="ti ti-chevron-left"></i></button>`:''}${i<state.photos.length-1?`<button onclick="movePf(${i},1)"><i class="ti ti-chevron-right"></i></button>`:''}</div>
-  </div>`).join('')||`<div class="empty"><i class="ti ti-photo"></i>${esc(t('noPhotos'))}</div>`;
+  </div>`;}).join('')||`<div class="empty"><i class="ti ti-photo"></i>${esc(t('noPhotos'))}</div>`;
   renderBA();
 }
 function renderBA(){
   const bBox=$('baBeforeImg'),aBox=$('baAfterImg'),pb=$('baPickBefore'),pa=$('baPickAfter');
   if(!bBox)return;
-  const photos=state.photos.filter(u=>!isVidU(u));
+  const photos=state.photos.map(pUrl).filter(u=>u&&!isVidU(u));
   if(!photos.length){state.ba=[];bBox.style.backgroundImage='';aBox.style.backgroundImage='';pb.innerHTML=pa.innerHTML='<div class="hint">'+esc(t('baNeedPhotos'))+'</div>';return;}
   // 유효하지 않으면(삭제된 사진 등) 자동 기본값
   if(!(state.ba&&state.ba.length===2&&photos.indexOf(state.ba[0])>=0&&photos.indexOf(state.ba[1])>=0)){state.ba=[photos[0],photos[Math.min(1,photos.length-1)]];}
@@ -740,7 +761,7 @@ function renderBA(){
   const cells=(which)=>photos.map((u)=>`<div class="baThumb${state.ba[which]===u?' on':''}" style="background-image:url('${esc(u)}')" onclick="setBAurl(${which},'${esc(u)}')"></div>`).join('');
   pb.innerHTML=cells(0);pa.innerHTML=cells(1);
 }
-function setBAurl(which,u){var imgs=state.photos.filter(x=>!isVidU(x));var f=imgs[0]||'';state.ba=(state.ba&&state.ba.length===2)?state.ba.slice():[f,f];state.ba[which]=u;renderBA();}
+function setBAurl(which,u){var imgs=state.photos.map(pUrl).filter(x=>x&&!isVidU(x));var f=imgs[0]||'';state.ba=(state.ba&&state.ba.length===2)?state.ba.slice():[f,f];state.ba[which]=u;renderBA();}
 function delPf(i){state.photos.splice(i,1);renderPf();}
 function movePf(i,d){const j=i+d;if(j<0||j>=state.photos.length)return;const t=state.photos[i];state.photos[i]=state.photos[j];state.photos[j]=t;renderPf();}
 async function savePortfolio(){
