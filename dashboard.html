@@ -183,17 +183,17 @@ textarea.inp{resize:vertical;min-height:80px;line-height:1.6;}
 .revcard .revsub{display:flex;gap:18px;flex-wrap:wrap;margin-top:15px;padding-top:13px;border-top:1px solid rgba(255,255,255,.22);font-size:13px;opacity:.95;}
 .revcard .revsub b{font-weight:800;font-size:15px;}
 .revcard .revnote{font-size:11.5px;opacity:.75;margin-top:10px;line-height:1.5;}
-.schedrow{display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid var(--line);}
+.schedrow{display:flex;flex-wrap:wrap;align-items:center;gap:8px 10px;padding:8px 0;border-bottom:1px solid var(--line);}
 .schedrow:last-child{border-bottom:none;}
 .schedday{width:22px;font-weight:800;font-size:15px;color:var(--ink);flex:0 0 auto;text-align:center;}
 .schedtog{flex:0 0 auto;width:56px;padding:7px 0;border-radius:9px;font-weight:800;font-size:12.5px;border:1.5px solid var(--line);background:#fff;color:var(--sub);cursor:pointer;}
 .schedtog.on{background:var(--plum);border-color:var(--plum);color:#fff;}
 .schedtimes{display:flex;align-items:center;gap:6px;margin-left:auto;}
-.inp.tin{width:104px;padding:8px 8px;margin:0;}
+.inp.tin{width:130px;min-width:120px;padding:8px 8px;margin:0;}
 .tw{color:var(--sub);font-weight:700;}
 .schedsub{margin-top:16px;padding-top:14px;border-top:1px solid var(--line);}
 .schedlbl{display:block;font-weight:800;font-size:14px;margin-bottom:8px;}
-.schedbreak{display:flex;align-items:center;gap:6px;margin-bottom:8px;}
+.schedbreak{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin-bottom:8px;}
 .schedx{width:34px;height:34px;border-radius:9px;border:1.5px solid var(--line);background:#fff;color:var(--red);cursor:pointer;flex:0 0 auto;}
 .schedhol{display:flex;gap:8px;}.schedhol .inp{margin:0;}
 .schedchips{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px;}
@@ -258,6 +258,10 @@ textarea.inp{resize:vertical;min-height:80px;line-height:1.6;}
 .rtb .rtt{width:100%;max-width:34px;background:linear-gradient(to top,var(--plum),var(--accent));border-radius:6px 6px 0 0;min-height:3px;}
 .rtb.cur .rtt{background:var(--accent);box-shadow:0 0 0 2px var(--rosebg);}
 .rtb .rtl{font-size:10.5px;color:var(--sub);font-weight:700;}
+.advtoggle{width:100%;margin-top:14px;padding:13px;border-radius:14px;border:1px dashed var(--line);background:#fff;color:var(--ink2);font-weight:800;font-size:13.5px;display:flex;align-items:center;justify-content:center;gap:6px;cursor:pointer;}
+.advtoggle:hover{border-color:var(--accent);color:var(--plum);}
+.advtoggle i{transition:.2s;font-size:17px;}
+.advtoggle.open i{transform:rotate(180deg);}
 </style>
 </head><body>
 <!-- Google Tag Manager (noscript) -->
@@ -289,11 +293,8 @@ textarea.inp{resize:vertical;min-height:80px;line-height:1.6;}
   <div class="tabs">
     <button class="tab on" data-tab="home" onclick="tab('home')" data-t="home">홈</button>
     <button class="tab" data-tab="profile" onclick="tab('profile')" data-t="profile">프로필</button>
-    <button class="tab" data-tab="portfolio" onclick="tab('portfolio')" data-t="portfolio">포폴</button>
     <button class="tab" data-tab="bookings" onclick="tab('bookings')" data-t="bookings">예약</button>
     <button class="tab" data-tab="messages" onclick="tab('messages')"><span data-t="msgTab">메시지</span><span class="tbadge hide" id="msgBadge"></span></button>
-    <button class="tab" data-tab="reviews" onclick="tab('reviews')" data-t="reviews">후기</button>
-    <button class="tab" data-tab="clients" onclick="tab('clients')" data-t="clients">고객</button>
   </div>
 
   <!-- 홈 -->
@@ -326,10 +327,6 @@ textarea.inp{resize:vertical;min-height:80px;line-height:1.6;}
       </div>
       <div class="revnote" id="revNote"></div>
     </div>
-    <div class="card" id="revTrendCard" style="display:none">
-      <h2><i class="ti ti-chart-bar"></i> <span data-t="revTrend">월별 매출 추이</span></h2>
-      <div class="rtbars" id="rtBars"></div>
-    </div>
     <div class="statgrid">
       <div class="stat"><div class="sv" id="stPhotos">0</div><div class="sl" data-t="statPortfolio">포트폴리오</div></div>
       <div class="stat"><div class="sv" id="stFollowers">0</div><div class="sl" data-t="statFollowers">팔로워</div></div>
@@ -337,25 +334,32 @@ textarea.inp{resize:vertical;min-height:80px;line-height:1.6;}
       <div class="stat"><div class="sv" id="stRev">0</div><div class="sl" data-t="statReviews">후기</div></div>
       <div class="stat"><div class="sv" id="stRating">—</div><div class="sl" data-t="statRating">평점</div></div>
     </div>
-    <div class="card" id="insightCard">
-      <h2><i class="ti ti-chart-line"></i> <span data-t="insightTitle">성과 인사이트</span></h2>
-      <div class="instiles">
-        <div class="intile"><div class="inl" data-t="inViewsWeek">이번 주 조회</div><div class="inv" id="inViews">—</div><div class="ind" id="inViewsDelta"></div></div>
-        <div class="intile"><div class="inl" data-t="inSaves">찜</div><div class="inv" id="inSaves">—</div><div class="ind"></div></div>
-        <div class="intile"><div class="inl" data-t="inConv">조회→예약</div><div class="inv" id="inConv">—</div><div class="ind"></div></div>
-      </div>
-      <div class="intrend"><div class="inct" data-t="inTrend">최근 7일 조회 추이</div><div class="inbars" id="inBars"></div></div>
-      <div class="innote" id="inNote" style="display:none" data-t="inNeedSql">조회수 집계는 방문 기록 설정 후 표시돼요.</div>
-    </div>
     <div class="card">
       <h2 data-t="completeness">프로필 완성도</h2>
       <div class="prog"><div class="progbar" id="progBar"></div></div>
       <div class="hint" id="progPct" style="margin:8px 0 0"></div>
       <div id="progTips"></div>
     </div>
-    <div class="card">
-      <h2><span data-t="followers">팔로워</span> <span class="hint" id="flwrCount" style="display:inline;font-weight:600"></span></h2>
-      <div id="followerList" class="flwrs"><div class="hint" data-t="loadingFollowers">불러오는 중…</div></div>
+    <button class="advtoggle" id="advToggle" onclick="toggleAdv()"><span data-t="advMore">성과·인사이트 더보기</span> <i class="ti ti-chevron-down"></i></button>
+    <div id="homeAdv" class="hide">
+      <div class="card" id="revTrendCard" style="display:none">
+        <h2><i class="ti ti-chart-bar"></i> <span data-t="revTrend">월별 매출 추이</span></h2>
+        <div class="rtbars" id="rtBars"></div>
+      </div>
+      <div class="card" id="insightCard">
+        <h2><i class="ti ti-chart-line"></i> <span data-t="insightTitle">성과 인사이트</span></h2>
+        <div class="instiles">
+          <div class="intile"><div class="inl" data-t="inViewsWeek">이번 주 조회</div><div class="inv" id="inViews">—</div><div class="ind" id="inViewsDelta"></div></div>
+          <div class="intile"><div class="inl" data-t="inSaves">찜</div><div class="inv" id="inSaves">—</div><div class="ind"></div></div>
+          <div class="intile"><div class="inl" data-t="inConv">조회→예약</div><div class="inv" id="inConv">—</div><div class="ind"></div></div>
+        </div>
+        <div class="intrend"><div class="inct" data-t="inTrend">최근 7일 조회 추이</div><div class="inbars" id="inBars"></div></div>
+        <div class="innote" id="inNote" style="display:none" data-t="inNeedSql">조회수 집계는 방문 기록 설정 후 표시돼요.</div>
+      </div>
+      <div class="card">
+        <h2><span data-t="followers">팔로워</span> <span class="hint" id="flwrCount" style="display:inline;font-weight:600"></span></h2>
+        <div id="followerList" class="flwrs"><div class="hint" data-t="loadingFollowers">불러오는 중…</div></div>
+      </div>
     </div>
   </div>
 
@@ -383,14 +387,15 @@ textarea.inp{resize:vertical;min-height:80px;line-height:1.6;}
       </div>
       <div class="row"><label data-t="nameL">이름 / 활동명</label><input class="inp" id="f_name" data-tph="namePh" placeholder="예: 소아"></div>
       <div class="row"><label id="shopLbl" data-t="shopL">가게 · 샵 이름</label><input class="inp" id="f_shop" data-tph="shopPh" placeholder="예: 챌린지헤어"></div>
-      <div class="row"><label data-t="regionL">지역 (도시)</label><input class="inp" id="f_region" data-tph="regionPh" placeholder="예: 김포"></div>
+      <div class="row"><label data-t="regionL">지역 (도시)</label><input class="inp" id="f_region" list="cityList" data-tph="regionPh" placeholder="예: 김포"><datalist id="cityList"></datalist><div class="hint" style="margin-top:5px" data-t="pickOrType">목록에서 선택하거나 직접 입력</div></div>
       <div class="row"><label id="addrLbl" data-t="addrL">주소 · 상세</label><input class="inp" id="f_area" data-tph="addrPh" placeholder="예: 경기 김포시 구래동 아스타프라자 301호"></div>
       <div class="row"><label data-t="specL">전문 분야</label><div class="chips" id="specChips"></div></div>
       <div class="row"><label data-t="tagsL">태그 (엔터로 추가 · 최대 8개)</label>
         <div class="tagbox" id="tagBox"></div>
+        <div class="chips" id="tagSuggest" style="margin-top:8px"></div>
         <input class="inp" id="tagIn" data-tph="tagsPh" placeholder="예: 매직 스트레이트, 레이어드컷" style="margin-top:8px" onkeydown="tagKey(event)">
       </div>
-      <div class="row"><label data-t="careerL">경력</label><input class="inp" id="f_career" data-tph="careerPh" placeholder="예: 6년"></div>
+      <div class="row"><label data-t="careerL">경력</label><input class="inp" id="f_career" list="careerList" data-tph="careerPh" placeholder="예: 6년"><datalist id="careerList"></datalist></div>
       <div class="row"><label data-t="bioL">소개</label><textarea class="inp" id="f_bio" data-tph="bioPh" placeholder="시술 스타일, 강점 등을 소개해주세요"></textarea></div>
     </div>
     <div class="card">
@@ -404,7 +409,7 @@ textarea.inp{resize:vertical;min-height:80px;line-height:1.6;}
       <h2 data-t="svcTitle">서비스 · 가격</h2><div class="hint" data-t="svcHint">프로필에 표시돼요. 고객이 예약할 때 참고합니다.</div>
       <div id="svcList"></div>
       <div class="svcadd">
-        <input class="inp" id="svcName" data-tph="svcNamePh" placeholder="서비스명 (예: 컷 + 펌)">
+        <input class="inp" id="svcName" list="svcOpts" data-tph="svcNamePh" placeholder="서비스명 (예: 컷 + 펌)"><datalist id="svcOpts"></datalist>
         <div style="display:flex;gap:8px;margin-top:8px">
           <input class="inp" id="svcPrice" data-tph="svcPricePh" placeholder="가격 (예: 80,000원)" style="flex:1.4">
           <input class="inp" id="svcDur" data-tph="svcDurPh" placeholder="시간 (예: 2시간)" style="flex:1">
@@ -461,8 +466,8 @@ textarea.inp{resize:vertical;min-height:80px;line-height:1.6;}
       <div id="addBkForm" class="hide" style="margin-top:14px">
         <div class="row"><label data-t="custName">손님 이름</label><input class="inp" id="mbName" data-tph="custNamePh" placeholder="예: 홍길동"></div>
         <div class="two"><div class="row"><label data-t="dateL">날짜</label><input class="inp" id="mbDate" type="date"></div>
-        <div class="row"><label data-t="timeL">시간</label><input class="inp" id="mbTime" type="time"></div></div>
-        <div class="row"><label data-t="svcL">서비스</label><input class="inp" id="mbSvc" data-tph="svcPh" placeholder="예: 컷+펌"></div>
+        <div class="row"><label data-t="timeL">시간</label><input class="inp" id="mbTime" type="time" step="1800"></div></div>
+        <div class="row"><label data-t="svcL">서비스</label><input class="inp" id="mbSvc" list="svcOpts" data-tph="svcPh" placeholder="예: 컷+펌"></div>
         <div class="row"><label data-t="memoL">메모 (선택)</label><input class="inp" id="mbNote" data-tph="memoPh" placeholder="예: 네이버예약 / 연락처 등"></div>
         <button class="btn" id="mbAddBtn" onclick="addManualBk()"><i class="ti ti-calendar-plus"></i> <span data-t="addToCal">캘린더에 추가</span></button>
       </div>
@@ -522,7 +527,11 @@ let bkRows=null, revRows=null;
 const catKo={Hair:'헤어',Makeup:'메이크업',Nail:'네일',Lash:'속눈썹',Skin:'스킨',Bridal:'브라이덜'};
 
 // ===== 다국어 (한/영/일/태) =====
-let LANG=(function(){try{var l=localStorage.getItem('beautia_lang');return l||'ko';}catch(e){return 'ko';}})();
+let LANG=(function(){
+  try{var s=localStorage.getItem('beautia_lang');if(['ko','en','ja','th'].indexOf(s)>=0)return s;}catch(e){}
+  var nl=(navigator.language||navigator.userLanguage||'ko').toLowerCase();
+  return nl.indexOf('ko')===0?'ko':nl.indexOf('ja')===0?'ja':nl.indexOf('th')===0?'th':nl.indexOf('en')===0?'en':'en';
+})();
 if(['ko','en','ja','th'].indexOf(LANG)<0)LANG='ko';
 const T={
  ko:{home:'홈',profile:'프로필',portfolio:'포폴',bookings:'예약',reviews:'후기',logout:'로그아웃',loginTitle:'디자이너 로그인',loginDesc:'가입한 이메일로 인증코드를 받아 로그인하세요. 처음이면 먼저 앱에서 디자이너로 가입해주세요.',emailL:'이메일',code6L:'인증코드 6자리',sendCode:'인증코드 받기',loginBtn:'로그인',resendCode:'코드 재전송',sendingCode:'코드 전송 중…',enterCodeMsg:'이메일로 보낸 6자리 코드를 입력하세요.',verifying:'확인 중…',codeWrong:'코드가 틀렸어요',checkEmail:'이메일을 확인해주세요',enterCodeT:'코드를 입력하세요',sendFailPre:'전송 실패: ',sendFailPost:' — 먼저 앱에서 디자이너로 가입했는지 확인하세요.',noProfile:'프로필이 없어요. 앱에서 먼저 가입해주세요.',greetHi:'안녕하세요,',greetSuffix:'님 👋',viewPub:'공개 프로필 보기',copyLink:'공유 링크 복사',copied:'공유 링크 복사됨 ✨',qrHint:'QR을 매장에 붙여두면 손님이 스캔해 바로 예약해요',upcoming:'다가오는 예약',upPendCnt:'· 대기 {n}건',revTotal:'총 매출',revMonth:'이번 달 매출',sfDone:'완료',sfMonthBk:'이번 달 예약',sfPend:'대기중',statPortfolio:'포트폴리오',statFollowers:'팔로워',statBk:'총 예약',statReviews:'후기',statRating:'평점',completeness:'프로필 완성도',pctDone:'{pct}% 완료 ({done}/{total})',fillTip:'{label} 채우기',profileComplete:'프로필이 완성됐어요!',followers:'팔로워',loadingFollowers:'불러오는 중…',flwrN:'· {n}명',noFollowers:'아직 팔로워가 없어요. 프로필을 공유해 팔로워를 모아보세요 ✨',followErr:'팔로워 기능을 켜려면 db_enable_follows.sql을 실행하세요',followLoadErr:'팔로워를 불러올 수 없어요',c_photo:'프로필 사진',c_name:'이름',c_shop:'샵 이름',c_region:'지역',c_spec:'전문 분야',c_bio:'소개글',c_pf3:'포트폴리오 3장+',c_tags:'태그',c_svc:'서비스·가격',c_contact:'연락 링크',pfPhoto:'프로필 사진',pfPhotoHint:'로고나 얼굴 사진. 원형으로 표시돼요.',changePhoto:'사진 변경',trimLogo:'로고 여백 자동 제거',basicInfo:'기본 정보',workTypeL:'활동 형태',wtShop:'샵 소속',wtFree:'프리랜서',wtShopHint:'가게·샵에 소속된 디자이너예요.',wtFreeHint:'소속 샵 없이 활동해요 · 샵/주소는 선택이에요.',shopLFree:'브랜드 · 활동명 (선택)',addrLFree:'활동 지역 · 출장 가능 (선택)',nameL:'이름 / 활동명',namePh:'예: 소아',shopL:'가게 · 샵 이름',shopPh:'예: 챌린지헤어',regionL:'지역 (도시)',regionPh:'예: 김포',addrL:'주소 · 상세',addrPh:'예: 경기 김포시 구래동 아스타프라자 301호',specL:'전문 분야',tagsL:'태그 (엔터로 추가 · 최대 8개)',tagsPh:'예: 매직 스트레이트, 레이어드컷',careerL:'경력',careerPh:'예: 6년',bioL:'소개',bioPh:'시술 스타일, 강점 등을 소개해주세요',contactLinks:'연락 · 링크',instaL:'인스타그램 아이디 (@ 없이)',instaPh:'예: challengehair1',naverL:'네이버 플레이스 링크',blogL:'블로그 링크',bookingL:'외부 예약 링크',bookingSuffix:'· 네이버예약·LINE·핫페퍼 등',bookingPh:'https://booking.naver.com/… 또는 LINE·핫페퍼 예약 링크',bookingHint:'넣으면 손님 프로필에 "예약하기" 버튼으로 연결돼요 (링크 종류를 자동 감지해 라벨·색 표시).',svcTitle:'서비스 · 가격',svcHint:'프로필에 표시돼요. 고객이 예약할 때 참고합니다.',svcNamePh:'서비스명 (예: 컷 + 펌)',svcPricePh:'가격 (예: 80,000원)',svcDurPh:'시간 (예: 2시간)',addSvc:'서비스 추가',saveProfile:'프로필 저장',noTags:'아직 태그가 없어요',noSvc:'아직 등록한 서비스가 없어요',enterSvcName:'서비스명을 입력하세요',saveOk:'저장됐어요 ✓',saveFailPre:'저장 실패: ',errPre:'오류: ',pfTitle:'포트폴리오 사진',pfHint:'대표 작업을 올리세요. 갤러리·프로필·ID카드에 바로 보여요.',addPhoto:'사진 추가',baTitle:'비포 / 애프터 슬라이더',baHint:'디자이너 상세페이지의 비포·애프터 슬라이더에 쓸 사진 2장을 포폴에서 고르세요.',baBeforeLbl:'비포로 쓸 사진',baAfterLbl:'애프터로 쓸 사진',savePortfolio:'포트폴리오 저장',noPhotos:'아직 사진이 없어요',baNeedPhotos:'포폴 사진을 먼저 올려주세요',uploading:'업로드 중…',photoUploaded:'사진 올렸어요. 저장을 눌러 반영하세요.',uploadFailPre:'업로드 실패: ',uploadingN:'{n}장 업로드 중…',someFailPre:'일부 실패: ',photosUploaded:'올렸어요. 포트폴리오 저장을 눌러 반영하세요.',onlyImages:'이미지 파일(jpg·png·webp·gif)만 올릴 수 있어요',savePfOk:'포트폴리오 저장됨 ✓',schedTitle:'스케줄 관리',schedHint:'여기서 정한 영업시간·휴식·휴무 <b>외에는 손님이 예약할 수 없어요.</b>',breakTitle:'휴식 시간',breakSuffix:'· 매일 반복',addBreak:'휴식 추가',holTitle:'임시 휴무일',holSuffix:'· 특정 날짜 쉼',addBtn:'추가',saveSched:'스케줄 저장',calHint:'고객이 예약하면 날짜에 표시돼요. 날짜를 눌러 그날 예약을 확인하세요.',addBk:'직접 예약 추가',addBkSuffix:'· 네이버·전화·워크인 등',custName:'손님 이름',custNamePh:'예: 홍길동',dateL:'날짜',timeL:'시간',svcL:'서비스',svcPh:'예: 컷+펌',memoL:'메모 (선택)',memoPh:'예: 네이버예약 / 연락처 등',addToCal:'캘린더에 추가',receivedBk:'받은 예약',receivedHint:'수락·완료 처리하세요.',open:'영업',closed:'휴무',noHol:'아직 없음',selDateBk:'{date} 예약',receivedN:'받은 예약 ({n})',noBkDay:'이 날은 예약이 없어요',noBkYet:'아직 받은 예약이 없어요',st_pending:'대기중',st_accepted:'수락됨',st_done:'완료',st_declined:'거절됨',actAccept:'수락',actDecline:'거절',actComplete:'완료 처리',pickDate:'날짜를 선택하세요',addBkOk:'캘린더에 추가됐어요 ✓',addBkFailPre:'추가 실패: ',addBkRls:'⚠️ 추가 안 됨 — 권한(RLS) 필요. Supabase에서 db_setup_all.sql 실행',processOk:'처리됐어요 ✓',processFailPre:'처리 실패: ',calLoadErr:'예약 정보를 불러올 수 없어요 (db_setup_all.sql 필요할 수 있어요)',bkListLoadErr:'예약 정보를 불러올 수 없어요',revNote:'수락·완료된 예약의 메뉴 가격 합계',revNoteExcl:' · 가격 없는 예약 {n}건 제외',revNoteEmpty:'예약이 쌓이면 매출이 자동 집계돼요',saveSchedOk:'스케줄 저장됐어요 ✓',saveRls:'⚠️ 저장 안 됨 — 권한(RLS) 필요. Supabase에서 db_setup_all.sql 실행',bkDefault:'예약',upPending:'대기중',upConfirmed:'확정',reviewsTitle:'받은 후기',reviewsHint:'고객이 남긴 후기입니다.',revLoadErr:'후기를 불러올 수 없어요',noReviews:'아직 받은 후기가 없어요',trView:'번역 보기',trOrig:'원문 보기',trSame:'원문과 동일',trFail:'번역 실패, 잠시 후 다시',member:'회원',cat_Hair:'헤어',cat_Makeup:'메이크업',cat_Nail:'네일',cat_Lash:'속눈썹',cat_Skin:'스킨',cat_Bridal:'브라이덜',mon:['1월','2월','3월','4월','5월','6월','7월','8월','9월','10월','11월','12월'],wd:['일','월','화','수','목','금','토'],calY:'년',calM:'월'},
@@ -538,6 +547,10 @@ Object.assign(T.ko,{clients:'고객',insightTitle:'성과 인사이트',inViewsW
 Object.assign(T.en,{clients:'Clients',insightTitle:'Performance insights',inViewsWeek:'Views this week',inSaves:'Saves',inConv:'View→Book',inTrend:'Views · last 7 days',inNeedSql:'View counts appear once visit tracking is set up.',clTitle:'Clients',clHint:'Clients gathered automatically from your bookings. Manage regulars, spend and notes.',clSearch:'Search client name…',clNone:'No clients yet. They appear automatically as bookings come in.',clVisits:'{n} visits',clLast:'Last {d}',clSpent:'Total {v}',clRegular:'Regular',clMemo:'Private note (only you)',clMemoPh:'e.g. Prefers soft perm / allergy · contact',clMemoSaved:'Note saved ✓',clExport:'Clients CSV',bkExport:'Bookings CSV',csvOk:'CSV exported ✓',clTotal:'{n} clients',clRegularsN:'{n} regulars'});
 Object.assign(T.ja,{clients:'顧客',insightTitle:'成果インサイト',inViewsWeek:'今週の閲覧',inSaves:'保存',inConv:'閲覧→予約',inTrend:'直近7日の閲覧推移',inNeedSql:'閲覧数は訪問記録の設定後に表示されます。',clTitle:'顧客管理',clHint:'予約から自動で集まった顧客です。常連・売上・メモを管理しましょう。',clSearch:'顧客名で検索…',clNone:'まだ顧客がいません。予約がたまると自動で表示されます。',clVisits:'来店 {n}回',clLast:'最近 {d}',clSpent:'累計 {v}',clRegular:'常連',clMemo:'メモ（自分だけ）',clMemoPh:'例：パーマ弱め希望 / アレルギー・連絡先など',clMemoSaved:'メモを保存しました ✓',clExport:'顧客CSV',bkExport:'予約CSV',csvOk:'CSVを出力しました ✓',clTotal:'顧客 {n}名',clRegularsN:'常連 {n}名'});
 Object.assign(T.th,{clients:'ลูกค้า',insightTitle:'อินไซต์ผลงาน',inViewsWeek:'เข้าชมสัปดาห์นี้',inSaves:'บันทึก',inConv:'ชม→จอง',inTrend:'ยอดเข้าชม 7 วันล่าสุด',inNeedSql:'ยอดเข้าชมจะแสดงหลังตั้งค่าการเก็บสถิติการเข้าชม',clTitle:'จัดการลูกค้า',clHint:'ลูกค้าที่รวบรวมจากการจองอัตโนมัติ จัดการลูกค้าประจำ ยอดใช้จ่าย และโน้ต',clSearch:'ค้นหาชื่อลูกค้า…',clNone:'ยังไม่มีลูกค้า จะแสดงอัตโนมัติเมื่อมีการจอง',clVisits:'มา {n} ครั้ง',clLast:'ล่าสุด {d}',clSpent:'รวม {v}',clRegular:'ลูกค้าประจำ',clMemo:'โน้ต (เห็นคนเดียว)',clMemoPh:'เช่น ชอบดัดอ่อน / แพ้ · ติดต่อ',clMemoSaved:'บันทึกโน้ตแล้ว ✓',clExport:'CSV ลูกค้า',bkExport:'CSV การจอง',csvOk:'ส่งออก CSV แล้ว ✓',clTotal:'ลูกค้า {n} คน',clRegularsN:'ประจำ {n} คน'});
+Object.assign(T.ko,{tagSuggestL:'추천 태그 · 눌러서 추가',pickOrType:'목록에서 선택하거나 직접 입력',advMore:'성과·인사이트 더보기',advLess:'접기'});
+Object.assign(T.en,{tagSuggestL:'Suggested · tap to add',pickOrType:'Pick from the list or type your own',advMore:'More insights',advLess:'Show less'});
+Object.assign(T.ja,{tagSuggestL:'おすすめ・タップで追加',pickOrType:'リストから選択・自由入力可',advMore:'成果・インサイトをもっと見る',advLess:'閉じる'});
+Object.assign(T.th,{tagSuggestL:'แนะนำ · แตะเพื่อเพิ่ม',pickOrType:'เลือกจากรายการหรือพิมพ์เอง',advMore:'ดูอินไซต์เพิ่มเติม',advLess:'ย่อ'});
 Object.assign(T.ko,{revTrend:'월별 매출 추이',posterBtn:'홍보 포스터',reviewReqBtn:'리뷰 요청 링크',reviewReqMsg:'시술 후기를 남겨주세요 😊 아래 링크에서 남길 수 있어요:',reviewReqCopied:'리뷰 요청 메시지 복사됨 ✨',posterCta:'지금 바로 예약하세요 ✨',posterScan:'QR을 스캔하거나 아래 링크로 접속',posterPrintHint:'인쇄 화면에서 "PDF로 저장" 또는 인쇄를 선택하세요 (Ctrl+P · 모바일은 공유▸인쇄).'});
 Object.assign(T.en,{revTrend:'Monthly revenue',posterBtn:'Promo poster',reviewReqBtn:'Ask for reviews',reviewReqMsg:'Please leave a review of your visit 😊 You can do it here:',reviewReqCopied:'Review request copied ✨',posterCta:'Book me now ✨',posterScan:'Scan the QR or visit the link below',posterPrintHint:'Choose “Save as PDF” or Print in the dialog (Ctrl+P · mobile: Share▸Print).'});
 Object.assign(T.ja,{revTrend:'月別売上',posterBtn:'販促ポスター',reviewReqBtn:'レビュー依頼',reviewReqMsg:'施術のレビューを残していただけますか 😊 こちらからどうぞ：',reviewReqCopied:'レビュー依頼をコピーしました ✨',posterCta:'今すぐ予約 ✨',posterScan:'QRをスキャン、または下のリンクへ',posterPrintHint:'印刷画面で「PDFで保存」または印刷を選んでください（Ctrl+P）。'});
@@ -553,7 +566,7 @@ function applyI18n(){
   document.querySelectorAll('[data-thtml]').forEach(function(e){e.innerHTML=t(e.dataset.thtml);});
   var ls=$('langSel');if(ls)ls.value=LANG;
 }
-function rerenderI18n(){try{if(ME){renderSpec();renderTags();renderServices();renderSched();renderPf();renderHome();renderStats();renderBkCalendar();renderBkList();renderReviews();renderClients();if(document.getElementById('wtype'))setWorkType(state.freelancer);}}catch(e){}}
+function rerenderI18n(){try{if(ME){renderSpec();renderTags();renderServices();renderSched();renderPf();renderHome();renderStats();renderBkCalendar();renderBkList();renderReviews();renderClients();renderProfileOptions();if(document.getElementById('wtype'))setWorkType(state.freelancer);}}catch(e){}}
 function setLang(l){if(['ko','en','ja','th'].indexOf(l)<0)return;LANG=l;try{localStorage.setItem('beautia_lang',l);}catch(e){}applyI18n();rerenderI18n();}
 
 function toast(m){const t=$('toast');t.textContent=m;t.classList.add('on');clearTimeout(t._t);t._t=setTimeout(()=>t.classList.remove('on'),2600);}
@@ -651,6 +664,7 @@ function fillProfile(){
   $('f_booking').value=s.bookingUrl||'';
   setWorkType(!!s.freelancer);
   updateAvPreview();
+  renderProfileOptions();
 }
 function updateAvPreview(){$('avPreview').style.backgroundImage=state.avatar?"url('"+state.avatar+"')":'';}
 function setWorkType(isFree){
@@ -666,15 +680,63 @@ function setWorkType(isFree){
     if(shop)shop.placeholder=t('shopPh');if(area)area.placeholder=t('addrPh');
   }
 }
+// ---------- 미리 준비된 선택 옵션(수기 입력 최소화) ----------
+var PF_CITY={
+ ko:['서울','경기','인천','부산','대구','대전','광주','울산','수원','성남','고양','용인','김포','부천','청주','천안','전주','제주','강남','홍대'],
+ en:['Seoul','Gyeonggi','Incheon','Busan','Bangkok','Chiang Mai','Phuket','Pattaya','Tokyo','Osaka','Kyoto','Nagoya','Fukuoka','Yokohama','Sapporo','Daegu','Daejeon','Gwangju'],
+ ja:['ソウル','京畿','仁川','東京','大阪','京都','名古屋','福岡','横浜','札幌','神戸','釜山','バンコク','チェンマイ','プーケット'],
+ th:['กรุงเทพฯ','เชียงใหม่','ภูเก็ต','พัทยา','โคราช','โซล','คย็องกี','ปูซาน','โตเกียว','โอซาก้า','เกียวโต','ฟุกุโอกะ']
+};
+var PF_CAREER={
+ ko:['신입','1년','2년','3년','4년','5년','6년','7년','8년','9년','10년','10년 이상','15년 이상','20년 이상'],
+ en:['New','1 year','2 years','3 years','4 years','5 years','6 years','7 years','8 years','9 years','10 years','10+ years','15+ years','20+ years'],
+ ja:['新人','1年','2年','3年','4年','5年','6年','7年','8年','9年','10年','10年以上','15年以上','20年以上'],
+ th:['ใหม่','1 ปี','2 ปี','3 ปี','4 ปี','5 ปี','6 ปี','7 ปี','8 ปี','9 ปี','10 ปี','10+ ปี','15+ ปี','20+ ปี']
+};
+var PF_SVC={
+ Hair:{ko:['컷','펌','매직스트레이트','뿌리염색','전체염색','클리닉','디자인펌','볼륨매직','드라이','업스타일','남성컷'],en:['Cut','Perm','Magic straight','Root color','Full color','Treatment','Design perm','Volume magic','Blow dry','Updo','Men’s cut']},
+ Makeup:{ko:['데일리 메이크업','파티 메이크업','웨딩 메이크업','반영구 눈썹','속눈썹 연장','촬영 메이크업','메이크업 레슨'],en:['Daily makeup','Party makeup','Bridal makeup','Semi-permanent brows','Lash extensions','Photoshoot makeup','Makeup lesson']},
+ Nail:{ko:['젤네일','기본 네일','손 케어','발 젤네일','패디큐어','네일 아트','연장','제거'],en:['Gel nails','Basic manicure','Hand care','Gel pedicure','Pedicure','Nail art','Extensions','Removal']},
+ Lash:{ko:['속눈썹 연장','볼륨래쉬','속눈썹 펌','리터치','제거','브로우 펌'],en:['Lash extensions','Volume lash','Lash lift','Refill','Removal','Brow lamination']},
+ Skin:{ko:['기본 관리','여드름 관리','수분 관리','등 관리','블랙헤드 관리','LED 관리'],en:['Basic facial','Acne care','Hydrating facial','Back care','Blackhead care','LED therapy']},
+ Bridal:{ko:['본식 메이크업','본식 헤어','리허설','혼주 메이크업','촬영 헤어메이크업'],en:['Wedding-day makeup','Wedding-day hair','Rehearsal','Mother of bride','Photoshoot hair & makeup']}
+};
+var PF_TAG={
+ Hair:{ko:['레이어드컷','매직스트레이트','볼륨펌','내추럴펌','뿌리볼륨','디자인염색','앞머리컷','남성컷','두피케어','한국어 OK'],en:['Layered cut','Magic straight','Volume perm','Natural perm','Root volume','Design color','Bangs','Men’s cut','Scalp care','Korean OK']},
+ Makeup:{ko:['내추럴','글로우','웨딩','반영구','속눈썹','촬영','한국어 OK','출장 가능'],en:['Natural','Glow','Bridal','Semi-permanent','Lash','Photoshoot','Korean OK','Mobile']},
+ Nail:{ko:['젤네일','심플네일','네일아트','시럽네일','케어 전문','제거 무료','한국어 OK'],en:['Gel','Simple','Nail art','Syrup','Care specialist','Free removal','Korean OK']},
+ Lash:{ko:['자연스러운','볼륨래쉬','속눈썹펌','지속력 좋은','저자극','한국어 OK'],en:['Natural','Volume','Lash lift','Long-lasting','Gentle','Korean OK']},
+ Skin:{ko:['여드름','수분','민감성','딥클렌징','LED','한국어 OK'],en:['Acne','Hydration','Sensitive','Deep cleansing','LED','Korean OK']},
+ Bridal:{ko:['본식','리허설','혼주','촬영','출장','한국어 OK'],en:['Wedding day','Rehearsal','Mother','Photoshoot','Mobile','Korean OK']}
+};
+function pfLang(m){return (m&&(m[LANG]||m.en||m.ko))||[];}
+function fillDL(id,arr){var el=$(id);if(!el)return;el.innerHTML=(arr||[]).map(function(x){return '<option value="'+esc(x)+'"></option>';}).join('');}
+function renderProfileOptions(){
+  fillDL('cityList',PF_CITY[LANG]||PF_CITY.en);
+  fillDL('careerList',PF_CAREER[LANG]||PF_CAREER.en);
+  var sp=(state.spec&&state.spec[0])||'Hair';
+  fillDL('svcOpts',pfLang(PF_SVC[sp]||PF_SVC.Hair));
+  renderTagSuggest();
+}
+function renderTagSuggest(){
+  var box=$('tagSuggest');if(!box)return;
+  var sp=(state.spec&&state.spec[0])||'Hair';var opts=pfLang(PF_TAG[sp]||PF_TAG.Hair);
+  var avail=opts.filter(function(x){return state.tags.indexOf(x)<0;});
+  if(!avail.length||state.tags.length>=8){box.style.display='none';box.innerHTML='';return;}
+  box.style.display='';
+  box.innerHTML='<span class="hint" style="width:100%;margin-bottom:2px">'+esc(t('tagSuggestL'))+'</span>'
+    +avail.slice(0,12).map(function(x){return '<button type="button" class="chip" data-v="'+esc(x)+'" onclick="addTagV(this.dataset.v)">+ '+esc(x)+'</button>';}).join('');
+}
+function addTagV(v){v=(v||'').trim();if(v&&state.tags.length<8&&state.tags.indexOf(v)<0)state.tags.push(v);renderTags();renderTagSuggest();}
 function renderSpec(){
   $('specChips').innerHTML=SPECS.map(([en,ko])=>`<button type="button" class="chip ${state.spec.includes(en)?'on':''}" onclick="toggleSpec('${en}')">${esc(catLabel(en))}</button>`).join('');
 }
-function toggleSpec(en){const i=state.spec.indexOf(en);if(i<0)state.spec.push(en);else state.spec.splice(i,1);renderSpec();}
+function toggleSpec(en){const i=state.spec.indexOf(en);if(i<0)state.spec.push(en);else state.spec.splice(i,1);renderSpec();renderProfileOptions();}
 function renderTags(){
   $('tagBox').innerHTML=state.tags.map((tg,i)=>`<span class="tagc">${esc(tg)}<i class="ti ti-x" onclick="delTag(${i})"></i></span>`).join('')||`<span class="muted">${esc(t('noTags'))}</span>`;
 }
-function tagKey(e){if(e.key==='Enter'||e.key===','){e.preventDefault();const v=(e.target.value||'').trim();if(v&&state.tags.length<8&&state.tags.indexOf(v)<0)state.tags.push(v);e.target.value='';renderTags();}}
-function delTag(i){state.tags.splice(i,1);renderTags();}
+function tagKey(e){if(e.key==='Enter'||e.key===','){e.preventDefault();const v=(e.target.value||'').trim();if(v&&state.tags.length<8&&state.tags.indexOf(v)<0)state.tags.push(v);e.target.value='';renderTags();renderTagSuggest();}}
+function delTag(i){state.tags.splice(i,1);renderTags();renderTagSuggest();}
 // 서비스
 function renderServices(){
   $('svcList').innerHTML=state.services.map((v,i)=>`<div class="svcitem"><div class="sn">${esc(v.name)}${v.dur?` <span class="sd">· ${esc(v.dur)}</span>`:''}</div><div class="sp">${esc(v.price||'')}</div><i class="ti ti-x sx" onclick="delSvc(${i})"></i></div>`).join('')
@@ -850,20 +912,21 @@ async function savePortfolio(){
 
 // ---------- 스케줄 관리 ----------
 const WD_KO=['일','월','화','수','목','금','토'];
+function snap30(v){var p=String(v||'').split(':');if(p.length<2||isNaN(+p[0])||isNaN(+p[1]))return v;var m=(+p[0])*60+Math.round((+p[1])/30)*30;if(m<0)m=0;if(m>1410)m=1410;var z=function(n){return (n<10?'0':'')+n;};return z(Math.floor(m/60))+':'+z(m%60);}
 function defaultSched(){var h={0:null};for(var i=1;i<=6;i++)h[i]={o:'10:00',c:'19:00'};return {hours:h,breaks:[],holidays:[]};}
 function renderSched(){renderSchedDays();renderBreaks();renderHolidays();}
 function renderSchedDays(){var el=$('schedDays');if(!el)return;var sc=state.sched||defaultSched();
  el.innerHTML=[1,2,3,4,5,6,0].map(function(d){var h=sc.hours&&sc.hours[d];var open=!!h;
   return '<div class="schedrow"><span class="schedday">'+t('wd')[d]+'</span>'
    +'<button type="button" class="schedtog'+(open?' on':'')+'" onclick="toggleDay('+d+')">'+(open?t('open'):t('closed'))+'</button>'
-   +'<span class="schedtimes"'+(open?'':' style="visibility:hidden"')+'><input class="inp tin" type="time" value="'+(h?h.o:'10:00')+'" onchange="setDayTime('+d+',\'o\',this.value)"><span class="tw">~</span><input class="inp tin" type="time" value="'+(h?h.c:'19:00')+'" onchange="setDayTime('+d+',\'c\',this.value)"></span></div>';
+   +'<span class="schedtimes"'+(open?'':' style="visibility:hidden"')+'><input class="inp tin" type="time" step="1800" value="'+(h?h.o:'10:00')+'" onchange="setDayTime('+d+',\'o\',this.value)"><span class="tw">~</span><input class="inp tin" type="time" step="1800" value="'+(h?h.c:'19:00')+'" onchange="setDayTime('+d+',\'c\',this.value)"></span></div>';
  }).join('');}
 function toggleDay(d){var sc=state.sched;if(sc.hours[d])sc.hours[d]=null;else sc.hours[d]={o:'10:00',c:'19:00'};renderSchedDays();}
-function setDayTime(d,k,v){if(state.sched.hours[d])state.sched.hours[d][k]=v;}
+function setDayTime(d,k,v){if(state.sched.hours[d]){state.sched.hours[d][k]=snap30(v);renderSchedDays();}}
 function renderBreaks(){var el=$('schedBreaks');if(!el)return;var bs=state.sched.breaks||[];
- el.innerHTML=bs.map(function(b,i){return '<div class="schedbreak"><input class="inp tin" type="time" value="'+b.o+'" onchange="setBreak('+i+',\'o\',this.value)"><span class="tw">~</span><input class="inp tin" type="time" value="'+b.c+'" onchange="setBreak('+i+',\'c\',this.value)"><button type="button" class="schedx" onclick="rmBreak('+i+')"><i class="ti ti-x"></i></button></div>';}).join('');}
+ el.innerHTML=bs.map(function(b,i){return '<div class="schedbreak"><input class="inp tin" type="time" step="1800" value="'+b.o+'" onchange="setBreak('+i+',\'o\',this.value)"><span class="tw">~</span><input class="inp tin" type="time" step="1800" value="'+b.c+'" onchange="setBreak('+i+',\'c\',this.value)"><button type="button" class="schedx" onclick="rmBreak('+i+')"><i class="ti ti-x"></i></button></div>';}).join('');}
 function addBreak(){state.sched.breaks=state.sched.breaks||[];state.sched.breaks.push({o:'12:00',c:'13:00'});renderBreaks();}
-function setBreak(i,k,v){state.sched.breaks[i][k]=v;}
+function setBreak(i,k,v){state.sched.breaks[i][k]=snap30(v);renderBreaks();}
 function rmBreak(i){state.sched.breaks.splice(i,1);renderBreaks();}
 function renderHolidays(){var el=$('schedHolidays');if(!el)return;var hs=(state.sched.holidays||[]).slice().sort();
  el.innerHTML=hs.map(function(dt){return '<span class="schedchip">'+dt+'<button type="button" onclick="rmHoliday(\''+dt+'\')"><i class="ti ti-x"></i></button></span>';}).join('')||'<span class="hint">'+esc(t('noHol'))+'</span>';}
@@ -1183,14 +1246,17 @@ function csvDL(name,header,rows){var csv=[header.map(csvCell).join(',')].concat(
 function exportBookings(){var rows=(bkRows||[]).slice().sort(function(a,b){return (a.date||'').localeCompare(b.date||'');}).map(function(b){return [b.date||'',b.time||'',bkSvcName(b),bkAmount(b),b.status||'pending',b.note||''];});csvDL('beautia_bookings.csv',['날짜','시간','서비스','금액','상태','메모'],rows);}
 function exportClients(){var rows=CLIENTS.slice().sort(function(a,b){return b.visits-a.visits;}).map(function(c){return [c.name,c.visits,c.spent,c.first,c.last,Object.keys(c.svcs).join('/'),clMemoGet(c.key)];});csvDL('beautia_clients.csv',['고객','방문수','누적매출','첫방문','최근방문','서비스','메모'],rows);}
 
+var TABSEC={home:['home'],profile:['profile','portfolio'],bookings:['bookings','clients','reviews'],messages:['messages']};
 function tab(t){
   document.querySelectorAll('.tab').forEach(b=>b.classList.toggle('on',b.dataset.tab===t));
-  ['home','profile','portfolio','bookings','reviews','messages','clients'].forEach(s=>$('sec-'+s).classList.toggle('hide',s!==t));
+  var show=TABSEC[t]||[t];
+  ['home','profile','portfolio','bookings','reviews','messages','clients'].forEach(s=>$('sec-'+s).classList.toggle('hide',show.indexOf(s)<0));
   if(t==='home')renderHome();
   else if(t==='messages')loadConvos();
-  else if(t==='clients')renderClients();
+  else if(t==='bookings')renderClients();
   window.scrollTo({top:0});
 }
+function toggleAdv(){var w=$('homeAdv'),b=$('advToggle');if(!w||!b)return;var open=!w.classList.toggle('hide');b.classList.toggle('open',open);var lbl=b.querySelector('span');if(lbl){lbl.setAttribute('data-t',open?'advLess':'advMore');lbl.textContent=t(open?'advLess':'advMore');}}
 
 // ---------- 부팅 ----------
 (async()=>{
