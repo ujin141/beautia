@@ -307,6 +307,9 @@ textarea.inp{resize:vertical;min-height:80px;line-height:1.6;}
 .durc{font-size:12.5px;font-weight:700;padding:7px 11px;border-radius:999px;border:1px solid var(--line);background:#fff;color:var(--ink2);cursor:pointer;white-space:nowrap;}
 .durc.on{background:var(--rosebg);border-color:var(--accent);color:var(--plum);}
 .btn.saved{background:#e9f5ef;color:#3E7C6A;box-shadow:none;}
+.rreply{margin-top:11px;padding:11px 14px;border-radius:12px;background:#f3e7e9;color:#6E4A50;font-size:13.5px;line-height:1.55;font-weight:600;}
+.rreply b{font-weight:800;margin-right:4px;}
+.bkwho{color:#9b9095;font-weight:600;font-size:13.5px;}
 </style>
 </head><body>
 <!-- Google Tag Manager (noscript) -->
@@ -607,10 +610,10 @@ Object.assign(T.ko,{wizCta:'3분 완성 · 설정 마법사',wizLater:'나중에
 Object.assign(T.en,{wizCta:'Finish setup in 3 min',wizLater:'Later',wizNext:'Next',wizBack:'Back',wizDone:'Finish & publish',wizStepOf:'{a} / {b}',wizPhotoT:'Profile photo',wizPhotoD:'Upload your face or logo. Shown as a circle.',wizPhotoBtn:'Upload photo',wizBasicT:'Tell us the basics',wizNameL:'Name / handle',wizShopL:'Shop · salon name (optional)',wizRegionL:'Region (tap to pick)',wizOther:'Type my own',wizSpecT:'What do you do?',wizSpecD:'Pick all that apply.',wizCareerL:'Experience',wizSvcT:'Signature services',wizSvcD:'Tap to add what you offer. You can add prices later.',wizSvcAllAdded:'All suggestions added 👍',wizPfT:'Show your best work',wizPfD:'More photos = more clients. Upload several at once.',wizPfBtn:'Upload photos',wizDoneT:'Almost done!',wizDoneD:'Tap Finish to publish your profile so clients can book.',wizSaved:'Your profile is ready! 🎉',wizNeedName:'Please enter your name'});
 Object.assign(T.ja,{wizCta:'3分で設定完了',wizLater:'あとで',wizNext:'次へ',wizBack:'戻る',wizDone:'完成して公開',wizStepOf:'{a} / {b}',wizPhotoT:'プロフィール写真',wizPhotoD:'顔かロゴの写真をアップ。円形で表示されます。',wizPhotoBtn:'写真をアップ',wizBasicT:'基本情報を教えてください',wizNameL:'名前 / 活動名',wizShopL:'店・サロン名（任意）',wizRegionL:'地域（タップで選択）',wizOther:'自由入力',wizSpecT:'どんな施術をしますか？',wizSpecD:'当てはまるものを全て選んでください。',wizCareerL:'経歴',wizSvcT:'代表メニュー',wizSvcD:'よくする施術をタップで追加。価格は後で入力できます。',wizSvcAllAdded:'おすすめを全て追加しました 👍',wizPfT:'代表作を見せましょう',wizPfD:'写真が多いほど集客できます。複数枚まとめてアップ可能。',wizPfBtn:'写真をアップ',wizDoneT:'あと少し！',wizDoneD:'完成を押すとプロフィールが公開され、お客様が予約できます。',wizSaved:'プロフィールが完成しました！ 🎉',wizNeedName:'名前を入力してください'});
 Object.assign(T.th,{wizCta:'ตั้งค่าเสร็จใน 3 นาที',wizLater:'ไว้ทีหลัง',wizNext:'ถัดไป',wizBack:'ย้อนกลับ',wizDone:'เสร็จและเผยแพร่',wizStepOf:'{a} / {b}',wizPhotoT:'รูปโปรไฟล์',wizPhotoD:'อัปรูปหน้าหรือโลโก้ แสดงเป็นวงกลม',wizPhotoBtn:'อัปโหลดรูป',wizBasicT:'บอกข้อมูลพื้นฐาน',wizNameL:'ชื่อ / ชื่อที่ใช้',wizShopL:'ชื่อร้าน · ซาลอน (ไม่บังคับ)',wizRegionL:'พื้นที่ (แตะเพื่อเลือก)',wizOther:'พิมพ์เอง',wizSpecT:'คุณทำบริการอะไร?',wizSpecD:'เลือกทั้งหมดที่ตรง',wizCareerL:'ประสบการณ์',wizSvcT:'บริการหลัก',wizSvcD:'แตะเพื่อเพิ่มบริการที่ทำ ใส่ราคาทีหลังได้',wizSvcAllAdded:'เพิ่มบริการแนะนำครบแล้ว 👍',wizPfT:'โชว์ผลงานเด่น',wizPfD:'ยิ่งมีรูปมาก ยิ่งได้ลูกค้า อัปหลายรูปพร้อมกันได้',wizPfBtn:'อัปโหลดรูป',wizDoneT:'ใกล้เสร็จแล้ว!',wizDoneD:'กดเสร็จเพื่อเผยแพร่โปรไฟล์ ลูกค้าจะจองได้ทันที',wizSaved:'โปรไฟล์พร้อมแล้ว! 🎉',wizNeedName:'กรุณากรอกชื่อ'});
-Object.assign(T.ko,{svcCatalogL:'자주 하는 시술 · 눌러서 추가',svcHint2:'아래에서 골라 담으면 손님 언어로 자동 번역돼요. 직접 입력한 건 AI가 번역합니다.',svcCustomHint:'목록에 없는 시술만 직접 입력 · 가격·시간은 각 메뉴에서 설정',addSvc:'직접 추가',saveBtn:'저장',savedOk:'저장됨 ✓',curL:'통화',curHint:'손님에겐 자기 나라 돈으로 환산(≈)해 보여줘요',svcPriceNum:'가격 (숫자만)'});
-Object.assign(T.en,{svcCatalogL:'Common services · tap to add',svcHint2:'Pick below and it auto-translates for clients. Custom items are translated by AI.',svcCustomHint:'Only type services not in the list · set price and time on each item',addSvc:'Add',saveBtn:'Save',savedOk:'Saved ✓',curL:'Currency',curHint:'Clients see it converted (≈) to their own currency',svcPriceNum:'Price (numbers)'});
-Object.assign(T.ja,{svcCatalogL:'よくある施術・タップで追加',svcHint2:'下から選ぶとお客様の言語に自動翻訳。独自入力はAIが翻訳します。',svcCustomHint:'リストにない施術のみ入力・価格と時間は各メニューで設定',addSvc:'追加',saveBtn:'保存',savedOk:'保存済み ✓',curL:'通貨',curHint:'お客様には各国通貨で概算(≈)表示されます',svcPriceNum:'価格（数字）'});
-Object.assign(T.th,{svcCatalogL:'บริการยอดนิยม · แตะเพื่อเพิ่ม',svcHint2:'เลือกด้านล่างแล้วแปลอัตโนมัติให้ลูกค้า เมนูที่พิมพ์เองแปลด้วย AI',svcCustomHint:'พิมพ์เฉพาะบริการที่ไม่มีในรายการ · ตั้งราคาและเวลาที่แต่ละเมนู',addSvc:'เพิ่ม',saveBtn:'บันทึก',savedOk:'บันทึกแล้ว ✓',curL:'สกุลเงิน',curHint:'ลูกค้าจะเห็นราคาแปลงเป็นสกุลเงินของเขา (≈)',svcPriceNum:'ราคา (ตัวเลข)'});
+Object.assign(T.ko,{svcCatalogL:'자주 하는 시술 · 눌러서 추가',svcHint2:'아래에서 골라 담으면 손님 언어로 자동 번역돼요. 직접 입력한 건 AI가 번역합니다.',svcCustomHint:'목록에 없는 시술만 직접 입력 · 가격·시간은 각 메뉴에서 설정',addSvc:'직접 추가',saveBtn:'저장',savedOk:'저장됨 ✓',curL:'통화',curHint:'손님에겐 자기 나라 돈으로 환산(≈)해 보여줘요',svcPriceNum:'가격 (숫자만)',reviewReplyLbl:'디자이너 답글',reviewReplyAdd:'답글 달기',reviewReplyEdit:'답글 수정',reviewReplyPrompt:'후기에 답글을 남기세요 (손님에게 공개돼요)',st_noshow:'노쇼',actNoshow:'노쇼',bkMsg:'메시지'});
+Object.assign(T.en,{svcCatalogL:'Common services · tap to add',svcHint2:'Pick below and it auto-translates for clients. Custom items are translated by AI.',svcCustomHint:'Only type services not in the list · set price and time on each item',addSvc:'Add',saveBtn:'Save',savedOk:'Saved ✓',curL:'Currency',curHint:'Clients see it converted (≈) to their own currency',svcPriceNum:'Price (numbers)',reviewReplyLbl:'Your reply',reviewReplyAdd:'Reply',reviewReplyEdit:'Edit reply',reviewReplyPrompt:'Write a reply to this review (shown to clients)',st_noshow:'No-show',actNoshow:'No-show',bkMsg:'Message'});
+Object.assign(T.ja,{svcCatalogL:'よくある施術・タップで追加',svcHint2:'下から選ぶとお客様の言語に自動翻訳。独自入力はAIが翻訳します。',svcCustomHint:'リストにない施術のみ入力・価格と時間は各メニューで設定',addSvc:'追加',saveBtn:'保存',savedOk:'保存済み ✓',curL:'通貨',curHint:'お客様には各国通貨で概算(≈)表示されます',svcPriceNum:'価格（数字）',reviewReplyLbl:'返信',reviewReplyAdd:'返信する',reviewReplyEdit:'返信を編集',reviewReplyPrompt:'レビューに返信（お客様に公開されます）',st_noshow:'ノーショー',actNoshow:'ノーショー',bkMsg:'メッセージ'});
+Object.assign(T.th,{svcCatalogL:'บริการยอดนิยม · แตะเพื่อเพิ่ม',svcHint2:'เลือกด้านล่างแล้วแปลอัตโนมัติให้ลูกค้า เมนูที่พิมพ์เองแปลด้วย AI',svcCustomHint:'พิมพ์เฉพาะบริการที่ไม่มีในรายการ · ตั้งราคาและเวลาที่แต่ละเมนู',addSvc:'เพิ่ม',saveBtn:'บันทึก',savedOk:'บันทึกแล้ว ✓',curL:'สกุลเงิน',curHint:'ลูกค้าจะเห็นราคาแปลงเป็นสกุลเงินของเขา (≈)',svcPriceNum:'ราคา (ตัวเลข)',reviewReplyLbl:'ตอบกลับ',reviewReplyAdd:'ตอบกลับ',reviewReplyEdit:'แก้ไขตอบกลับ',reviewReplyPrompt:'เขียนตอบกลับรีวิว (ลูกค้าเห็น)',st_noshow:'ไม่มาตามนัด',actNoshow:'ไม่มา',bkMsg:'ข้อความ'});
 Object.assign(T.ko,{tagSuggestL:'추천 태그 · 눌러서 추가',pickOrType:'목록에서 선택하거나 직접 입력',advMore:'성과·인사이트 더보기',advLess:'접기'});
 Object.assign(T.en,{tagSuggestL:'Suggested · tap to add',pickOrType:'Pick from the list or type your own',advMore:'More insights',advLess:'Show less'});
 Object.assign(T.ja,{tagSuggestL:'おすすめ・タップで追加',pickOrType:'リストから選択・自由入力可',advMore:'成果・インサイトをもっと見る',advLess:'閉じる'});
@@ -899,8 +902,24 @@ function renderReviews(){
   el.innerHTML=revRows.map(r=>{
     const rt=+r.stars||+r.rating||0;const d=r.created_at?new Date(r.created_at).toLocaleDateString(loc):'';
     const txt=r.body||r.text||r.comment||'';
-    return `<div class="rev"><div class="rtop"><span class="stars">${'★'.repeat(Math.round(rt))||'★'} ${rt||''}</span><span class="rdate">${esc(d)}</span></div>${txt?`<div class="rtext">${esc(txt)}</div>${trBtnHtml(txt)}`:''}</div>`;
+    const rid=String(r.id||'');
+    const reply=(ME.shop&&ME.shop.reviewReplies&&ME.shop.reviewReplies[rid])||'';
+    const replyHtml=reply?`<div class="rreply"><b>${esc(t('reviewReplyLbl'))}</b> ${esc(reply)}</div>`:'';
+    const replyBtn=rid?`<button class="trbtn" onclick="replyReview('${rid}')"><i class="ti ti-corner-down-right"></i> ${esc(reply?t('reviewReplyEdit'):t('reviewReplyAdd'))}</button>`:'';
+    return `<div class="rev"><div class="rtop"><span class="stars">${'★'.repeat(Math.round(rt))||'★'} ${rt||''}</span><span class="rdate">${esc(d)}</span></div>${txt?`<div class="rtext">${esc(txt)}</div>${trBtnHtml(txt)}`:''}${replyHtml}${replyBtn}</div>`;
   }).join('');
+}
+function replyReview(id){
+  var cur=(ME.shop&&ME.shop.reviewReplies&&ME.shop.reviewReplies[id])||'';
+  var v=prompt(t('reviewReplyPrompt'),cur); if(v===null)return;
+  saveReviewReply(id,v.trim());
+}
+async function saveReviewReply(id,v){
+  var shop=Object.assign({},ME.shop||{}); shop.reviewReplies=Object.assign({},shop.reviewReplies||{});
+  if(v)shop.reviewReplies[id]=v; else delete shop.reviewReplies[id];
+  var res=await SB.from('profiles').update({shop:shop}).eq('id',UID).select('id');
+  if(res.error){toast(t('saveFailPre')+res.error.message);return;}
+  ME.shop=shop; renderReviews(); toast(t('saveOk'));
 }
 
 async function saveProfile(silent){
@@ -1065,7 +1084,7 @@ async function loadBookings(){
   try{rows=(await SB.from('bookings').select('*').eq('designer',UID).order('date',{ascending:true})).data;}catch(e){}
   bkRows=rows;var el2=$('stBk');if(el2&&rows)el2.textContent=rows.length;
   renderStats();renderBkCalendar();renderBkList();renderUpcoming();
-  buildClients();loadInsights();updateBkBadge();
+  buildClients();loadInsights();updateBkBadge();fetchBkNames();
 }
 function updateBkBadge(){var b=$('bkBadge');if(!b)return;var n=(bkRows||[]).filter(function(x){return (x.status||'pending')==='pending';}).length;if(n>0){b.textContent=n>99?'99+':n;b.classList.remove('hide');}else b.classList.add('hide');}
 function renderUpcoming(){
@@ -1157,17 +1176,26 @@ function renderBkList(){
   if(bkSelDate){rows=rows.filter(function(b){return b.date===bkSelDate;});$('bkListTitle').textContent=tf('selDateBk',{date:bkSelDate});}
   else{$('bkListTitle').textContent=tf('receivedN',{n:bkRows.length});}
   if(!rows.length){el.innerHTML='<div class="empty"><i class="ti ti-calendar"></i>'+esc(bkSelDate?t('noBkDay'):t('noBkYet'))+'</div>';return;}
-  const statusL={pending:t('st_pending'),accepted:t('st_accepted'),done:t('st_done'),completed:t('st_done'),declined:t('st_declined')};
-  const statusC={pending:'st-pending',accepted:'st-accepted',done:'st-done',completed:'st-done',declined:'st-declined'};
+  const statusL={pending:t('st_pending'),accepted:t('st_accepted'),done:t('st_done'),completed:t('st_done'),declined:t('st_declined'),noshow:t('st_noshow')};
+  const statusC={pending:'st-pending',accepted:'st-accepted',done:'st-done',completed:'st-done',declined:'st-declined',noshow:'st-declined'};
   el.innerHTML=rows.map(function(b){
     const st=b.status||'pending';
     const when=[b.date,b.time].filter(Boolean).join(' ');
+    const who=bkWho(b);
+    const dm=(b.customer&&b.customer!==UID)?` <button class="btn ghost sm" onclick="tab('messages')">${esc(t('bkMsg'))}</button>`:'';
     const acts=st==='pending'?`<button class="btn sm" onclick="setBk('${b.id}','accepted')">${esc(t('actAccept'))}</button> <button class="btn ghost sm" onclick="setBk('${b.id}','declined')">${esc(t('actDecline'))}</button>`
-      :(st==='accepted'?`<button class="btn sm" onclick="setBk('${b.id}','done')">${esc(t('actComplete'))}</button>`:'');
-    return `<div class="bk"><div class="bkinfo"><div class="bkname">${esc(bkSvcName(b))}</div>
+      :(st==='accepted'?`<button class="btn sm" onclick="setBk('${b.id}','done')">${esc(t('actComplete'))}</button> <button class="btn ghost sm" onclick="setBk('${b.id}','noshow')">${esc(t('actNoshow'))}</button>${dm}`:'');
+    return `<div class="bk"><div class="bkinfo"><div class="bkname">${esc(bkSvcName(b))}${who?` <span class="bkwho">· ${esc(who)}</span>`:''}</div>
       <div class="bkmeta">${esc(when||'')}${b.note?' · '+esc(b.note):''}</div><div style="margin-top:8px">${acts}</div></div>
       <span class="bkbadge ${statusC[st]||'st-pending'}">${statusL[st]||st}</span></div>`;
   }).join('');
+}
+var bkNames={};
+function bkWho(b){ if(b&&b.customer&&b.customer!==UID){ return bkNames[b.customer]||t('member'); } return ''; }
+async function fetchBkNames(){
+  var ids=[]; (bkRows||[]).forEach(function(b){ if(b.customer&&b.customer!==UID&&!bkNames[b.customer]&&ids.indexOf(b.customer)<0)ids.push(b.customer); });
+  if(!ids.length)return;
+  try{ var d=(await SB.from('profiles').select('id,nickname,shop,full_name').in('id',ids)).data||[]; d.forEach(function(p){ bkNames[p.id]=p.nickname||(p.shop&&p.shop.name)||p.full_name||t('member'); }); renderBkList(); }catch(e){}
 }
 async function setBk(id,status){
   const {error}=await SB.from('bookings').update({status}).eq('id',id);
