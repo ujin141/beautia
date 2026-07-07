@@ -1179,8 +1179,8 @@ function curFmt(amt,cur){var d=CURDEC[cur]||0;var v=d?Number(amt).toFixed(d):Mat
 function langCur(l){return {ko:'KRW',ja:'JPY',th:'THB',en:'USD'}[l||LANG]||'USD';}
 var FX={rates:{USD:1,KRW:1360,JPY:150,THB:36,EUR:0.92,CNY:7.2,TWD:32,SGD:1.35,VND:25400,GBP:0.79,AUD:1.5},ts:0};
 (function(){try{var s=JSON.parse(localStorage.getItem('beautia_fx')||'null');if(s&&s.rates&&s.rates.USD)FX=s;}catch(e){}})();
-async function fxRefresh(){try{if(Date.now()-(FX.ts||0)<6*3600*1000&&FX.rates&&FX.rates.KRW)return;var r=await fetch('https://open.er-api.com/v6/latest/USD');if(!r.ok)return;var j=await r.json();if(j&&j.rates&&j.rates.KRW){FX={rates:j.rates,ts:Date.now()};try{localStorage.setItem('beautia_fx',JSON.stringify(FX));}catch(e){}if(curD&&typeof openD==='function'){try{openD(curD,true);}catch(e){}}}}catch(e){}}
-function fxConv(amt,from,to){if(!amt||from===to)return amt;var rf=FX.rates[from],rt=FX.rates[to];if(!rf||!rt)return null;return amt*(rt/rf);}
+async function fxRefresh(){try{if(Date.now()-(FX.ts||0)<6*3600*1000&&FX.rates&&FX.rates.KRW)return;var r=await fetch('https://open.er-api.com/v6/latest/USD');if(!r.ok)return;var j=await r.json();if(j&&j.rates){var rates={};Object.keys(j.rates).forEach(function(k){var v=+j.rates[k];if(/^[A-Z]{3}$/.test(k)&&isFinite(v)&&v>0&&v<1e9)rates[k]=v;});if(rates.KRW&&rates.USD){FX={rates:rates,ts:Date.now()};try{localStorage.setItem('beautia_fx',JSON.stringify(FX));}catch(e){}if(curD&&typeof openD==='function'){try{openD(curD,true);}catch(e){}}}}}catch(e){}}
+function fxConv(amt,from,to){if(!amt||from===to)return amt;var rf=+FX.rates[from],rt=+FX.rates[to];if(!isFinite(rf)||!isFinite(rt)||rf<=0)return null;var c=amt*(rt/rf);return isFinite(c)?c:null;}
 function svcCur(d){return (d&&d.cur)||'KRW';}
 function priceNum(p){var n=parseInt(String(p||'').replace(/[^0-9]/g,''),10);return isNaN(n)?0:n;}
 function priceDisp(p,cur){var n=priceNum(p);return n?curFmt(n,cur):(p||'');}
