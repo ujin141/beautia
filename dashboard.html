@@ -50,8 +50,8 @@ header.top{position:sticky;top:0;z-index:20;background:rgba(255,255,255,.95);bac
 .btn.ghost{background:#fff;color:var(--plum);border:1.5px solid var(--plum);}
 .btn.sm{width:auto;padding:9px 16px;font-size:13.5px;border-radius:10px;}
 /* 탭 */
-.tabs{display:flex;gap:6px;margin:16px 0 4px;position:sticky;top:57px;z-index:15;background:var(--soft);padding:8px 0;}
-.tab{flex:1;min-width:0;text-align:center;font-size:13.5px;font-weight:800;color:var(--sub);padding:11px 2px;border-radius:12px;background:#fff;border:1px solid var(--line);}
+.tabs{display:flex;flex-wrap:wrap;gap:6px;margin:16px 0 4px;position:sticky;top:57px;z-index:15;background:var(--soft);padding:8px 0;}
+.tab{flex:1 1 60px;min-width:56px;text-align:center;font-size:13.5px;font-weight:800;color:var(--sub);padding:11px 2px;border-radius:12px;background:#fff;border:1px solid var(--line);}
 .tab.on{background:var(--plum);color:#fff;border-color:var(--plum);}
 /* 카드 */
 .card{background:#fff;border:1px solid var(--line);border-radius:18px;padding:20px;margin-top:14px;}
@@ -220,6 +220,37 @@ textarea.inp{resize:vertical;min-height:80px;line-height:1.6;}
 .rev .rtext.trd{color:var(--ink);}
 .trbtn{margin-top:8px;display:inline-flex;align-items:center;gap:4px;font-family:inherit;font-size:12px;font-weight:700;color:var(--plum);background:none;border:none;padding:2px 0;cursor:pointer;opacity:.85;}
 .trbtn:hover{opacity:1;text-decoration:underline;} .trbtn:disabled{opacity:.5;cursor:default;} .trbtn i{font-size:14px;}
+/* 성과 인사이트 */
+.instiles{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:4px;}
+.intile{background:var(--soft);border-radius:12px;padding:12px 6px;text-align:center;}
+.intile .inl{font-size:11.5px;color:var(--sub);font-weight:700;}
+.intile .inv{font-size:21px;font-weight:800;color:var(--plum);margin-top:3px;letter-spacing:-.02em;}
+.intile .ind{font-size:11px;font-weight:800;margin-top:2px;min-height:14px;}
+.ind .up{color:var(--green);} .ind .dn{color:#C0564B;}
+.intrend{margin-top:15px;}
+.inct{font-size:12px;color:var(--sub);font-weight:700;margin-bottom:8px;}
+.inbars{display:flex;align-items:flex-end;gap:5px;height:86px;}
+.inbar{flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;justify-content:flex-end;}
+.inbar .ibv{font-size:10.5px;font-weight:800;color:var(--ink2);}
+.inbar .ibt{width:100%;max-width:30px;background:var(--plum);border-radius:6px 6px 0 0;min-height:3px;}
+.inbar.today .ibt{background:var(--accent);}
+.inbar .ibl{font-size:10px;color:var(--sub);font-weight:600;}
+.innote{font-size:12px;color:var(--sub);font-weight:600;margin-top:10px;line-height:1.5;}
+/* 고객 관리 */
+.clsum{display:flex;gap:16px;margin-top:10px;font-size:12.5px;font-weight:800;color:var(--plum);}
+.clhrow{display:flex;justify-content:space-between;align-items:center;gap:10px;}
+.clrow{border:1px solid var(--line);border-radius:14px;margin-bottom:9px;overflow:hidden;background:#fff;}
+.clhead{display:flex;align-items:center;gap:11px;padding:12px 13px;cursor:pointer;}
+.clav{width:40px;height:40px;border-radius:50%;background:var(--rosebg);color:var(--plum);font-weight:800;display:flex;align-items:center;justify-content:center;font-size:17px;flex:0 0 auto;text-transform:uppercase;}
+.cli{flex:1;min-width:0;}
+.cln{font-size:14.5px;font-weight:800;display:flex;align-items:center;gap:7px;}
+.clm{font-size:12px;color:var(--sub);font-weight:600;margin-top:3px;}
+.clbadge{font-size:10.5px;font-weight:800;padding:2px 8px;border-radius:999px;background:var(--gold);color:#fff;}
+.clchev{color:var(--sub);transition:.2s;flex:0 0 auto;}
+.clrow.open .clchev{transform:rotate(180deg);}
+.clbody{display:none;padding:0 13px 13px;}
+.clrow.open .clbody{display:block;}
+.clbody textarea.inp{min-height:56px;margin-top:5px;}
 </style>
 </head><body>
 <!-- Google Tag Manager (noscript) -->
@@ -255,6 +286,7 @@ textarea.inp{resize:vertical;min-height:80px;line-height:1.6;}
     <button class="tab" data-tab="bookings" onclick="tab('bookings')" data-t="bookings">예약</button>
     <button class="tab" data-tab="messages" onclick="tab('messages')"><span data-t="msgTab">메시지</span><span class="tbadge hide" id="msgBadge"></span></button>
     <button class="tab" data-tab="reviews" onclick="tab('reviews')" data-t="reviews">후기</button>
+    <button class="tab" data-tab="clients" onclick="tab('clients')" data-t="clients">고객</button>
   </div>
 
   <!-- 홈 -->
@@ -293,6 +325,16 @@ textarea.inp{resize:vertical;min-height:80px;line-height:1.6;}
       <div class="stat"><div class="sv" id="stBk">0</div><div class="sl" data-t="statBk">총 예약</div></div>
       <div class="stat"><div class="sv" id="stRev">0</div><div class="sl" data-t="statReviews">후기</div></div>
       <div class="stat"><div class="sv" id="stRating">—</div><div class="sl" data-t="statRating">평점</div></div>
+    </div>
+    <div class="card" id="insightCard">
+      <h2><i class="ti ti-chart-line"></i> <span data-t="insightTitle">성과 인사이트</span></h2>
+      <div class="instiles">
+        <div class="intile"><div class="inl" data-t="inViewsWeek">이번 주 조회</div><div class="inv" id="inViews">—</div><div class="ind" id="inViewsDelta"></div></div>
+        <div class="intile"><div class="inl" data-t="inSaves">찜</div><div class="inv" id="inSaves">—</div><div class="ind"></div></div>
+        <div class="intile"><div class="inl" data-t="inConv">조회→예약</div><div class="inv" id="inConv">—</div><div class="ind"></div></div>
+      </div>
+      <div class="intrend"><div class="inct" data-t="inTrend">최근 7일 조회 추이</div><div class="inbars" id="inBars"></div></div>
+      <div class="innote" id="inNote" style="display:none" data-t="inNeedSql">조회수 집계는 방문 기록 설정 후 표시돼요.</div>
     </div>
     <div class="card">
       <h2 data-t="completeness">프로필 완성도</h2>
@@ -415,7 +457,8 @@ textarea.inp{resize:vertical;min-height:80px;line-height:1.6;}
       </div>
     </div>
     <div class="card">
-      <h2 id="bkListTitle" data-t="receivedBk">받은 예약</h2><div class="hint" data-t="receivedHint">수락·완료 처리하세요.</div>
+      <div class="clhrow"><h2 id="bkListTitle" style="margin:0" data-t="receivedBk">받은 예약</h2><button class="btn ghost sm" onclick="exportBookings()"><i class="ti ti-download"></i> <span data-t="bkExport">예약 CSV</span></button></div>
+      <div class="hint" data-t="receivedHint">수락·완료 처리하세요.</div>
       <div id="bkList"></div>
     </div>
   </div>
@@ -425,6 +468,17 @@ textarea.inp{resize:vertical;min-height:80px;line-height:1.6;}
     <div class="card">
       <h2 data-t="reviewsTitle">받은 후기</h2><div class="hint" data-t="reviewsHint">고객이 남긴 후기입니다.</div>
       <div id="revList"></div>
+    </div>
+  </div>
+
+  <!-- 고객 관리 -->
+  <div id="sec-clients" class="hide">
+    <div class="card">
+      <div class="clhrow"><h2 style="margin:0" data-t="clTitle">고객 관리</h2><button class="btn ghost sm" onclick="exportClients()"><i class="ti ti-download"></i> <span data-t="clExport">고객 CSV</span></button></div>
+      <div class="hint" data-t="clHint">예약에서 자동으로 모인 고객이에요. 단골·매출·메모를 관리하세요.</div>
+      <div class="clsum" id="clSum"></div>
+      <input class="inp" id="clQ" data-tph="clSearch" placeholder="고객 이름 검색…" style="margin-top:12px" oninput="renderClients()">
+      <div id="clList" style="margin-top:12px"></div>
     </div>
   </div>
 
@@ -468,6 +522,10 @@ Object.assign(T.ko,{msgTab:'메시지',msgHint:'고객이 보낸 메시지에 �
 Object.assign(T.en,{msgTab:'Messages',msgHint:'Reply to messages from clients.',noChats:'No messages yet',typeMsg:'Type a message…',msgLoadErr:"Couldn't load messages",youPrefix:'You: ',msgSendFail:'Send failed'});
 Object.assign(T.ja,{msgTab:'メッセージ',msgHint:'お客様からのメッセージに返信しましょう。',noChats:'まだメッセージがありません',typeMsg:'メッセージを入力…',msgLoadErr:'メッセージを読み込めません',youPrefix:'自分: ',msgSendFail:'送信失敗'});
 Object.assign(T.th,{msgTab:'ข้อความ',msgHint:'ตอบข้อความจากลูกค้า',noChats:'ยังไม่มีข้อความ',typeMsg:'พิมพ์ข้อความ…',msgLoadErr:'โหลดข้อความไม่ได้',youPrefix:'คุณ: ',msgSendFail:'ส่งไม่สำเร็จ'});
+Object.assign(T.ko,{clients:'고객',insightTitle:'성과 인사이트',inViewsWeek:'이번 주 조회',inSaves:'찜',inConv:'조회→예약',inTrend:'최근 7일 조회 추이',inNeedSql:'조회수 집계는 방문 기록 설정 후 표시돼요.',clTitle:'고객 관리',clHint:'예약에서 자동으로 모인 고객이에요. 단골·매출·메모를 관리하세요.',clSearch:'고객 이름 검색…',clNone:'아직 고객이 없어요. 예약이 쌓이면 자동으로 표시돼요.',clVisits:'방문 {n}회',clLast:'최근 {d}',clSpent:'누적 {v}',clRegular:'단골',clMemo:'메모 (나만 보임)',clMemoPh:'예: 파마 약하게 선호 / 알레르기 · 연락처 등',clMemoSaved:'메모 저장됨 ✓',clExport:'고객 CSV',bkExport:'예약 CSV',csvOk:'CSV 내보냈어요 ✓',clTotal:'고객 {n}명',clRegularsN:'단골 {n}명'});
+Object.assign(T.en,{clients:'Clients',insightTitle:'Performance insights',inViewsWeek:'Views this week',inSaves:'Saves',inConv:'View→Book',inTrend:'Views · last 7 days',inNeedSql:'View counts appear once visit tracking is set up.',clTitle:'Clients',clHint:'Clients gathered automatically from your bookings. Manage regulars, spend and notes.',clSearch:'Search client name…',clNone:'No clients yet. They appear automatically as bookings come in.',clVisits:'{n} visits',clLast:'Last {d}',clSpent:'Total {v}',clRegular:'Regular',clMemo:'Private note (only you)',clMemoPh:'e.g. Prefers soft perm / allergy · contact',clMemoSaved:'Note saved ✓',clExport:'Clients CSV',bkExport:'Bookings CSV',csvOk:'CSV exported ✓',clTotal:'{n} clients',clRegularsN:'{n} regulars'});
+Object.assign(T.ja,{clients:'顧客',insightTitle:'成果インサイト',inViewsWeek:'今週の閲覧',inSaves:'保存',inConv:'閲覧→予約',inTrend:'直近7日の閲覧推移',inNeedSql:'閲覧数は訪問記録の設定後に表示されます。',clTitle:'顧客管理',clHint:'予約から自動で集まった顧客です。常連・売上・メモを管理しましょう。',clSearch:'顧客名で検索…',clNone:'まだ顧客がいません。予約がたまると自動で表示されます。',clVisits:'来店 {n}回',clLast:'最近 {d}',clSpent:'累計 {v}',clRegular:'常連',clMemo:'メモ（自分だけ）',clMemoPh:'例：パーマ弱め希望 / アレルギー・連絡先など',clMemoSaved:'メモを保存しました ✓',clExport:'顧客CSV',bkExport:'予約CSV',csvOk:'CSVを出力しました ✓',clTotal:'顧客 {n}名',clRegularsN:'常連 {n}名'});
+Object.assign(T.th,{clients:'ลูกค้า',insightTitle:'อินไซต์ผลงาน',inViewsWeek:'เข้าชมสัปดาห์นี้',inSaves:'บันทึก',inConv:'ชม→จอง',inTrend:'ยอดเข้าชม 7 วันล่าสุด',inNeedSql:'ยอดเข้าชมจะแสดงหลังตั้งค่าการเก็บสถิติการเข้าชม',clTitle:'จัดการลูกค้า',clHint:'ลูกค้าที่รวบรวมจากการจองอัตโนมัติ จัดการลูกค้าประจำ ยอดใช้จ่าย และโน้ต',clSearch:'ค้นหาชื่อลูกค้า…',clNone:'ยังไม่มีลูกค้า จะแสดงอัตโนมัติเมื่อมีการจอง',clVisits:'มา {n} ครั้ง',clLast:'ล่าสุด {d}',clSpent:'รวม {v}',clRegular:'ลูกค้าประจำ',clMemo:'โน้ต (เห็นคนเดียว)',clMemoPh:'เช่น ชอบดัดอ่อน / แพ้ · ติดต่อ',clMemoSaved:'บันทึกโน้ตแล้ว ✓',clExport:'CSV ลูกค้า',bkExport:'CSV การจอง',csvOk:'ส่งออก CSV แล้ว ✓',clTotal:'ลูกค้า {n} คน',clRegularsN:'ประจำ {n} คน'});
 function t(k){var o=T[LANG]||T.ko;return (k in o)?o[k]:(T.ko[k]!=null?T.ko[k]:k);}
 function tf(k,map){var s=t(k);for(var x in (map||{}))s=String(s).split('{'+x+'}').join(map[x]);return s;}
 function catLabel(en){return t('cat_'+en)||en;}
@@ -479,7 +537,7 @@ function applyI18n(){
   document.querySelectorAll('[data-thtml]').forEach(function(e){e.innerHTML=t(e.dataset.thtml);});
   var ls=$('langSel');if(ls)ls.value=LANG;
 }
-function rerenderI18n(){try{if(ME){renderSpec();renderTags();renderServices();renderSched();renderPf();renderHome();renderStats();renderBkCalendar();renderBkList();renderReviews();if(document.getElementById('wtype'))setWorkType(state.freelancer);}}catch(e){}}
+function rerenderI18n(){try{if(ME){renderSpec();renderTags();renderServices();renderSched();renderPf();renderHome();renderStats();renderBkCalendar();renderBkList();renderReviews();renderClients();if(document.getElementById('wtype'))setWorkType(state.freelancer);}}catch(e){}}
 function setLang(l){if(['ko','en','ja','th'].indexOf(l)<0)return;LANG=l;try{localStorage.setItem('beautia_lang',l);}catch(e){}applyI18n();rerenderI18n();}
 
 function toast(m){const t=$('toast');t.textContent=m;t.classList.add('on');clearTimeout(t._t);t._t=setTimeout(()=>t.classList.remove('on'),2600);}
@@ -813,6 +871,7 @@ async function loadBookings(){
   try{rows=(await SB.from('bookings').select('*').eq('designer',UID).order('date',{ascending:true})).data;}catch(e){}
   bkRows=rows;var el2=$('stBk');if(el2&&rows)el2.textContent=rows.length;
   renderStats();renderBkCalendar();renderBkList();renderUpcoming();
+  buildClients();loadInsights();
 }
 function renderUpcoming(){
   var el=$('upcomingList'),card=$('upcomingCard'),cnt=$('upCount');if(!el)return;
@@ -992,11 +1051,89 @@ async function initMessages(){ // afterLogin에서 배지+실시간 구독
   }).subscribe();}catch(e){}
 }
 
+// ---------- 성과 인사이트 ----------
+function kdate(ms){return new Date(ms+9*3600000).toISOString().slice(0,10);}
+async function cnt(q){try{var r=await q;return r.error?null:(r.count||0);}catch(e){return null;}}
+async function loadInsights(){
+  if(!UID||!$('inBars'))return;
+  var now=Date.now(),D=86400000,dc={},vOk=false;
+  try{var since=kdate(now-13*D);var r=await SB.from('page_visits').select('day').ilike('path','%'+UID+'%').gte('day',since);
+    if(!r.error){vOk=true;(r.data||[]).forEach(function(x){dc[x.day]=(dc[x.day]||0)+1;});}}catch(e){}
+  var week=0,last=0;for(var i=0;i<7;i++)week+=dc[kdate(now-i*D)]||0;for(var i=7;i<14;i++)last+=dc[kdate(now-i*D)]||0;
+  if($('inViews'))$('inViews').textContent=vOk?week:'—';
+  var de=$('inViewsDelta');
+  if(de){if(!vOk)de.innerHTML='';else if(last===0)de.innerHTML=week>0?'<span class="up">↑ new</span>':'';
+    else{var p=Math.round((week-last)/last*100);de.innerHTML=p>0?'<span class="up">↑'+p+'%</span>':(p<0?'<span class="dn">↓'+Math.abs(p)+'%</span>':'<span style="color:var(--sub)">–</span>');}}
+  var sv=await cnt(SB.from('saves').select('id',{count:'exact',head:true}).ilike('wid',UID+'%'));
+  if($('inSaves'))$('inSaves').textContent=(sv==null?'—':sv);
+  var bkWeek=(bkRows||[]).filter(function(b){return b.created_at&&(new Date(b.created_at).getTime()>now-7*D);}).length;
+  if($('inConv'))$('inConv').textContent=(vOk&&week>0)?Math.round(bkWeek/week*100)+'%':'—';
+  var el=$('inBars');if(el){var days=[];for(var i=6;i>=0;i--)days.push(kdate(now-i*D));var mx=1;days.forEach(function(d){if((dc[d]||0)>mx)mx=dc[d]||0;});
+    el.innerHTML=days.map(function(d){var c=dc[d]||0,h=Math.round(c/mx*100),lab=d.slice(5).replace('-','/'),td=(d===kdate(now)?' today':'');
+      return '<div class="inbar'+td+'"><div class="ibv">'+(vOk?c:'')+'</div><div class="ibt" style="height:'+Math.max(3,h)+'%"></div><div class="ibl">'+lab+'</div></div>';}).join('');}
+  var nt=$('inNote');if(nt)nt.style.display=vOk?'none':'';
+}
+// ---------- 고객 관리(CRM) ----------
+var CLIENTS=[],CLcur='₩';
+async function buildClients(){
+  var rows=bkRows||[],map={},uidNeed=[];
+  rows.forEach(function(b){
+    var key,name,uid='';
+    if(b.customer&&b.customer!==UID){uid=b.customer;key='uid:'+uid;name=null;uidNeed.push(uid);}
+    else{var m=(b.note||'').match(/👤\s*([^·]+)/);var nm=(m?m[1]:(b.name||'')).trim();if(!nm)return;name=nm;key='name:'+nm.toLowerCase();}
+    if(!map[key])map[key]={key:key,uid:uid,name:name,visits:0,spent:0,first:'',last:'',svcs:{}};
+    var c=map[key];c.visits++;
+    var st=b.status||'pending';if(st==='accepted'||st==='done'||st==='completed')c.spent+=bkAmount(b);
+    if(b.date){if(!c.last||b.date>c.last)c.last=b.date;if(!c.first||b.date<c.first)c.first=b.date;}
+    var sv=bkSvcName(b);if(sv)c.svcs[sv]=(c.svcs[sv]||0)+1;
+  });
+  var uids=[];for(var k in map)if(map[k].uid)uids.push(map[k].uid);
+  if(uids.length){try{var pr=(await SB.from('profiles').select('id,nickname,shop').in('id',uids)).data||[];var pm={};pr.forEach(function(p){pm[p.id]=p.nickname||(p.shop&&p.shop.name)||'';});
+    for(var k in map)if(map[k].uid&&pm[map[k].uid])map[k].name=pm[map[k].uid];}catch(e){}}
+  CLcur=bkCurrency(rows);
+  CLIENTS=[];var i=0;for(var k in map){var c=map[k];if(!c.name)c.name=t('member');c.id=i++;CLIENTS.push(c);}
+  renderClients();
+}
+function clMemoAll(){try{return JSON.parse(localStorage.getItem('beautia_cmemo_'+UID)||'{}')||{};}catch(e){return {};}}
+function clMemoGet(key){return clMemoAll()[key]||'';}
+var _clMemoT=null;
+function clMemoSet(id,val){var c=CLIENTS.find(function(x){return x.id===id;});if(!c)return;var all=clMemoAll();all[c.key]=val;try{localStorage.setItem('beautia_cmemo_'+UID,JSON.stringify(all));}catch(e){}clearTimeout(_clMemoT);_clMemoT=setTimeout(function(){toast(t('clMemoSaved'));},800);}
+function clToggle(hd){hd.parentNode.classList.toggle('open');}
+function renderClients(){
+  var el=$('clList');if(!el)return;
+  var list=CLIENTS.slice().sort(function(a,b){return (b.last||'').localeCompare(a.last||'')||(b.visits-a.visits);});
+  var total=list.length,regulars=list.filter(function(c){return c.visits>=3;}).length;
+  var sumEl=$('clSum');if(sumEl)sumEl.innerHTML=total?('<span>'+esc(tf('clTotal',{n:total}))+'</span><span>'+esc(tf('clRegularsN',{n:regulars}))+'</span>'):'';
+  var q=(($('clQ')&&$('clQ').value)||'').toLowerCase().trim();
+  if(q)list=list.filter(function(c){return (c.name||'').toLowerCase().indexOf(q)>=0;});
+  if(!list.length){el.innerHTML='<div class="empty"><i class="ti ti-users"></i>'+esc(t('clNone'))+'</div>';return;}
+  el.innerHTML=list.map(function(c){
+    var memo=clMemoGet(c.key);
+    var svcTop=Object.keys(c.svcs).sort(function(a,b){return c.svcs[b]-c.svcs[a];}).slice(0,2).join(', ');
+    var reg=c.visits>=3?'<span class="clbadge">'+esc(t('clRegular'))+'</span>':'';
+    var sub=[tf('clVisits',{n:c.visits}),tf('clSpent',{v:CLcur+c.spent.toLocaleString()}),c.last?tf('clLast',{d:c.last}):''].filter(Boolean).join(' · ');
+    return '<div class="clrow"><div class="clhead" onclick="clToggle(this)">'
+      +'<div class="clav">'+esc((c.name||'?').slice(0,1))+'</div>'
+      +'<div class="cli"><div class="cln">'+esc(c.name||t('member'))+reg+'</div><div class="clm">'+esc(sub)+'</div></div>'
+      +'<i class="ti ti-chevron-down clchev"></i></div>'
+      +'<div class="clbody">'+(svcTop?'<div class="clm" style="margin-bottom:8px">'+esc(svcTop)+'</div>':'')
+      +'<label class="hint">'+esc(t('clMemo'))+'</label>'
+      +'<textarea class="inp" placeholder="'+esc(t('clMemoPh'))+'" oninput="clMemoSet('+c.id+',this.value)">'+esc(memo)+'</textarea>'
+      +'</div></div>';
+  }).join('');
+}
+// ---------- CSV 내보내기 ----------
+function csvCell(v){return '"'+String(v==null?'':v).replace(/"/g,'""').replace(/\r?\n/g,' ')+'"';}
+function csvDL(name,header,rows){var csv=[header.map(csvCell).join(',')].concat(rows.map(function(r){return r.map(csvCell).join(',');})).join('\r\n');var blob=new Blob(['﻿'+csv],{type:'text/csv;charset=utf-8'});var a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=name;document.body.appendChild(a);a.click();setTimeout(function(){URL.revokeObjectURL(a.href);a.remove();},1000);toast(t('csvOk'));}
+function exportBookings(){var rows=(bkRows||[]).slice().sort(function(a,b){return (a.date||'').localeCompare(b.date||'');}).map(function(b){return [b.date||'',b.time||'',bkSvcName(b),bkAmount(b),b.status||'pending',b.note||''];});csvDL('beautia_bookings.csv',['날짜','시간','서비스','금액','상태','메모'],rows);}
+function exportClients(){var rows=CLIENTS.slice().sort(function(a,b){return b.visits-a.visits;}).map(function(c){return [c.name,c.visits,c.spent,c.first,c.last,Object.keys(c.svcs).join('/'),clMemoGet(c.key)];});csvDL('beautia_clients.csv',['고객','방문수','누적매출','첫방문','최근방문','서비스','메모'],rows);}
+
 function tab(t){
   document.querySelectorAll('.tab').forEach(b=>b.classList.toggle('on',b.dataset.tab===t));
-  ['home','profile','portfolio','bookings','reviews','messages'].forEach(s=>$('sec-'+s).classList.toggle('hide',s!==t));
+  ['home','profile','portfolio','bookings','reviews','messages','clients'].forEach(s=>$('sec-'+s).classList.toggle('hide',s!==t));
   if(t==='home')renderHome();
   else if(t==='messages')loadConvos();
+  else if(t==='clients')renderClients();
   window.scrollTo({top:0});
 }
 
