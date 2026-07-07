@@ -57,9 +57,9 @@ header.top{position:sticky;top:0;z-index:20;background:rgba(255,255,255,.95);bac
 .card{background:#fff;border:1px solid var(--line);border-radius:18px;padding:20px;margin-top:14px;}
 .card h2{font-size:16px;letter-spacing:-.01em;margin-bottom:4px;}
 .card .hint{font-size:12.5px;color:var(--sub);margin-bottom:14px;}
-.hqr{display:flex;align-items:center;gap:12px;margin-top:14px;padding-top:14px;border-top:1px solid var(--line);}
+.hqr{display:flex;align-items:center;gap:12px;margin-top:14px;padding-top:14px;border-top:1px solid rgba(255,255,255,.18);}
 .hqr img{width:74px;height:74px;border-radius:12px;border:1px solid var(--line);background:#fff;flex-shrink:0;}
-.hqrt{font-size:12.5px;font-weight:600;color:var(--ink2);line-height:1.45;}
+.hqrt{font-size:12.5px;font-weight:600;color:rgba(255,255,255,.82);line-height:1.45;}
 .uprow{display:flex;align-items:center;gap:12px;padding:12px 0;border-bottom:1px solid var(--line);}
 .uprow:last-child{border-bottom:0;}
 .upday{flex-shrink:0;width:58px;text-align:center;line-height:1.2;}
@@ -251,6 +251,13 @@ textarea.inp{resize:vertical;min-height:80px;line-height:1.6;}
 .clbody{display:none;padding:0 13px 13px;}
 .clrow.open .clbody{display:block;}
 .clbody textarea.inp{min-height:56px;margin-top:5px;}
+/* 월별 매출 추이 */
+.rtbars{display:flex;align-items:flex-end;gap:6px;height:112px;margin-top:8px;}
+.rtb{flex:1;display:flex;flex-direction:column;align-items:center;gap:5px;justify-content:flex-end;min-width:0;}
+.rtb .rtv{font-size:10px;font-weight:800;color:var(--ink2);white-space:nowrap;}
+.rtb .rtt{width:100%;max-width:34px;background:linear-gradient(to top,var(--plum),var(--accent));border-radius:6px 6px 0 0;min-height:3px;}
+.rtb.cur .rtt{background:var(--accent);box-shadow:0 0 0 2px var(--rosebg);}
+.rtb .rtl{font-size:10.5px;color:var(--sub);font-weight:700;}
 </style>
 </head><body>
 <!-- Google Tag Manager (noscript) -->
@@ -301,7 +308,7 @@ textarea.inp{resize:vertical;min-height:80px;line-height:1.6;}
         <a class="btn ghost sm" id="hViewPub" target="_blank"><i class="ti ti-external-link"></i> <span data-t="viewPub">공개 프로필 보기</span></a>
         <button class="btn ghost sm" onclick="copyPub()"><i class="ti ti-link"></i> <span data-t="copyLink">공유 링크 복사</span></button>
       </div>
-      <div class="hqr"><img id="hQrImg" alt="QR"><div class="hqrt" data-t="qrHint">QR을 매장에 붙여두면 손님이 스캔해 바로 예약해요</div></div>
+      <div class="hqr"><img id="hQrImg" alt="QR"><div><div class="hqrt" data-t="qrHint">QR을 매장에 붙여두면 손님이 스캔해 바로 예약해요</div><button class="btn ghost sm" style="margin-top:9px" onclick="openPoster()"><i class="ti ti-printer"></i> <span data-t="posterBtn">홍보 포스터</span></button></div></div>
     </div>
     <div class="card" id="upcomingCard" style="display:none">
       <h2><i class="ti ti-calendar-heart"></i> <span data-t="upcoming">다가오는 예약</span> <span class="hint" id="upCount" style="display:inline;font-weight:600"></span></h2>
@@ -318,6 +325,10 @@ textarea.inp{resize:vertical;min-height:80px;line-height:1.6;}
         <span><b id="stPend">0</b> <span data-t="sfPend">대기중</span></span>
       </div>
       <div class="revnote" id="revNote"></div>
+    </div>
+    <div class="card" id="revTrendCard" style="display:none">
+      <h2><i class="ti ti-chart-bar"></i> <span data-t="revTrend">월별 매출 추이</span></h2>
+      <div class="rtbars" id="rtBars"></div>
     </div>
     <div class="statgrid">
       <div class="stat"><div class="sv" id="stPhotos">0</div><div class="sl" data-t="statPortfolio">포트폴리오</div></div>
@@ -466,7 +477,8 @@ textarea.inp{resize:vertical;min-height:80px;line-height:1.6;}
   <!-- 후기 -->
   <div id="sec-reviews" class="hide">
     <div class="card">
-      <h2 data-t="reviewsTitle">받은 후기</h2><div class="hint" data-t="reviewsHint">고객이 남긴 후기입니다.</div>
+      <div class="clhrow"><h2 style="margin:0" data-t="reviewsTitle">받은 후기</h2><button class="btn ghost sm" onclick="reviewReq()"><i class="ti ti-link"></i> <span data-t="reviewReqBtn">리뷰 요청 링크</span></button></div>
+      <div class="hint" data-t="reviewsHint">고객이 남긴 후기입니다.</div>
       <div id="revList"></div>
     </div>
   </div>
@@ -526,9 +538,13 @@ Object.assign(T.ko,{clients:'고객',insightTitle:'성과 인사이트',inViewsW
 Object.assign(T.en,{clients:'Clients',insightTitle:'Performance insights',inViewsWeek:'Views this week',inSaves:'Saves',inConv:'View→Book',inTrend:'Views · last 7 days',inNeedSql:'View counts appear once visit tracking is set up.',clTitle:'Clients',clHint:'Clients gathered automatically from your bookings. Manage regulars, spend and notes.',clSearch:'Search client name…',clNone:'No clients yet. They appear automatically as bookings come in.',clVisits:'{n} visits',clLast:'Last {d}',clSpent:'Total {v}',clRegular:'Regular',clMemo:'Private note (only you)',clMemoPh:'e.g. Prefers soft perm / allergy · contact',clMemoSaved:'Note saved ✓',clExport:'Clients CSV',bkExport:'Bookings CSV',csvOk:'CSV exported ✓',clTotal:'{n} clients',clRegularsN:'{n} regulars'});
 Object.assign(T.ja,{clients:'顧客',insightTitle:'成果インサイト',inViewsWeek:'今週の閲覧',inSaves:'保存',inConv:'閲覧→予約',inTrend:'直近7日の閲覧推移',inNeedSql:'閲覧数は訪問記録の設定後に表示されます。',clTitle:'顧客管理',clHint:'予約から自動で集まった顧客です。常連・売上・メモを管理しましょう。',clSearch:'顧客名で検索…',clNone:'まだ顧客がいません。予約がたまると自動で表示されます。',clVisits:'来店 {n}回',clLast:'最近 {d}',clSpent:'累計 {v}',clRegular:'常連',clMemo:'メモ（自分だけ）',clMemoPh:'例：パーマ弱め希望 / アレルギー・連絡先など',clMemoSaved:'メモを保存しました ✓',clExport:'顧客CSV',bkExport:'予約CSV',csvOk:'CSVを出力しました ✓',clTotal:'顧客 {n}名',clRegularsN:'常連 {n}名'});
 Object.assign(T.th,{clients:'ลูกค้า',insightTitle:'อินไซต์ผลงาน',inViewsWeek:'เข้าชมสัปดาห์นี้',inSaves:'บันทึก',inConv:'ชม→จอง',inTrend:'ยอดเข้าชม 7 วันล่าสุด',inNeedSql:'ยอดเข้าชมจะแสดงหลังตั้งค่าการเก็บสถิติการเข้าชม',clTitle:'จัดการลูกค้า',clHint:'ลูกค้าที่รวบรวมจากการจองอัตโนมัติ จัดการลูกค้าประจำ ยอดใช้จ่าย และโน้ต',clSearch:'ค้นหาชื่อลูกค้า…',clNone:'ยังไม่มีลูกค้า จะแสดงอัตโนมัติเมื่อมีการจอง',clVisits:'มา {n} ครั้ง',clLast:'ล่าสุด {d}',clSpent:'รวม {v}',clRegular:'ลูกค้าประจำ',clMemo:'โน้ต (เห็นคนเดียว)',clMemoPh:'เช่น ชอบดัดอ่อน / แพ้ · ติดต่อ',clMemoSaved:'บันทึกโน้ตแล้ว ✓',clExport:'CSV ลูกค้า',bkExport:'CSV การจอง',csvOk:'ส่งออก CSV แล้ว ✓',clTotal:'ลูกค้า {n} คน',clRegularsN:'ประจำ {n} คน'});
+Object.assign(T.ko,{revTrend:'월별 매출 추이',posterBtn:'홍보 포스터',reviewReqBtn:'리뷰 요청 링크',reviewReqMsg:'시술 후기를 남겨주세요 😊 아래 링크에서 남길 수 있어요:',reviewReqCopied:'리뷰 요청 메시지 복사됨 ✨',posterCta:'지금 바로 예약하세요 ✨',posterScan:'QR을 스캔하거나 아래 링크로 접속',posterPrintHint:'인쇄 화면에서 "PDF로 저장" 또는 인쇄를 선택하세요 (Ctrl+P · 모바일은 공유▸인쇄).'});
+Object.assign(T.en,{revTrend:'Monthly revenue',posterBtn:'Promo poster',reviewReqBtn:'Ask for reviews',reviewReqMsg:'Please leave a review of your visit 😊 You can do it here:',reviewReqCopied:'Review request copied ✨',posterCta:'Book me now ✨',posterScan:'Scan the QR or visit the link below',posterPrintHint:'Choose “Save as PDF” or Print in the dialog (Ctrl+P · mobile: Share▸Print).'});
+Object.assign(T.ja,{revTrend:'月別売上',posterBtn:'販促ポスター',reviewReqBtn:'レビュー依頼',reviewReqMsg:'施術のレビューを残していただけますか 😊 こちらからどうぞ：',reviewReqCopied:'レビュー依頼をコピーしました ✨',posterCta:'今すぐ予約 ✨',posterScan:'QRをスキャン、または下のリンクへ',posterPrintHint:'印刷画面で「PDFで保存」または印刷を選んでください（Ctrl+P）。'});
+Object.assign(T.th,{revTrend:'รายได้รายเดือน',posterBtn:'โปสเตอร์',reviewReqBtn:'ขอรีวิว',reviewReqMsg:'ฝากรีวิวการใช้บริการด้วยนะคะ 😊 กดที่ลิงก์นี้ได้เลย:',reviewReqCopied:'คัดลอกข้อความขอรีวิวแล้ว ✨',posterCta:'จองเลยตอนนี้ ✨',posterScan:'สแกน QR หรือเข้าลิงก์ด้านล่าง',posterPrintHint:'เลือก “บันทึกเป็น PDF” หรือพิมพ์ในหน้าต่าง (Ctrl+P).'});
 function t(k){var o=T[LANG]||T.ko;return (k in o)?o[k]:(T.ko[k]!=null?T.ko[k]:k);}
 function tf(k,map){var s=t(k);for(var x in (map||{}))s=String(s).split('{'+x+'}').join(map[x]);return s;}
-function catLabel(en){return t('cat_'+en)||en;}
+function catLabel(en){var k='cat_'+en,o=T[LANG]||T.ko;if(k in o)return o[k];if(k in T.ko)return T.ko[k];return en;}
 function calTitle(y,m){if(LANG==='ko')return y+'년 '+m+'월';if(LANG==='ja')return y+'年 '+m+'月';return t('mon')[m-1]+' '+y;}
 function applyI18n(){
   document.documentElement.lang=LANG;
@@ -921,6 +937,7 @@ function renderStats(){
   var nEl=$('revNote');
   if(nEl){var noPrice=rows.length-priced;
     nEl.textContent=rows.length?(t('revNote')+(noPrice>0?tf('revNoteExcl',{n:noPrice}):'')):t('revNoteEmpty');}
+  renderRevTrend();
 }
 function bkMap(){var m={};(bkRows||[]).forEach(function(b){if(b.date){(m[b.date]=m[b.date]||[]).push(b);}});return m;}
 function renderBkCalendar(){
@@ -1051,6 +1068,44 @@ async function initMessages(){ // afterLogin에서 배지+실시간 구독
   }).subscribe();}catch(e){}
 }
 
+// ---------- 월별 매출 추이 ----------
+function moneyShort(n,cur){if(n>=1000000)return cur+(n/1000000).toFixed(n>=10000000?0:1)+'M';if(n>=10000)return cur+Math.round(n/1000)+'k';if(n>=1000)return cur+(n/1000).toFixed(1)+'k';return cur+n;}
+function renderRevTrend(){
+  var el=$('rtBars'),card=$('revTrendCard');if(!el)return;
+  var rows=bkRows||[],cur=bkCurrency(rows),now=new Date(),months=[],idx={};
+  for(var i=5;i>=0;i--){var d=new Date(now.getFullYear(),now.getMonth()-i,1);var o={m:d.getMonth(),key:d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0'),sum:0};months.push(o);idx[o.key]=o;}
+  rows.forEach(function(b){var st=b.status||'pending';if(!(st==='accepted'||st==='done'||st==='completed'))return;var k=(b.date||'').slice(0,7);if(idx[k])idx[k].sum+=bkAmount(b);});
+  var mx=1,total=0;months.forEach(function(x){if(x.sum>mx)mx=x.sum;total+=x.sum;});
+  if(!total){if(card)card.style.display='none';return;}
+  if(card)card.style.display='';
+  var mon=t('mon');
+  el.innerHTML=months.map(function(x,i){var h=Math.round(x.sum/mx*100),lab=(LANG==='ko'||LANG==='ja')?((x.m+1)+t('calM')):mon[x.m];
+    return '<div class="rtb'+(i===months.length-1?' cur':'')+'"><div class="rtv">'+(x.sum?esc(moneyShort(x.sum,cur)):'')+'</div><div class="rtt" style="height:'+Math.max(3,h)+'%"></div><div class="rtl">'+esc(lab)+'</div></div>';}).join('');
+}
+// ---------- 리뷰 요청 / 홍보 포스터 ----------
+function reviewReq(){var msg=t('reviewReqMsg')+' '+pubUrl();if(navigator.clipboard&&navigator.clipboard.writeText)navigator.clipboard.writeText(msg).then(function(){toast(t('reviewReqCopied'));},function(){toast(msg);});else toast(msg);}
+function openPoster(){
+  var shop=(ME&&ME.shop&&ME.shop.name)||(ME&&ME.nickname)||'Beautia',url=pubUrl();
+  var qr='https://api.qrserver.com/v1/create-qr-code/?size=520x520&margin=0&color=6E4A50&bgcolor=FFFFFF&data='+encodeURIComponent(url);
+  var w=window.open('','_blank');if(!w){toast(url);return;}
+  var h='<!DOCTYPE html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>'+esc(shop)+' · Beautia</title>'
+   +'<style>*{margin:0;box-sizing:border-box;font-family:system-ui,-apple-system,"Malgun Gothic",sans-serif}'
+   +'body{background:#f4eeec;display:flex;flex-direction:column;align-items:center;padding:24px}'
+   +'.p{background:linear-gradient(160deg,#6E4A50,#4d3338);color:#fff;width:100%;max-width:420px;border-radius:26px;padding:42px 34px;text-align:center;box-shadow:0 20px 50px -20px rgba(60,30,40,.5)}'
+   +'.brand{font-size:13px;letter-spacing:.28em;font-weight:800;opacity:.85}'
+   +'.shop{font-size:30px;font-weight:800;margin:14px 0 6px;letter-spacing:-.02em;word-break:keep-all;line-height:1.2}'
+   +'.cta{font-size:16px;font-weight:700;opacity:.92;margin-bottom:26px}'
+   +'.qr{background:#fff;border-radius:20px;padding:18px;display:inline-block}.qr img{width:240px;height:240px;display:block}'
+   +'.scan{font-size:13px;opacity:.85;margin-top:20px;font-weight:600}.link{font-size:13px;font-weight:800;margin-top:6px;word-break:break-all}'
+   +'.hint{max-width:420px;font-size:12px;color:#8a7c80;text-align:center;margin-top:16px;font-weight:600;line-height:1.5}'
+   +'@media print{body{background:#fff;padding:0}.hint{display:none}.p{box-shadow:none;border-radius:0;max-width:none;min-height:100vh;display:flex;flex-direction:column;justify-content:center}}'
+   +'</style></head><body><div class="p"><div class="brand">BEAUTIA</div><div class="shop">'+esc(shop)+'</div>'
+   +'<div class="cta">'+esc(t('posterCta'))+'</div><div class="qr"><img src="'+esc(qr)+'" alt="QR"></div>'
+   +'<div class="scan">'+esc(t('posterScan'))+'</div><div class="link">'+esc(url.replace(/^https?:\/\//,''))+'</div></div>'
+   +'<div class="hint">'+esc(t('posterPrintHint'))+'</div></body></html>';
+  w.document.open();w.document.write(h);w.document.close();
+  setTimeout(function(){try{w.focus();w.print();}catch(e){}},800);
+}
 // ---------- 성과 인사이트 ----------
 function kdate(ms){return new Date(ms+9*3600000).toISOString().slice(0,10);}
 async function cnt(q){try{var r=await q;return r.error?null:(r.count||0);}catch(e){return null;}}
