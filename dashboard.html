@@ -265,6 +265,48 @@ textarea.inp{resize:vertical;min-height:80px;line-height:1.6;}
 .advtoggle:hover{border-color:var(--accent);color:var(--plum);}
 .advtoggle i{transition:.2s;font-size:17px;}
 .advtoggle.open i{transform:rotate(180deg);}
+/* 설정 마법사 */
+.wizcta{width:100%;display:flex;align-items:center;justify-content:center;gap:8px;margin-top:14px;padding:16px;border-radius:16px;border:none;background:linear-gradient(135deg,var(--plum),var(--accent));color:#fff;font-weight:800;font-size:15px;cursor:pointer;box-shadow:0 12px 28px -14px rgba(110,74,80,.6);}
+.wizcta i{font-size:20px;}
+.wiz{position:fixed;inset:0;z-index:80;background:var(--soft);display:none;flex-direction:column;}
+.wiz.on{display:flex;}
+.wizhead{padding:16px 18px 6px;}
+.wiztop{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;}
+.wizstep{font-size:12.5px;font-weight:800;color:var(--sub);}
+.wizlater{font-size:13px;font-weight:700;color:var(--sub);background:none;border:none;cursor:pointer;}
+.wizbar{height:6px;border-radius:999px;background:var(--line);overflow:hidden;}
+.wizbar>span{display:block;height:100%;background:linear-gradient(90deg,var(--plum),var(--accent));border-radius:999px;transition:width .3s;}
+.wizbody{flex:1;overflow-y:auto;padding:10px 22px 22px;max-width:560px;margin:0 auto;width:100%;}
+.wizt{font-size:22px;font-weight:800;letter-spacing:-.02em;margin-top:10px;}
+.wizd{font-size:14px;color:var(--ink2);font-weight:500;margin-top:8px;line-height:1.55;}
+.wizfield{margin-top:18px;}
+.wizfield label{display:block;font-size:13px;font-weight:800;color:var(--ink2);margin-bottom:7px;}
+.wizav{width:120px;height:120px;border-radius:50%;background:var(--soft) center/cover;border:2px dashed var(--accent);margin:20px auto 0;display:flex;align-items:center;justify-content:center;color:var(--accent);font-size:34px;}
+.wizchips{display:flex;flex-wrap:wrap;gap:8px;margin-top:6px;}
+.wizchip{font-size:14px;font-weight:700;padding:11px 15px;border-radius:999px;border:1.5px solid var(--line);background:#fff;color:var(--ink2);cursor:pointer;}
+.wizchip.on{background:var(--rosebg);border-color:var(--accent);color:var(--plum);}
+.wizupload{width:100%;border:2px dashed var(--accent);border-radius:14px;color:var(--plum);font-weight:800;font-size:15px;padding:16px;background:var(--rosebg);display:flex;align-items:center;justify-content:center;gap:8px;cursor:pointer;margin-top:16px;}
+.wizpf{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:14px;}
+.wizpf .pfi{aspect-ratio:1;border-radius:12px;background:var(--soft) center/cover;border:1px solid var(--line);}
+.wizfoot{display:flex;gap:10px;padding:14px 20px calc(16px + env(safe-area-inset-bottom));background:#fff;border-top:1px solid var(--line);max-width:560px;margin:0 auto;width:100%;}
+.wizfoot .btn{flex:1;}
+/* 메뉴 인라인 편집 */
+.svc2{background:var(--soft);border:1px solid var(--line);border-radius:14px;padding:12px 13px;margin-bottom:9px;}
+.svc2h{display:flex;align-items:center;justify-content:space-between;gap:8px;}
+.svc2n{font-size:14.5px;font-weight:800;color:var(--ink);}
+.svc2x{color:var(--sub);font-size:18px;cursor:pointer;padding:2px 4px;}
+.svc2b{margin-top:10px;}
+.svc2pw{position:relative;display:block;width:100%;max-width:190px;margin:0 0 9px;}
+.svc2cur{position:absolute;left:12px;top:50%;transform:translateY(-50%);font-weight:800;color:var(--plum);font-size:14px;pointer-events:none;}
+.svc2p{width:100%;padding:10px 12px 10px 32px;margin:0;}
+.durs{display:flex;flex-wrap:wrap;gap:6px;}
+.currow{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin:12px 0 4px;}
+.currow .curl{font-size:13px;font-weight:800;color:var(--ink2);}
+.cursel{width:auto;padding:8px 12px;font-weight:700;}
+.currow .curhint{font-size:12px;color:var(--sub);font-weight:600;flex:1;min-width:150px;}
+.durc{font-size:12.5px;font-weight:700;padding:7px 11px;border-radius:999px;border:1px solid var(--line);background:#fff;color:var(--ink2);cursor:pointer;white-space:nowrap;}
+.durc.on{background:var(--rosebg);border-color:var(--accent);color:var(--plum);}
+.btn.saved{background:#e9f5ef;color:#3E7C6A;box-shadow:none;}
 </style>
 </head><body>
 <!-- Google Tag Manager (noscript) -->
@@ -296,12 +338,13 @@ textarea.inp{resize:vertical;min-height:80px;line-height:1.6;}
   <nav class="botnav">
     <button class="bn on" data-tab="home" onclick="tab('home')"><i class="ti ti-home-2"></i><span data-t="home">홈</span></button>
     <button class="bn" data-tab="profile" onclick="tab('profile')"><i class="ti ti-user-circle"></i><span data-t="profile">프로필</span></button>
-    <button class="bn" data-tab="bookings" onclick="tab('bookings')"><i class="ti ti-calendar-event"></i><span data-t="bookings">예약</span></button>
+    <button class="bn" data-tab="bookings" onclick="tab('bookings')"><i class="ti ti-calendar-event"></i><span data-t="bookings">예약</span><span class="tbadge hide" id="bkBadge"></span></button>
     <button class="bn" data-tab="messages" onclick="tab('messages')"><i class="ti ti-message-circle"></i><span data-t="msgTab">메시지</span><span class="tbadge hide" id="msgBadge"></span></button>
   </nav>
 
   <!-- 홈 -->
   <div id="sec-home">
+    <button class="wizcta hide" id="wizCta" onclick="openWiz()"><i class="ti ti-wand"></i> <span data-t="wizCta">3분 완성 · 설정 마법사</span></button>
     <div class="card hero">
       <div class="hgreet"><span data-t="greetHi">안녕하세요,</span> <b id="hName">디자이너</b><span data-t="greetSuffix">님 👋</span></div>
       <div class="hprofrow">
@@ -409,18 +452,19 @@ textarea.inp{resize:vertical;min-height:80px;line-height:1.6;}
       <div class="row"><label><span data-t="bookingL">외부 예약 링크</span> <span class="hint" style="display:inline;font-weight:600" data-t="bookingSuffix">· 네이버예약·LINE·핫페퍼 등</span></label><input class="inp" id="f_booking" data-tph="bookingPh" placeholder="https://booking.naver.com/… 또는 LINE·핫페퍼 예약 링크"><div class="hint" style="margin-top:5px" data-t="bookingHint">넣으면 손님 프로필에 "예약하기" 버튼으로 연결돼요 (링크 종류를 자동 감지해 라벨·색 표시).</div></div>
     </div>
     <div class="card">
-      <h2 data-t="svcTitle">서비스 · 가격</h2><div class="hint" data-t="svcHint">프로필에 표시돼요. 고객이 예약할 때 참고합니다.</div>
+      <h2 data-t="svcTitle">서비스 · 가격</h2><div class="hint" data-t="svcHint2">아래에서 골라 담으면 손님 언어로 자동 번역돼요. 직접 입력한 건 AI가 번역합니다.</div>
+      <div class="currow"><span class="curl" data-t="curL">통화</span><select class="inp cursel" id="curSel" onchange="setCur(this.value)"></select><span class="curhint" data-t="curHint">손님에겐 자기 나라 돈으로 환산(≈)해 보여줘요</span></div>
+      <div class="chips" id="svcCatalog" style="margin:10px 0 4px"></div>
       <div id="svcList"></div>
       <div class="svcadd">
-        <input class="inp" id="svcName" list="svcOpts" data-tph="svcNamePh" placeholder="서비스명 (예: 컷 + 펌)"><datalist id="svcOpts"></datalist>
-        <div style="display:flex;gap:8px;margin-top:8px">
-          <input class="inp" id="svcPrice" data-tph="svcPricePh" placeholder="가격 (예: 80,000원)" style="flex:1.4">
-          <input class="inp" id="svcDur" data-tph="svcDurPh" placeholder="시간 (예: 2시간)" style="flex:1">
+        <div style="display:flex;gap:8px">
+          <input class="inp" id="svcName" list="svcOpts" data-tph="svcNamePh" placeholder="서비스명 (예: 컷 + 펌)" style="flex:1" onkeydown="if(event.key==='Enter'){event.preventDefault();addSvc();}"><datalist id="svcOpts"></datalist>
+          <button class="btn ghost sm" style="white-space:nowrap" onclick="addSvc()"><i class="ti ti-plus"></i> <span data-t="addSvc">직접 추가</span></button>
         </div>
-        <button class="btn ghost sm" style="margin-top:8px" onclick="addSvc()"><i class="ti ti-plus"></i> <span data-t="addSvc">서비스 추가</span></button>
+        <div class="hint" style="margin-top:6px" data-t="svcCustomHint">목록에 없는 시술만 직접 입력 · 가격·시간은 각 메뉴에서 설정</div>
       </div>
     </div>
-    <div class="saveBar"><button class="btn" id="saveProfileBtn" onclick="saveProfile()"><i class="ti ti-device-floppy"></i> <span data-t="saveProfile">프로필 저장</span></button></div>
+    <div class="saveBar"><button class="btn" id="saveProfileBtn" onclick="saveProfile()"><i class="ti ti-device-floppy"></i> <span data-t="saveBtn">저장</span></button></div>
   </div>
 
   <!-- 포트폴리오 -->
@@ -442,7 +486,7 @@ textarea.inp{resize:vertical;min-height:80px;line-height:1.6;}
       <div class="balabel" data-t="baAfterLbl">애프터로 쓸 사진</div>
       <div class="baPick" id="baPickAfter"></div>
     </div>
-    <div class="saveBar"><button class="btn" id="savePfBtn" onclick="savePortfolio()"><i class="ti ti-device-floppy"></i> <span data-t="savePortfolio">포트폴리오 저장</span></button></div>
+    <div class="saveBar"><button class="btn" id="savePfBtn" onclick="saveProfile()"><i class="ti ti-device-floppy"></i> <span data-t="saveBtn">저장</span></button></div>
   </div>
 
   <!-- 예약 -->
@@ -516,6 +560,15 @@ textarea.inp{resize:vertical;min-height:80px;line-height:1.6;}
   </div>
 </div>
 
+<div class="wiz" id="wiz">
+  <div class="wizhead">
+    <div class="wiztop"><span class="wizstep" id="wizStep"></span><button class="wizlater" onclick="closeWiz()" data-t="wizLater">나중에</button></div>
+    <div class="wizbar"><span id="wizProg"></span></div>
+  </div>
+  <div class="wizbody" id="wizBody"></div>
+  <div class="wizfoot" id="wizFoot"></div>
+</div>
+
 <div class="toast" id="toast"></div>
 
 <script>
@@ -550,6 +603,14 @@ Object.assign(T.ko,{clients:'고객',insightTitle:'성과 인사이트',inViewsW
 Object.assign(T.en,{clients:'Clients',insightTitle:'Performance insights',inViewsWeek:'Views this week',inSaves:'Saves',inConv:'View→Book',inTrend:'Views · last 7 days',inNeedSql:'View counts appear once visit tracking is set up.',clTitle:'Clients',clHint:'Clients gathered automatically from your bookings. Manage regulars, spend and notes.',clSearch:'Search client name…',clNone:'No clients yet. They appear automatically as bookings come in.',clVisits:'{n} visits',clLast:'Last {d}',clSpent:'Total {v}',clRegular:'Regular',clMemo:'Private note (only you)',clMemoPh:'e.g. Prefers soft perm / allergy · contact',clMemoSaved:'Note saved ✓',clExport:'Clients CSV',bkExport:'Bookings CSV',csvOk:'CSV exported ✓',clTotal:'{n} clients',clRegularsN:'{n} regulars'});
 Object.assign(T.ja,{clients:'顧客',insightTitle:'成果インサイト',inViewsWeek:'今週の閲覧',inSaves:'保存',inConv:'閲覧→予約',inTrend:'直近7日の閲覧推移',inNeedSql:'閲覧数は訪問記録の設定後に表示されます。',clTitle:'顧客管理',clHint:'予約から自動で集まった顧客です。常連・売上・メモを管理しましょう。',clSearch:'顧客名で検索…',clNone:'まだ顧客がいません。予約がたまると自動で表示されます。',clVisits:'来店 {n}回',clLast:'最近 {d}',clSpent:'累計 {v}',clRegular:'常連',clMemo:'メモ（自分だけ）',clMemoPh:'例：パーマ弱め希望 / アレルギー・連絡先など',clMemoSaved:'メモを保存しました ✓',clExport:'顧客CSV',bkExport:'予約CSV',csvOk:'CSVを出力しました ✓',clTotal:'顧客 {n}名',clRegularsN:'常連 {n}名'});
 Object.assign(T.th,{clients:'ลูกค้า',insightTitle:'อินไซต์ผลงาน',inViewsWeek:'เข้าชมสัปดาห์นี้',inSaves:'บันทึก',inConv:'ชม→จอง',inTrend:'ยอดเข้าชม 7 วันล่าสุด',inNeedSql:'ยอดเข้าชมจะแสดงหลังตั้งค่าการเก็บสถิติการเข้าชม',clTitle:'จัดการลูกค้า',clHint:'ลูกค้าที่รวบรวมจากการจองอัตโนมัติ จัดการลูกค้าประจำ ยอดใช้จ่าย และโน้ต',clSearch:'ค้นหาชื่อลูกค้า…',clNone:'ยังไม่มีลูกค้า จะแสดงอัตโนมัติเมื่อมีการจอง',clVisits:'มา {n} ครั้ง',clLast:'ล่าสุด {d}',clSpent:'รวม {v}',clRegular:'ลูกค้าประจำ',clMemo:'โน้ต (เห็นคนเดียว)',clMemoPh:'เช่น ชอบดัดอ่อน / แพ้ · ติดต่อ',clMemoSaved:'บันทึกโน้ตแล้ว ✓',clExport:'CSV ลูกค้า',bkExport:'CSV การจอง',csvOk:'ส่งออก CSV แล้ว ✓',clTotal:'ลูกค้า {n} คน',clRegularsN:'ประจำ {n} คน'});
+Object.assign(T.ko,{wizCta:'3분 완성 · 설정 마법사',wizLater:'나중에',wizNext:'다음',wizBack:'뒤로',wizDone:'완성하고 공개',wizStepOf:'{a} / {b}',wizPhotoT:'프로필 사진',wizPhotoD:'얼굴이나 로고 사진을 올려주세요. 원형으로 보여요.',wizPhotoBtn:'사진 올리기',wizBasicT:'기본 정보를 알려주세요',wizNameL:'이름 / 활동명',wizShopL:'가게 · 샵 이름 (선택)',wizRegionL:'지역 (탭해서 선택)',wizOther:'직접 입력',wizSpecT:'어떤 시술을 하세요?',wizSpecD:'해당하는 걸 모두 골라주세요.',wizCareerL:'경력',wizSvcT:'대표 서비스',wizSvcD:'자주 하는 시술을 탭해서 추가하세요. 가격은 나중에 넣어도 돼요.',wizSvcAllAdded:'추천 서비스를 모두 추가했어요 👍',wizPfT:'대표 작업을 보여주세요',wizPfD:'사진이 많을수록 손님이 늘어요. 여러 장 한 번에 올릴 수 있어요.',wizPfBtn:'사진 여러 장 올리기',wizDoneT:'거의 다 됐어요!',wizDoneD:'완성을 누르면 프로필이 공개되고 손님이 바로 예약할 수 있어요.',wizSaved:'프로필이 완성됐어요! 🎉',wizNeedName:'이름을 입력해주세요',tagSuggestL:'추천 태그 · 눌러서 추가',pickOrType:'목록에서 선택하거나 직접 입력',advMore:'성과·인사이트 더보기',advLess:'접기'});
+Object.assign(T.en,{wizCta:'Finish setup in 3 min',wizLater:'Later',wizNext:'Next',wizBack:'Back',wizDone:'Finish & publish',wizStepOf:'{a} / {b}',wizPhotoT:'Profile photo',wizPhotoD:'Upload your face or logo. Shown as a circle.',wizPhotoBtn:'Upload photo',wizBasicT:'Tell us the basics',wizNameL:'Name / handle',wizShopL:'Shop · salon name (optional)',wizRegionL:'Region (tap to pick)',wizOther:'Type my own',wizSpecT:'What do you do?',wizSpecD:'Pick all that apply.',wizCareerL:'Experience',wizSvcT:'Signature services',wizSvcD:'Tap to add what you offer. You can add prices later.',wizSvcAllAdded:'All suggestions added 👍',wizPfT:'Show your best work',wizPfD:'More photos = more clients. Upload several at once.',wizPfBtn:'Upload photos',wizDoneT:'Almost done!',wizDoneD:'Tap Finish to publish your profile so clients can book.',wizSaved:'Your profile is ready! 🎉',wizNeedName:'Please enter your name'});
+Object.assign(T.ja,{wizCta:'3分で設定完了',wizLater:'あとで',wizNext:'次へ',wizBack:'戻る',wizDone:'完成して公開',wizStepOf:'{a} / {b}',wizPhotoT:'プロフィール写真',wizPhotoD:'顔かロゴの写真をアップ。円形で表示されます。',wizPhotoBtn:'写真をアップ',wizBasicT:'基本情報を教えてください',wizNameL:'名前 / 活動名',wizShopL:'店・サロン名（任意）',wizRegionL:'地域（タップで選択）',wizOther:'自由入力',wizSpecT:'どんな施術をしますか？',wizSpecD:'当てはまるものを全て選んでください。',wizCareerL:'経歴',wizSvcT:'代表メニュー',wizSvcD:'よくする施術をタップで追加。価格は後で入力できます。',wizSvcAllAdded:'おすすめを全て追加しました 👍',wizPfT:'代表作を見せましょう',wizPfD:'写真が多いほど集客できます。複数枚まとめてアップ可能。',wizPfBtn:'写真をアップ',wizDoneT:'あと少し！',wizDoneD:'完成を押すとプロフィールが公開され、お客様が予約できます。',wizSaved:'プロフィールが完成しました！ 🎉',wizNeedName:'名前を入力してください'});
+Object.assign(T.th,{wizCta:'ตั้งค่าเสร็จใน 3 นาที',wizLater:'ไว้ทีหลัง',wizNext:'ถัดไป',wizBack:'ย้อนกลับ',wizDone:'เสร็จและเผยแพร่',wizStepOf:'{a} / {b}',wizPhotoT:'รูปโปรไฟล์',wizPhotoD:'อัปรูปหน้าหรือโลโก้ แสดงเป็นวงกลม',wizPhotoBtn:'อัปโหลดรูป',wizBasicT:'บอกข้อมูลพื้นฐาน',wizNameL:'ชื่อ / ชื่อที่ใช้',wizShopL:'ชื่อร้าน · ซาลอน (ไม่บังคับ)',wizRegionL:'พื้นที่ (แตะเพื่อเลือก)',wizOther:'พิมพ์เอง',wizSpecT:'คุณทำบริการอะไร?',wizSpecD:'เลือกทั้งหมดที่ตรง',wizCareerL:'ประสบการณ์',wizSvcT:'บริการหลัก',wizSvcD:'แตะเพื่อเพิ่มบริการที่ทำ ใส่ราคาทีหลังได้',wizSvcAllAdded:'เพิ่มบริการแนะนำครบแล้ว 👍',wizPfT:'โชว์ผลงานเด่น',wizPfD:'ยิ่งมีรูปมาก ยิ่งได้ลูกค้า อัปหลายรูปพร้อมกันได้',wizPfBtn:'อัปโหลดรูป',wizDoneT:'ใกล้เสร็จแล้ว!',wizDoneD:'กดเสร็จเพื่อเผยแพร่โปรไฟล์ ลูกค้าจะจองได้ทันที',wizSaved:'โปรไฟล์พร้อมแล้ว! 🎉',wizNeedName:'กรุณากรอกชื่อ'});
+Object.assign(T.ko,{svcCatalogL:'자주 하는 시술 · 눌러서 추가',svcHint2:'아래에서 골라 담으면 손님 언어로 자동 번역돼요. 직접 입력한 건 AI가 번역합니다.',svcCustomHint:'목록에 없는 시술만 직접 입력 · 가격·시간은 각 메뉴에서 설정',addSvc:'직접 추가',saveBtn:'저장',savedOk:'저장됨 ✓',curL:'통화',curHint:'손님에겐 자기 나라 돈으로 환산(≈)해 보여줘요',svcPriceNum:'가격 (숫자만)'});
+Object.assign(T.en,{svcCatalogL:'Common services · tap to add',svcHint2:'Pick below and it auto-translates for clients. Custom items are translated by AI.',svcCustomHint:'Only type services not in the list · set price and time on each item',addSvc:'Add',saveBtn:'Save',savedOk:'Saved ✓',curL:'Currency',curHint:'Clients see it converted (≈) to their own currency',svcPriceNum:'Price (numbers)'});
+Object.assign(T.ja,{svcCatalogL:'よくある施術・タップで追加',svcHint2:'下から選ぶとお客様の言語に自動翻訳。独自入力はAIが翻訳します。',svcCustomHint:'リストにない施術のみ入力・価格と時間は各メニューで設定',addSvc:'追加',saveBtn:'保存',savedOk:'保存済み ✓',curL:'通貨',curHint:'お客様には各国通貨で概算(≈)表示されます',svcPriceNum:'価格（数字）'});
+Object.assign(T.th,{svcCatalogL:'บริการยอดนิยม · แตะเพื่อเพิ่ม',svcHint2:'เลือกด้านล่างแล้วแปลอัตโนมัติให้ลูกค้า เมนูที่พิมพ์เองแปลด้วย AI',svcCustomHint:'พิมพ์เฉพาะบริการที่ไม่มีในรายการ · ตั้งราคาและเวลาที่แต่ละเมนู',addSvc:'เพิ่ม',saveBtn:'บันทึก',savedOk:'บันทึกแล้ว ✓',curL:'สกุลเงิน',curHint:'ลูกค้าจะเห็นราคาแปลงเป็นสกุลเงินของเขา (≈)',svcPriceNum:'ราคา (ตัวเลข)'});
 Object.assign(T.ko,{tagSuggestL:'추천 태그 · 눌러서 추가',pickOrType:'목록에서 선택하거나 직접 입력',advMore:'성과·인사이트 더보기',advLess:'접기'});
 Object.assign(T.en,{tagSuggestL:'Suggested · tap to add',pickOrType:'Pick from the list or type your own',advMore:'More insights',advLess:'Show less'});
 Object.assign(T.ja,{tagSuggestL:'おすすめ・タップで追加',pickOrType:'リストから選択・自由入力可',advMore:'成果・インサイトをもっと見る',advLess:'閉じる'});
@@ -610,6 +671,11 @@ async function afterLogin(user){
   $('who').textContent=EMAIL;$('logoutBtn').classList.remove('hide');
   fillProfile();renderSpec();renderTags();renderPf();renderServices();
   renderHome();loadBookings();loadReviews();initMessages();applyI18n();
+  // 프로필/포폴 입력 변경 감지 → 저장 상태 표시 + 자동 저장 대상
+  ['sec-profile','sec-portfolio'].forEach(function(id){var el=$(id);if(el){el.addEventListener('input',markDirty);el.addEventListener('change',markDirty);}});
+  PROFILE_DIRTY=false;updateSaveState();
+  // 완전 신규(빈 프로필)면 설정 마법사 자동 실행
+  if(!ME.nickname && !(ME.shop&&ME.shop.name) && state.photos.length===0){setTimeout(openWiz,450);}
 }
 function pubUrl(){return 'https://beautia.io/d/'+UID;}
 function copyPub(){navigator.clipboard&&navigator.clipboard.writeText(pubUrl()).then(()=>toast(t('copied')),()=>toast(pubUrl()));}
@@ -647,6 +713,7 @@ function renderHome(){
   ];
   const done=checks.filter(c=>c[1]).length,pct=Math.round(done/checks.length*100);
   $('progBar').style.width=pct+'%';$('progPct').textContent=tf('pctDone',{pct:pct,done:done,total:checks.length});
+  var _wc=$('wizCta');if(_wc)_wc.classList.toggle('hide',pct>=100);
   const missing=checks.filter(c=>!c[1]).slice(0,4);
   $('progTips').innerHTML=missing.length?missing.map(c=>`<div class="tip"><i class="ti ti-circle-plus"></i> ${esc(tf('fillTip',{label:c[0]}))}</div>`).join(''):`<div class="tip" style="color:var(--green)"><i class="ti ti-circle-check"></i> ${esc(t('profileComplete'))}</div>`;
 }
@@ -656,7 +723,7 @@ function fillProfile(){
   const s=ME.shop||{};
   state.avatar=s.avatar||'';state.photos=(s.photos||[]).filter(x=>(typeof x==='string'&&x.startsWith('http'))||(x&&typeof x==='object'&&x.img));
   state.ba=(s.ba&&s.ba.length===2&&s.ba[0]&&s.ba[1])?s.ba.slice():[];
-  state.spec=(s.specialties||[]).slice();state.tags=(s.tags||[]).slice();state.services=(s.services||[]).slice();
+  state.spec=(s.specialties||[]).slice();state.tags=(s.tags||[]).slice();state.services=svcNormalize(s.services);state.cur=s.cur||langCur(LANG);
   state.sched=s.sched||defaultSched();renderSched();
   $('f_name').value=ME.nickname||'';
   $('f_shop').value=s.name||'';
@@ -715,6 +782,27 @@ var PF_TAG={
  Skin:{ko:['여드름','수분','민감성','딥클렌징','LED','한국어 OK'],en:['Acne','Hydration','Sensitive','Deep cleansing','LED','Korean OK']},
  Bridal:{ko:['본식','리허설','혼주','촬영','출장','한국어 OK'],en:['Wedding day','Rehearsal','Mother','Photoshoot','Mobile','Korean OK']}
 };
+// ---------- 서비스 번역 카탈로그(메뉴판 다국어) ----------
+var SVCMAP={
+ cut:{ko:'컷',en:'Cut',ja:'カット',th:'ตัดผม'},perm:{ko:'펌',en:'Perm',ja:'パーマ',th:'ดัดผม'},magic:{ko:'매직 스트레이트',en:'Magic straight',ja:'縮毛矯正',th:'ยืดผม'},rootcolor:{ko:'뿌리 염색',en:'Root color',ja:'リタッチカラー',th:'ทำสีโคนผม'},fullcolor:{ko:'전체 염색',en:'Full color',ja:'フルカラー',th:'ทำสีทั้งหัว'},clinic:{ko:'클리닉',en:'Treatment',ja:'トリートメント',th:'ทรีตเมนต์'},designperm:{ko:'디자인 펌',en:'Design perm',ja:'デザインパーマ',th:'ดัดดีไซน์'},volmagic:{ko:'볼륨 매직',en:'Volume magic',ja:'ボリューム矯正',th:'ยืดเพิ่มวอลุ่ม'},blowdry:{ko:'드라이',en:'Blow dry',ja:'ブロー',th:'ไดร์ผม'},updo:{ko:'업스타일',en:'Updo',ja:'アップスタイル',th:'เกล้าผม'},menscut:{ko:'남성 컷',en:"Men's cut",ja:'メンズカット',th:'ตัดผมชาย'},
+ daily:{ko:'데일리 메이크업',en:'Daily makeup',ja:'デイリーメイク',th:'แต่งหน้าเดลี่'},party:{ko:'파티 메이크업',en:'Party makeup',ja:'パーティーメイク',th:'แต่งหน้าปาร์ตี้'},wedmk:{ko:'웨딩 메이크업',en:'Bridal makeup',ja:'ブライダルメイク',th:'แต่งหน้าเจ้าสาว'},brows:{ko:'반영구 눈썹',en:'Semi-permanent brows',ja:'アートメイク眉',th:'สักคิ้ว'},photomk:{ko:'촬영 메이크업',en:'Photoshoot makeup',ja:'撮影メイク',th:'แต่งหน้าถ่ายรูป'},mklesson:{ko:'메이크업 레슨',en:'Makeup lesson',ja:'メイクレッスン',th:'สอนแต่งหน้า'},
+ gel:{ko:'젤네일',en:'Gel nails',ja:'ジェルネイル',th:'เจลเล็บ'},basicnail:{ko:'기본 네일',en:'Basic manicure',ja:'ベーシックネイル',th:'ทำเล็บพื้นฐาน'},handcare:{ko:'손 케어',en:'Hand care',ja:'ハンドケア',th:'ดูแลมือ'},gelpedi:{ko:'발 젤네일',en:'Gel pedicure',ja:'フットジェル',th:'เจลเล็บเท้า'},pedi:{ko:'패디큐어',en:'Pedicure',ja:'ペディキュア',th:'ทำเล็บเท้า'},nailart:{ko:'네일 아트',en:'Nail art',ja:'ネイルアート',th:'เพ้นท์เล็บ'},nailext:{ko:'네일 연장',en:'Extensions',ja:'スカルプ',th:'ต่อเล็บ'},nailrm:{ko:'제거',en:'Removal',ja:'オフ',th:'ถอดเล็บ'},
+ lashext:{ko:'속눈썹 연장',en:'Lash extensions',ja:'まつげエクステ',th:'ต่อขนตา'},volume:{ko:'볼륨 래쉬',en:'Volume lash',ja:'ボリュームラッシュ',th:'ขนตาวอลุ่ม'},lashlift:{ko:'속눈썹 펌',en:'Lash lift',ja:'まつげパーマ',th:'ดัดขนตา'},refill:{ko:'리터치',en:'Refill',ja:'リタッチ',th:'เติมขนตา'},lashrm:{ko:'제거',en:'Removal',ja:'オフ',th:'ถอดขนตา'},browlam:{ko:'브로우 펌',en:'Brow lamination',ja:'眉ラミネーション',th:'ดัดคิ้ว'},
+ basicfacial:{ko:'기본 관리',en:'Basic facial',ja:'ベーシックフェイシャル',th:'ทรีตเมนต์ผิวหน้า'},acne:{ko:'여드름 관리',en:'Acne care',ja:'ニキビケア',th:'ดูแลสิว'},hydra:{ko:'수분 관리',en:'Hydrating facial',ja:'保湿ケア',th:'เติมความชุ่มชื้น'},backcare:{ko:'등 관리',en:'Back care',ja:'背中ケア',th:'ดูแลผิวหลัง'},blackhead:{ko:'블랙헤드 관리',en:'Blackhead care',ja:'角栓ケア',th:'กำจัดสิวเสี้ยน'},led:{ko:'LED 관리',en:'LED therapy',ja:'LEDケア',th:'บำบัดด้วย LED'},
+ bwedmk:{ko:'본식 메이크업',en:'Wedding-day makeup',ja:'本番メイク',th:'แต่งหน้าวันงาน'},bwedhair:{ko:'본식 헤어',en:'Wedding-day hair',ja:'本番ヘア',th:'ทำผมวันงาน'},rehearsal:{ko:'리허설',en:'Rehearsal',ja:'リハーサル',th:'ซ้อมแต่ง'},mother:{ko:'혼주 메이크업',en:'Mother of bride',ja:'両家母メイク',th:'แต่งหน้าแม่เจ้าสาว'},photohm:{ko:'촬영 헤어메이크업',en:'Photoshoot hair & makeup',ja:'撮影ヘアメイク',th:'ทำผมแต่งหน้าถ่ายรูป'}
+};
+var SVC_BY_CAT={Hair:['cut','perm','magic','rootcolor','fullcolor','clinic','designperm','volmagic','blowdry','updo','menscut'],Makeup:['daily','party','wedmk','brows','photomk','mklesson'],Nail:['gel','basicnail','handcare','gelpedi','pedi','nailart','nailext','nailrm'],Lash:['lashext','volume','lashlift','refill','lashrm','browlam'],Skin:['basicfacial','acne','hydra','backcare','blackhead','led'],Bridal:['bwedmk','bwedhair','rehearsal','mother','photohm']};
+var DUR_PRESETS=[30,60,90,120,150,180];
+function fmtDur(m,lang){lang=lang||LANG;var h=Math.floor(m/60),mm=m%60,U={ko:['시간','분'],en:['hr','min'],ja:['時間','分'],th:['ชม.','นาที']}[lang]||['hr','min'];var sp=(lang==='ko'||lang==='ja')?'':' ';var out=[];if(h)out.push(h+sp+U[0]);if(mm)out.push(mm+sp+U[1]);return out.join(' ');}
+var CURSYM={KRW:'₩',JPY:'¥',THB:'฿',USD:'$',EUR:'€',CNY:'¥',TWD:'NT$',SGD:'S$',VND:'₫',GBP:'£',AUD:'A$'};
+var CUR_OPTS=[['KRW','₩ 원'],['JPY','¥ 엔'],['THB','฿ 바트'],['USD','$ 달러'],['EUR','€ 유로']];
+function langCur(l){return {ko:'KRW',ja:'JPY',th:'THB',en:'USD'}[l||LANG]||'USD';}
+function curSym(c){return CURSYM[c]||((c||'')+' ');}
+function setCur(c){state.cur=c;renderServices();markDirty();}
+function svcLabel(s,lang){lang=lang||LANG;if(!s)return '';if(s.key&&SVCMAP[s.key]&&SVCMAP[s.key][lang])return SVCMAP[s.key][lang];if(s.tr&&s.tr[lang])return s.tr[lang];return s.n||s.name||'';}
+function svcDur(s,lang){lang=lang||LANG;if(s&&s.durMin)return fmtDur(s.durMin,lang);var d=(s&&(s.du||s.dur))||'';return d;}
+function svcNormalize(arr){return (arr||[]).map(function(s){if(!s||typeof s!=='object')return {n:String(s||''),p:'',du:''};return {n:s.n!=null?s.n:(s.name||''),p:s.p!=null?s.p:(s.price||''),du:s.du!=null?s.du:(s.dur||''),durMin:s.durMin||0,key:s.key||'',tr:s.tr||null};});}
+async function svcTranslate(item){try{if(!item.n)return;var tr=item.tr||{};tr[LANG]=item.n;var tg=['ko','en','ja','th'].filter(function(l){return l!==LANG&&!tr[l];});for(var i=0;i<tg.length;i++){var r=await translateText(item.n,tg[i]);if(r)tr[tg[i]]=r;}item.tr=tr;renderServices();if(WZ&&WZ.on)renderWiz();}catch(e){}}
 function pfLang(m){return (m&&(m[LANG]||m.en||m.ko))||[];}
 function fillDL(id,arr){var el=$(id);if(!el)return;el.innerHTML=(arr||[]).map(function(x){return '<option value="'+esc(x)+'"></option>';}).join('');}
 function renderProfileOptions(){
@@ -733,27 +821,45 @@ function renderTagSuggest(){
   box.innerHTML='<span class="hint" style="width:100%;margin-bottom:2px">'+esc(t('tagSuggestL'))+'</span>'
     +avail.slice(0,12).map(function(x){return '<button type="button" class="chip" data-v="'+esc(x)+'" onclick="addTagV(this.dataset.v)">+ '+esc(x)+'</button>';}).join('');
 }
-function addTagV(v){v=(v||'').trim();if(v&&state.tags.length<8&&state.tags.indexOf(v)<0)state.tags.push(v);renderTags();renderTagSuggest();}
+function addTagV(v){v=(v||'').trim();if(v&&state.tags.length<8&&state.tags.indexOf(v)<0)state.tags.push(v);renderTags();renderTagSuggest();markDirty();}
 function renderSpec(){
   $('specChips').innerHTML=SPECS.map(([en,ko])=>`<button type="button" class="chip ${state.spec.includes(en)?'on':''}" onclick="toggleSpec('${en}')">${esc(catLabel(en))}</button>`).join('');
 }
-function toggleSpec(en){const i=state.spec.indexOf(en);if(i<0)state.spec.push(en);else state.spec.splice(i,1);renderSpec();renderProfileOptions();}
+function toggleSpec(en){const i=state.spec.indexOf(en);if(i<0)state.spec.push(en);else state.spec.splice(i,1);renderSpec();renderProfileOptions();markDirty();}
 function renderTags(){
   $('tagBox').innerHTML=state.tags.map((tg,i)=>`<span class="tagc">${esc(tg)}<i class="ti ti-x" onclick="delTag(${i})"></i></span>`).join('')||`<span class="muted">${esc(t('noTags'))}</span>`;
 }
 function tagKey(e){if(e.key==='Enter'||e.key===','){e.preventDefault();const v=(e.target.value||'').trim();if(v&&state.tags.length<8&&state.tags.indexOf(v)<0)state.tags.push(v);e.target.value='';renderTags();renderTagSuggest();}}
-function delTag(i){state.tags.splice(i,1);renderTags();renderTagSuggest();}
+function delTag(i){state.tags.splice(i,1);renderTags();renderTagSuggest();markDirty();}
 // 서비스
+function renderCurSel(){var el=$('curSel');if(!el)return;el.innerHTML=CUR_OPTS.map(function(o){return '<option value="'+o[0]+'"'+((state.cur||langCur(LANG))===o[0]?' selected':'')+'>'+esc(o[1])+'</option>';}).join('');el.value=state.cur||langCur(LANG);}
 function renderServices(){
-  $('svcList').innerHTML=state.services.map((v,i)=>`<div class="svcitem"><div class="sn">${esc(v.name)}${v.dur?` <span class="sd">· ${esc(v.dur)}</span>`:''}</div><div class="sp">${esc(v.price||'')}</div><i class="ti ti-x sx" onclick="delSvc(${i})"></i></div>`).join('')
-    ||`<div class="muted">${esc(t('noSvc'))}</div>`;
+  renderSvcCatalog();renderCurSel();
+  var sym=curSym(state.cur||langCur(LANG));
+  $('svcList').innerHTML=state.services.map(function(v,i){
+    var durs=DUR_PRESETS.map(function(m){return '<button type="button" class="durc'+(v.durMin===m?' on':'')+'" onclick="svcSetDur('+i+','+m+')">'+esc(fmtDur(m,LANG))+'</button>';}).join('');
+    return '<div class="svc2"><div class="svc2h"><span class="svc2n">'+esc(svcLabel(v,LANG))+'</span><i class="ti ti-x svc2x" onclick="delSvc('+i+')"></i></div>'
+      +'<div class="svc2b"><div class="svc2pw"><span class="svc2cur">'+esc(sym)+'</span><input class="inp svc2p" inputmode="numeric" value="'+esc(v.p||'')+'" placeholder="'+esc(t('svcPriceNum'))+'" oninput="svcSetP('+i+',this.value)"></div><div class="durs">'+durs+'</div></div></div>';
+  }).join('')||'<div class="muted">'+esc(t('noSvc'))+'</div>';
 }
+function svcSetP(i,v){if(state.services[i])state.services[i].p=v;}
+function svcSetDur(i,m){var s=state.services[i];if(!s)return;s.durMin=(s.durMin===m?0:m);s.du='';renderServices();markDirty();}
+function renderSvcCatalog(){
+  var box=$('svcCatalog');if(!box)return;
+  var sp=(state.spec&&state.spec[0])||'Hair';var keys=SVC_BY_CAT[sp]||SVC_BY_CAT.Hair;
+  var have=state.services.map(function(s){return s.key;}).filter(Boolean);
+  var av=keys.filter(function(k){return have.indexOf(k)<0;});
+  box.innerHTML=av.length?('<span class="hint" style="width:100%;margin-bottom:2px">'+esc(t('svcCatalogL'))+'</span>'+av.map(function(k){return '<button type="button" class="chip" data-k="'+k+'" onclick="addSvcKey(this.dataset.k)">+ '+esc(SVCMAP[k][LANG]||SVCMAP[k].en)+'</button>';}).join('')):'';
+}
+function addSvcKey(k){if(!SVCMAP[k])return;if(state.services.some(function(s){return s.key===k;}))return;state.services.push({key:k,n:(SVCMAP[k][LANG]||SVCMAP[k].en),p:'',du:''});renderServices();markDirty();if(WZ&&WZ.on)renderWiz();}
 function addSvc(){
-  const name=($('svcName').value||'').trim();if(!name){toast(t('enterSvcName'));return;}
-  state.services.push({name,price:($('svcPrice').value||'').trim(),dur:($('svcDur').value||'').trim()});
-  $('svcName').value='';$('svcPrice').value='';$('svcDur').value='';renderServices();
+  var name=($('svcName').value||'').trim();if(!name){toast(t('enterSvcName'));return;}
+  var item={n:name,p:'',du:'',tr:{}};item.tr[LANG]=name;
+  state.services.push(item);
+  $('svcName').value='';renderServices();
+  svcTranslate(item);
 }
-function delSvc(i){state.services.splice(i,1);renderServices();}
+function delSvc(i){state.services.splice(i,1);renderServices();markDirty();}
 // 후기
 // ===== 후기 번역 (OpenAI/ChatGPT · /api/translate 서버 경유 → 한국어) =====
 async function translateText(text,target){
@@ -797,14 +903,14 @@ function renderReviews(){
   }).join('');
 }
 
-async function saveProfile(){
-  const btn=$('saveProfileBtn');btn.disabled=true;
+async function saveProfile(silent){
+  const btn=$('saveProfileBtn');if(btn)btn.disabled=true;
   try{
     const insta=(($('f_insta').value||'').trim()).replace(/^@/,'').replace(/^https?:\/\/(www\.)?instagram\.com\//i,'').replace(/[/?#].*$/,'');
     const shop=Object.assign({},ME.shop||{},{
       name:($('f_shop').value||'').trim(), area:($('f_area').value||'').trim(), freelancer:!!state.freelancer,
       avatar:state.avatar, photos:state.photos, career:($('f_career').value||'').trim(),
-      specialties:state.spec.slice(), tags:state.tags.slice(), services:state.services.slice(),
+      specialties:state.spec.slice(), tags:state.tags.slice(), services:state.services.slice(), cur:state.cur||langCur(LANG),
       insta:insta, naver:($('f_naver').value||'').trim(), blog:($('f_blog').value||'').trim(), bookingUrl:($('f_booking').value||'').trim(),
       ba:(state.ba&&state.ba.length===2&&state.ba[0]&&state.ba[1])?state.ba.slice():[]
     });
@@ -813,12 +919,15 @@ async function saveProfile(){
     const payload={id:UID, nickname:($('f_name').value||'').trim(), role:'designer',
       region:($('f_region').value||'').trim(), bio:($('f_bio').value||'').trim(), shop:shop};
     const {error}=await SB.from('profiles').upsert(payload);
-    if(error){toast(t('saveFailPre')+error.message);btn.disabled=false;return;}
+    if(error){toast(t('saveFailPre')+error.message);if(btn)btn.disabled=false;return;}
     ME.shop=shop;ME.nickname=payload.nickname;ME.region=payload.region;ME.bio=payload.bio;
-    renderHome();toast(t('saveOk'));
+    PROFILE_DIRTY=false;updateSaveState();renderHome();if(!silent)toast(t('saveOk'));
   }catch(e){toast(t('errPre')+e.message);}
-  btn.disabled=false;
+  if(btn)btn.disabled=false;
 }
+var PROFILE_DIRTY=false;
+function markDirty(){if(!PROFILE_DIRTY){PROFILE_DIRTY=true;updateSaveState();}}
+function updateSaveState(){document.querySelectorAll('#saveProfileBtn,#savePfBtn').forEach(function(b){var s=b.querySelector('span');b.classList.toggle('saved',!PROFILE_DIRTY);if(s)s.textContent=PROFILE_DIRTY?t('saveBtn'):t('savedOk');});}
 
 // ---------- 이미지 업로드 ----------
 async function uploadImg(file,asPng){
@@ -853,7 +962,7 @@ async function onAvatar(input){
   try{
     let file=f,png=false;
     if($('trimLogo').checked){file=await trimWhite(f);png=true;}
-    const url=await uploadImg(file,png);state.avatar=url;updateAvPreview();toast(t('photoUploaded'));
+    const url=await uploadImg(file,png);state.avatar=url;updateAvPreview();wizRefresh();markDirty();toast(t('photoUploaded'));
   }catch(e){toast(t('uploadFailPre')+(e.message||e));}
 }
 async function onPfFiles(input){
@@ -865,7 +974,7 @@ async function onPfFiles(input){
     if(isV){let poster='';try{const pb=await capturePoster(f);if(pb)poster=await uploadPoster(pb);}catch(_){}state.photos.push({img:url,poster:poster});}
     else state.photos.push(url);
   }catch(e){toast(t('someFailPre')+(e.message||e));}}
-  renderPf();toast(t('photosUploaded'));
+  renderPf();wizRefresh();markDirty();toast(t('photosUploaded'));
 }
 function isVidU(u){return /\.(mp4|webm|mov|m4v|ogv)(\?|#|$)/i.test(String(u||''));}
 function pUrl(x){return (x&&typeof x==='object')?(x.img||''):(x||'');}
@@ -903,9 +1012,9 @@ function renderBA(){
   const cells=(which)=>photos.map((u)=>`<div class="baThumb${state.ba[which]===u?' on':''}" style="background-image:url('${esc(u)}')" onclick="setBAurl(${which},'${esc(u)}')"></div>`).join('');
   pb.innerHTML=cells(0);pa.innerHTML=cells(1);
 }
-function setBAurl(which,u){var imgs=state.photos.map(pUrl).filter(x=>x&&!isVidU(x));var f=imgs[0]||'';state.ba=(state.ba&&state.ba.length===2)?state.ba.slice():[f,f];state.ba[which]=u;renderBA();}
-function delPf(i){state.photos.splice(i,1);renderPf();}
-function movePf(i,d){const j=i+d;if(j<0||j>=state.photos.length)return;const t=state.photos[i];state.photos[i]=state.photos[j];state.photos[j]=t;renderPf();}
+function setBAurl(which,u){var imgs=state.photos.map(pUrl).filter(x=>x&&!isVidU(x));var f=imgs[0]||'';state.ba=(state.ba&&state.ba.length===2)?state.ba.slice():[f,f];state.ba[which]=u;renderBA();markDirty();}
+function delPf(i){state.photos.splice(i,1);renderPf();markDirty();}
+function movePf(i,d){const j=i+d;if(j<0||j>=state.photos.length)return;const t=state.photos[i];state.photos[i]=state.photos[j];state.photos[j]=t;renderPf();markDirty();}
 async function savePortfolio(){
   const btn=$('savePfBtn');btn.disabled=true;
   const baOk=(state.ba&&state.ba.length===2&&state.ba[0]&&state.ba[1]);
@@ -956,8 +1065,9 @@ async function loadBookings(){
   try{rows=(await SB.from('bookings').select('*').eq('designer',UID).order('date',{ascending:true})).data;}catch(e){}
   bkRows=rows;var el2=$('stBk');if(el2&&rows)el2.textContent=rows.length;
   renderStats();renderBkCalendar();renderBkList();renderUpcoming();
-  buildClients();loadInsights();
+  buildClients();loadInsights();updateBkBadge();
 }
+function updateBkBadge(){var b=$('bkBadge');if(!b)return;var n=(bkRows||[]).filter(function(x){return (x.status||'pending')==='pending';}).length;if(n>0){b.textContent=n>99?'99+':n;b.classList.remove('hide');}else b.classList.add('hide');}
 function renderUpcoming(){
   var el=$('upcomingList'),card=$('upcomingCard'),cnt=$('upCount');if(!el)return;
   if(bkRows===null){if(card)card.style.display='none';return;}
@@ -981,7 +1091,7 @@ function renderUpcoming(){
   }).join('');
 }
 // ---------- 통계·매출 ----------
-function bkSvcName(b){var s=b.service;if(s&&typeof s==='object')return s.n||t('bkDefault');if(typeof s==='string'){try{var o=JSON.parse(s);if(o&&typeof o==='object')return o.n||t('bkDefault');}catch(e){}return s||t('bkDefault');}return t('bkDefault');}
+function bkSvcName(b){var s=b.service;if(s&&typeof s==='object')return svcLabel(s,LANG)||t('bkDefault');if(typeof s==='string'){try{var o=JSON.parse(s);if(o&&typeof o==='object')return svcLabel(o,LANG)||t('bkDefault');}catch(e){}return s||t('bkDefault');}return t('bkDefault');}
 function bkAmount(b){var s=b.service,p='';if(s&&typeof s==='object')p=s.p||s.price||'';else if(typeof s==='string'){try{var o=JSON.parse(s);if(o&&typeof o==='object')p=o.p||o.price||'';}catch(e){}}var n=parseInt(String(p).replace(/[^0-9]/g,''),10);return isNaN(n)?0:n;}
 function bkCurrency(rows){for(var i=0;i<rows.length;i++){var s=rows[i].service;var p=(s&&typeof s==='object')?(s.p||''):'';if(/[¥￥円]/.test(p))return '¥';}return '₩';}
 function renderStats(){
@@ -1253,7 +1363,10 @@ function exportBookings(){var rows=(bkRows||[]).slice().sort(function(a,b){retur
 function exportClients(){var rows=CLIENTS.slice().sort(function(a,b){return b.visits-a.visits;}).map(function(c){return [c.name,c.visits,c.spent,c.first,c.last,Object.keys(c.svcs).join('/'),clMemoGet(c.key)];});csvDL('beautia_clients.csv',['고객','방문수','누적매출','첫방문','최근방문','서비스','메모'],rows);}
 
 var TABSEC={home:['home'],profile:['profile','portfolio'],bookings:['bookings','clients','reviews'],messages:['messages']};
+var CURTAB='home';
 function tab(t){
+  if(CURTAB==='profile'&&t!=='profile'&&UID&&PROFILE_DIRTY)saveProfile(true); // 프로필 벗어나면 변경분 자동 저장
+  CURTAB=t;
   document.querySelectorAll('.botnav [data-tab]').forEach(b=>b.classList.toggle('on',b.dataset.tab===t));
   var show=TABSEC[t]||[t];
   ['home','profile','portfolio','bookings','reviews','messages','clients'].forEach(s=>$('sec-'+s).classList.toggle('hide',show.indexOf(s)<0));
@@ -1263,6 +1376,70 @@ function tab(t){
   window.scrollTo({top:0});
 }
 function toggleAdv(){var w=$('homeAdv'),b=$('advToggle');if(!w||!b)return;var open=!w.classList.toggle('hide');b.classList.toggle('open',open);var lbl=b.querySelector('span');if(lbl){lbl.setAttribute('data-t',open?'advLess':'advMore');lbl.textContent=t(open?'advLess':'advMore');}}
+// ---------- 설정 마법사(딸깍 온보딩) ----------
+var WZ={on:false,i:0,name:'',shop:'',region:'',career:''};
+var WIZ_STEPS=['photo','basic','spec','svc','pf','done'];
+function openWiz(){WZ.on=true;WZ.i=0;WZ.name=ME.nickname||'';WZ.shop=(ME.shop&&ME.shop.name)||'';WZ.region=ME.region||'';WZ.career=(ME.shop&&ME.shop.career)||'';$('wiz').classList.add('on');document.body.style.overflow='hidden';renderWiz();}
+function closeWiz(){WZ.on=false;$('wiz').classList.remove('on');document.body.style.overflow='';}
+function wizRefresh(){if(WZ.on)renderWiz();}
+function wizCapBasic(){var n=$('wzName');if(n)WZ.name=n.value;var s=$('wzShop');if(s)WZ.shop=s.value;}
+function wizPrev(){if(WIZ_STEPS[WZ.i]==='basic')wizCapBasic();if(WZ.i>0){WZ.i--;renderWiz();}}
+function wizNext(){if(WIZ_STEPS[WZ.i]==='basic'){wizCapBasic();if(!WZ.name.trim()){toast(t('wizNeedName'));return;}}if(WZ.i<WIZ_STEPS.length-1){WZ.i++;renderWiz();}}
+function wizRegion(c){wizCapBasic();WZ.region=(WZ.region===c)?'':c;renderWiz();}
+function wizRegionOther(){wizCapBasic();var v=prompt(t('wizRegionL'));if(v&&v.trim()){WZ.region=v.trim();}renderWiz();}
+function wizCareer(c){WZ.career=(WZ.career===c)?'':c;renderWiz();}
+function wizSpec(en){var i=state.spec.indexOf(en);if(i<0)state.spec.push(en);else state.spec.splice(i,1);if(typeof renderProfileOptions==='function')renderProfileOptions();renderWiz();}
+function wizAddSvc(k){if(!SVCMAP[k])return;if(!state.services.some(function(s){return s.key===k;}))state.services.push({key:k,n:(SVCMAP[k][LANG]||SVCMAP[k].en),p:'',du:''});renderWiz();}
+function wizDelSvc(i){state.services.splice(i,1);renderWiz();}
+function wizCityChips(){var arr=(PF_CITY[LANG]||PF_CITY.en).slice(0,14);return arr.map(function(c){return '<button type="button" class="wizchip'+(WZ.region===c?' on':'')+'" data-c="'+esc(c)+'" onclick="wizRegion(this.dataset.c)">'+esc(c)+'</button>';}).join('')+'<button type="button" class="wizchip" onclick="wizRegionOther()">+ '+esc(t('wizOther'))+'</button>'+(WZ.region&&arr.indexOf(WZ.region)<0?'<button type="button" class="wizchip on" data-c="'+esc(WZ.region)+'" onclick="wizRegion(this.dataset.c)">'+esc(WZ.region)+'</button>':'');}
+function wizCareerChips(){return (PF_CAREER[LANG]||PF_CAREER.en).map(function(c){return '<button type="button" class="wizchip'+(WZ.career===c?' on':'')+'" data-c="'+esc(c)+'" onclick="wizCareer(this.dataset.c)">'+esc(c)+'</button>';}).join('');}
+function wizSvcChips(){var sp=(state.spec&&state.spec[0])||'Hair';var keys=SVC_BY_CAT[sp]||SVC_BY_CAT.Hair;var have=state.services.map(function(s){return s.key;}).filter(Boolean);var av=keys.filter(function(k){return have.indexOf(k)<0;});return av.length?av.map(function(k){return '<button type="button" class="wizchip" data-k="'+k+'" onclick="wizAddSvc(this.dataset.k)">+ '+esc(SVCMAP[k][LANG]||SVCMAP[k].en)+'</button>';}).join(''):'<span class="wizd">'+esc(t('wizSvcAllAdded'))+'</span>';}
+function renderWiz(){
+  var s=WIZ_STEPS[WZ.i],n=WIZ_STEPS.length;
+  if($('wizStep'))$('wizStep').textContent=tf('wizStepOf',{a:WZ.i+1,b:n});
+  if($('wizProg'))$('wizProg').style.width=Math.round((WZ.i+1)/n*100)+'%';
+  var body='';
+  if(s==='photo'){
+    body='<div class="wizt">'+esc(t('wizPhotoT'))+'</div><div class="wizd">'+esc(t('wizPhotoD'))+'</div>'
+      +'<div class="wizav" style="'+(state.avatar?"background-image:url('"+esc(state.avatar)+"');border-style:solid":'')+'">'+(state.avatar?'':'<i class="ti ti-camera"></i>')+'</div>'
+      +'<button class="wizupload" onclick="document.getElementById(\'avFile\').click()"><i class="ti ti-upload"></i> '+esc(t('wizPhotoBtn'))+'</button>';
+  }else if(s==='basic'){
+    body='<div class="wizt">'+esc(t('wizBasicT'))+'</div>'
+      +'<div class="wizfield"><label>'+esc(t('wizNameL'))+'</label><input class="inp" id="wzName" value="'+esc(WZ.name)+'" placeholder="'+esc(t('namePh'))+'"></div>'
+      +'<div class="wizfield"><label>'+esc(t('wizShopL'))+'</label><input class="inp" id="wzShop" value="'+esc(WZ.shop)+'" placeholder="'+esc(t('shopPh'))+'"></div>'
+      +'<div class="wizfield"><label>'+esc(t('wizRegionL'))+'</label><div class="wizchips">'+wizCityChips()+'</div></div>';
+  }else if(s==='spec'){
+    body='<div class="wizt">'+esc(t('wizSpecT'))+'</div><div class="wizd">'+esc(t('wizSpecD'))+'</div>'
+      +'<div class="wizchips" style="margin-top:12px">'+SPECS.map(function(p){return '<button type="button" class="wizchip'+(state.spec.indexOf(p[0])>=0?' on':'')+'" onclick="wizSpec(\''+p[0]+'\')">'+esc(catLabel(p[0]))+'</button>';}).join('')+'</div>'
+      +'<div class="wizfield" style="margin-top:24px"><label>'+esc(t('wizCareerL'))+'</label><div class="wizchips">'+wizCareerChips()+'</div></div>';
+  }else if(s==='svc'){
+    body='<div class="wizt">'+esc(t('wizSvcT'))+'</div><div class="wizd">'+esc(t('wizSvcD'))+'</div>'
+      +'<div class="wizchips" style="margin-top:12px">'+wizSvcChips()+'</div>'
+      +(state.services.length?'<div class="wizfield" style="margin-top:18px">'+state.services.map(function(v,i){return '<div class="svcitem" style="margin-top:6px"><div class="sn">'+esc(svcLabel(v,LANG))+'</div><i class="ti ti-x sx" onclick="wizDelSvc('+i+')"></i></div>';}).join('')+'</div>':'');
+  }else if(s==='pf'){
+    body='<div class="wizt">'+esc(t('wizPfT'))+'</div><div class="wizd">'+esc(t('wizPfD'))+'</div>'
+      +'<button class="wizupload" onclick="document.getElementById(\'pfFile\').click()"><i class="ti ti-photo-plus"></i> '+esc(t('wizPfBtn'))+'</button>'
+      +(state.photos.length?'<div class="wizpf">'+state.photos.map(function(u){var im=pPoster(u)||pUrl(u);return '<div class="pfi" style="background-image:url(\''+esc(im)+'\')"></div>';}).join('')+'</div>':'');
+  }else if(s==='done'){
+    body='<div style="text-align:center;padding:26px 0"><div style="font-size:58px">🎉</div><div class="wizt" style="margin-top:8px">'+esc(t('wizDoneT'))+'</div><div class="wizd">'+esc(t('wizDoneD'))+'</div></div>';
+  }
+  if($('wizBody'))$('wizBody').innerHTML=body;
+  var back=WZ.i>0?'<button class="btn ghost" onclick="wizPrev()">'+esc(t('wizBack'))+'</button>':'';
+  var main=(s==='done')?'<button class="btn" id="wizFinishBtn" onclick="wizFinish()"><i class="ti ti-check"></i> '+esc(t('wizDone'))+'</button>':'<button class="btn" onclick="wizNext()">'+esc(t('wizNext'))+'</button>';
+  if($('wizFoot'))$('wizFoot').innerHTML=back+main;
+}
+async function wizFinish(){
+  wizCapBasic();
+  if(!WZ.name.trim()){WZ.i=WIZ_STEPS.indexOf('basic');renderWiz();toast(t('wizNeedName'));return;}
+  if($('f_name'))$('f_name').value=WZ.name.trim();
+  if($('f_shop'))$('f_shop').value=WZ.shop.trim();
+  if($('f_region'))$('f_region').value=WZ.region.trim();
+  if($('f_career'))$('f_career').value=WZ.career.trim();
+  var fb=$('wizFinishBtn');if(fb)fb.disabled=true;
+  await saveProfile();
+  if(typeof fillProfile==='function')fillProfile();
+  closeWiz();toast(t('wizSaved'));tab('home');
+}
 
 // ---------- 부팅 ----------
 (async()=>{

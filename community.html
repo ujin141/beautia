@@ -21,7 +21,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 <link rel="preconnect" href="https://pzbxcktaljhesrfnqwzq.supabase.co" crossorigin>
 <link rel="preconnect" href="https://images.weserv.nl" crossorigin>
 <link rel="dns-prefetch" href="https://cdnjs.cloudflare.com">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://cdnjs.cloudflare.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdn.jsdelivr.net; font-src 'self' data: https://fonts.gstatic.com https://cdn.jsdelivr.net; img-src 'self' data: blob: https:; media-src 'self' blob: data: https://*.supabase.co; connect-src 'self' https://*.supabase.co wss://*.supabase.co https://ipapi.co https://cdn.jsdelivr.net; frame-src https://www.google.com https://maps.google.com; object-src 'none'; base-uri 'self'; form-action 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://cdnjs.cloudflare.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdn.jsdelivr.net; font-src 'self' data: https://fonts.gstatic.com https://cdn.jsdelivr.net; img-src 'self' data: blob: https:; media-src 'self' blob: data: https://*.supabase.co; connect-src 'self' https://*.supabase.co wss://*.supabase.co https://ipapi.co https://open.er-api.com https://cdn.jsdelivr.net; frame-src https://www.google.com https://maps.google.com; object-src 'none'; base-uri 'self'; form-action 'self'">
 <title>Beautia — Find a designer who gets your style · Beauty designers, worldwide</title>
 <meta name="description" content="Beauty designers, worldwide. Browse real portfolios — hair, makeup, nail, lash, skin & bridal — save your favorites and book or message the designer directly.">
 <meta name="keywords" content="beauty designer, hair designer, makeup artist, nail artist, eyelash extensions, bridal makeup, beauty portfolio, find beauty salon, book beauty appointment, Korean beauty, Japanese beauty, Tokyo, Seoul, Osaka">
@@ -239,6 +239,7 @@ body.mlock{position:fixed;left:0;right:0;width:100%;overflow:hidden;}
 .svci{flex:1;min-width:0;}
 .svcn{font-weight:700;font-size:15px;color:var(--ink);}
 .svcm{font-size:13px;color:var(--ink2);margin-top:2px;} .svcm b{color:var(--plum);}
+.svcapprox{font-size:12px;color:var(--sub);font-weight:600;} .bsapx{font-weight:600;color:var(--sub);font-size:11px;}
 .svcbk{flex:0 0 auto;background:var(--rosebg);color:var(--plum);border:none;border-radius:999px;padding:9px 16px;font-weight:800;font-size:13px;cursor:pointer;}
 .svcbk:hover{background:var(--plum);color:#fff;}
 .svcrow{display:flex;gap:7px;margin-top:8px;} .svcrow .linput{padding:11px 12px;font-size:14px;}
@@ -535,7 +536,8 @@ body.mlock{position:fixed;left:0;right:0;width:100%;overflow:hidden;}
 .dctrust{display:flex;flex-wrap:wrap;gap:5px;padding:2px 13px 0;}
 .tb{display:inline-flex;align-items:center;gap:3px;font-size:10.5px;font-weight:700;color:var(--sub);background:#f7f2f1;border:1px solid var(--line);padding:3px 8px;border-radius:999px;line-height:1;}
 .tb i{font-size:12px;}
-.tb-v{color:var(--green);background:rgba(62,124,106,.09);border-color:rgba(62,124,106,.22);}
+.tb-v{color:#9a7736;background:rgba(201,160,99,.13);border-color:rgba(201,160,99,.34);}
+.tb-f{color:var(--plum);background:rgba(110,74,80,.08);border-color:rgba(110,74,80,.2);}
 .tb-f{color:#B87407;background:rgba(230,150,40,.1);border-color:rgba(230,150,40,.24);}
 .dcact{display:flex;gap:8px;padding:8px 13px 14px;}
 .dcbtn{flex:1;display:inline-flex;align-items:center;justify-content:center;gap:5px;font-size:12.5px;font-weight:800;padding:9px 6px;border-radius:11px;cursor:pointer;border:1px solid var(--line);transition:.12s;font-family:inherit;color:var(--ink);}
@@ -599,7 +601,7 @@ body.mlock{position:fixed;left:0;right:0;width:100%;overflow:hidden;}
 .tile .ct{font-size:12px;font-weight:600;color:rgba(255,255,255,.85);margin-top:2px;display:flex;align-items:center;gap:6px;}
 .tile .heart{position:absolute;top:11px;right:11px;width:40px;height:40px;border-radius:50%;background:rgba(255,255,255,.92);display:flex;align-items:center;justify-content:center;color:#b9b1b4;font-size:20px;opacity:0;transition:.18s;box-shadow:0 4px 14px -4px rgba(0,0,0,.3);}
 .tile:hover .heart,.tile .heart.on{opacity:1;} .tile .heart.on{color:var(--accent);}
-.tile .vb{position:absolute;top:13px;left:13px;font-size:11px;font-weight:800;color:#fff;background:rgba(62,124,106,.92);padding:5px 11px;border-radius:999px;display:inline-flex;align-items:center;gap:4px;opacity:0;transition:.2s;}
+.tile .vb{position:absolute;top:13px;left:13px;font-size:11px;font-weight:800;color:#fff;background:linear-gradient(135deg,rgba(216,190,132,.96),rgba(180,134,63,.96));padding:5px 11px;border-radius:999px;display:inline-flex;align-items:center;gap:4px;opacity:0;transition:.2s;box-shadow:0 4px 12px -5px rgba(150,110,45,.6);}
 .tile:hover .vb{opacity:1;}
 .tile .tpost{position:absolute;bottom:11px;left:11px;width:26px;height:26px;border-radius:8px;background:rgba(20,12,16,.5);color:#fff;display:flex;align-items:center;justify-content:center;font-size:15px;backdrop-filter:blur(3px);z-index:2;}
 .tile .tfeat{position:absolute;top:11px;left:11px;z-index:2;display:inline-flex;align-items:center;gap:4px;font-size:11px;font-weight:700;color:#fff;background:rgba(20,12,16,.55);backdrop-filter:blur(3px);padding:5px 9px;border-radius:999px;max-width:75%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
@@ -665,7 +667,10 @@ body.mlock{position:fixed;left:0;right:0;width:100%;overflow:hidden;}
 .dhcap{position:absolute;left:30px;bottom:22px;right:30px;color:#fff;z-index:2;}
 .dhcap .dn{font-family:'Pretendard','Malgun Gothic',sans-serif;font-weight:700;font-size:34px;display:flex;align-items:center;gap:10px;flex-wrap:wrap;text-shadow:0 3px 16px rgba(0,0,0,.5);}
 .dshop{font-size:13px;color:#fff;margin-top:4px;font-weight:600;text-shadow:0 1px 6px rgba(0,0,0,.5);display:flex;align-items:center;gap:5px;}
-.vbadge{font-size:13px;font-weight:800;background:var(--green);padding:6px 13px;border-radius:999px;display:inline-flex;align-items:center;gap:5px;}
+.vbadge{font-size:12.5px;font-weight:800;color:#fff;background:linear-gradient(135deg,#D8BE84,#C9A063 55%,#B4863F);padding:6px 13px;border-radius:999px;display:inline-flex;align-items:center;gap:5px;letter-spacing:.01em;box-shadow:0 5px 14px -5px rgba(150,110,45,.55),inset 0 1px 0 rgba(255,255,255,.4);}
+.vbadge i{font-size:15px;}
+.fbadge{font-size:12.5px;font-weight:800;color:var(--plum);background:var(--rosebg);border:1px solid rgba(110,74,80,.16);padding:5px 12px;border-radius:999px;display:inline-flex;align-items:center;gap:5px;}
+.fbadge i{font-size:15px;}
 .dhcap .dmeta{font-size:15px;font-weight:600;margin-top:7px;display:flex;align-items:center;gap:14px;flex-wrap:wrap;text-shadow:0 2px 10px rgba(0,0,0,.5);}
 .dhcap .star{color:var(--gold);}
 .dsec{padding:24px 32px;border-bottom:1px solid var(--line);}
@@ -1025,7 +1030,7 @@ const D=[
 ];
 // 비포/애프터: 저장된 shop.ba(2장) 우선, 없으면 포폴 앞 2장 자동
 function baFrom(ba,works){var w=(works||[]).filter(Boolean);var b=ba&&ba[0],a=ba&&ba[1];if(b&&a&&safeUrl(b)&&safeUrl(a))return [b,a];return [w[0],w[Math.min(1,w.length-1)]];}
-function meDesigner(){if(ME&&ME.uid&&ME.works&&ME.works.length){return {id:'me',uid:ME.uid,name:ME.name||'You',ko:'',cat:canonCat((ME.spec&&ME.spec[0])||'Hair'),city:ME.city||'',area:ME.area||'',flag:flagFor(ME.country,ME.city,ME.area),rating:5.0,rev:0,years:ME.career||'',ko_ok:1,ver:ME.verified?1:0,spec:(ME.spec&&ME.spec.length?ME.spec.slice():['Hair']),bio:ME.bio||'',avatar:ME.avatar||'',insta:ME.insta||'',handles:ME.sns||{},works:ME.works.slice(),ba:baFrom(ME.ba,ME.works),sns:Object.keys(ME.sns||{}).filter(function(k){return ME.sns[k];}),services:(ME.services||[]).slice(),tags:(ME.tags||[]).slice(),shopName:ME.shopName||'',freelancer:!!ME.freelancer,reviews:[],isMe:1};}return null;}
+function meDesigner(){if(ME&&ME.uid&&ME.works&&ME.works.length){return {id:'me',uid:ME.uid,name:ME.name||'You',ko:'',cat:canonCat((ME.spec&&ME.spec[0])||'Hair'),city:ME.city||'',area:ME.area||'',flag:flagFor(ME.country,ME.city,ME.area),rating:5.0,rev:0,years:ME.career||'',ko_ok:1,ver:ME.verified?1:0,spec:(ME.spec&&ME.spec.length?ME.spec.slice():['Hair']),bio:ME.bio||'',avatar:ME.avatar||'',insta:ME.insta||'',handles:ME.sns||{},works:ME.works.slice(),ba:baFrom(ME.ba,ME.works),sns:Object.keys(ME.sns||{}).filter(function(k){return ME.sns[k];}),services:(ME.services||[]).slice(),cur:ME.cur||'',tags:(ME.tags||[]).slice(),shopName:ME.shopName||'',freelancer:!!ME.freelancer,reviews:[],isMe:1};}return null;}
 function gradFor(s){return GR[Math.abs((s||'B').charCodeAt(0))%GR.length];}
 function avHtml(d,cls){var nm=(LANG==='ko'&&d.ko)?d.ko:(d.name||'U');return d.avatar?`<div class="${cls}" style="background-image:url('${im(d.avatar,240)}')"></div>`:`<div class="${cls} mono" style="background:${gradFor(d.name)}">${esc(nm[0]||'U')}</div>`;}
 // ===== Featured(발견한 작업): 원작자 인스타 크레딧+링크, 사칭 X. {insta, cat, city, area, imgs:[...]} 로 채우기 =====
@@ -1159,6 +1164,25 @@ function markFollowSeen(){followSeen=Date.now();try{localStorage.setItem('beauti
 function maybeNotifyNewWork(){if(_notifiedNew)return;try{var n=allD().filter(isNewWork).length;if(n>0){_notifiedNew=true;toast(T[LANG].newWorkToast.replace('{n}',n));}}catch(e){}}
 function toast(m){const t=$('toast');t.textContent=m;t.classList.add('on');clearTimeout(window._t);window._t=setTimeout(()=>t.classList.remove('on'),2200);}
 const cl=c=>c==='All'?T[LANG].all:(T[LANG].Cat[c]||c);
+// 서비스 메뉴 번역 카탈로그(대시보드와 동일 키)
+var SVCMAP={cut:{ko:'컷',en:'Cut',ja:'カット',th:'ตัดผม'},perm:{ko:'펌',en:'Perm',ja:'パーマ',th:'ดัดผม'},magic:{ko:'매직 스트레이트',en:'Magic straight',ja:'縮毛矯正',th:'ยืดผม'},rootcolor:{ko:'뿌리 염색',en:'Root color',ja:'リタッチカラー',th:'ทำสีโคนผม'},fullcolor:{ko:'전체 염색',en:'Full color',ja:'フルカラー',th:'ทำสีทั้งหัว'},clinic:{ko:'클리닉',en:'Treatment',ja:'トリートメント',th:'ทรีตเมนต์'},designperm:{ko:'디자인 펌',en:'Design perm',ja:'デザインパーマ',th:'ดัดดีไซน์'},volmagic:{ko:'볼륨 매직',en:'Volume magic',ja:'ボリューム矯正',th:'ยืดเพิ่มวอลุ่ม'},blowdry:{ko:'드라이',en:'Blow dry',ja:'ブロー',th:'ไดร์ผม'},updo:{ko:'업스타일',en:'Updo',ja:'アップスタイル',th:'เกล้าผม'},menscut:{ko:'남성 컷',en:"Men's cut",ja:'メンズカット',th:'ตัดผมชาย'},daily:{ko:'데일리 메이크업',en:'Daily makeup',ja:'デイリーメイク',th:'แต่งหน้าเดลี่'},party:{ko:'파티 메이크업',en:'Party makeup',ja:'パーティーメイク',th:'แต่งหน้าปาร์ตี้'},wedmk:{ko:'웨딩 메이크업',en:'Bridal makeup',ja:'ブライダルメイク',th:'แต่งหน้าเจ้าสาว'},brows:{ko:'반영구 눈썹',en:'Semi-permanent brows',ja:'アートメイク眉',th:'สักคิ้ว'},photomk:{ko:'촬영 메이크업',en:'Photoshoot makeup',ja:'撮影メイク',th:'แต่งหน้าถ่ายรูป'},mklesson:{ko:'메이크업 레슨',en:'Makeup lesson',ja:'メイクレッスン',th:'สอนแต่งหน้า'},gel:{ko:'젤네일',en:'Gel nails',ja:'ジェルネイル',th:'เจลเล็บ'},basicnail:{ko:'기본 네일',en:'Basic manicure',ja:'ベーシックネイル',th:'ทำเล็บพื้นฐาน'},handcare:{ko:'손 케어',en:'Hand care',ja:'ハンドケア',th:'ดูแลมือ'},gelpedi:{ko:'발 젤네일',en:'Gel pedicure',ja:'フットジェル',th:'เจลเล็บเท้า'},pedi:{ko:'패디큐어',en:'Pedicure',ja:'ペディキュア',th:'ทำเล็บเท้า'},nailart:{ko:'네일 아트',en:'Nail art',ja:'ネイルアート',th:'เพ้นท์เล็บ'},nailext:{ko:'네일 연장',en:'Extensions',ja:'スカルプ',th:'ต่อเล็บ'},nailrm:{ko:'제거',en:'Removal',ja:'オフ',th:'ถอดเล็บ'},lashext:{ko:'속눈썹 연장',en:'Lash extensions',ja:'まつげエクステ',th:'ต่อขนตา'},volume:{ko:'볼륨 래쉬',en:'Volume lash',ja:'ボリュームラッシュ',th:'ขนตาวอลุ่ม'},lashlift:{ko:'속눈썹 펌',en:'Lash lift',ja:'まつげパーマ',th:'ดัดขนตา'},refill:{ko:'리터치',en:'Refill',ja:'リタッチ',th:'เติมขนตา'},lashrm:{ko:'제거',en:'Removal',ja:'オフ',th:'ถอดขนตา'},browlam:{ko:'브로우 펌',en:'Brow lamination',ja:'眉ラミネーション',th:'ดัดคิ้ว'},basicfacial:{ko:'기본 관리',en:'Basic facial',ja:'ベーシックフェイシャル',th:'ทรีตเมนต์ผิวหน้า'},acne:{ko:'여드름 관리',en:'Acne care',ja:'ニキビケア',th:'ดูแลสิว'},hydra:{ko:'수분 관리',en:'Hydrating facial',ja:'保湿ケア',th:'เติมความชุ่มชื้น'},backcare:{ko:'등 관리',en:'Back care',ja:'背中ケア',th:'ดูแลผิวหลัง'},blackhead:{ko:'블랙헤드 관리',en:'Blackhead care',ja:'角栓ケア',th:'กำจัดสิวเสี้ยน'},led:{ko:'LED 관리',en:'LED therapy',ja:'LEDケア',th:'บำบัดด้วย LED'},bwedmk:{ko:'본식 메이크업',en:'Wedding-day makeup',ja:'本番メイク',th:'แต่งหน้าวันงาน'},bwedhair:{ko:'본식 헤어',en:'Wedding-day hair',ja:'本番ヘア',th:'ทำผมวันงาน'},rehearsal:{ko:'리허설',en:'Rehearsal',ja:'リハーサル',th:'ซ้อมแต่ง'},mother:{ko:'혼주 메이크업',en:'Mother of bride',ja:'両家母メイク',th:'แต่งหน้าแม่เจ้าสาว'},photohm:{ko:'촬영 헤어메이크업',en:'Photoshoot hair & makeup',ja:'撮影ヘアメイク',th:'ทำผมแต่งหน้าถ่ายรูป'}};
+function fmtDur(m,lang){lang=lang||LANG;var h=Math.floor(m/60),mm=m%60,U={ko:['시간','분'],en:['hr','min'],ja:['時間','分'],th:['ชม.','นาที']}[lang]||['hr','min'];var sp=(lang==='ko'||lang==='ja')?'':' ';var out=[];if(h)out.push(h+sp+U[0]);if(mm)out.push(mm+sp+U[1]);return out.join(' ');}
+function svcLabel(s,lang){lang=lang||LANG;if(!s)return '';if(s.key&&SVCMAP[s.key]&&SVCMAP[s.key][lang])return SVCMAP[s.key][lang];if(s.tr&&s.tr[lang])return s.tr[lang];return s.n||s.name||'';}
+function svcDur(s,lang){lang=lang||LANG;if(s&&s.durMin)return fmtDur(s.durMin,lang);return (s&&(s.du||s.dur))||'';}
+function svcNormalize(arr){return (arr||[]).map(function(s){if(!s||typeof s!=='object')return {n:String(s||''),p:'',du:''};return {n:s.n!=null?s.n:(s.name||''),p:s.p!=null?s.p:(s.price||''),du:s.du!=null?s.du:(s.dur||''),durMin:s.durMin||0,key:s.key||'',tr:s.tr||null};});}
+// 통화 · 실시간 환율(대략 환산 표시용)
+var CURSYM={KRW:'₩',JPY:'¥',THB:'฿',USD:'$',EUR:'€',CNY:'¥',TWD:'NT$',SGD:'S$',VND:'₫',GBP:'£',AUD:'A$'};
+var CURDEC={USD:1,EUR:1,SGD:1,AUD:1,GBP:1};
+function curFmt(amt,cur){var d=CURDEC[cur]||0;var v=d?Number(amt).toFixed(d):Math.round(amt).toLocaleString();return (CURSYM[cur]||(cur+' '))+v;}
+function langCur(l){return {ko:'KRW',ja:'JPY',th:'THB',en:'USD'}[l||LANG]||'USD';}
+var FX={rates:{USD:1,KRW:1360,JPY:150,THB:36,EUR:0.92,CNY:7.2,TWD:32,SGD:1.35,VND:25400,GBP:0.79,AUD:1.5},ts:0};
+(function(){try{var s=JSON.parse(localStorage.getItem('beautia_fx')||'null');if(s&&s.rates&&s.rates.USD)FX=s;}catch(e){}})();
+async function fxRefresh(){try{if(Date.now()-(FX.ts||0)<6*3600*1000&&FX.rates&&FX.rates.KRW)return;var r=await fetch('https://open.er-api.com/v6/latest/USD');if(!r.ok)return;var j=await r.json();if(j&&j.rates&&j.rates.KRW){FX={rates:j.rates,ts:Date.now()};try{localStorage.setItem('beautia_fx',JSON.stringify(FX));}catch(e){}if(curD&&typeof openD==='function'){try{openD(curD,true);}catch(e){}}}}catch(e){}}
+function fxConv(amt,from,to){if(!amt||from===to)return amt;var rf=FX.rates[from],rt=FX.rates[to];if(!rf||!rt)return null;return amt*(rt/rf);}
+function svcCur(d){return (d&&d.cur)||'KRW';}
+function priceNum(p){var n=parseInt(String(p||'').replace(/[^0-9]/g,''),10);return isNaN(n)?0:n;}
+function priceDisp(p,cur){var n=priceNum(p);return n?curFmt(n,cur):(p||'');}
+function priceApprox(p,dcur){var n=priceNum(p);if(!n)return '';var vcur=langCur(LANG);if(vcur===dcur)return '';var c=fxConv(n,dcur,vcur);if(c==null)return '';return '≈ '+curFmt(c,vcur);}
 function chipsOf(d){return (d&&d.tags&&d.tags.length)?d.tags:((d&&d.spec)||[]);}
 // 나라 국기: shop.country(KR/JP/…) 우선, 없으면 지역·주소 텍스트로 판별
 function flagFor(country,region,area){
@@ -1346,13 +1370,14 @@ function renderDesigners(q,city){var g=$('grid');g.classList.add('dgview');
  g.innerHTML=fbar+ds.map(function(d){var nm=(LANG==='ko'&&d.ko)?d.ko:d.name;var thumbs=d.works.slice(0,3);var L=hyb();
   var rev=parseInt(d.rev||d.reviews||0,10)||0;
   var badges=[d.ver?`<span class="tb tb-v"><i class="ti ti-rosette-discount-check-filled"></i> ${esc(L.verified)}</span>`:'',
+    d.freelancer?`<span class="tb tb-f"><i class="ti ti-user-star"></i> ${esc(FRLZ[LANG]||FRLZ.ko)}</span>`:'',
     rev>0?`<span class="tb"><i class="ti ti-message-star"></i> ${esc(L.reviews)} ${rev}</span>`:'',
     d.uid?`<span class="tb tb-f"><i class="ti ti-bolt"></i> ${esc(L.fast)}</span>`:''].filter(Boolean).join('');
   return `<div class="dcard">
     <div class="dcthumbs" onclick="openD('${d.id}')">${isNewWork(d)?`<span class="dcnew"><i class="ti ti-sparkles"></i> ${T[LANG].newBadge}</span>`:''}${thumbs.map(function(w){return thumbBg(w,400,'dcth');}).join('')}${d.featured?`<span class="dcfeat"><i class="ti ti-external-link"></i></span>`:''}${d.uid?`<button class="followBtn dcfollow${isFollowing(d.uid)?' on':''}" data-follow="${d.uid}" onclick="toggleFollow('${d.uid}',event)" title="${T[LANG].follow}"><i class="ti ${isFollowing(d.uid)?'ti-user-check':'ti-user-plus'}"></i></button>`:''}</div>
     <div class="dcbody" onclick="openD('${d.id}')">
       ${avHtml(d,'dcav')}
-      <div class="dci"><div class="dcn">${esc(d.flag)} ${esc(nm)} ${d.ver?`<i class="ti ti-rosette-discount-check-filled" style="color:var(--green);font-size:15px"></i>`:''}</div>
+      <div class="dci"><div class="dcn">${esc(d.flag)} ${esc(nm)} ${d.ver?`<i class="ti ti-rosette-discount-check-filled" style="color:var(--gold);font-size:15px"></i>`:''}</div>
        <div class="dcm"><span class="star">★</span> ${esc(d.rating||'5')} · ${esc(cl(d.cat))}${d.city?' · '+esc(d.city):''}</div></div>
     </div>
     ${badges?`<div class="dctrust">${badges}</div>`:''}
@@ -1367,7 +1392,7 @@ function openWork(wid){const t=TILES.find(x=>x.wid===wid);if(!t)return;const d=d
   ${isVid(t.img)?`<video class="wimg wimgvid" src="${vsrc(t.img)}" ${t.poster?`poster="${im(t.poster,1200)}"`:''} preload="auto" controls autoplay loop playsinline></video>`:`<img class="wimg" src="${im(t.img,1200)}" alt="">`}
   ${t.text?`<div class="wtext">${esc(t.text)}</div>`:''}
   <div class="wbar">${avHtml(d,'wav')}
-   <div class="wbinfo">${feat?`<div class="wkick"><i class="ti ti-external-link"></i> ${T[LANG].featured} · @${esc(ig)}</div><div class="wname">@${esc(ig)}</div><div class="wsub">${esc(cl(t.cat))}${t.city?' · '+esc(t.city):''}</div>`:`<div class="wkick"><i class="ti ti-photo"></i> ${T[LANG].byDesigner.replace('{n}',esc(nm))}</div><div class="wname">${esc(d.flag)} ${esc(nm)} ${d.ver?'<i class="ti ti-rosette-discount-check-filled" style="color:var(--green);font-size:17px"></i>':''}</div><div class="wsub">${esc(cl(t.cat))}${t.area?' · '+esc(t.area):''}${t.city?', '+esc(t.city):''}</div>`}</div>
+   <div class="wbinfo">${feat?`<div class="wkick"><i class="ti ti-external-link"></i> ${T[LANG].featured} · @${esc(ig)}</div><div class="wname">@${esc(ig)}</div><div class="wsub">${esc(cl(t.cat))}${t.city?' · '+esc(t.city):''}</div>`:`<div class="wkick"><i class="ti ti-photo"></i> ${T[LANG].byDesigner.replace('{n}',esc(nm))}</div><div class="wname">${esc(d.flag)} ${esc(nm)} ${d.ver?'<i class="ti ti-rosette-discount-check-filled" style="color:var(--gold);font-size:17px"></i>':''}</div><div class="wsub">${esc(cl(t.cat))}${t.area?' · '+esc(t.area):''}${t.city?', '+esc(t.city):''}</div>`}</div>
    ${feat?`<a class="wgo" href="https://instagram.com/${ig}" target="_blank" rel="noopener"><i class="ti ti-brand-instagram"></i></a>`:`<button class="wgo" onclick="goDesigner('${d.id}')">${T[LANG].viewDesigner} <i class="ti ti-arrow-right"></i></button>`}</div>
   ${feat?`<div class="wclaim">${T[LANG].claimQ} <a onclick="claimFeatured()">${T[LANG].claimBtn}</a> · <a href="mailto:hello@beautia.io?subject=Beautia%20removal%20request&body=%40${esc(ig)}" rel="noopener">${T[LANG].removeReq}</a></div>`:''}`;
  $('wmodal').classList.add('on');}
@@ -1398,7 +1423,7 @@ function openD(did,keep){const d=dById(did);if(!d)return;curD=did;const gi=D.ind
    <button class="dclose" onclick="closeD()">×</button>
    <div class="dhcap">
      ${avHtml(d,'dav-c')}
-     <div class="dn">${esc(d.flag)} ${esc(name)} ${d.ver?`<span class="vbadge"><i class="ti ti-rosette-discount-check-filled"></i>${T[LANG].verified}</span>`:''}</div>${d.shopName?`<div class="dshop"><i class="ti ti-building-store"></i> ${esc(d.shopName)}${d.freelancer?' · '+esc(FRLZ[LANG]||FRLZ.ko):''}</div>`:(d.freelancer?`<div class="dshop"><i class="ti ti-user-star"></i> ${esc(FRLZ[LANG]||FRLZ.ko)}</div>`:'')}
+     <div class="dn">${esc(d.flag)} ${esc(name)} ${d.ver?`<span class="vbadge"><i class="ti ti-rosette-discount-check-filled"></i>${T[LANG].verified}</span>`:''}${d.freelancer?`<span class="fbadge"><i class="ti ti-user-star"></i>${esc(FRLZ[LANG]||FRLZ.ko)}</span>`:''}</div>${d.shopName?`<div class="dshop"><i class="ti ti-building-store"></i> ${esc(d.shopName)}</div>`:''}
      <div class="dmeta"><span id="dstars"><span class="star">★</span> ${esc(d.rating)} (${esc(d.rev)})</span>${d.cat?`<span>${esc(cl(d.cat))}</span>`:''}<span><i class="ti ti-map-pin" style="font-size:16px"></i> ${esc(d.city||d.area)}</span>${d.years?`<span><i class="ti ti-briefcase" style="font-size:16px"></i> ${esc(d.years)}${LANG==='en'?' ':''}${T[LANG].years}</span>`:''}</div>
      ${(d.uid&&!d.isMe)?followBtnHtml(d.uid,'dhfollow'):''}
    </div>
@@ -1413,7 +1438,7 @@ function openD(did,keep){const d=dById(did);if(!d)return;curD=did;const gi=D.ind
      <input type="range" min="0" max="100" value="50" oninput="baMove(this.value)">
    </div>
   </div>
-  ${(d.services&&d.services.length)?`<div class="dsec"><div class="st">${T[LANG].svcTitle}</div>${d.services.map((s,i)=>`<div class="svc"><div class="svci"><div class="svcn">${esc(s.n)}</div><div class="svcm">${s.du?esc(s.du)+' · ':''}<b>${esc(s.p)}</b></div></div>${d.uid&&!d.isMe?`<button class="svcbk" onclick="openBook('${d.id}',${i})">${T[LANG].book2}</button>`:''}</div>`).join('')}</div>`:''}
+  ${(d.services&&d.services.length)?`<div class="dsec"><div class="st">${T[LANG].svcTitle}</div>${d.services.map((s,i)=>`<div class="svc"><div class="svci"><div class="svcn">${esc(svcLabel(s,LANG))}</div><div class="svcm">${svcDur(s,LANG)?esc(svcDur(s,LANG))+' · ':''}<b>${esc(priceDisp(s.p,svcCur(d)))}</b>${priceApprox(s.p,svcCur(d))?`<span class="svcapprox"> ${esc(priceApprox(s.p,svcCur(d)))}</span>`:''}</div></div>${d.uid&&!d.isMe?`<button class="svcbk" onclick="openBook('${d.id}',${i})">${T[LANG].book2}</button>`:''}</div>`).join('')}</div>`:''}
   <div class="dsec"><div class="st">${T[LANG].portfolio}</div><div class="dgrid">${d.works.map(w=>isVid(w)?`<div class="dgvid" onclick="playInline(this,'${vsrc(w)}')"${workPoster(w)?` style="background-image:url('${im(workPoster(w),700)}')"`:''}><span class="thvb"><i class="ti ti-player-play-filled"></i></span></div>`:`<img src="${im(w,500)}" onclick="window.open('${im(w,1200)}','_blank')">`).join('')}</div></div>
   <div class="dsec" id="revsec"><div class="st">${T[LANG].reviews} · ${esc(d.rev)}</div>${d.reviews.map((r,i)=>`<div class="rev"><div class="ra" style="background:${GR[(gi+i)%GR.length]}">${esc((r.n||'?')[0])}</div><div><div class="rn">${esc(r.n)}</div><div class="rs">${stars(r.s)}</div><div class="rt">${esc(r.t)}</div></div></div>`).join('')}</div>
   ${(snsHtml||naverHtml||blogHtml||bookingHtml)?`<div class="dsec" style="border:none"><div class="st">${T[LANG].connect}</div>${bookingHtml}<div class="sns">${snsHtml}${naverHtml}${blogHtml}</div></div>`:''}
@@ -1709,7 +1734,7 @@ const SB=window.supabase.createClient(SB_URL,SB_KEY,{auth:{persistSession:true,a
 }catch(e){}})();
 function roleIn(r){return (r==='designer'||r==='owner'||r==='desg')?'desg':'cust';}
 function profToMe(p){const s=p.shop||{};const photos=[];(s.photos||[]).forEach(function(x){if(x&&photos.indexOf(x)<0)photos.push(x);});
- return {uid:p.id,role:roleIn(p.role),name:p.nickname||p.full_name||'',country:s.country||'',city:p.region||s.area||'',area:s.area||'',spec:(s.specialties||p.interests||[]),career:s.career||'',avatar:s.avatar||p.avatar_url||'',insta:(s.insta||'').replace(/^@/,''),sns:s.sns||(s.insta?{instagram:(s.insta||'').replace(/^@/,'')}:{}),naver:s.naver||'',shopName:s.name||'',freelancer:!!s.freelancer,bio:p.bio||'',works:photos,ba:(s.ba&&s.ba.length===2)?s.ba.slice():null,shopRaw:s,idCols:s.idCols||2,idColor:s.idColor||'',idTheme:s.idTheme||'light',services:s.services||[],tags:s.tags||[],verified:true,provider:'email',joined:p.created_at?new Date(p.created_at).getTime():Date.now()};}
+ return {uid:p.id,role:roleIn(p.role),name:p.nickname||p.full_name||'',country:s.country||'',city:p.region||s.area||'',area:s.area||'',spec:(s.specialties||p.interests||[]),career:s.career||'',avatar:s.avatar||p.avatar_url||'',insta:(s.insta||'').replace(/^@/,''),sns:s.sns||(s.insta?{instagram:(s.insta||'').replace(/^@/,'')}:{}),naver:s.naver||'',shopName:s.name||'',freelancer:!!s.freelancer,bio:p.bio||'',works:photos,ba:(s.ba&&s.ba.length===2)?s.ba.slice():null,shopRaw:s,idCols:s.idCols||2,idColor:s.idColor||'',idTheme:s.idTheme||'light',services:svcNormalize(s.services),cur:s.cur||'',tags:s.tags||[],verified:true,provider:'email',joined:p.created_at?new Date(p.created_at).getTime():Date.now()};}
 async function uploadOne(dataUrl){try{const sess=(await SB.auth.getSession()).data.session;if(!sess||dataUrl.indexOf('data:')!==0)return dataUrl;const uid=sess.user.id;const blob=await (await fetch(dataUrl)).blob();const path=uid+'/'+Date.now()+'-'+Math.random().toString(36).slice(2,8)+'.jpg';const up=await SB.storage.from('beautia').upload(path,blob,{contentType:'image/jpeg',cacheControl:'31536000',upsert:false});if(up.error){console.warn('[beautia] storage upload failed → base64 fallback:',up.error&&up.error.message);return dataUrl;}const pu=SB.storage.from('beautia').getPublicUrl(path);return (pu.data&&pu.data.publicUrl)||dataUrl;}catch(e){return dataUrl;}}
 async function persistShop(){if(!ME||!ME.uid)return;try{await SB.from('profiles').update({shop:Object.assign({},ME.shopRaw||{},{name:ME.shopName||'',area:ME.city||'',freelancer:!!ME.freelancer,specialties:ME.spec||[],avatar:ME.avatar||'',photos:ME.works||[],ba:(ME.ba&&ME.ba.length===2)?ME.ba:[],career:ME.career||'',insta:ME.insta||'',sns:ME.sns||{},idCols:ME.idCols||2,idColor:ME.idColor||'',idTheme:ME.idTheme||'light',services:ME.services||[],tags:ME.tags||[]})}).eq('id',ME.uid);}catch(e){}}
 async function onAuth(session){
@@ -1945,6 +1970,7 @@ document.addEventListener('click',function(){closeUmenu();});
  if(['ko','en','ja','th'].indexOf(saved)>=0){LANG=saved;return;}
  var nl=(navigator.language||'en').toLowerCase();LANG=nl.indexOf('ko')===0?'ko':nl.indexOf('ja')===0?'ja':nl.indexOf('th')===0?'th':'en';})();
 document.documentElement.lang=LANG;
+fxRefresh();
 (function(){var _q=new URLSearchParams(location.search).get('q');if(_q&&$('q'))$('q').value=_q.slice(0,80);})();
 // ===== 채팅(메시징) + 자동번역(GPT) =====
 let CHATS=[],curConv=null,chatSub=null,PROFCACHE={};
@@ -2108,7 +2134,7 @@ function applyDesignerRows(rows){
       bio:p.bio||'',avatar:s.avatar||p.avatar_url||'',insta:(s.insta||'').replace(/^@/,''),naver:s.naver||'',blog:s.blog||'',bookingUrl:s.bookingUrl||'',sched:s.sched||null,newAt:s.lastWorkAt||0,
       handles:s.sns||(s.insta?{instagram:(s.insta||'').replace(/^@/,'')}:{}),
       works:photos,ba:baFrom(s.ba,photos),
-      sns:Object.keys(s.sns||{}).filter(function(k){return (s.sns||{})[k];}),services:(s.services||[]),tags:s.tags||[],shopName:s.name||'',freelancer:!!s.freelancer,reviews:[]});
+      sns:Object.keys(s.sns||{}).filter(function(k){return (s.sns||{})[k];}),services:svcNormalize(s.services),cur:s.cur||'',tags:s.tags||[],shopName:s.name||'',freelancer:!!s.freelancer,reviews:[]});
   });
   DUSERS=list;buildTiles();renderCities();render();maybeNotifyNewWork();
   var _pu=new URLSearchParams(location.search).get('u');if(_pu&&!document.querySelector('.dmodal.on'))openByUid(_pu);
@@ -2193,13 +2219,13 @@ function bkRender(){var d=dById(bkSel.did);if(!d)return;
  $('bkcard').innerHTML=`<button class="iclose" onclick="closeBk()" style="position:absolute;top:16px;right:20px;font-size:24px;color:var(--sub);z-index:2">×</button>
   <h3 class="serif">${T[LANG].bkTitle}</h3>
   <div class="pfsub">${esc(d.flag)} ${esc(name)} · ${esc(cl(d.cat))}${d.city?' · '+esc(d.city):''}</div>
-  ${svcs.length?`<div class="il">${T[LANG].bkService}</div><div class="bksvcs">${svcs.map((s,i)=>`<button class="bksvc${i===bkSel.svc?' on':''}" onclick="bkPickSvc(${i})"><span class="bsn">${esc(s.n)}</span>${s.p?`<span class="bsp">${esc(s.p)}</span>`:''}${s.du?`<span class="bsd">${esc(s.du)}</span>`:''}</button>`).join('')}<button class="bksvc${bkSel.svc<0?' on':''}" onclick="bkPickSvc(-1)"><span class="bsn">${T[LANG].bkConsult}</span></button></div>`:''}
+  ${svcs.length?`<div class="il">${T[LANG].bkService}</div><div class="bksvcs">${svcs.map((s,i)=>`<button class="bksvc${i===bkSel.svc?' on':''}" onclick="bkPickSvc(${i})"><span class="bsn">${esc(svcLabel(s,LANG))}</span>${priceNum(s.p)?`<span class="bsp">${esc(priceDisp(s.p,svcCur(d)))}${priceApprox(s.p,svcCur(d))?` <span class="bsapx">${esc(priceApprox(s.p,svcCur(d)))}</span>`:''}</span>`:(s.p?`<span class="bsp">${esc(s.p)}</span>`:'')}${svcDur(s,LANG)?`<span class="bsd">${esc(svcDur(s,LANG))}</span>`:''}</button>`).join('')}<button class="bksvc${bkSel.svc<0?' on':''}" onclick="bkPickSvc(-1)"><span class="bsn">${T[LANG].bkConsult}</span></button></div>`:''}
   <div class="il">${T[LANG].bkDate}</div><div class="bkdates">${bkDateChips()}</div>
   <div class="il">${T[LANG].bkTime}</div><div class="bkslots">${bkTimeGrid()}</div>
   <div class="il">${T[LANG].bkNote}</div><textarea class="linput" id="bkNote" rows="2" style="resize:none" placeholder="${T[LANG].bkNotePh}">${esc(bkSel.note||'')}</textarea>
   <button class="lcont" style="width:100%;margin-top:16px${can?'':';opacity:.5'}" onclick="submitBooking()"><i class="ti ti-calendar-heart"></i> ${can?(T[LANG].bkSend+' · '+bkSel.time):T[LANG].bkPickSlot}</button>`;}
 async function submitBooking(){const d=dById(bkSel.did);if(!d||!d.uid||!ME||!ME.uid)return;
- var si=bkSel.svc;var svc=(si>=0&&d.services&&d.services[si])?{n:d.services[si].n,p:d.services[si].p||'',du:d.services[si].du||''}:{n:T[LANG].bkConsult,p:'',du:''};
+ var si=bkSel.svc;var svc=(si>=0&&d.services&&d.services[si])?{n:svcLabel(d.services[si],LANG),key:d.services[si].key||'',tr:d.services[si].tr||null,p:d.services[si].p||'',du:d.services[si].du||''}:{n:T[LANG].bkConsult,p:'',du:''};
  var date=bkSel.date,time=bkSel.time;var nt=$('bkNote');bkSel.note=nt?nt.value:'';var note=(bkSel.note||'').slice(0,1000);
  if(!date){toast(T[LANG].bkNeedDate);return;}
  if(!time){toast(T[LANG].bkPickSlot);return;}
