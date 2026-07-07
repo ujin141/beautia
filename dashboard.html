@@ -28,7 +28,7 @@ html,body{overflow-x:hidden;}
 body{background:var(--soft);color:var(--ink);-webkit-font-smoothing:antialiased;}
 a{color:inherit;text-decoration:none;}button{font-family:inherit;cursor:pointer;border:none;background:none;}
 img{display:block;}
-.wrap{max-width:720px;margin:0 auto;padding:0 16px 80px;}
+.wrap{max-width:720px;margin:0 auto;padding:0 16px calc(84px + env(safe-area-inset-bottom));}
 header.top{position:sticky;top:0;z-index:20;background:rgba(255,255,255,.95);backdrop-filter:blur(10px);border-bottom:1px solid var(--line);}
 .topin{max-width:720px;margin:0 auto;display:flex;align-items:center;gap:10px;padding:14px 16px;}
 .brand{font-weight:800;font-size:20px;color:var(--plum);letter-spacing:-.02em;}
@@ -50,9 +50,12 @@ header.top{position:sticky;top:0;z-index:20;background:rgba(255,255,255,.95);bac
 .btn.ghost{background:#fff;color:var(--plum);border:1.5px solid var(--plum);}
 .btn.sm{width:auto;padding:9px 16px;font-size:13.5px;border-radius:10px;}
 /* 탭 */
-.tabs{display:flex;flex-wrap:wrap;gap:6px;margin:16px 0 4px;position:sticky;top:57px;z-index:15;background:var(--soft);padding:8px 0;}
-.tab{flex:1 1 60px;min-width:56px;text-align:center;font-size:13.5px;font-weight:800;color:var(--sub);padding:11px 2px;border-radius:12px;background:#fff;border:1px solid var(--line);}
-.tab.on{background:var(--plum);color:#fff;border-color:var(--plum);}
+.botnav{position:fixed;left:0;right:0;bottom:0;z-index:40;display:flex;background:rgba(255,255,255,.97);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border-top:1px solid var(--line);padding:6px 4px calc(6px + env(safe-area-inset-bottom));box-shadow:0 -6px 22px -14px rgba(60,30,50,.3);}
+.bn{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;padding:5px 2px;color:var(--sub);font-weight:800;font-size:11px;background:none;border:none;cursor:pointer;position:relative;transition:.12s;}
+.bn i{font-size:24px;transition:.12s;}
+.bn.on{color:var(--plum);}
+.bn.on i{transform:translateY(-1px);}
+.bn .tbadge{position:absolute;top:1px;left:calc(50% + 5px);}
 /* 카드 */
 .card{background:#fff;border:1px solid var(--line);border-radius:18px;padding:20px;margin-top:14px;}
 .card h2{font-size:16px;letter-spacing:-.01em;margin-bottom:4px;}
@@ -85,7 +88,7 @@ textarea.inp{resize:vertical;min-height:80px;line-height:1.6;}
 .tagc i{cursor:pointer;font-size:15px;opacity:.7;}
 .avwrap{display:flex;align-items:center;gap:16px;}
 .av{width:84px;height:84px;border-radius:50%;background:var(--soft) center/cover;border:3px solid #fff;box-shadow:0 4px 14px rgba(0,0,0,.15);flex:0 0 auto;}
-.saveBar{position:sticky;bottom:0;background:linear-gradient(180deg,transparent,var(--soft) 40%);padding:14px 0 6px;margin-top:8px;}
+.saveBar{position:sticky;bottom:calc(60px + env(safe-area-inset-bottom));background:linear-gradient(180deg,transparent,var(--soft) 40%);padding:14px 0 6px;margin-top:8px;}
 /* 포폴 */
 .pfgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:12px;}
 .pfitem{position:relative;aspect-ratio:3/4;border-radius:12px;overflow:hidden;background:var(--soft);}
@@ -290,12 +293,12 @@ textarea.inp{resize:vertical;min-height:80px;line-height:1.6;}
 
 <!-- 대시보드 -->
 <div class="wrap hide" id="dashView">
-  <div class="tabs">
-    <button class="tab on" data-tab="home" onclick="tab('home')" data-t="home">홈</button>
-    <button class="tab" data-tab="profile" onclick="tab('profile')" data-t="profile">프로필</button>
-    <button class="tab" data-tab="bookings" onclick="tab('bookings')" data-t="bookings">예약</button>
-    <button class="tab" data-tab="messages" onclick="tab('messages')"><span data-t="msgTab">메시지</span><span class="tbadge hide" id="msgBadge"></span></button>
-  </div>
+  <nav class="botnav">
+    <button class="bn on" data-tab="home" onclick="tab('home')"><i class="ti ti-home-2"></i><span data-t="home">홈</span></button>
+    <button class="bn" data-tab="profile" onclick="tab('profile')"><i class="ti ti-user-circle"></i><span data-t="profile">프로필</span></button>
+    <button class="bn" data-tab="bookings" onclick="tab('bookings')"><i class="ti ti-calendar-event"></i><span data-t="bookings">예약</span></button>
+    <button class="bn" data-tab="messages" onclick="tab('messages')"><i class="ti ti-message-circle"></i><span data-t="msgTab">메시지</span><span class="tbadge hide" id="msgBadge"></span></button>
+  </nav>
 
   <!-- 홈 -->
   <div id="sec-home">
@@ -559,11 +562,14 @@ function t(k){var o=T[LANG]||T.ko;return (k in o)?o[k]:(T.ko[k]!=null?T.ko[k]:k)
 function tf(k,map){var s=t(k);for(var x in (map||{}))s=String(s).split('{'+x+'}').join(map[x]);return s;}
 function catLabel(en){var k='cat_'+en,o=T[LANG]||T.ko;if(k in o)return o[k];if(k in T.ko)return T.ko[k];return en;}
 function calTitle(y,m){if(LANG==='ko')return y+'년 '+m+'월';if(LANG==='ja')return y+'年 '+m+'月';return t('mon')[m-1]+' '+y;}
+function inputLocale(){return {ko:'ko',en:'en-US',ja:'ja',th:'th'}[LANG]||'en-US';}
 function applyI18n(){
   document.documentElement.lang=LANG;
   document.querySelectorAll('[data-t]').forEach(function(e){e.textContent=t(e.dataset.t);});
   document.querySelectorAll('[data-tph]').forEach(function(e){e.placeholder=t(e.dataset.tph);});
   document.querySelectorAll('[data-thtml]').forEach(function(e){e.innerHTML=t(e.dataset.thtml);});
+  // 네이티브 날짜/시간 위젯(오전·오후 / 연·월·일)을 앱 언어로 표시
+  try{var il=inputLocale();document.querySelectorAll('input[type=date],input[type=time]').forEach(function(e){e.setAttribute('lang',il);});}catch(e){}
   var ls=$('langSel');if(ls)ls.value=LANG;
 }
 function rerenderI18n(){try{if(ME){renderSpec();renderTags();renderServices();renderSched();renderPf();renderHome();renderStats();renderBkCalendar();renderBkList();renderReviews();renderClients();renderProfileOptions();if(document.getElementById('wtype'))setWorkType(state.freelancer);}}catch(e){}}
@@ -919,12 +925,12 @@ function renderSchedDays(){var el=$('schedDays');if(!el)return;var sc=state.sche
  el.innerHTML=[1,2,3,4,5,6,0].map(function(d){var h=sc.hours&&sc.hours[d];var open=!!h;
   return '<div class="schedrow"><span class="schedday">'+t('wd')[d]+'</span>'
    +'<button type="button" class="schedtog'+(open?' on':'')+'" onclick="toggleDay('+d+')">'+(open?t('open'):t('closed'))+'</button>'
-   +'<span class="schedtimes"'+(open?'':' style="visibility:hidden"')+'><input class="inp tin" type="time" step="1800" value="'+(h?h.o:'10:00')+'" onchange="setDayTime('+d+',\'o\',this.value)"><span class="tw">~</span><input class="inp tin" type="time" step="1800" value="'+(h?h.c:'19:00')+'" onchange="setDayTime('+d+',\'c\',this.value)"></span></div>';
+   +'<span class="schedtimes"'+(open?'':' style="visibility:hidden"')+'><input class="inp tin" type="time" step="1800" lang="'+inputLocale()+'" value="'+(h?h.o:'10:00')+'" onchange="setDayTime('+d+',\'o\',this.value)"><span class="tw">~</span><input class="inp tin" type="time" step="1800" lang="'+inputLocale()+'" value="'+(h?h.c:'19:00')+'" onchange="setDayTime('+d+',\'c\',this.value)"></span></div>';
  }).join('');}
 function toggleDay(d){var sc=state.sched;if(sc.hours[d])sc.hours[d]=null;else sc.hours[d]={o:'10:00',c:'19:00'};renderSchedDays();}
 function setDayTime(d,k,v){if(state.sched.hours[d]){state.sched.hours[d][k]=snap30(v);renderSchedDays();}}
 function renderBreaks(){var el=$('schedBreaks');if(!el)return;var bs=state.sched.breaks||[];
- el.innerHTML=bs.map(function(b,i){return '<div class="schedbreak"><input class="inp tin" type="time" step="1800" value="'+b.o+'" onchange="setBreak('+i+',\'o\',this.value)"><span class="tw">~</span><input class="inp tin" type="time" step="1800" value="'+b.c+'" onchange="setBreak('+i+',\'c\',this.value)"><button type="button" class="schedx" onclick="rmBreak('+i+')"><i class="ti ti-x"></i></button></div>';}).join('');}
+ el.innerHTML=bs.map(function(b,i){return '<div class="schedbreak"><input class="inp tin" type="time" step="1800" lang="'+inputLocale()+'" value="'+b.o+'" onchange="setBreak('+i+',\'o\',this.value)"><span class="tw">~</span><input class="inp tin" type="time" step="1800" lang="'+inputLocale()+'" value="'+b.c+'" onchange="setBreak('+i+',\'c\',this.value)"><button type="button" class="schedx" onclick="rmBreak('+i+')"><i class="ti ti-x"></i></button></div>';}).join('');}
 function addBreak(){state.sched.breaks=state.sched.breaks||[];state.sched.breaks.push({o:'12:00',c:'13:00'});renderBreaks();}
 function setBreak(i,k,v){state.sched.breaks[i][k]=snap30(v);renderBreaks();}
 function rmBreak(i){state.sched.breaks.splice(i,1);renderBreaks();}
@@ -1248,7 +1254,7 @@ function exportClients(){var rows=CLIENTS.slice().sort(function(a,b){return b.vi
 
 var TABSEC={home:['home'],profile:['profile','portfolio'],bookings:['bookings','clients','reviews'],messages:['messages']};
 function tab(t){
-  document.querySelectorAll('.tab').forEach(b=>b.classList.toggle('on',b.dataset.tab===t));
+  document.querySelectorAll('.botnav [data-tab]').forEach(b=>b.classList.toggle('on',b.dataset.tab===t));
   var show=TABSEC[t]||[t];
   ['home','profile','portfolio','bookings','reviews','messages','clients'].forEach(s=>$('sec-'+s).classList.toggle('hide',show.indexOf(s)<0));
   if(t==='home')renderHome();
