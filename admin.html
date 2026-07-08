@@ -262,6 +262,7 @@ textarea.inp{resize:vertical;min-height:70px;line-height:1.5;}
       <button class="tab" id="tab-announce" onclick="tab('announce')">공지</button>
       <button class="tab" id="tab-bookings" onclick="tab('bookings')">예약</button>
       <button class="tab" id="tab-reviews" onclick="tab('reviews')">후기</button>
+      <button class="tab" id="tab-access" onclick="tab('access')">접속기록</button>
     </div>
     <div style="display:flex;justify-content:flex-end;margin-bottom:10px"><button class="mini g" style="font-size:12px;padding:8px 13px" onclick="exportCSV()"><i class="ti ti-download"></i> 현재 탭 CSV 내보내기</button></div>
 
@@ -301,6 +302,10 @@ textarea.inp{resize:vertical;min-height:70px;line-height:1.5;}
       <div class="ufilter" style="margin-bottom:12px"><button class="uf on" data-bf="all" onclick="setBF('all')">전체</button><button class="uf" data-bf="pending" onclick="setBF('pending')">대기</button><button class="uf" data-bf="accepted" onclick="setBF('accepted')">확정</button><button class="uf" data-bf="done" onclick="setBF('done')">완료</button><button class="uf" data-bf="cancelled" onclick="setBF('cancelled')">취소</button></div>
       <div class="rowlist" id="bklist"></div></div>
     <div id="sec-reviews" class="hide"><div class="rowlist" id="rvlist"></div></div>
+    <div id="sec-access" class="hide">
+      <div class="note" style="margin-bottom:12px"><i class="ti ti-shield-lock"></i> 어드민 <b>접속 기록</b> — 로그인 시 IP·도시·기기·시각을 남깁니다. <b>거부</b>는 오너가 아닌 계정의 접근 시도예요.</div>
+      <div class="rowlist" id="acclist"></div>
+    </div>
   </div>
 </div>
 
@@ -348,14 +353,44 @@ async function verifyCode(){
 }
 async function logout(){await SB.auth.signOut();location.reload();}
 
+// ===== 보안: 무활동 자동 로그아웃 (오너 페이지 방치 방지) =====
+var IDLE_MIN=20, idleTimer=null, idleWarnTimer=null, idleReady=false;
+function resetIdle(){ clearTimeout(idleTimer); clearTimeout(idleWarnTimer);
+  idleWarnTimer=setTimeout(function(){ toast('보안: 1분 뒤 자동 로그아웃돼요. 화면을 움직이면 유지됩니다.'); }, (IDLE_MIN-1)*60000);
+  idleTimer=setTimeout(function(){ SB.auth.signOut().finally(function(){ location.reload(); }); }, IDLE_MIN*60000);
+}
+function setupIdle(){ if(idleReady)return; idleReady=true; ['mousemove','keydown','click','touchstart','scroll'].forEach(function(ev){ document.addEventListener(ev, resetIdle, {passive:true}); }); resetIdle(); }
+// ===== 보안: 민감정보(PII) 마스킹 + 표시 토글 =====
+var PIICOUNT=0;
+function maskEmail(e){e=String(e||'');var p=e.split('@');if(p.length<2)return '•••';return (p[0][0]||'')+'•••@'+(p[1][0]||'')+'•••'+(p[1].slice(p[1].lastIndexOf('.'))||'');}
+function maskPhone(v){v=String(v||'').replace(/\s/g,'');return v.length<5?'••••':v.slice(0,3)+'••••'+v.slice(-2);}
+function maskName(v){v=String(v||'');return v.length<=1?v:(v[0]+'•'.repeat(Math.max(1,v.length-1)));}
+function piiRow(label,val,type){if(!val)return '';var mid='pii'+(PIICOUNT++);var m=type==='email'?maskEmail(val):(type==='phone'?maskPhone(val):maskName(val));
+  return '<div class="udrow"><span class="k">'+esc(label)+'</span><span class="v" id="'+mid+'" data-real="'+esc(val)+'">'+esc(m)+' <button class="mini g" style="padding:4px 9px;font-size:11px" onclick="revealPII(\''+mid+'\')"><i class="ti ti-eye"></i> 표시</button></span></div>';}
+function revealPII(id){var el=$(id);if(el)el.textContent=el.dataset.real||'';}
+// ===== 보안: 접속 기록(IP 로그) =====
+var ACCESS=[];
+function shouldLogAccess(result){ if(result!=='owner')return true; try{var last=+localStorage.getItem('beautia_admin_logged')||0; if(Date.now()-last<30*60000)return false; localStorage.setItem('beautia_admin_logged',String(Date.now())); }catch(e){} return true; }
+async function logAccess(result){ if(!shouldLogAccess(result))return; var info={}; try{var r=await fetch('https://ipapi.co/json/');if(r.ok)info=await r.json();}catch(e){}
+  try{ await SB.from('admin_access_log').insert({email:(EMAIL||'').slice(0,120), ip:String(info.ip||'').slice(0,64), city:String(info.city||'').slice(0,80), country:String(info.country_name||info.country||'').slice(0,80), ua:(navigator.userAgent||'').slice(0,400), result:result}); }catch(e){} }
+async function loadAccessLog(){ var el=$('acclist'); if(el&&!ACCESS.length)el.innerHTML='<div class="empty"><i class="ti ti-loader"></i><p>불러오는 중…</p></div>';
+  try{var res=await SB.from('admin_access_log').select('*').order('created_at',{ascending:false}).limit(100); if(res.error){renderAccessLog(res.error.message);return;} ACCESS=res.data||[]; renderAccessLog(); }catch(e){renderAccessLog(e.message);} }
+function renderAccessLog(err){ var el=$('acclist'); if(!el)return;
+  if(err){el.innerHTML='<div class="empty"><i class="ti ti-lock"></i><p>접속 기록을 불러올 수 없어요<br><span style="font-size:12px">'+esc(err)+'<br>(db_admin_access_log.sql 실행 필요)</span></p></div>';return;}
+  if(!ACCESS.length){el.innerHTML='<div class="empty"><i class="ti ti-shield-lock"></i><p>접속 기록이 없어요</p></div>';return;}
+  el.innerHTML=ACCESS.map(function(a){var deny=a.result==='denied';var loc=[a.city,a.country].filter(Boolean).join(', ');var ts='';try{ts=new Date(a.created_at).toLocaleString('ko-KR');}catch(e){ts=a.created_at||'';}
+    return '<div class="li"><div class="lh"><div><div class="ln">'+esc(a.ip||'—')+(loc?' <span class="ls" style="display:inline;font-weight:600">· '+esc(loc)+'</span>':'')+'</div><div class="ls">'+esc(ts)+(a.email?' · '+esc(a.email):'')+'</div></div><span class="lbadge '+(deny?'':'g')+'">'+(deny?'거부 ⚠':'오너')+'</span></div><div class="ls" style="margin-top:6px;font-size:11px;color:var(--sub);word-break:break-all">'+esc(a.ua||'')+'</div></div>'; }).join(''); }
+
 function gate(user){
   EMAIL=(user.email||'').toLowerCase();
   if(EMAIL!==OWNER_EMAIL.toLowerCase()){
     $('loginView').classList.add('hide');$('denyView').classList.remove('hide');$('denyEmail').textContent=user.email||'';
+    logAccess('denied');
     return;
   }
   $('loginView').classList.add('hide');$('denyView').classList.add('hide');$('adminView').classList.remove('hide');
   $('who').textContent=user.email||'';
+  setupIdle();logAccess('owner');
   loadAll();
 }
 
@@ -373,7 +408,7 @@ async function loadAll(){
     };});
     PMAP={};DESIGNERS.forEach(d=>PMAP[d.id]=d);
     DESIGNERS.sort((a,b)=>((b.photos.length>0)-(a.photos.length>0))||(new Date(b.created)-new Date(a.created)));
-    renderStats();renderList();renderUsers();loadBookings();loadReviews();loadApplications();loadInquiries();loadAnnounce();loadVisits();loadDashboard();
+    renderStats();renderList();renderUsers();loadBookings();loadReviews();loadApplications();loadInquiries();loadAnnounce();loadVisits();loadDashboard();loadAccessLog();
   }catch(e){toast('오류: '+e.message);}
 }
 let APPS=[];
@@ -655,9 +690,9 @@ function renderUserDetail(p, restricted){
   $('edBody').innerHTML=`<div class="udcard">
     <div class="udhead"><div class="uav" style="${av?`background-image:url('${esc(av)}')`:''}">${av?'':'<i class="ti ti-user"></i>'}</div>
       <div><div class="udname">${esc(name)}</div><span class="ubadge ${isD?'d':'c'}">${isD?'디자이너':(p.role==='guest'?'게스트':'고객')}</span></div></div>
-    ${row('이메일', p.email?esc(p.email):(restricted?'<span style="color:var(--sub)">권한 제한</span>':''))}
-    ${row('연락처', p.phone?esc(p.phone):'')}
-    ${row('실명(구글)', (p.full_name&&p.full_name!==name)?esc(p.full_name):'')}
+    ${p.email?piiRow('이메일', p.email, 'email'):(restricted?row('이메일','<span style="color:var(--sub)">권한 제한</span>'):'')}
+    ${p.phone?piiRow('연락처', p.phone, 'phone'):''}
+    ${(p.full_name&&p.full_name!==name)?piiRow('실명(구글)', p.full_name, 'name'):''}
     ${row('도시·지역', esc(p.region||''))}
     ${interests.length?`<div class="udrow"><span class="k">관심 분야</span>${chips}</div>`:''}
     ${row('소개', p.bio?esc(p.bio):'')}
@@ -901,8 +936,8 @@ async function delReview(id,ev){
 var CURTAB='designers';
 function tab(t){
   CURTAB=t;
-  ['designers','applications','users','inquiries','announce','bookings','reviews'].forEach(x=>{$('sec-'+x).classList.toggle('hide',x!==t);$('tab-'+x).classList.toggle('on',x===t);});
-  if(t==='users')renderUsers();if(t==='inquiries')renderInquiries();if(t==='announce')renderAnnounce();
+  ['designers','applications','users','inquiries','announce','bookings','reviews','access'].forEach(x=>{$('sec-'+x).classList.toggle('hide',x!==t);$('tab-'+x).classList.toggle('on',x===t);});
+  if(t==='users')renderUsers();if(t==='inquiries')renderInquiries();if(t==='announce')renderAnnounce();if(t==='access')loadAccessLog();
 }
 
 (async function(){

@@ -30,7 +30,7 @@ const L = {
 };
 
 // OG는 항상 영어로 — 전문분야·도시를 영어로 매핑(디자이너 상호명은 고유명사라 유지)
-const CATMAP_EN = { '속눈썹': 'Lash', '속눈썹펌': 'Lash perm', '래쉬': 'Lash', '래쉬리프트': 'Lash lift', '네일': 'Nail', '젤네일': 'Gel nail', '네일아트': 'Nail art', '헤어': 'Hair', '헤어컷': 'Hair', '펌': 'Perm', '염색': 'Color', '메이크업': 'Makeup', '메이크': 'Makeup', '스킨': 'Skin', '피부': 'Skin', '브라이덜': 'Bridal', '왁싱': 'Waxing', '케라틴': 'Keratin' };
+const CATMAP_EN = { '속눈썹': 'Lash', '속눈썹펌': 'Lash perm', '래쉬': 'Lash', '래쉬리프트': 'Lash lift', '네일': 'Nail', '젤네일': 'Gel nail', '네일아트': 'Nail art', '헤어': 'Hair', '헤어컷': 'Hair', '펌': 'Perm', '염색': 'Color', '메이크업': 'Makeup', '메이크': 'Makeup', '스킨': 'Skin', '피부': 'Skin', '브라이덜': 'Bridal', '왁싱': 'Waxing', '케라틴': 'Keratin', '타투': 'Tattoo', '문신': 'Tattoo', '레터링': 'Lettering tattoo' };
 const CITYMAP_EN = { '서울': 'Seoul', '부산': 'Busan', '대구': 'Daegu', '인천': 'Incheon', '광주': 'Gwangju', '광명': 'Gwangmyeong', '김포': 'Gimpo', '분당': 'Bundang', '성남': 'Seongnam', '서현': 'Seohyun', '수원': 'Suwon', '오사카': 'Osaka', '大阪府': 'Osaka', '도쿄': 'Tokyo', '東京': 'Tokyo', '교토': 'Kyoto' };
 const engCat = s => CATMAP_EN[String(s || '').trim()] || String(s || '').trim();
 const engCity = s => { s = String(s || '').trim(); return CITYMAP_EN[s] || s; };
