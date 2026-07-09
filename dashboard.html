@@ -323,7 +323,7 @@ textarea.inp{resize:vertical;min-height:80px;line-height:1.6;}
   <span class="brand">Beautia<small>DESIGNER</small></span>
   <span class="who" id="who"></span>
   <select class="langsel" id="langSel" onchange="setLang(this.value)" aria-label="Language">
-    <option value="ko">한국어</option><option value="en">EN</option><option value="ja">日本語</option><option value="th">ไทย</option>
+    <option value="ko">한국어</option><option value="en">EN</option><option value="ja">日本語</option><option value="zh">中文</option><option value="th">ไทย</option>
   </select>
   <button class="logout hide" id="logoutBtn" onclick="logout()" data-t="logout">로그아웃</button>
 </div></header>
@@ -596,9 +596,9 @@ const catKo={Hair:'헤어',Makeup:'메이크업',Nail:'네일',Lash:'속눈썹',
 
 // ===== 다국어 (한/영/일/태) =====
 let LANG=(function(){
-  try{var s=localStorage.getItem('beautia_lang');if(['ko','en','ja','th'].indexOf(s)>=0)return s;}catch(e){}
+  try{var s=localStorage.getItem('beautia_lang');if(['ko','en','ja','th','zh'].indexOf(s)>=0)return s;}catch(e){}
   var nl=(navigator.language||navigator.userLanguage||'ko').toLowerCase();
-  return nl.indexOf('ko')===0?'ko':nl.indexOf('ja')===0?'ja':nl.indexOf('th')===0?'th':nl.indexOf('en')===0?'en':'en';
+  return nl.indexOf('ko')===0?'ko':nl.indexOf('ja')===0?'ja':nl.indexOf('th')===0?'th':nl.indexOf('zh')===0?'zh':nl.indexOf('en')===0?'en':'en';
 })();
 if(['ko','en','ja','th'].indexOf(LANG)<0)LANG='ko';
 const T={
@@ -629,13 +629,32 @@ Object.assign(T.ja,{tagSuggestL:'おすすめ・タップで追加',pickOrType:'
 Object.assign(T.th,{tagSuggestL:'แนะนำ · แตะเพื่อเพิ่ม',pickOrType:'เลือกจากรายการหรือพิมพ์เอง',advMore:'ดูอินไซต์เพิ่มเติม',advLess:'ย่อ'});
 Object.assign(T.ko,{revTrend:'월별 매출 추이',posterBtn:'홍보 포스터',reviewReqBtn:'리뷰 요청 링크',reviewReqMsg:'시술 후기를 남겨주세요 😊 아래 링크에서 남길 수 있어요:',reviewReqCopied:'리뷰 요청 메시지 복사됨 ✨',posterCta:'지금 바로 예약하세요 ✨',posterScan:'QR을 스캔하거나 아래 링크로 접속',posterPrintHint:'인쇄 화면에서 "PDF로 저장" 또는 인쇄를 선택하세요 (Ctrl+P · 모바일은 공유▸인쇄).'});
 Object.assign(T.en,{revTrend:'Monthly revenue',posterBtn:'Promo poster',reviewReqBtn:'Ask for reviews',reviewReqMsg:'Please leave a review of your visit 😊 You can do it here:',reviewReqCopied:'Review request copied ✨',posterCta:'Book me now ✨',posterScan:'Scan the QR or visit the link below',posterPrintHint:'Choose “Save as PDF” or Print in the dialog (Ctrl+P · mobile: Share▸Print).'});
+/* ===== 简体中文 — 다국적 디자이너 지원. 영어(T.en) 클론으로 전 키 보장 후 중국어 덮어씀(미번역=영어 폴백, t()의 한국어 폴백 회피) ===== */
+T.zh=Object.assign({},T.en);
+T.zh.mon=['1月','2月','3月','4月','5月','6月','7月','8月','9月','10月','11月','12月'];
+T.zh.wd=['日','一','二','三','四','五','六'];
+Object.assign(T.zh,{
+ home:'主页',profile:'资料',portfolio:'作品',bookings:'预约',reviews:'评价',logout:'退出',
+ loginTitle:'设计师登录',loginDesc:'用注册邮箱接收验证码登录。第一次？请先在 App 中注册成为设计师。',emailL:'邮箱',code6L:'6 位验证码',sendCode:'获取验证码',loginBtn:'登录',resendCode:'重新发送',sendingCode:'发送验证码中…',enterCodeMsg:'请输入我们发送到邮箱的 6 位验证码。',verifying:'验证中…',codeWrong:'验证码错误',checkEmail:'请检查你的邮箱',enterCodeT:'请输入验证码',sendFailPre:'发送失败：',sendFailPost:' — 请确认你已在 App 中注册为设计师。',noProfile:'未找到资料，请先在 App 中注册。',greetHi:'你好，',greetSuffix:' 👋',viewPub:'查看公开资料',copyLink:'复制分享链接',copied:'分享链接已复制 ✨',qrHint:'把二维码贴在店里，顾客扫码即可立即预约。',upcoming:'即将到来的预约',upPendCnt:'· 待处理 {n} 个',revTotal:'总营收',revMonth:'本月营收',sfDone:'已完成',sfMonthBk:'本月预约',sfPend:'待处理',statPortfolio:'作品',statFollowers:'关注者',statBk:'总预约',statReviews:'评价',statRating:'评分',completeness:'资料完成度',pctDone:'完成 {pct}%（{done}/{total}）',fillTip:'填写{label}',profileComplete:'你的资料已完成！',followers:'关注者',loadingFollowers:'加载中…',flwrN:'· {n} 人',noFollowers:'还没有关注者。分享你的资料来吸引关注 ✨',followErr:'请运行 db_enable_follows.sql 以启用关注功能',followLoadErr:'无法加载关注者',
+ c_photo:'头像',c_name:'名字',c_shop:'店铺名称',c_region:'地区',c_spec:'专长',c_bio:'简介',c_pf3:'3 张以上作品',c_tags:'标签',c_svc:'服务·价格',c_contact:'联系链接',pfPhoto:'头像',pfPhotoHint:'你的 Logo 或照片，以圆形显示。',changePhoto:'更换照片',trimLogo:'自动裁去 Logo 白边',basicInfo:'基本信息',workTypeL:'工作形式',wtShop:'在沙龙',wtFree:'自由职业',wtShopHint:'你隶属于某沙龙或店铺。',wtFreeHint:'独立工作 — 店名和地址可选。',shopLFree:'品牌 · 使用名（可选）',addrLFree:'服务地区 · 可上门（可选）',nameL:'名字 / 使用名',namePh:'例：Soa',shopL:'店铺 · 沙龙名称',shopPh:'例：Challenge Hair',regionL:'地区（城市）',regionPh:'例：金浦',addrL:'地址 · 详情',addrPh:'例：金浦市九来洞 Asta Plaza 301',specL:'专长',tagsL:'标签（回车添加 · 最多 8 个）',tagsPh:'例：离子烫, 层次剪',careerL:'经验',careerPh:'例：6 年',bioL:'简介',bioPh:'介绍你的风格、强项等',contactLinks:'联系 · 链接',instaL:'Instagram 账号（不含 @）',instaPh:'例：challengehair1',naverL:'Naver Place 链接',blogL:'博客链接',bookingL:'外部预约链接',bookingSuffix:'· Naver 预约、LINE、HotPepper 等',bookingPh:'https://booking.naver.com/… 或 LINE·HotPepper 链接',bookingHint:'填写后，会在你的公开资料显示“预约”按钮（自动识别链接类型显示标签和颜色）。',svcTitle:'服务 · 价格',svcHint:'显示在你的资料上，顾客预约时可参考。',svcNamePh:'服务名（例：剪 + 烫）',svcPricePh:'价格（例：¥800）',svcDurPh:'时长（例：2 小时）',addSvc:'添加服务',saveProfile:'保存资料',noTags:'还没有标签',noSvc:'还没有添加服务',enterSvcName:'请输入服务名',saveOk:'已保存 ✓',saveFailPre:'保存失败：',errPre:'错误：',
+ pfTitle:'作品照片',pfHint:'上传你的代表作。会显示在展示区、资料和 ID 卡上。',addPhoto:'添加照片',baTitle:'前 / 后 对比滑块',baHint:'从作品中选 2 张照片，用于详情页的前后对比滑块。',baBeforeLbl:'“前”照片',baAfterLbl:'“后”照片',savePortfolio:'保存作品',noPhotos:'还没有照片',baNeedPhotos:'请先上传作品照片',uploading:'上传中…',photoUploaded:'照片已上传，点保存生效。',uploadFailPre:'上传失败：',uploadingN:'上传中 {n} 张…',someFailPre:'部分失败：',photosUploaded:'已上传，点保存作品生效。',onlyImages:'仅支持图片文件（jpg·png·webp·gif）',savePfOk:'作品已保存 ✓',schedTitle:'排班管理',schedHint:'顾客只能在你设定的<b>营业时间、休息和休息日内预约。</b>',breakTitle:'休息时间',breakSuffix:'· 每天重复',addBreak:'添加休息',holTitle:'临时休息日',holSuffix:'· 指定日期',addBtn:'添加',saveSched:'保存排班',calHint:'顾客预约后会显示在日期上。点日期查看当天预约。',addBk:'手动添加预约',addBkSuffix:'· Naver、电话、到店等',custName:'顾客姓名',custNamePh:'例：小明',dateL:'日期',timeL:'时间',svcL:'服务',svcPh:'例：剪+烫',memoL:'备注（可选）',memoPh:'例：Naver 预约 / 联系方式',addToCal:'添加到日历',receivedBk:'收到的预约',receivedHint:'请接受或标记完成。',open:'营业',closed:'休息',noHol:'暂无',selDateBk:'{date} 的预约',receivedN:'收到的预约（{n}）',noBkDay:'这天没有预约',noBkYet:'还没有收到预约',st_pending:'待处理',st_accepted:'已接受',st_done:'已完成',st_declined:'已拒绝',actAccept:'接受',actDecline:'拒绝',actComplete:'标记完成',pickDate:'请选择日期',addBkOk:'已添加到日历 ✓',addBkFailPre:'添加失败：',addBkRls:'⚠️ 未添加 — 需要 RLS 权限。请在 Supabase 运行 db_setup_all.sql',processOk:'已处理 ✓',processFailPre:'失败：',calLoadErr:'无法加载预约（可能需要 db_setup_all.sql）',bkListLoadErr:'无法加载预约',revNote:'已接受/完成预约的菜单价格总和',revNoteExcl:' · 已排除 {n} 个无价格预约',revNoteEmpty:'预约累积后营收会自动统计',saveSchedOk:'排班已保存 ✓',saveRls:'⚠️ 未保存 — 需要 RLS 权限。请在 Supabase 运行 db_setup_all.sql',bkDefault:'预约',upPending:'待处理',upConfirmed:'已确认',reviewsTitle:'收到的评价',reviewsHint:'顾客留下的评价。',revLoadErr:'无法加载评价',noReviews:'还没有收到评价',trView:'查看翻译',trOrig:'查看原文',trSame:'与原文相同',trFail:'翻译失败，请稍后重试',member:'会员',
+ cat_Hair:'发型',cat_Makeup:'彩妆',cat_Nail:'美甲',cat_Lash:'睫毛',cat_Skin:'护肤',cat_Bridal:'新娘',cat_Tattoo:'纹身',calY:'年',calM:'月',
+ msgTab:'消息',clients:'客户',insightTitle:'业绩洞察',wizCta:'3 分钟完成 · 设置向导',wizLater:'稍后',svcCatalogL:'常用服务 · 点击添加',tagSuggestL:'推荐标签 · 点击添加',revTrend:'月度营收',posterBtn:'宣传海报',reviewReqBtn:'邀请评价',reviewReqMsg:'欢迎为本次到店留下评价 😊 可在这里填写：',reviewReqCopied:'评价邀请已复制 ✨',posterCta:'现在就预约我 ✨',posterScan:'扫描二维码或访问下方链接',posterPrintHint:'在对话框中选择“另存为 PDF”或打印（Ctrl+P · 手机：分享▸打印）。'
+});
+Object.assign(T.zh,{
+ msgHint:'回复顾客发来的消息。',noChats:'还没有消息',typeMsg:'输入消息…',msgLoadErr:'无法加载消息',youPrefix:'你：',msgSendFail:'发送失败',
+ inViewsWeek:'本周浏览',inSaves:'收藏',inConv:'浏览→预约',inTrend:'浏览 · 近 7 天',inNeedSql:'设置访问统计后即可看到浏览量。',clTitle:'客户',clHint:'根据你的预约自动汇总的客户。管理常客、消费和备注。',clSearch:'搜索客户姓名…',clNone:'还没有客户。有预约进来后会自动出现。',clVisits:'{n} 次到店',clLast:'最近 {d}',clSpent:'累计 {v}',clRegular:'常客',clMemo:'私人备注（仅你可见）',clMemoPh:'例：喜欢软烫 / 过敏 · 联系方式',clMemoSaved:'备注已保存 ✓',clExport:'客户 CSV',bkExport:'预约 CSV',csvOk:'CSV 已导出 ✓',clTotal:'{n} 位客户',clRegularsN:'{n} 位常客',
+ wizNext:'下一步',wizBack:'上一步',wizDone:'完成并发布',wizStepOf:'{a} / {b}',wizPhotoT:'头像',wizPhotoD:'上传你的照片或 Logo，以圆形显示。',wizPhotoBtn:'上传照片',wizBasicT:'填写基本信息',wizNameL:'名字 / 使用名',wizShopL:'店铺 · 沙龙名称（可选）',wizRegionL:'地区（点击选择）',wizOther:'手动输入',wizSpecT:'你做什么？',wizSpecD:'选择所有适用项。',wizCareerL:'经验',wizSvcT:'招牌服务',wizSvcD:'点击添加你提供的服务，价格可稍后填写。',wizSvcAllAdded:'已添加全部推荐 👍',wizPfT:'展示你的最佳作品',wizPfD:'照片越多 = 客户越多。可一次上传多张。',wizPfBtn:'上传照片',wizDoneT:'马上完成！',wizDoneD:'点“完成”发布你的资料，顾客即可预约。',wizSaved:'你的资料已就绪！🎉',wizNeedName:'请输入你的名字',
+ svcHint2:'在下方选择即可为顾客自动翻译。自定义项由 AI 翻译。',svcCustomHint:'仅输入列表中没有的服务 · 分别设置价格和时间',saveBtn:'保存',savedOk:'已保存 ✓',curL:'货币',curHint:'顾客会看到换算成他们本国货币的价格（≈）',svcPriceNum:'价格（数字）',reviewReplyLbl:'你的回复',reviewReplyAdd:'回复',reviewReplyEdit:'编辑回复',reviewReplyPrompt:'为这条评价写回复（顾客可见）',st_noshow:'爽约',actNoshow:'爽约',bkMsg:'消息',quickSetup:'一键快速开始',quickSetupHint:'点你的专长，即可填好领域、菜单、标签和营业时间。只需设置价格！',presetDone:'{cat} 菜单和标签已添加 ✓ · 只需设置价格',
+ pickOrType:'从列表选择或手动输入',advMore:'更多洞察',advLess:'收起'
+});
 Object.assign(T.ja,{revTrend:'月別売上',posterBtn:'販促ポスター',reviewReqBtn:'レビュー依頼',reviewReqMsg:'施術のレビューを残していただけますか 😊 こちらからどうぞ：',reviewReqCopied:'レビュー依頼をコピーしました ✨',posterCta:'今すぐ予約 ✨',posterScan:'QRをスキャン、または下のリンクへ',posterPrintHint:'印刷画面で「PDFで保存」または印刷を選んでください（Ctrl+P）。'});
 Object.assign(T.th,{revTrend:'รายได้รายเดือน',posterBtn:'โปสเตอร์',reviewReqBtn:'ขอรีวิว',reviewReqMsg:'ฝากรีวิวการใช้บริการด้วยนะคะ 😊 กดที่ลิงก์นี้ได้เลย:',reviewReqCopied:'คัดลอกข้อความขอรีวิวแล้ว ✨',posterCta:'จองเลยตอนนี้ ✨',posterScan:'สแกน QR หรือเข้าลิงก์ด้านล่าง',posterPrintHint:'เลือก “บันทึกเป็น PDF” หรือพิมพ์ในหน้าต่าง (Ctrl+P).'});
 function t(k){var o=T[LANG]||T.ko;return (k in o)?o[k]:(T.ko[k]!=null?T.ko[k]:k);}
 function tf(k,map){var s=t(k);for(var x in (map||{}))s=String(s).split('{'+x+'}').join(map[x]);return s;}
 function catLabel(en){var k='cat_'+en,o=T[LANG]||T.ko;if(k in o)return o[k];if(k in T.ko)return T.ko[k];return en;}
 function calTitle(y,m){if(LANG==='ko')return y+'년 '+m+'월';if(LANG==='ja')return y+'年 '+m+'月';return t('mon')[m-1]+' '+y;}
-function inputLocale(){return {ko:'ko',en:'en-US',ja:'ja',th:'th'}[LANG]||'en-US';}
+function inputLocale(){return {ko:'ko',en:'en-US',ja:'ja',th:'th',zh:'zh-CN'}[LANG]||'en-US';}
 function applyI18n(){
   document.documentElement.lang=LANG;
   document.querySelectorAll('[data-t]').forEach(function(e){e.textContent=t(e.dataset.t);});
@@ -646,7 +665,7 @@ function applyI18n(){
   var ls=$('langSel');if(ls)ls.value=LANG;
 }
 function rerenderI18n(){try{if(ME){renderSpec();renderTags();renderServices();renderSched();renderPf();renderHome();renderStats();renderBkCalendar();renderBkList();renderReviews();renderClients();renderProfileOptions();renderPresetBtns();if(document.getElementById('wtype'))setWorkType(state.freelancer);}}catch(e){}}
-function setLang(l){if(['ko','en','ja','th'].indexOf(l)<0)return;LANG=l;try{localStorage.setItem('beautia_lang',l);}catch(e){}applyI18n();rerenderI18n();}
+function setLang(l){if(['ko','en','ja','th','zh'].indexOf(l)<0)return;LANG=l;try{localStorage.setItem('beautia_lang',l);}catch(e){}applyI18n();rerenderI18n();}
 
 function toast(m){const t=$('toast');t.textContent=m;t.classList.add('on');clearTimeout(t._t);t._t=setTimeout(()=>t.classList.remove('on'),2600);}
 function esc(s){return String(s==null?'':s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));}
@@ -808,13 +827,13 @@ var SVCMAP={
 };
 var SVC_BY_CAT={Hair:['cut','perm','magic','rootcolor','fullcolor','clinic','designperm','volmagic','blowdry','updo','menscut'],Makeup:['daily','party','wedmk','brows','photomk','mklesson'],Nail:['gel','basicnail','handcare','gelpedi','pedi','nailart','nailext','nailrm'],Lash:['lashext','volume','lashlift','refill','lashrm','browlam'],Skin:['basicfacial','acne','hydra','backcare','blackhead','led'],Bridal:['bwedmk','bwedhair','rehearsal','mother','photohm'],Tattoo:['lettering','minitat','fineline','aesttat','coverup','tretouch','tdesign']};
 var DUR_PRESETS=[30,60,90,120,150,180];
-function fmtDur(m,lang){lang=lang||LANG;var h=Math.floor(m/60),mm=m%60,U={ko:['시간','분'],en:['hr','min'],ja:['時間','分'],th:['ชม.','นาที']}[lang]||['hr','min'];var sp=(lang==='ko'||lang==='ja')?'':' ';var out=[];if(h)out.push(h+sp+U[0]);if(mm)out.push(mm+sp+U[1]);return out.join(' ');}
+function fmtDur(m,lang){lang=lang||LANG;var h=Math.floor(m/60),mm=m%60,U={ko:['시간','분'],en:['hr','min'],ja:['時間','分'],th:['ชม.','นาที'],zh:['小时','分']}[lang]||['hr','min'];var sp=(lang==='ko'||lang==='ja'||lang==='zh')?'':' ';var out=[];if(h)out.push(h+sp+U[0]);if(mm)out.push(mm+sp+U[1]);return out.join(' ');}
 var CURSYM={KRW:'₩',JPY:'¥',THB:'฿',USD:'$',EUR:'€',CNY:'¥',TWD:'NT$',SGD:'S$',VND:'₫',GBP:'£',AUD:'A$'};
-var CUR_OPTS=[['KRW','₩ 원'],['JPY','¥ 엔'],['THB','฿ 바트'],['USD','$ 달러'],['EUR','€ 유로']];
-function langCur(l){return {ko:'KRW',ja:'JPY',th:'THB',en:'USD'}[l||LANG]||'USD';}
+var CUR_OPTS=[['KRW','₩ 원'],['JPY','¥ 엔'],['THB','฿ 바트'],['CNY','¥ 元 (CNY)'],['USD','$ 달러'],['EUR','€ 유로']];
+function langCur(l){return {ko:'KRW',ja:'JPY',th:'THB',en:'USD',zh:'CNY'}[l||LANG]||'USD';}
 function curSym(c){return CURSYM[c]||((c||'')+' ');}
 function setCur(c){state.cur=c;renderServices();markDirty();}
-function svcLabel(s,lang){lang=lang||LANG;if(!s)return '';if(s.key&&SVCMAP[s.key]&&SVCMAP[s.key][lang])return SVCMAP[s.key][lang];if(s.tr&&s.tr[lang])return s.tr[lang];return s.n||s.name||'';}
+function svcLabel(s,lang){lang=lang||LANG;if(!s)return '';if(s.key&&SVCMAP[s.key]){var m=SVCMAP[s.key];if(m[lang])return m[lang];if(m.en)return m.en;}if(s.tr&&(s.tr[lang]||s.tr.en))return s.tr[lang]||s.tr.en;return s.n||s.name||'';}
 function svcDur(s,lang){lang=lang||LANG;if(s&&s.durMin)return fmtDur(s.durMin,lang);var d=(s&&(s.du||s.dur))||'';return d;}
 function svcNormalize(arr){return (arr||[]).map(function(s){if(!s||typeof s!=='object')return {n:String(s||''),p:'',du:''};return {n:s.n!=null?s.n:(s.name||''),p:s.p!=null?s.p:(s.price||''),du:s.du!=null?s.du:(s.dur||''),durMin:s.durMin||0,key:s.key||'',tr:s.tr||null};});}
 async function svcTranslate(item){try{if(!item.n)return;var tr=item.tr||{};tr[LANG]=item.n;var tg=['ko','en','ja','th'].filter(function(l){return l!==LANG&&!tr[l];});for(var i=0;i<tg.length;i++){var r=await translateText(item.n,tg[i]);if(r)tr[tg[i]]=r;}item.tr=tr;renderServices();if(WZ&&WZ.on)renderWiz();}catch(e){}}
