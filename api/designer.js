@@ -111,6 +111,10 @@ export default async function handler(req, res) {
         name: `${name} ${specText || t.designer} ${t.by} ${i + 1}${city ? ' · ' + city : ''}`,
         caption: `${name} — ${specText || t.designer}${city ? ' · ' + city : ''} | Beautia`,
         creator: { '@type': 'Person', name },
+        creditText: `${name} · Beautia`,
+        copyrightNotice: `© ${name} · Beautia`,
+        license: `${SITE}/terms.html`,
+        acquireLicensePage: canon,
       })),
     });
   }

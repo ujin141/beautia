@@ -529,6 +529,7 @@ body.mlock{position:fixed;left:0;right:0;width:100%;overflow:hidden;}
 .dci{flex:1;min-width:0;}
 .dcn{font-weight:800;font-size:14.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;display:flex;align-items:center;gap:4px;}
 .dcm{font-size:12px;color:var(--sub);margin-top:2px;font-weight:600;} .dcm .star{color:#EBB662;}
+.newrate{display:inline-flex;align-items:center;font-size:.86em;font-weight:800;color:#9a7b3e;background:#f7efdb;padding:1px 8px;border-radius:999px;letter-spacing:.02em;vertical-align:middle;}
 .dcarr{color:var(--line);font-size:18px;flex:0 0 auto;}
 .dcchips{display:flex;flex-wrap:wrap;gap:5px;padding:6px 13px 10px;}
 .dcchips span{font-size:11px;font-weight:700;color:var(--plum);background:var(--rosebg);padding:3px 9px;border-radius:999px;}
@@ -1059,7 +1060,12 @@ function allD(){const m=meDesigner();var others=DUSERS.filter(function(d){return
 function dById(id){return allD().find(d=>d.id===id);}
 function openByUid(uid){if(!uid)return false;var d=allD().find(function(x){return x.uid===uid;});if(d){openD(d.id);return true;}return false;}
 let TILES=[];
-function buildTiles(){TILES=[];var ds=allD().slice().sort(function(a,b){return ((b.featured?1:0)-(a.featured?1:0))||((parseFloat(b.rating)||0)-(parseFloat(a.rating)||0));});var mx=0;ds.forEach(function(d){if(d.works&&d.works.length>mx)mx=d.works.length;});for(var r=0;r<mx;r++){ds.forEach(function(d){var w=d.works&&d.works[r];if(w===undefined||w===null)return;TILES.push({wid:d.id+'_'+r,did:d.id,uid:d.uid||'',img:workImg(w),poster:workPoster(w),vid:isVid(w),text:workText(w),cat:d.cat,cats:(d.cats&&d.cats.length?d.cats:[d.cat]),city:d.city,area:d.area,name:d.name,flag:d.flag,rating:d.rating,newAt:d.newAt||0,featured:d.featured,insta:d.insta});});}}
+var TILEW=(typeof window!=='undefined'&&window.innerWidth<=600)?480:640;  // 반응형 타일 이미지(모바일 데이터 절약)
+function buildTiles(){TILES=[];var ds=allD().slice().sort(function(a,b){return ((b.featured?1:0)-(a.featured?1:0))||((parseFloat(b.rating)||0)-(parseFloat(a.rating)||0));});var mx=0;ds.forEach(function(d){if(d.works&&d.works.length>mx)mx=d.works.length;});for(var r=0;r<mx;r++){ds.forEach(function(d){var w=d.works&&d.works[r];if(w===undefined||w===null)return;TILES.push({wid:d.id+'_'+r,did:d.id,uid:d.uid||'',img:workImg(w),poster:workPoster(w),vid:isVid(w),text:workText(w),cat:d.cat,cats:(d.cats&&d.cats.length?d.cats:[d.cat]),city:d.city,area:d.area,name:d.name,flag:d.flag,rating:d.rating,rev:d.rev||0,ver:d.ver,newAt:d.newAt||0,featured:d.featured,insta:d.insta});});}}
+// 리뷰 0이면 가짜 5.0 대신 "신규" 배지 — 실제 리뷰가 쌓이면 진짜 평점 표시(신뢰도)
+function revCount(x){return parseInt((x&&x.rev)||0,10)||0;}
+function newRateHtml(){var L={ko:'신규',en:'New',ja:'新規',th:'ใหม่',zh:'新'};return '<span class="newrate">'+(L[LANG]||'New')+'</span>';}
+function rateInline(x,o){o=o||{};if(revCount(x)<1)return newRateHtml();return '<span class="star"'+(o.gold?' style="color:#C9A063"':'')+'>★</span> '+esc(x.rating||'5')+(o.count?' ('+revCount(x)+')':'');}
 const HYB={
  ko:{popular:'오늘의 인기 스타일',popularSub:'매일 새로 큐레이션되는 포트폴리오',book:'바로 예약',prof:'프로필',viewProfile:'프로필 보기',verified:'인증 디자이너',reviews:'후기',fast:'빠른 예약 가능'},
  en:{popular:'Trending styles today',popularSub:'Freshly curated portfolios, every day',book:'Book',prof:'Profile',viewProfile:'View profile',verified:'Verified',reviews:'reviews',fast:'Instant booking'},
@@ -1096,7 +1102,7 @@ function renderPopular(){var el=$('popwrap');if(!el)return;
      '<div class="pcimg'+(w0v&&!w0ps?' thv':'')+'"'+(w0bg?' style="background-image:url(\''+im(w0bg,500)+'\')"':'')+' onclick="event.stopPropagation();openWork(\''+d.id+'_'+off+'\')">'+(w0v?'<span class="thvb"><i class="ti ti-player-play-filled"></i></span>':'')+(d.featured?'<span class="pcbadge"><i class="ti ti-flame-filled"></i> HOT</span>':'')+'<span class="pccount"><i class="ti ti-photo"></i> '+tot+'</span></div>'+
      '<div class="pthumbs">'+thumbs+'</div>'+
      '<div class="pcb"><div class="pcn">'+esc(d.flag)+' '+esc(nm)+'</div>'+
-      '<div class="pcm"><span class="star">★ '+esc(d.rating||'5')+'</span> · '+esc(cl(d.cat))+(d.city?' · '+esc(d.city):'')+'</div>'+
+      '<div class="pcm">'+rateInline(d)+' · '+esc(cl(d.cat))+(d.city?' · '+esc(d.city):'')+'</div>'+
       (uid?'<button class="pcbook" onclick="event.stopPropagation();openBook(\''+d.id+'\')"><i class="ti ti-calendar-heart"></i> '+esc(L.book)+'</button>':'<button class="pcbook ghost" onclick="event.stopPropagation();openD(\''+d.id+'\')">'+esc(L.prof)+'</button>')+
      '</div></div>';
   }).join('')+'</div>';}
@@ -1238,9 +1244,9 @@ function tileHtml(t){return `<div class="tile" onclick="openWork('${t.wid}')">
  <button class="heart ${isSaved(t.wid)?'on':''}" onclick="toggleSave('${t.wid}',event)"><i class="ti ti-heart${isSaved(t.wid)?'-filled':''}"></i></button>
  ${t.text?'<span class="tpost"><i class="ti ti-align-left"></i></span>':''}
  ${t.featured?`<span class="tfeat"><i class="ti ti-external-link"></i> @${esc(t.insta)}</span>`:''}
- ${t.vid?`${t.poster?`<img src="${im(t.poster,600)}" loading="lazy" alt="">`:`<div class="tvidbox"></div>`}<span class="tvid"><i class="ti ti-player-play-filled"></i></span>`:`<img src="${im(t.img,600)}" loading="lazy" alt="">`}
+ ${t.vid?`${t.poster?`<img src="${im(t.poster,TILEW)}" loading="lazy" decoding="async" alt="">`:`<div class="tvidbox"></div>`}<span class="tvid"><i class="ti ti-player-play-filled"></i></span>`:`<img src="${im(t.img,TILEW)}" loading="lazy" decoding="async" alt="">`}
  <div class="ov"></div>
- <div class="meta"><div class="nm">${esc(t.flag)} ${esc(t.name)}</div><div class="ct"><span class="star" style="color:#C9A063">★ ${esc(t.rating)}</span> · ${esc(cl(t.cat))} · ${t.area?esc(t.area)+', ':''}${esc(t.city||'')}</div></div>
+ <div class="meta"><div class="nm">${esc(t.flag)} ${esc(t.name)}</div><div class="ct">${rateInline(t,{gold:true})} · ${esc(cl(t.cat))} · ${t.area?esc(t.area)+', ':''}${esc(t.city||'')}</div></div>
 </div>`;}
 
 const CITY_COORDS={Tokyo:[35.68,139.69],Osaka:[34.69,135.5],Fukuoka:[33.59,130.4],Seoul:[37.57,126.98],'New York':[40.71,-74.0],Paris:[48.86,2.35],London:[51.51,-0.13]};
@@ -1253,7 +1259,7 @@ function renderStories(){var el=document.getElementById('stories');if(!el)return
  el.innerHTML=allD().map(function(d){var nm=(LANG==='ko'&&d.ko)?d.ko:d.name;var img=safeUrl(d.avatar||'')||(d.works&&d.works.length?im(d.works[0],200):'');
   return `<div class="sty" onclick="openD('${d.id}')"><div class="ring"><div style="${img?`background-image:url('${img}')`:`background:${gradFor(nm)}`}">${img?'':esc((nm||'?')[0])}</div></div><div class="sn">${esc(nm)}</div></div>`;}).join('');}
 let fbTimer=null,fbIdx=0;
-function bannerSlides(){var out=[];var ds=allD();if(FOLLOWS.length)ds=ds.slice().sort(function(a,b){return (isFollowing(b.uid)?1:0)-(isFollowing(a.uid)?1:0);});ds.forEach(function(d,di){var w=firstImg(d.works);if(!w)return;out.push({did:d.id,name:(LANG==='ko'&&d.ko)?d.ko:d.name,cat:cl(d.cat),city:d.city||'',img:workImg(w),avatar:d.avatar||'',flag:d.flag||'',ver:d.ver,rating:d.rating||'5',tag:(isNewWork(d)?'new':((d.featured||di<3)?'pick':'hot'))});});return out;}
+function bannerSlides(){var out=[];var ds=allD();if(FOLLOWS.length)ds=ds.slice().sort(function(a,b){return (isFollowing(b.uid)?1:0)-(isFollowing(a.uid)?1:0);});ds.forEach(function(d,di){var w=firstImg(d.works);if(!w)return;out.push({did:d.id,name:(LANG==='ko'&&d.ko)?d.ko:d.name,cat:cl(d.cat),city:d.city||'',img:workImg(w),avatar:d.avatar||'',flag:d.flag||'',ver:d.ver,rating:d.rating||'5',tag:(isNewWork(d)?'new':((d.featured||di<3)?'pick':'hot'))});});return out.slice(0,8);}
 function fbTagHtml(x){var m={pick:['','ti-award',T[LANG].fbTagPick],hot:['hot','ti-flame',T[LANG].fbTagHot],new:['new','ti-sparkles',T[LANG].fbTagNew]};var t=m[x.tag]||m.hot;return '<div class="fbtag '+t[0]+'"><i class="ti '+t[1]+'"></i> '+esc(t[2])+'</div>';}
 function renderBanner(){var el=document.getElementById('fbanner');if(!el)return;
  if(VIEW!=='explore'){el.classList.remove('on');el.innerHTML='';if(fbTimer){clearInterval(fbTimer);fbTimer=null;}return;}
@@ -1398,7 +1404,7 @@ function renderDesigners(q,city){var g=$('grid');g.classList.add('dgview');
     <div class="dcbody" onclick="openD('${d.id}')">
       ${avHtml(d,'dcav')}
       <div class="dci"><div class="dcn">${esc(d.flag)} ${esc(nm)} ${d.ver?`<i class="ti ti-rosette-discount-check-filled" style="color:var(--gold);font-size:15px"></i>`:''}</div>
-       <div class="dcm"><span class="star">★</span> ${esc(d.rating||'5')} · ${esc(cl(d.cat))}${d.city?' · '+esc(d.city):''}</div></div>
+       <div class="dcm">${rateInline(d)} · ${esc(cl(d.cat))}${d.city?' · '+esc(d.city):''}</div></div>
     </div>
     ${badges?`<div class="dctrust">${badges}</div>`:''}
     ${(chipsOf(d).length)?`<div class="dcchips">${chipsOf(d).slice(0,3).map(function(s){return `<span>${esc(s)}</span>`;}).join('')}</div>`:''}
@@ -1448,7 +1454,7 @@ function openD(did,keep){const d=dById(did);if(!d)return;curD=did;const gi=D.ind
    <div class="dhcap">
      ${avHtml(d,'dav-c')}
      <div class="dn">${esc(d.flag)} ${esc(name)} ${d.ver?`<span class="vbadge"><i class="ti ti-rosette-discount-check-filled"></i>${T[LANG].verified}</span>`:''}${d.freelancer?`<span class="fbadge"><i class="ti ti-user-star"></i>${esc(FRLZ[LANG]||FRLZ.ko)}</span>`:''}</div>${d.shopName?`<div class="dshop"><i class="ti ti-building-store"></i> ${esc(d.shopName)}</div>`:''}
-     <div class="dmeta"><span id="dstars"><span class="star">★</span> ${esc(d.rating)} (${esc(d.rev)})</span>${d.cat?`<span>${esc(cl(d.cat))}</span>`:''}<span><i class="ti ti-map-pin" style="font-size:16px"></i> ${esc(d.city||d.area)}</span>${d.years?`<span><i class="ti ti-briefcase" style="font-size:16px"></i> ${esc(d.years)}${LANG==='en'?' ':''}${T[LANG].years}</span>`:''}</div>
+     <div class="dmeta"><span id="dstars">${rateInline(d,{count:true})}</span>${d.cat?`<span>${esc(cl(d.cat))}</span>`:''}<span><i class="ti ti-map-pin" style="font-size:16px"></i> ${esc(d.city||d.area)}</span>${d.years?`<span><i class="ti ti-briefcase" style="font-size:16px"></i> ${esc(d.years)}${LANG==='en'?' ':''}${T[LANG].years}</span>`:''}</div>
      ${(d.uid&&!d.isMe)?followBtnHtml(d.uid,'dhfollow'):''}
    </div>
   </div>
@@ -1501,7 +1507,7 @@ function openIdCard(did){const d=dById(did||curD);if(!d)return;idDid=d.id;
  card.innerHTML=header+`
   <div class="ic-cuts" style="grid-template-columns:repeat(${cols},1fr)">${cuts.map(w=>`<div class="ic-cut"><img src="${im(w,900)}" crossorigin="anonymous" alt=""></div>`).join('')}</div>
   <div class="ic-info"><div class="ic-namerow"><span class="ic-avring" style="background:${accent}">${d.avatar?`<img class="ic-av" src="${im(d.avatar,600)}" crossorigin="anonymous" alt="">`:avHtml(d,'ic-av')}</span><div><div class="ic-name" style="color:${accent}">${esc(d.flag)} ${esc(name)} ${d.ver?`<i class="ti ti-rosette-discount-check-filled" style="color:${accent};font-size:20px"></i>`:''}</div>
-   <div class="ic-meta">${esc(cl(d.cat))}${(d.city||d.area)?' · '+esc(d.city||d.area):''} · ★ ${esc(d.rating)}</div></div></div>
+   <div class="ic-meta">${esc(cl(d.cat))}${(d.city||d.area)?' · '+esc(d.city||d.area):''}${revCount(d)?' · ★ '+esc(d.rating):''}</div></div></div>
    <div class="ic-tags">${chipsOf(d).slice(0,3).map(s=>`<span style="color:${accent}">#${esc(s)}</span>`).join('')}</div></div>
   <div class="ic-divider" style="background:var(--line)"></div>
   <div class="ic-foot"><div class="ic-qr" id="icqr"></div><div class="ic-scan"><div class="s1" style="color:${accent}">${esc(T[LANG].idScan)}</div><div class="s2">@${esc(igClean(d.insta)||'beautia.collection')}</div></div></div>`;
@@ -2378,7 +2384,7 @@ async function loadRevsFor(d){try{
  var doneCount=0;try{var st=await SB.rpc('designer_stats',{p_designer:d.uid});if(!st.error&&st.data&&st.data[0])doneCount=+st.data[0].done_count||0;}catch(e){}
  var trust=doneCount>0?`<div class="trustbadge"><i class="ti ti-circle-check-filled"></i> ${(T[LANG].doneCount||'{n} completed').replace('{n}',doneCount)}</div>`:'';
  var el=document.getElementById('revsec');
- if(!rows.length){if(el)el.innerHTML=trust;return;}
+ if(!rows.length){var ds0=document.getElementById('dstars');if(ds0)ds0.innerHTML=newRateHtml();if(el)el.innerHTML=trust;return;}
  await fetchProfiles(rows.map(function(r){return r.customer;}));
  var avg=(rows.reduce(function(a,r){return a+r.stars;},0)/rows.length).toFixed(1);
  var ds=document.getElementById('dstars');if(ds)ds.innerHTML='<span class="star">★</span> '+avg+' ('+rows.length+')';
