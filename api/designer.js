@@ -148,7 +148,7 @@ export default async function handler(req, res) {
 <meta property="og:url" content="${esc(canon)}"><meta property="og:image" content="${esc(heroImg)}">
 <meta property="og:image:alt" content="${esc(name + ' — ' + (specText || t.designer))}"><meta property="og:locale" content="${t.locale}">
 <meta name="twitter:card" content="summary_large_image"><meta name="twitter:title" content="${esc(title)}"><meta name="twitter:description" content="${esc(desc)}"><meta name="twitter:image" content="${esc(heroImg)}">
-<link rel="icon" type="image/png" href="/logo-mark.png"><meta name="theme-color" content="#ffffff">
+<link rel="icon" type="image/png" href="/favicon.png"><meta name="theme-color" content="#ffffff">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css">
 <script type="application/ld+json">${jsonld(ld)}</script>
 <style>

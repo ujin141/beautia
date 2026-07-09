@@ -167,7 +167,7 @@ export default async function handler(req, res) {
 <meta property="og:title" content="${esc(g.title)}"><meta property="og:description" content="${esc(g.desc)}">
 <meta property="og:url" content="${esc(canon)}"><meta property="og:image" content="${esc(g.cover)}">
 <meta name="twitter:card" content="summary_large_image"><meta name="twitter:title" content="${esc(g.title)}"><meta name="twitter:description" content="${esc(g.desc)}"><meta name="twitter:image" content="${esc(g.cover)}">
-<link rel="icon" href="/logo-mark.png" type="image/png"><meta name="theme-color" content="#6E4A50">
+<link rel="icon" href="/favicon.png" type="image/png"><meta name="theme-color" content="#6E4A50">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@1,9..144,500&display=swap">
 <script type="application/ld+json">${jsonld(ld)}</script>
