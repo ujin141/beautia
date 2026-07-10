@@ -1,7 +1,7 @@
 // Beautia PWA Service Worker
 // HTML = network-first(항상 최신 배포 반영), 정적 자산 = cache-first, 외부(수파베이스 등) = 미개입
-const VER = 'beautia-v21';
-const STATIC = ['/logo-mark.png', '/icon-192.png', '/icon-512.png', '/apple-touch-icon.png', '/manifest.webmanifest'];
+const VER = 'beautia-v22';
+const STATIC = ['/favicon.png', '/icon-192.png', '/icon-512.png', '/icon-maskable-192.png', '/icon-maskable-512.png', '/apple-touch-icon.png', '/manifest.webmanifest'];
 
 self.addEventListener('install', function (e) {
   e.waitUntil(caches.open(VER).then(function (c) { return c.addAll(STATIC); }).then(function () { return self.skipWaiting(); }));

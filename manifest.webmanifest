@@ -6,14 +6,21 @@
   "start_url": "/community",
   "scope": "/",
   "display": "standalone",
+  "display_override": ["standalone", "minimal-ui"],
   "orientation": "portrait",
-  "background_color": "#ffffff",
+  "background_color": "#2c1d22",
   "theme_color": "#ffffff",
   "lang": "ko",
-  "categories": ["beauty", "lifestyle"],
+  "categories": ["beauty", "lifestyle", "shopping"],
   "icons": [
     { "src": "/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
     { "src": "/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
-    { "src": "/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+    { "src": "/icon-maskable-192.png", "sizes": "192x192", "type": "image/png", "purpose": "maskable" },
+    { "src": "/icon-maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ],
+  "shortcuts": [
+    { "name": "둘러보기", "short_name": "둘러보기", "url": "/community?view=explore", "icons": [{ "src": "/icon-192.png", "sizes": "192x192" }] },
+    { "name": "저장한 작업", "short_name": "저장", "url": "/community?view=saved", "icons": [{ "src": "/icon-192.png", "sizes": "192x192" }] },
+    { "name": "디자이너 찾기", "short_name": "디자이너", "url": "/community?view=designers", "icons": [{ "src": "/icon-192.png", "sizes": "192x192" }] }
   ]
 }
