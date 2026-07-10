@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>개인정보처리방침 — Beautia</title>
-<meta name="description" content="Beautia 개인정보처리방침. 수집 항목·목적·보유기간·이용자 권리 안내.">
+<meta name="description" content="Beautia 개인정보처리방침 / Privacy Policy. 수집 항목·목적·보유기간·이용자 권리 안내.">
 <link rel="icon" type="image/png" href="/favicon.png">
 <link rel="canonical" href="https://beautia.io/privacy">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css">
@@ -13,9 +13,11 @@
 *{margin:0;padding:0;box-sizing:border-box;-webkit-font-smoothing:antialiased;}
 body{font-family:'Pretendard',system-ui,sans-serif;background:var(--cream);color:var(--ink);line-height:1.75;}
 .top{background:#fff;border-bottom:1px solid var(--line);}
-.top .in{max-width:760px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;padding:16px 24px;}
-.logo{font-family:Georgia,serif;font-style:italic;font-weight:700;font-size:23px;color:var(--plum);}
-.top a{font-size:13px;font-weight:700;color:var(--plum);text-decoration:none;}
+.top .in{max-width:760px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;padding:16px 24px;gap:12px;}
+.logo{font-family:Georgia,serif;font-style:italic;font-weight:700;font-size:23px;color:var(--plum);text-decoration:none;}
+.langtog{display:inline-flex;border:1px solid var(--line);border-radius:999px;overflow:hidden;background:#fff;}
+.langtog button{border:0;background:transparent;padding:6px 14px;font-family:inherit;font-size:13px;font-weight:700;color:var(--sub);cursor:pointer;}
+.langtog button.on{background:var(--plum);color:#fff;}
 .wrap{max-width:760px;margin:0 auto;padding:40px 24px 80px;}
 h1{font-size:28px;font-weight:800;letter-spacing:-.5px;}
 .upd{font-size:13px;color:var(--sub);margin-top:8px;}
@@ -29,60 +31,160 @@ th{background:var(--soft);font-weight:700;color:var(--ink);width:34%;}
 .foot{max-width:760px;margin:0 auto;padding:24px;border-top:1px solid var(--line);color:var(--sub);font-size:13px;display:flex;gap:16px;flex-wrap:wrap;}
 .foot a{color:var(--plum);text-decoration:none;font-weight:700;}
 .note{font-size:13px;color:var(--sub);background:var(--soft);border-radius:10px;padding:12px 14px;margin-top:14px;}
+a.inl{color:var(--plum);}
+.hide{display:none;}
 </style>
 </head>
 <body>
-<div class="top"><div class="in"><a class="logo" href="/community">Beautia</a><a href="/community">← 홈으로</a></div></div>
-<div class="wrap">
+<div class="top"><div class="in">
+  <a class="logo" href="/community">Beautia</a>
+  <div class="langtog"><button id="btnKo" class="on" onclick="setL('ko')">한국어</button><button id="btnEn" onclick="setL('en')">English</button></div>
+</div></div>
+
+<!-- ===================== 한국어 ===================== -->
+<div class="wrap" id="ko">
   <h1>개인정보처리방침</h1>
-  <div class="upd">최종 개정일: 2026년 7월 4일 · 시행일: 2026년 7월 4일</div>
-  <div class="lead">Beautia(이하 "회사")는 이용자의 개인정보를 중요하게 생각하며, 「개인정보 보호법」 등 관련 법령을 준수합니다. 본 방침은 회사가 제공하는 뷰티 디자이너 포트폴리오 발견·예약 플랫폼 서비스(이하 "서비스")에 적용됩니다.</div>
+  <div class="upd">최종 개정일: 2026년 7월 11일 · 시행일: 2026년 7월 11일</div>
+  <div class="lead">Beautia(이하 "회사")는 이용자의 개인정보를 소중히 다루며 관련 법령을 준수합니다. 본 방침은 회사가 제공하는 뷰티 디자이너 포트폴리오 발견·예약 플랫폼(웹사이트 beautia.io 및 모바일 앱, 이하 "서비스")에 적용됩니다.</div>
 
   <h2>1. 수집하는 개인정보 항목</h2>
   <table>
-    <tr><th>구분</th><td>수집 항목</td></tr>
-    <tr><th>회원가입</th><td>닉네임, 이메일, 주 활동 지역, (선택) 한줄소개·관심 시술</td></tr>
-    <tr><th>Google 로그인</th><td>Google 계정 이메일, 프로필 이름·사진(이용자가 동의한 범위)</td></tr>
-    <tr><th>디자이너 등록</th><td>활동명·샵명·지역·전문 시술·경력, 포트폴리오 사진, 연락처, (선택) 외부 예약 링크</td></tr>
-    <tr><th>예약 요청</th><td>희망 디자이너·시술·일정, 원하는 스타일 참고 사진, 연락처</td></tr>
-    <tr><th>서비스 이용 중 생성</th><td>저장·팔로우 내역, 예약 내역, 접속 기록, 기기·브라우저 정보</td></tr>
+    <tr><th>회원가입·로그인</th><td>이메일, 인증코드(OTP), 닉네임, (Google 로그인 시) Google 계정 이메일·프로필 이름·사진</td></tr>
+    <tr><th>디자이너 등록</th><td>활동명·지역·전문 시술·소개, 포트폴리오 사진, 인스타그램 핸들, (선택) 외부 예약 링크</td></tr>
+    <tr><th>예약·문의</th><td>시술 종류, 희망 일정, 메모, 예약 상태</td></tr>
+    <tr><th>메시지</th><td>디자이너와 주고받은 채팅 내용</td></tr>
+    <tr><th>활동 내역</th><td>저장·팔로우, 작성한 리뷰·별점, 예약 내역</td></tr>
+    <tr><th>기기·알림(앱)</th><td>푸시 알림 토큰, 기기 플랫폼(iOS/Android)</td></tr>
+    <tr><th>위치(대략)</th><td>IP 기반 국가·도시 추정치(가까운 디자이너 정렬용)</td></tr>
+    <tr><th>이용 기록</th><td>페이지 조회·이벤트, 브라우저·접속 정보(통계·분석)</td></tr>
+    <tr><th>결제(도입 시)</th><td>예약 보증금은 결제 처리사(Stripe)를 통해 처리되며, 카드번호 등 민감 결제정보는 회사가 저장하지 않습니다</td></tr>
   </table>
 
-  <h2>2. 개인정보의 수집 및 이용 목적</h2>
+  <h2>2. 수집 및 이용 목적</h2>
   <ul>
-    <li>회원 식별 및 관리, 부정 이용·중복 가입·봇 방지(연락처 인증)</li>
-    <li>뷰티 디자이너 포트폴리오 큐레이션·발견 및 디자이너-이용자 간 예약 연결 서비스 제공</li>
-    <li>디자이너 팔로우·저장·예약 관리 및 중복 예약 방지</li>
-    <li>공지·문의 응대 및 (동의 시) 마케팅·이벤트 정보 안내</li>
+    <li>회원 식별·관리 및 부정 이용·봇 방지</li>
+    <li>포트폴리오 발견, 예약·문의·메시지 등 핵심 기능 제공</li>
+    <li>가까운 디자이너 정렬 및 지역·통화 현지화</li>
+    <li>예약 리마인더 등 알림 발송(앱)</li>
+    <li>서비스 개선을 위한 통계·분석, 공지·문의 응대</li>
   </ul>
 
-  <h2>3. 보유 및 이용 기간</h2>
-  <p>회원 탈퇴 시 또는 수집·이용 목적 달성 시 지체 없이 파기합니다. 단, 관련 법령에 따라 보존이 필요한 경우 해당 기간 동안 보관합니다.</p>
-
-  <h2>4. 제3자 제공 및 처리위탁</h2>
-  <p>회사는 이용자의 동의 없이 개인정보를 외부에 제공하지 않습니다. 다만 예약 연결을 위해 필요한 최소한의 정보(예약 일정·요청 스타일 등)를 해당 디자이너에게 전달할 수 있으며, 서비스 운영을 위해 클라우드 인프라(예: Supabase 등) 및 예약 연동 플랫폼에 처리를 위탁할 수 있습니다.</p>
-
-  <h2>5. 쿠키 및 맞춤형 광고</h2>
-  <p>회사는 서비스 개선·통계 및 광고 게재를 위해 쿠키를 사용할 수 있습니다. 본 사이트는 <b>Google AdSense</b> 등 제3자 광고 서비스를 사용할 수 있으며, 이 경우 다음 사항이 적용됩니다.</p>
+  <h2>3. 제3자 처리위탁</h2>
+  <p>회사는 개인정보를 판매하지 않으며, 서비스 운영을 위해 아래의 신뢰할 수 있는 업체에 처리를 위탁합니다.</p>
   <ul>
-    <li>Google을 포함한 제3자 광고 공급업체는 쿠키를 사용하여 이용자의 본 사이트 및 다른 웹사이트 방문 기록을 바탕으로 맞춤형 광고를 게재할 수 있습니다.</li>
-    <li>이용자는 <a href="https://www.google.com/settings/ads" target="_blank" rel="noopener noreferrer" style="color:var(--plum)">Google 광고 설정</a>에서 개인 맞춤 광고를 비활성화할 수 있습니다.</li>
-    <li>제3자 공급업체의 쿠키 사용에 대한 자세한 내용은 <a href="https://policies.google.com/technologies/ads" target="_blank" rel="noopener noreferrer" style="color:var(--plum)">Google 광고 기술 정책</a>을 참고하세요.</li>
-    <li>EEA·영국 등 일부 지역에서는 이용자 동의 여부에 따라 비개인화 광고가 제공될 수 있습니다.</li>
-    <li>이용자는 브라우저 설정을 통해 쿠키 저장을 거부할 수 있으나, 이 경우 일부 기능 이용이 제한될 수 있습니다.</li>
+    <li><b>Supabase</b> — 인증·데이터베이스·파일 저장(백엔드 인프라)</li>
+    <li><b>Google Analytics / Google Tag Manager</b> — 이용 통계·분석</li>
+    <li><b>Stripe</b> — 예약 보증금 결제 처리(도입 시)</li>
+    <li><b>ipapi.co</b> — IP 기반 대략적 위치 추정</li>
+    <li><b>open.er-api.com</b> — 통화 환율(가격 현지화)</li>
+    <li><b>images.weserv.nl</b> — 이미지 리사이즈 CDN</li>
   </ul>
+  <p>예약 연결을 위해 필요한 최소한의 정보(예약 일정·요청 스타일 등)는 해당 디자이너에게 전달될 수 있습니다. 또한 법령에 따라 요구되는 경우 관계 기관에 제공할 수 있습니다.</p>
+
+  <h2>4. 쿠키 및 분석</h2>
+  <p>회사는 로그인 유지 및 이용 통계를 위해 쿠키·유사 기술과 Google Analytics를 사용합니다. 이용자는 브라우저 설정에서 쿠키를 거부할 수 있으나 일부 기능이 제한될 수 있습니다. 현재 서비스는 제3자 맞춤형 광고를 게재하지 않습니다.</p>
+
+  <h2>5. 보유 및 이용 기간</h2>
+  <p>회원 탈퇴 시 또는 수집·이용 목적 달성 시 지체 없이 파기합니다. 계정을 삭제하면 관련 데이터는 삭제되거나 익명화됩니다. 단, 관련 법령에 따라 보존이 필요한 경우 해당 기간 동안 보관합니다.</p>
 
   <h2>6. 이용자의 권리</h2>
-  <p>이용자는 언제든지 본인의 개인정보 열람·정정·삭제·처리정지를 요청할 수 있으며, 마케팅 수신 동의를 철회할 수 있습니다. 요청은 아래 문의처로 접수해 주세요.</p>
+  <p>이용자는 언제든지 개인정보 열람·정정·삭제·처리정지 및 계정 삭제를 요청할 수 있습니다. 요청은 아래 문의처로 접수해 주세요.</p>
 
-  <h2>7. 개인정보 보호책임자 및 문의</h2>
+  <h2>7. 아동의 개인정보</h2>
+  <p>본 서비스는 만 14세 미만 아동을 대상으로 하지 않으며, 해당 연령의 개인정보를 알면서 수집하지 않습니다.</p>
+
+  <h2>8. 국외 이전</h2>
+  <p>이용하는 인프라(Supabase 등)의 특성상 데이터가 이용자 국가 외의 서버에서 처리·저장될 수 있으며, 이 경우에도 본 방침에 따라 정보를 보호합니다.</p>
+
+  <h2>9. 문의처</h2>
   <ul>
-    <li>서비스명: Beautia</li>
-    <li>문의: 카카오톡 채널 <a href="https://pf.kakao.com/_xhxhixfX" target="_blank" style="color:var(--plum)">@Beautia</a> / 인스타그램 <a href="https://instagram.com/beautia.japan" target="_blank" style="color:var(--plum)">@beautia.japan</a></li>
+    <li>이메일 <a class="inl" href="mailto:ujin141@naver.com">ujin141@naver.com</a></li>
+    <li>카카오톡 채널 <a class="inl" href="https://pf.kakao.com/_xhxhixfX" target="_blank" rel="noopener">@Beautia</a> · 인스타그램 <a class="inl" href="https://instagram.com/beautia.japan" target="_blank" rel="noopener">@beautia.japan</a></li>
   </ul>
 
-  <div class="note">※ 본 방침은 서비스 운영 정책에 따라 변경될 수 있으며, 변경 시 본 페이지를 통해 공지합니다. 실제 사업자 등록·법적 검토 후 사업자 정보와 문구를 보완하는 것을 권장합니다.</div>
+  <div class="note">※ 본 방침은 서비스 운영 정책에 따라 변경될 수 있으며, 변경 시 본 페이지에 시행일과 함께 공지합니다.</div>
 </div>
-<div class="foot"><a href="/community">홈</a><a href="/terms">서비스 이용약관</a><span>© 2026 Beautia</span></div>
+
+<!-- ===================== English ===================== -->
+<div class="wrap hide" id="en">
+  <h1>Privacy Policy</h1>
+  <div class="upd">Last updated: July 11, 2026 · Effective: July 11, 2026</div>
+  <div class="lead">Beautia ("we", "the Company") values your privacy and complies with applicable data-protection laws. This policy applies to our platform for discovering and booking beauty designers — the website (beautia.io) and the mobile app ("the Service").</div>
+
+  <h2>1. Information We Collect</h2>
+  <table>
+    <tr><th>Sign up / sign in</th><td>Email, one-time code (OTP), nickname; if you use Google: Google account email, profile name and photo</td></tr>
+    <tr><th>Designer profile</th><td>Display name, location, specialties, bio, portfolio images, Instagram handle, optional external booking link</td></tr>
+    <tr><th>Bookings &amp; inquiries</th><td>Service type, preferred schedule, notes, booking status</td></tr>
+    <tr><th>Messages</th><td>Chat content exchanged with designers</td></tr>
+    <tr><th>Activity</th><td>Saves, follows, reviews and ratings you write, booking history</td></tr>
+    <tr><th>Device &amp; push (app)</th><td>Push notification token, device platform (iOS/Android)</td></tr>
+    <tr><th>Approx. location</th><td>Country/city estimate from your IP, to sort nearby designers</td></tr>
+    <tr><th>Usage</th><td>Page views, events, browser/access info (analytics)</td></tr>
+    <tr><th>Payments (when enabled)</th><td>Booking deposits are handled by our processor (Stripe); we do not store card numbers or other sensitive payment data</td></tr>
+  </table>
+
+  <h2>2. How We Use It</h2>
+  <ul>
+    <li>Authenticate and manage accounts; prevent abuse and bots</li>
+    <li>Provide core features: browsing portfolios, booking, inquiries, messaging</li>
+    <li>Sort nearby designers and localize region/currency</li>
+    <li>Send notifications such as booking reminders (app)</li>
+    <li>Analytics to improve the Service; respond to inquiries</li>
+  </ul>
+
+  <h2>3. Third-Party Processors</h2>
+  <p>We do not sell your personal data. We rely on the trusted providers below to run the Service.</p>
+  <ul>
+    <li><b>Supabase</b> — authentication, database, file storage (backend)</li>
+    <li><b>Google Analytics / Google Tag Manager</b> — usage analytics</li>
+    <li><b>Stripe</b> — booking deposit payments (when enabled)</li>
+    <li><b>ipapi.co</b> — approximate location from IP</li>
+    <li><b>open.er-api.com</b> — currency exchange rates</li>
+    <li><b>images.weserv.nl</b> — image-resizing CDN</li>
+  </ul>
+  <p>The minimum information needed to connect a booking (schedule, requested style, etc.) may be shared with the relevant designer. We may also disclose information where required by law.</p>
+
+  <h2>4. Cookies &amp; Analytics</h2>
+  <p>We use cookies and similar technologies and Google Analytics to keep you signed in and understand usage. You can reject cookies in your browser settings, though some features may be limited. We do not currently serve third-party personalized ads.</p>
+
+  <h2>5. Data Retention</h2>
+  <p>We keep data only as long as needed to provide the Service or as required by law, and delete it without undue delay afterward. If you delete your account, related data is deleted or anonymized.</p>
+
+  <h2>6. Your Rights</h2>
+  <p>You may request access to, correction of, deletion of, or restriction of processing of your data, and delete your account, at any time via the contact below.</p>
+
+  <h2>7. Children</h2>
+  <p>The Service is not directed to children under 14, and we do not knowingly collect their personal data.</p>
+
+  <h2>8. International Transfers</h2>
+  <p>Given the infrastructure we use (e.g., Supabase), your data may be processed and stored on servers outside your country. We protect it under this policy in all cases.</p>
+
+  <h2>9. Contact</h2>
+  <ul>
+    <li>Email <a class="inl" href="mailto:ujin141@naver.com">ujin141@naver.com</a></li>
+    <li>KakaoTalk channel <a class="inl" href="https://pf.kakao.com/_xhxhixfX" target="_blank" rel="noopener">@Beautia</a> · Instagram <a class="inl" href="https://instagram.com/beautia.japan" target="_blank" rel="noopener">@beautia.japan</a></li>
+  </ul>
+
+  <div class="note">※ This policy may be updated as the Service evolves; changes will be posted on this page with a new effective date.</div>
+</div>
+
+<div class="foot"><a href="/community">Home</a><a href="/terms">Terms</a><span>© 2026 Beautia</span></div>
+<script>
+function setL(l){
+ var ko=l==='ko';
+ document.getElementById('ko').classList.toggle('hide',!ko);
+ document.getElementById('en').classList.toggle('hide',ko);
+ document.getElementById('btnKo').classList.toggle('on',ko);
+ document.getElementById('btnEn').classList.toggle('on',!ko);
+ document.documentElement.lang=l;
+ try{localStorage.setItem('beautia_priv_lang',l);}catch(e){}
+}
+(function(){
+ var l='ko';
+ try{l=localStorage.getItem('beautia_priv_lang')||((navigator.language||'').slice(0,2)==='ko'?'ko':'en');}catch(e){}
+ setL(l==='en'?'en':'ko');
+})();
+</script>
 </body>
 </html>

@@ -876,21 +876,61 @@ body.mlock .apppop{opacity:0!important;pointer-events:none!important;}
 }
 </style>
 <style id="splashcss">
-#splash{position:fixed;inset:0;z-index:99999;display:none;flex-direction:column;align-items:center;justify-content:center;background:radial-gradient(120% 85% at 50% 12%,#70505a 0%,#48323a 42%,#281b21 100%);transition:opacity .55s ease,transform .55s cubic-bezier(.4,0,.2,1),filter .55s ease;transform-origin:50% 46%;will-change:opacity,transform;}
-#splash.hide{opacity:0;transform:scale(1.045);filter:blur(3px);pointer-events:none;}
+#splash{position:fixed;inset:0;z-index:99999;display:none;flex-direction:column;align-items:center;justify-content:center;background:radial-gradient(120% 85% at 50% 12%,#70505a 0%,#48323a 42%,#281b21 100%);transition:opacity .6s ease,transform .6s cubic-bezier(.4,0,.2,1),filter .6s ease;transform-origin:50% 46%;will-change:opacity,transform;}
+#splash.hide{opacity:0;transform:scale(1.07);filter:blur(4px);pointer-events:none;}
+#splash .score{display:flex;flex-direction:column;align-items:center;transition:transform .55s cubic-bezier(.4,0,.2,1),opacity .45s ease;}
+#splash.hide .score{transform:scale(1.22);opacity:0;}
 #splash .swrap{position:relative;display:flex;align-items:center;justify-content:center;}
-#splash .swrap::before{content:"";position:absolute;width:230px;height:230px;border-radius:50%;background:radial-gradient(circle,rgba(235,203,144,.20) 0%,rgba(235,203,144,.06) 45%,transparent 70%);filter:blur(4px);animation:splashGlow 3.2s ease-in-out .3s infinite;}
-#splash .sm{position:relative;width:92px;height:auto;filter:drop-shadow(0 8px 26px rgba(0,0,0,.38));animation:splashUp .7s cubic-bezier(.2,.8,.2,1) both;}
-#splash .sw{font-family:'Fraunces',Georgia,serif;font-weight:600;letter-spacing:-.02em;color:#fff;font-size:46px;margin-top:16px;animation:splashUp .7s .08s cubic-bezier(.2,.8,.2,1) both;}
-#splash .sl{position:relative;width:60px;height:3px;border-radius:3px;margin:17px 0 13px;background:linear-gradient(90deg,#F0D98F,#C9A063);box-shadow:0 0 14px rgba(201,160,99,.5);overflow:hidden;animation:splashUp .7s .14s cubic-bezier(.2,.8,.2,1) both;}
-#splash .sl::after{content:"";position:absolute;inset:0;transform:translateX(-100%);background:linear-gradient(90deg,transparent,rgba(255,255,255,.85),transparent);animation:splashShimmer 2.4s ease-in-out 1s infinite;}
-#splash .st{font-family:'Fraunces',Georgia,serif;font-style:italic;font-weight:500;color:#EBCB90;font-size:18px;letter-spacing:.01em;animation:splashUp .7s .2s cubic-bezier(.2,.8,.2,1) both;}
+#splash .smsheen{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:100px;height:154px;pointer-events:none;-webkit-mask:url(/logo-mark-white.png) center/contain no-repeat;mask:url(/logo-mark-white.png) center/contain no-repeat;background:linear-gradient(115deg,transparent 40%,rgba(240,217,143,.85) 50%,transparent 60%);background-size:260% 100%;background-position:135% 0;opacity:0;animation:splashSheen 1.05s ease-in-out .95s 1 forwards;}
+#splash .swrap::before{content:"";position:absolute;width:250px;height:250px;border-radius:50%;background:radial-gradient(circle,rgba(235,203,144,.20) 0%,rgba(235,203,144,.06) 45%,transparent 70%);filter:blur(6px);animation:splashGlow 3.2s ease-in-out .5s infinite;}
+#splash .swrap::after{content:"";position:absolute;width:150px;height:150px;border-radius:50%;border:2px solid rgba(235,203,144,.5);animation:splashRing 1.05s cubic-bezier(.2,.7,.3,1) .12s both;}
+#splash .sm{position:relative;width:100px;height:auto;filter:drop-shadow(0 10px 30px rgba(0,0,0,.4));animation:splashPop .82s cubic-bezier(.34,1.56,.64,1) both;}
+#splash .sw{font-family:'Fraunces',Georgia,serif;font-weight:600;letter-spacing:-.01em;color:#fff;font-size:48px;margin-top:20px;display:flex;}
+#splash .sw span{display:inline-block;opacity:0;animation:splashLetter .55s cubic-bezier(.2,.8,.2,1) both;}
+#splash .sw span:nth-child(1){animation-delay:.30s}
+#splash .sw span:nth-child(2){animation-delay:.36s}
+#splash .sw span:nth-child(3){animation-delay:.42s}
+#splash .sw span:nth-child(4){animation-delay:.48s}
+#splash .sw span:nth-child(5){animation-delay:.54s}
+#splash .sw span:nth-child(6){animation-delay:.60s}
+#splash .sw span:nth-child(7){animation-delay:.66s}
+#splash .sl{position:relative;width:62px;height:3px;border-radius:3px;margin:18px 0 13px;background:linear-gradient(90deg,#F0D98F,#C9A063);box-shadow:0 0 14px rgba(201,160,99,.5);overflow:hidden;animation:splashUp .6s .74s cubic-bezier(.2,.8,.2,1) both;}
+#splash .sl::after{content:"";position:absolute;inset:0;transform:translateX(-100%);background:linear-gradient(90deg,transparent,rgba(255,255,255,.85),transparent);animation:splashShimmer 2.4s ease-in-out 1.4s infinite;}
+#splash .st{font-family:'Fraunces',Georgia,serif;font-style:italic;font-weight:500;color:#EBCB90;font-size:18px;letter-spacing:.01em;animation:splashUp .6s .84s cubic-bezier(.2,.8,.2,1) both;}
+#splash .sdots{position:absolute;bottom:calc(86px + env(safe-area-inset-bottom));display:flex;gap:9px;opacity:0;animation:splashFadeIn .5s 1.0s both;}
+#splash .sdots i{width:8px;height:8px;border-radius:50%;background:rgba(235,203,144,.85);animation:splashDot 1.1s ease-in-out infinite;}
+#splash .sdots i:nth-child(2){animation-delay:.16s}
+#splash .sdots i:nth-child(3){animation-delay:.32s}
+@keyframes splashPop{0%{opacity:0;transform:scale(.5)}60%{opacity:1}100%{opacity:1;transform:scale(1)}}
+@keyframes splashRing{0%{opacity:.6;transform:scale(.55)}100%{opacity:0;transform:scale(1.7)}}
+@keyframes splashLetter{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:none}}
 @keyframes splashUp{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
-@keyframes splashGlow{0%,100%{opacity:.55;transform:scale(.96)}50%{opacity:1;transform:scale(1.04)}}
+@keyframes splashFadeIn{from{opacity:0}to{opacity:1}}
+@keyframes splashGlow{0%,100%{opacity:.55;transform:scale(.96)}50%{opacity:1;transform:scale(1.05)}}
 @keyframes splashShimmer{0%{transform:translateX(-100%)}55%,100%{transform:translateX(220%)}}
-@media (prefers-reduced-motion: reduce){#splash .sm,#splash .sw,#splash .sl,#splash .st{animation:none!important}#splash .swrap::before,#splash .sl::after{animation:none!important;opacity:.7}#splash.hide{transform:none;filter:none}}
+@keyframes splashDot{0%,100%{opacity:.3;transform:translateY(0)}50%{opacity:1;transform:translateY(-5px)}}
+@keyframes splashSheen{0%{opacity:0;background-position:135% 0}22%{opacity:1}100%{opacity:0;background-position:-70% 0}}
+@media (prefers-reduced-motion: reduce){#splash .sm,#splash .sw span,#splash .sl,#splash .st,#splash .sdots,#splash .smsheen{animation:none!important;opacity:1!important}#splash .smsheen{opacity:0!important}#splash .swrap::before,#splash .swrap::after,#splash .sl::after,#splash .sdots i{animation:none!important}#splash .swrap::after{opacity:0}#splash.hide,#splash.hide .score{transform:none;filter:none}}
+/* 모더레이션: 신고/차단 */
+.repmodal{position:fixed;inset:0;z-index:1200;background:rgba(28,20,24,.5);backdrop-filter:blur(3px);display:none;align-items:flex-end;justify-content:center;}
+.repmodal.on{display:flex;}
+.repcard{width:100%;max-width:460px;background:#fff;border-radius:20px 20px 0 0;padding:22px 20px calc(20px + env(safe-area-inset-bottom));animation:repUp .25s cubic-bezier(.2,.8,.2,1);}
+@media(min-width:520px){.repmodal{align-items:center;}.repcard{border-radius:20px;}}
+@keyframes repUp{from{transform:translateY(30px);opacity:.6}to{transform:none;opacity:1}}
+.reptitle{font-weight:800;font-size:18px;color:#2E2326;}
+.repdesc{font-size:13.5px;color:#8A777C;margin:6px 0 16px;line-height:1.6;}
+.repreasons{display:flex;flex-direction:column;gap:8px;}
+.repreason{text-align:left;padding:14px 16px;border:1px solid #EFE3DE;border-radius:12px;background:#FBF6F1;font:inherit;font-size:15px;font-weight:600;color:#2E2326;cursor:pointer;}
+.repreason:active{background:#f2e6e0;}
+.repcancel{width:100%;margin-top:14px;padding:14px;border:0;border-radius:12px;background:#efe7e3;font:inherit;font-size:15px;font-weight:700;color:#574C50;cursor:pointer;}
+.modrow{display:flex;gap:18px;justify-content:center;padding:6px 0 2px;}
+.modlink{background:none;border:0;font:inherit;font-size:13px;font-weight:600;color:#a59298;cursor:pointer;display:inline-flex;align-items:center;gap:5px;}
+.modlink:active{color:#6E4A50;}
+.revreport{background:none;border:0;color:#c9b8bd;cursor:pointer;font-size:14px;padding:2px 4px;margin-left:auto;}
+.revreport:active{color:#6E4A50;}
+@media (prefers-color-scheme:dark){.repcard{background:#241a1f;}.reptitle{color:#ece4e6;}.repreason{background:#2a2025;border-color:#3a2c31;color:#ece4e6;}.repcancel{background:#332830;color:#cdbfc4;}}
 </style></head><body>
-<div id="splash" aria-hidden="true"><div class="swrap"><img class="sm" src="/logo-mark-white.png" alt=""></div><div class="sw">Beautia</div><div class="sl"></div><div class="st">Your style, found.</div></div>
+<div id="splash" aria-hidden="true"><div class="score"><div class="swrap"><img class="sm" src="/logo-mark-white.png" alt=""><span class="smsheen"></span></div><div class="sw"><span>B</span><span>e</span><span>a</span><span>u</span><span>t</span><span>i</span><span>a</span></div><div class="sl"></div><div class="st">Your style, found.</div></div><div class="sdots"><i></i><i></i><i></i></div></div>
 <script>(function(){try{var app=window.matchMedia&&window.matchMedia('(display-mode: standalone)').matches;var seen=false;try{seen=sessionStorage.getItem('beautia_splashed')==='1';}catch(e){}if(app||!seen){document.getElementById('splash').style.display='flex';window.__splashT0=performance.now();var m=document.querySelector('meta[name=theme-color]');if(m){window.__thmPrev=m.getAttribute('content');m.setAttribute('content','#48323a');}if(!app){try{sessionStorage.setItem('beautia_splashed','1');}catch(e){}}}}catch(e){}})();</script>
 <!-- Google Tag Manager (noscript) -->
 <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-5SNMQDGD" height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
@@ -995,6 +1035,7 @@ body.mlock .apppop{opacity:0!important;pointer-events:none!important;}
 <div class="lmodal" id="invmodal" onclick="if(event.target===this)closeInvite()"><div class="lcard" id="invcard"></div></div>
 <div class="lmodal" id="lmodal" onclick="if(event.target===this)closeLogin()"><div class="lcard" id="lcard"></div></div>
 <div class="idmodal" id="idmodal" onclick="if(event.target===this)closeId()"><div class="idwrap" id="idwrap"><div class="idcard" id="idcard"></div><div class="idcfg" id="idcfg"></div><div class="idbtns"><button class="pri" onclick="dlId()"><i class="ti ti-download"></i> <span id="idDlT">Download</span></button><button onclick="shareId()"><i class="ti ti-link"></i> <span id="idShT">Share</span></button><button onclick="closeId()"><i class="ti ti-x"></i></button></div></div></div>
+<div class="repmodal" id="repmodal" onclick="if(event.target===this)closeReport()"><div class="repcard"><div class="reptitle" id="repTitle">Report</div><div class="repdesc" id="repDesc"></div><div class="repreasons" id="repReasons"></div><button class="repcancel" id="repCancel" onclick="closeReport()">Cancel</button></div></div>
 <div class="pfmodal" id="pfmodal" onclick="if(event.target===this)closePf()"><div class="pfcard" id="pfcard"></div></div>
 <div class="lmodal" id="damodal" onclick="if(event.target===this)closeDApply()"><div class="lcard" id="dacard" style="text-align:left"></div></div>
 <div class="apppop" id="apppop">
@@ -1073,8 +1114,25 @@ const FEATURED=[
 ];
 function featuredDesigners(){return FEATURED.map(function(f,i){var h=igClean(f.insta||'');var imgs=(f.imgs||[]).filter(Boolean);return {id:'f'+i,name:h?('@'+h):'Featured',ko:'',cat:f.cat||'Hair',city:f.city||'',area:f.area||'',flag:'📌',rating:0,rev:0,years:'',ko_ok:0,ver:0,featured:true,insta:h,handles:h?{instagram:h}:{},bio:'',avatar:'',works:imgs,ba:[imgs[0],imgs[Math.min(1,imgs.length-1)]],sns:h?['instagram']:[],reviews:[]};}).filter(function(d){return d.works.length;});}
 let DUSERS=[];
-function allD(){const m=meDesigner();var others=DUSERS.filter(function(d){return !(m&&d.uid===m.uid)&&!D.some(function(x){return x.uid===d.uid;});});var dd=D.filter(function(x){return !(m&&x.uid===m.uid);});var base=featuredDesigners().concat(others).concat(dd);return m?[m].concat(base):base;}
+function allD(){const m=meDesigner();var others=DUSERS.filter(function(d){return !(m&&d.uid===m.uid)&&!D.some(function(x){return x.uid===d.uid;});});var dd=D.filter(function(x){return !(m&&x.uid===m.uid);});var base=featuredDesigners().concat(others).concat(dd).filter(function(x){return !isBlocked(x.uid);});return m?[m].concat(base):base;}
 function dById(id){return allD().find(d=>d.id===id);}
+// ===== 콘텐츠 모더레이션 (신고/차단) — App Store 심사 1.2 =====
+var BLOCKED=[];
+function isBlocked(uid){return !!uid&&BLOCKED.indexOf(uid)>=0;}
+async function loadBlocks(){if(!(ME&&ME.uid)){BLOCKED=[];return;}try{var rows=(await SB.from('user_blocks').select('blocked').eq('blocker',ME.uid)).data||[];BLOCKED=rows.map(function(r){return r.blocked;});buildTiles();render();}catch(e){}}
+const MODT={
+ ko:{report:'신고',block:'차단',reportTitle:'신고하기',reportDesc:'신고 사유를 선택해 주세요. 접수 후 24시간 내 검토합니다.',submit:'신고 접수',cancel:'취소',reported:'신고가 접수됐어요. 24시간 내 검토할게요.',blockConfirm:'{name}님을 차단할까요?\n이 사용자의 콘텐츠가 더 이상 보이지 않아요.',blocked:'차단했어요.',fail:'처리에 실패했어요. 잠시 후 다시 시도해 주세요.',reasons:{spam:'스팸/광고',abuse:'욕설/괴롭힘',nudity:'선정적/부적절',fake:'사칭/허위 정보',copyright:'저작권 침해',other:'기타'}},
+ en:{report:'Report',block:'Block',reportTitle:'Report',reportDesc:'Choose a reason. We review reports within 24 hours.',submit:'Submit report',cancel:'Cancel',reported:'Report received. We’ll review within 24 hours.',blockConfirm:'Block {name}?\nYou will no longer see this user’s content.',blocked:'Blocked.',fail:'Something went wrong. Please try again.',reasons:{spam:'Spam / ads',abuse:'Harassment / abuse',nudity:'Sexual / inappropriate',fake:'Impersonation / false info',copyright:'Copyright infringement',other:'Other'}},
+ ja:{report:'報告',block:'ブロック',reportTitle:'報告する',reportDesc:'理由を選んでください。24時間以内に確認します。',submit:'報告する',cancel:'キャンセル',reported:'報告を受け付けました。24時間以内に確認します。',blockConfirm:'{name}さんをブロックしますか？\nこのユーザーのコンテンツは表示されなくなります。',blocked:'ブロックしました。',fail:'処理に失敗しました。時間をおいて再度お試しください。',reasons:{spam:'スパム/広告',abuse:'嫌がらせ/暴言',nudity:'性的/不適切',fake:'なりすまし/虚偽',copyright:'著作権侵害',other:'その他'}},
+ th:{report:'รายงาน',block:'บล็อก',reportTitle:'รายงาน',reportDesc:'เลือกเหตุผล เราจะตรวจสอบภายใน 24 ชั่วโมง',submit:'ส่งรายงาน',cancel:'ยกเลิก',reported:'รับรายงานแล้ว จะตรวจสอบภายใน 24 ชม.',blockConfirm:'บล็อก {name} หรือไม่?\nคุณจะไม่เห็นเนื้อหาของผู้ใช้นี้อีก',blocked:'บล็อกแล้ว',fail:'เกิดข้อผิดพลาด โปรดลองใหม่',reasons:{spam:'สแปม/โฆษณา',abuse:'คุกคาม/หยาบคาย',nudity:'ลามก/ไม่เหมาะสม',fake:'แอบอ้าง/ข้อมูลเท็จ',copyright:'ละเมิดลิขสิทธิ์',other:'อื่นๆ'}},
+ zh:{report:'举报',block:'屏蔽',reportTitle:'举报',reportDesc:'请选择举报理由，我们将在24小时内审核。',submit:'提交举报',cancel:'取消',reported:'举报已收到，我们将在24小时内审核。',blockConfirm:'屏蔽 {name}？\n你将不再看到该用户的内容。',blocked:'已屏蔽。',fail:'操作失败，请稍后再试。',reasons:{spam:'垃圾/广告',abuse:'骚扰/辱骂',nudity:'色情/不当',fake:'冒充/虚假信息',copyright:'侵犯版权',other:'其他'}}
+};
+function mt(){return MODT[LANG]||MODT.en;}
+var _repPending=null;
+function reportContent(type,targetId,label){if(!(ME&&ME.uid)){openLogin('');return;}_repPending={type:type,targetId:targetId||'',label:label||''};var L=mt();var rs=L.reasons;var body=Object.keys(rs).map(function(k){return '<button class="repreason" onclick="submitReport(\''+k+'\')">'+esc(rs[k])+'</button>';}).join('');$('repTitle').textContent=L.reportTitle;$('repDesc').textContent=L.reportDesc;$('repCancel').textContent=L.cancel;$('repReasons').innerHTML=body;$('repmodal').classList.add('on');}
+function closeReport(){$('repmodal').classList.remove('on');_repPending=null;}
+async function submitReport(reason){var L=mt();if(!_repPending||!(ME&&ME.uid)){closeReport();return;}var p=_repPending;closeReport();try{var r=await SB.from('reports').insert({reporter:ME.uid,target_type:p.type,target_id:String(p.targetId),reason:reason,detail:p.label});if(r&&r.error){toast(L.fail);return;}toast(L.reported);}catch(e){toast(L.fail);}}
+async function blockUser(uid,name){var L=mt();if(!(ME&&ME.uid)){openLogin('');return;}if(!uid)return;if(!window.confirm(L.blockConfirm.replace('{name}',name||'')))return;try{var r=await SB.from('user_blocks').insert({blocker:ME.uid,blocked:uid});if(r&&r.error){toast(L.fail);return;}if(BLOCKED.indexOf(uid)<0)BLOCKED.push(uid);try{closeD();}catch(e){}try{closeChat();}catch(e){}buildTiles();render();toast(L.blocked);}catch(e){toast(L.fail);}}
 function openByUid(uid){if(!uid)return false;var d=allD().find(function(x){return x.uid===uid;});if(d){openD(d.id);return true;}return false;}
 let TILES=[];
 var TILEW=(typeof window!=='undefined'&&window.innerWidth<=600)?480:640;  // 반응형 타일 이미지(모바일 데이터 절약)
@@ -1487,9 +1545,10 @@ function openD(did,keep){const d=dById(did);if(!d)return;curD=did;const gi=D.ind
   </div>
   ${(d.services&&d.services.length)?`<div class="dsec"><div class="st">${T[LANG].svcTitle}</div>${d.services.map((s,i)=>`<div class="svc"><div class="svci"><div class="svcn">${esc(svcLabel(s,LANG))}</div><div class="svcm">${svcDur(s,LANG)?esc(svcDur(s,LANG))+' · ':''}<b>${esc(priceDisp(s.p,svcCur(d)))}</b>${priceApprox(s.p,svcCur(d))?`<span class="svcapprox"> ${esc(priceApprox(s.p,svcCur(d)))}</span>`:''}</div></div>${d.uid&&!d.isMe?`<button class="svcbk" onclick="openBook('${d.id}',${i})">${T[LANG].book2}</button>`:''}</div>`).join('')}</div>`:''}
   <div class="dsec"><div class="st">${T[LANG].portfolio}</div><div class="dgrid">${d.works.map(w=>isVid(w)?`<div class="dgvid" onclick="playInline(this,'${vsrc(w)}')"${workPoster(w)?` style="background-image:url('${im(workPoster(w),700)}')"`:''}><span class="thvb"><i class="ti ti-player-play-filled"></i></span></div>`:`<img src="${im(w,500)}" onclick="window.open('${im(w,1200)}','_blank')">`).join('')}</div></div>
-  <div class="dsec" id="revsec"><div class="st">${T[LANG].reviews} · ${esc(d.rev)}</div>${d.reviews.map((r,i)=>`<div class="rev"><div class="ra" style="background:${GR[(gi+i)%GR.length]}">${esc((r.n||'?')[0])}</div><div><div class="rn">${esc(r.n)}</div><div class="rs">${stars(r.s)}</div><div class="rt">${esc(r.t)}</div></div></div>`).join('')}</div>
+  <div class="dsec" id="revsec"><div class="st">${T[LANG].reviews} · ${esc(d.rev)}</div>${d.reviews.map((r,i)=>`<div class="rev"><div class="ra" style="background:${GR[(gi+i)%GR.length]}">${esc((r.n||'?')[0])}</div><div style="flex:1"><div class="rn">${esc(r.n)}</div><div class="rs">${stars(r.s)}</div><div class="rt">${esc(r.t)}</div></div><button class="revreport" title="${esc(mt().report)}" onclick="reportContent('review','${esc(d.uid||d.id)}','${esc(String(r.n||'').replace(/'/g,''))}')"><i class="ti ti-flag"></i></button></div>`).join('')}</div>
   ${(snsHtml||naverHtml||blogHtml||bookingHtml)?`<div class="dsec" style="border:none"><div class="st">${T[LANG].connect}</div>${bookingHtml}<div class="sns">${snsHtml}${naverHtml}${blogHtml}</div></div>`:''}
   ${mapHtml}
+  ${(d.uid&&!d.isMe)?`<div class="dsec" style="border:none"><div class="modrow"><button class="modlink" onclick="reportContent('designer','${esc(d.uid)}','${esc(name)}')"><i class="ti ti-flag"></i> ${esc(mt().report)}</button><button class="modlink" onclick="blockUser('${esc(d.uid)}','${esc(name)}')"><i class="ti ti-ban"></i> ${esc(mt().block)}</button></div></div>`:''}
  </div>
  <div class="dfoot">
    <button class="cbtn save ${fav?'on':''}" onclick="toggleSave('${d.id}_0',event)"><i class="ti ti-heart${fav?'-filled':''}"></i><span>${fav?T[LANG].saved2:T[LANG].save}</span></button>
@@ -1812,7 +1871,7 @@ async function persistShop(){if(!ME||!ME.uid)return;try{await SB.from('profiles'
 async function onAuth(session){
  if(!session){ME=null;renderAuth();buildTiles();render();return;}
  let prof=null;try{prof=(await SB.from('profiles').select('id,nickname,role,region,bio,interests,shop,avatar_url,full_name,created_at').eq('id',session.user.id).maybeSingle()).data;}catch(e){}
- if(prof&&prof.nickname){ME=profToMe(prof);closeLogin();renderAuth();buildTiles();render();loadSaves();loadFollows();checkUnread();refreshOwner();loadBkBadge();return;}
+ if(prof&&prof.nickname){ME=profToMe(prof);closeLogin();renderAuth();buildTiles();render();loadSaves();loadFollows();loadBlocks();checkUnread();refreshOwner();loadBkBadge();return;}
  if($('lmodal')&&$('lmodal').classList.contains('on'))return;
  let pend={};try{pend=JSON.parse(localStorage.getItem('beautia_coll_pending')||'{}');}catch(e){}
  const um=session.user.user_metadata||{};
@@ -1995,7 +2054,7 @@ async function suVerify(){const v=$('suCode')?$('suCode').value.trim():'';if(!v)
  const {data,error}=await SB.auth.verifyOtp({email:SU.contact,token:v,type:'email'});
  if(error){toast(T[LANG].codeWrong);return;}
  const uid=data.user.id;let prof=null;try{prof=(await SB.from('profiles').select('id,nickname,role,region,bio,interests,shop,avatar_url,full_name,created_at').eq('id',uid).maybeSingle()).data;}catch(e){}
- if(prof&&prof.nickname){ME=profToMe(prof);closeLogin();renderAuth();buildTiles();render();loadSaves();loadFollows();checkUnread();refreshOwner();loadBkBadge();toast(T[LANG].welcomeBack||T[LANG].verifiedToast);return;}
+ if(prof&&prof.nickname){ME=profToMe(prof);closeLogin();renderAuth();buildTiles();render();loadSaves();loadFollows();loadBlocks();checkUnread();refreshOwner();loadBkBadge();toast(T[LANG].welcomeBack||T[LANG].verifiedToast);return;}
  SU.verified=true;SU.uid=uid;renderSU();toast(T[LANG].verifiedToast);}
 async function suFinish(){const wasEdit=SU.edit;
  if(wasEdit&&ME&&ME.role)SU.role=ME.role;   // 편집 시 역할 변경 금지(가입 때 고정)
@@ -2014,11 +2073,11 @@ async function suFinish(){const wasEdit=SU.edit;
  if(error){toast('저장 실패: '+error.message);return;}
  let prof=(await SB.from('profiles').select('id,nickname,role,region,bio,interests,shop,avatar_url,full_name,created_at').eq('id',uid).maybeSingle()).data;
  ME=prof?profToMe(prof):null;
- loadSaves();loadFollows();checkUnread();refreshOwner();loadBkBadge();
+ loadSaves();loadFollows();loadBlocks();checkUnread();refreshOwner();loadBkBadge();
  try{localStorage.removeItem('beautia_coll_pending');}catch(e){}
  closeLogin();renderAuth();buildTiles();render();
  toast(wasEdit?'✅':(T[LANG].joinDone+(SU.role==='desg'?' — '+T[LANG].joinToast:'')));}
-async function logout(){if($('dmodal'))$('dmodal').classList.remove('on');try{await SB.auth.signOut();}catch(e){}ME=null;SAVED=JSON.parse(localStorage.getItem('beautia_coll_saved')||'[]');chatUnread=0;bkPend=0;NOTIFS=[];notifUnread=0;if(chatGlobalSub){try{SB.removeChannel(chatGlobalSub);}catch(e){}chatGlobalSub=null;}if(bkSub){try{SB.removeChannel(bkSub);}catch(e){}bkSub=null;}renderAuth();buildTiles();render();renderChatBadge();renderNotifBadge();toast(T[LANG].logoutToast);}
+async function logout(){if($('dmodal'))$('dmodal').classList.remove('on');try{await SB.auth.signOut();}catch(e){}ME=null;BLOCKED=[];SAVED=JSON.parse(localStorage.getItem('beautia_coll_saved')||'[]');chatUnread=0;bkPend=0;NOTIFS=[];notifUnread=0;if(chatGlobalSub){try{SB.removeChannel(chatGlobalSub);}catch(e){}chatGlobalSub=null;}if(bkSub){try{SB.removeChannel(bkSub);}catch(e){}bkSub=null;}renderAuth();buildTiles();render();renderChatBadge();renderNotifBadge();toast(T[LANG].logoutToast);}
 
 function openProfile(){if(!ME){openLogin('');return;}const since=ME.joined?new Date(ME.joined).toLocaleDateString():'';
  $('dsheet').innerHTML=`<div class="dbody"><div class="pmhead">
@@ -2157,7 +2216,7 @@ async function startConvoWith(did){var d=dById(did);if(!d||!d.uid){toast(T[LANG]
 async function openChatWith(did){if(!(await ensureLoginC()))return;var conv=await startConvoWith(did);if(!conv){toast(T[LANG].cantChat);return;}await loadConvos();var c=CHATS.find(function(x){return x.id===conv.id;})||conv;$('chatmodal').classList.add('on');openConvo(c);}
 async function openConvo(c){curConv=c;var msgs=[];try{msgs=(await SB.from('messages').select('*').eq('conversation',c.id).order('created_at',{ascending:true})).data||[];}catch(e){}c._msgs=msgs;renderThread();markChatSeen();if(chatSub){try{SB.removeChannel(chatSub);}catch(e){}}chatSub=SB.channel('msg-'+c.id).on('postgres_changes',{event:'INSERT',schema:'public',table:'messages',filter:'conversation=eq.'+c.id},function(p){var m=p.new;if((c._msgs||[]).some(function(x){return x.id===m.id;}))return;c._msgs.push(m);renderThread(true);}).subscribe();}
 function msgText(m){if(!m.lang||m.lang===LANG)return m.body;return (m.tr&&m.tr[LANG])?m.tr[LANG]:m.body;}
-function renderThread(){var c=curConv;if(!c)return;var o=PROFCACHE[otherUid(c)]||{name:'User'};var body=(c._msgs||[]).map(function(m){var mine=m.sender===ME.uid;return `<div class="mrow ${mine?'me':''}"><div class="mbub">${esc(msgText(m))}</div>${(!mine&&m.body)?`<button class="morig" onclick="transChat(this)">${trLabel()}</button>`:''}</div>`;}).join('');$('chatcard').innerHTML=`<div class="chead"><button class="cback" onclick="backToList()"><i class="ti ti-chevron-left"></i></button>${avChip(o)}<div class="chl2">${esc(o.name)}</div><button class="cx" onclick="closeChat()">×</button></div><div class="cthread" id="cthread">${body||('<div class="cempty"><p>'+T[LANG].sayHi+'</p></div>')}</div><div class="cinput"><input id="cmsg" maxlength="1000" placeholder="${T[LANG].typeMsg}" onkeydown="if(event.key==='Enter')sendChat()"><button onclick="sendChat()"><i class="ti ti-send"></i></button></div>`;var th=$('cthread');if(th)th.scrollTop=th.scrollHeight;}
+function renderThread(){var c=curConv;if(!c)return;var o=PROFCACHE[otherUid(c)]||{name:'User'};var body=(c._msgs||[]).map(function(m){var mine=m.sender===ME.uid;return `<div class="mrow ${mine?'me':''}"><div class="mbub">${esc(msgText(m))}</div>${(!mine&&m.body)?`<button class="morig" onclick="transChat(this)">${trLabel()}</button>`:''}</div>`;}).join('');$('chatcard').innerHTML=`<div class="chead"><button class="cback" onclick="backToList()"><i class="ti ti-chevron-left"></i></button>${avChip(o)}<div class="chl2">${esc(o.name)}</div><button class="cx" onclick="reportContent('message','${esc(otherUid(c))}','${esc(o.name)}')" title="${esc(mt().report)}"><i class="ti ti-flag"></i></button><button class="cx" onclick="blockUser('${esc(otherUid(c))}','${esc(o.name)}')" title="${esc(mt().block)}"><i class="ti ti-ban"></i></button><button class="cx" onclick="closeChat()">×</button></div><div class="cthread" id="cthread">${body||('<div class="cempty"><p>'+T[LANG].sayHi+'</p></div>')}</div><div class="cinput"><input id="cmsg" maxlength="1000" placeholder="${T[LANG].typeMsg}" onkeydown="if(event.key==='Enter')sendChat()"><button onclick="sendChat()"><i class="ti ti-send"></i></button></div>`;var th=$('cthread');if(th)th.scrollTop=th.scrollHeight;}
 function backToList(){if(chatSub){try{SB.removeChannel(chatSub);}catch(e){}chatSub=null;}curConv=null;loadConvos();}
 async function sendChat(){var inp=$('cmsg');if(!inp||!curConv)return;var v=inp.value.trim();if(!v)return;inp.value='';curConv._msgs=curConv._msgs||[];try{var data=(await SB.from('messages').insert({conversation:curConv.id,sender:ME.uid,body:v,lang:LANG,tr:{}}).select('*').maybeSingle()).data;if(data&&!curConv._msgs.some(function(x){return x.id===data.id;}))curConv._msgs.push(data);}catch(e){}try{SB.from('conversations').update({last_at:new Date().toISOString()}).eq('id',curConv.id).then(function(){},function(){});}catch(e){}
  try{pushNotify(otherUid(curConv),'💬 '+(ME.name||'Beautia'),v.slice(0,80));}catch(e){}
@@ -2472,11 +2531,57 @@ async function submitFeatured(){var ig=igClean($('faIG')?$('faIG').value:'');var
   closeFa();await loadFeatured();toast('추가됐어요 ✨');}
 buildTiles();renderCats();renderCities();applyI18n();render();renderAuth();updateLangLabel();
 // 설치앱 스플래시: 초기화 완료 후 페이드아웃(최소 노출 900ms 보장)
-(function(){var sp=document.getElementById('splash');if(!sp||sp.style.display!=='flex')return;var t0=(window.__splashT0||performance.now());var wait=Math.max(0,900-(performance.now()-t0));setTimeout(function(){sp.classList.add('hide');var m=document.querySelector('meta[name=theme-color]');if(m&&window.__thmPrev!=null)m.setAttribute('content',window.__thmPrev);setTimeout(function(){sp.style.display='none';},600);},wait);})();
+(function(){var sp=document.getElementById('splash');if(!sp||sp.style.display!=='flex')return;var t0=(window.__splashT0||performance.now());var wait=Math.max(0,1250-(performance.now()-t0));setTimeout(function(){sp.classList.add('hide');var m=document.querySelector('meta[name=theme-color]');if(m&&window.__thmPrev!=null)m.setAttribute('content',window.__thmPrev);setTimeout(function(){sp.style.display='none';},600);},wait);})();
 // PWA: 서비스워커 + 설치 프롬프트
 let pwaPrompt=null;
 if('serviceWorker' in navigator){try{navigator.serviceWorker.register('/sw.js');}catch(e){}}
 window.addEventListener('beforeinstallprompt',function(e){e.preventDefault();pwaPrompt=e;});
+// ── 네이티브 앱 브리지 (Capacitor) — 앱 안에서만 실행, 일반 웹은 전부 무시 ──
+var NB={native:false,pushToken:null};
+(function(){
+ var C=window.Capacitor;
+ if(!(C&&C.isNativePlatform&&C.isNativePlatform()))return; // 웹 브라우저면 종료
+ NB.native=true;var P=C.Plugins||{};
+ var PLAT=(C.getPlatform&&C.getPlatform())||'ios';
+ document.documentElement.classList.add('native-app','native-'+PLAT);
+ // 1) 네이티브 스플래시 숨김 + 상태바
+ try{if(P.SplashScreen)setTimeout(function(){P.SplashScreen.hide();},350);}catch(e){}
+ try{if(P.StatusBar){P.StatusBar.setStyle({style:'DARK'});if(PLAT==='android')P.StatusBar.setBackgroundColor({color:'#ffffff'});}}catch(e){}
+ // 2) 네이티브 공유 시트로 대체 (WKWebView엔 navigator.share 없음)
+ try{if(P.Share){navigator.share=function(data){data=data||{};if(data.files&&data.files.length)return Promise.reject(new Error('files-unsupported'));return P.Share.share({title:data.title||'Beautia',text:data.text||'',url:data.url||'',dialogTitle:'Beautia'}).then(function(){});};}}catch(e){}
+ // 3) 햅틱 — 주요 버튼 탭에 가벼운 진동
+ try{if(P.Haptics){document.addEventListener('click',function(e){var t=e.target&&e.target.closest&&e.target.closest('button.pri,.savebtn,.invshare,[data-hap]');if(t){try{P.Haptics.impact({style:'LIGHT'});}catch(_){}}},{capture:true,passive:true});}}catch(e){}
+ // 4) 앱 생명주기 — 딥링크/뒤로가기(안드)/복귀
+ try{if(P.App){
+   P.App.addListener('appUrlOpen',function(d){try{var u=new URL(d.url);if(/(^|\.)beautia\.io$/.test(u.hostname))location.href=u.pathname+u.search+u.hash;}catch(_){}});
+   P.App.addListener('appStateChange',function(s){if(s&&s.isActive)savePushToken();});
+   if(PLAT==='android')P.App.addListener('backButton',function(){
+     var m=document.querySelector('.on[class*=modal],.apppop.on,.sheet.on,.idmodal.on');
+     if(m){m.classList.remove('on');return;}
+     if(window.history.length>1)window.history.back();else P.App.exitApp();
+   });
+ }}catch(e){}
+ // 5) 오프라인 안내
+ try{if(P.Network){P.Network.addListener('networkStatusChange',function(s){if(s&&!s.connected){try{toast(({ko:'인터넷 연결이 끊겼어요',en:'You are offline',ja:'オフラインです',th:'ออฟไลน์อยู่',zh:'网络已断开'}[LANG])||'You are offline');}catch(_){}}});}}catch(e){}
+ // 6) 푸시 알림 — 예약 리마인더용 토큰 등록
+ (async function initPush(){try{
+   if(!P.PushNotifications)return;var PN=P.PushNotifications;
+   var perm=await PN.checkPermissions();
+   if(perm.receive==='prompt'||perm.receive==='prompt-with-rationale')perm=await PN.requestPermissions();
+   if(perm.receive!=='granted')return;
+   PN.addListener('registration',function(t){NB.pushToken=t.value;savePushToken();});
+   PN.addListener('registrationError',function(){});
+   PN.addListener('pushNotificationActionPerformed',function(a){try{var u=a&&a.notification&&a.notification.data&&a.notification.data.url;if(u)location.href=u;}catch(_){}});
+   await PN.register();
+ }catch(e){}})();
+})();
+// 로그인 상태에서 푸시 토큰을 Supabase에 저장(디바이스별) — 발송 서버가 이 토큰으로 APNs/FCM 전송
+async function savePushToken(){try{
+ if(!NB.native||!NB.pushToken)return;
+ var s=(await SB.auth.getSession()).data.session;if(!s||!s.user)return;
+ var plat=(window.Capacitor.getPlatform&&window.Capacitor.getPlatform())||'ios';
+ await SB.from('push_tokens').upsert({user_id:s.user.id,token:NB.pushToken,platform:plat,updated_at:new Date().toISOString()},{onConflict:'token'});
+}catch(e){}}
 // 당겨서 새로고침 (모바일, 스크롤 최상단에서만)
 (function(){
  if(!('ontouchstart' in window))return;
@@ -2487,7 +2592,7 @@ window.addEventListener('beforeinstallprompt',function(e){e.preventDefault();pwa
   if(pull>0&&window.scrollY<=0){var p=Math.min(pull,150);el.style.transform='translateX(-50%) translateY('+(p*0.5)+'px) rotate('+(p*1.8)+'deg)';el.style.opacity=Math.min(1,p/70);}},{passive:true});
  window.addEventListener('touchend',async function(){if(!active)return;active=false;
   if(pull>90&&window.scrollY<=0&&!busy){busy=true;el.classList.add('spin');
-   try{await Promise.all([loadDesigners(),loadFeatured()]);if(ME&&ME.uid){loadSaves();loadFollows();checkUnread();loadBkBadge();}}catch(e){}
+   try{await Promise.all([loadDesigners(),loadFeatured()]);if(ME&&ME.uid){loadSaves();loadFollows();loadBlocks();checkUnread();loadBkBadge();}}catch(e){}
    el.classList.remove('spin');busy=false;toast(T[LANG].refreshed);}
   el.style.transform='translateX(-50%) translateY(0)';el.style.opacity=0;pull=0;});
 })();
