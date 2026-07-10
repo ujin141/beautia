@@ -874,7 +874,24 @@ body.mlock .apppop{opacity:0!important;pointer-events:none!important;}
   .rolepick{flex-direction:column;} .pmstats{gap:18px;}
   .chatmodal{padding:0;z-index:50;} .chatcard{height:100%;max-height:100%;max-width:100%;border-radius:0;padding-bottom:calc(60px + env(safe-area-inset-bottom));box-sizing:border-box;} .cback{display:flex;align-items:center;}
 }
+</style>
+<style id="splashcss">
+#splash{position:fixed;inset:0;z-index:99999;display:none;flex-direction:column;align-items:center;justify-content:center;background:radial-gradient(120% 85% at 50% 12%,#70505a 0%,#48323a 42%,#281b21 100%);transition:opacity .55s ease,transform .55s cubic-bezier(.4,0,.2,1),filter .55s ease;transform-origin:50% 46%;will-change:opacity,transform;}
+#splash.hide{opacity:0;transform:scale(1.045);filter:blur(3px);pointer-events:none;}
+#splash .swrap{position:relative;display:flex;align-items:center;justify-content:center;}
+#splash .swrap::before{content:"";position:absolute;width:230px;height:230px;border-radius:50%;background:radial-gradient(circle,rgba(235,203,144,.20) 0%,rgba(235,203,144,.06) 45%,transparent 70%);filter:blur(4px);animation:splashGlow 3.2s ease-in-out .3s infinite;}
+#splash .sm{position:relative;width:92px;height:auto;filter:drop-shadow(0 8px 26px rgba(0,0,0,.38));animation:splashUp .7s cubic-bezier(.2,.8,.2,1) both;}
+#splash .sw{font-family:'Fraunces',Georgia,serif;font-weight:600;letter-spacing:-.02em;color:#fff;font-size:46px;margin-top:16px;animation:splashUp .7s .08s cubic-bezier(.2,.8,.2,1) both;}
+#splash .sl{position:relative;width:60px;height:3px;border-radius:3px;margin:17px 0 13px;background:linear-gradient(90deg,#F0D98F,#C9A063);box-shadow:0 0 14px rgba(201,160,99,.5);overflow:hidden;animation:splashUp .7s .14s cubic-bezier(.2,.8,.2,1) both;}
+#splash .sl::after{content:"";position:absolute;inset:0;transform:translateX(-100%);background:linear-gradient(90deg,transparent,rgba(255,255,255,.85),transparent);animation:splashShimmer 2.4s ease-in-out 1s infinite;}
+#splash .st{font-family:'Fraunces',Georgia,serif;font-style:italic;font-weight:500;color:#EBCB90;font-size:18px;letter-spacing:.01em;animation:splashUp .7s .2s cubic-bezier(.2,.8,.2,1) both;}
+@keyframes splashUp{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+@keyframes splashGlow{0%,100%{opacity:.55;transform:scale(.96)}50%{opacity:1;transform:scale(1.04)}}
+@keyframes splashShimmer{0%{transform:translateX(-100%)}55%,100%{transform:translateX(220%)}}
+@media (prefers-reduced-motion: reduce){#splash .sm,#splash .sw,#splash .sl,#splash .st{animation:none!important}#splash .swrap::before,#splash .sl::after{animation:none!important;opacity:.7}#splash.hide{transform:none;filter:none}}
 </style></head><body>
+<div id="splash" aria-hidden="true"><div class="swrap"><img class="sm" src="/logo-mark-white.png" alt=""></div><div class="sw">Beautia</div><div class="sl"></div><div class="st">Your style, found.</div></div>
+<script>(function(){try{var app=window.matchMedia&&window.matchMedia('(display-mode: standalone)').matches;var seen=false;try{seen=sessionStorage.getItem('beautia_splashed')==='1';}catch(e){}if(app||!seen){document.getElementById('splash').style.display='flex';window.__splashT0=performance.now();var m=document.querySelector('meta[name=theme-color]');if(m){window.__thmPrev=m.getAttribute('content');m.setAttribute('content','#48323a');}if(!app){try{sessionStorage.setItem('beautia_splashed','1');}catch(e){}}}}catch(e){}})();</script>
 <!-- Google Tag Manager (noscript) -->
 <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-5SNMQDGD" height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 <!-- End Google Tag Manager (noscript) -->
@@ -2286,12 +2303,29 @@ async function submitBooking(){const d=dById(bkSel.did);if(!d||!d.uid||!ME||!ME.
  if(!time){toast(T[LANG].bkPickSlot);return;}
  var _slots=bkSlotsFor(d,date),_taken=(bkTaken[date]||[]),_today=date===new Date().toISOString().slice(0,10),_nm=new Date().getHours()*60+new Date().getMinutes();
  if(_slots.indexOf(time)<0||_taken.indexOf(time)>=0||(_today&&toMin(time)<=_nm)){bkSel.time='';toast(T[LANG].bkPickSlot);bkRender();return;}
- try{var r=await SB.from('bookings').insert({customer:ME.uid,designer:d.uid,service:svc,date:date,time:time,note:note});
+ var _bid=null;
+ try{var r=await SB.from('bookings').insert({customer:ME.uid,designer:d.uid,service:svc,date:date,time:time,note:note}).select('id').maybeSingle();
   if(r.error){toast(T[LANG].bkFail+': '+r.error.message);return;}
+  _bid=r.data&&r.data.id;
  }catch(e){toast(T[LANG].bkFail);return;}
  bkNotifyConv(ME.uid,d.uid,'📅 '+T[LANG].bkTitle+': '+svc.n+(svc.p?' ('+svc.p+')':'')+' · '+date+' '+time+(note?'\n'+note:''));
  pushNotify(d.uid,'📅 '+T[LANG].bkNew,(ME.name||'')+' · '+svc.n+' · '+date+' '+time);
- closeBk();toast(T[LANG].bkSent);}
+ closeBk();
+ if(_bid){tryDeposit(_bid,d);}else{toast(T[LANG].bkSent);}}
+// 디자이너가 보증금을 켰으면 예약 직후 결제로 이동(없으면 그냥 예약 완료)
+async function tryDeposit(bid,d){
+ var dep=null;try{dep=(await SB.from('profiles').select('deposit_amount,stripe_payouts_enabled,deposit_currency').eq('id',d.uid).maybeSingle()).data;}catch(e){}
+ if(!(dep&&dep.stripe_payouts_enabled&&parseInt(dep.deposit_amount,10)>0)){toast(T[LANG].bkSent);return;}
+ toast(({ko:'보증금 결제로 이동…',en:'Redirecting to deposit…',ja:'デポジット決済へ…',th:'ไปหน้ามัดจำ…',zh:'前往支付保证金…'}[LANG])||'…');
+ try{
+   var s=(await SB.auth.getSession()).data.session;var tok=s&&s.access_token;
+   if(!tok){toast(T[LANG].bkSent);return;}
+   var r=await fetch('/api/create-deposit',{method:'POST',headers:{'content-type':'application/json',Authorization:'Bearer '+tok},body:JSON.stringify({bookingId:bid})});
+   var j=await r.json().catch(function(){return{};});
+   if(r.ok&&j.url){location.href=j.url;return;}
+   toast(T[LANG].bkSent);
+ }catch(e){toast(T[LANG].bkSent);}
+}
 // 예약 이벤트를 기존 채팅으로 알림 (대화 없으면 고객 쪽에서만 생성 가능 — conversations RLS)
 async function bkNotifyConv(customerUid,designerUid,text){try{
  var conv=(await SB.from('conversations').select('*').eq('customer',customerUid).eq('designer',designerUid).maybeSingle()).data;
@@ -2437,6 +2471,8 @@ async function submitFeatured(){var ig=igClean($('faIG')?$('faIG').value:'');var
   try{var r=await SB.from('featured').insert({insta:ig,cat:cat,city:city,imgs:imgs});if(r.error){toast('저장 실패: '+r.error.message);return;}}catch(e){toast('저장 실패');return;}
   closeFa();await loadFeatured();toast('추가됐어요 ✨');}
 buildTiles();renderCats();renderCities();applyI18n();render();renderAuth();updateLangLabel();
+// 설치앱 스플래시: 초기화 완료 후 페이드아웃(최소 노출 900ms 보장)
+(function(){var sp=document.getElementById('splash');if(!sp||sp.style.display!=='flex')return;var t0=(window.__splashT0||performance.now());var wait=Math.max(0,900-(performance.now()-t0));setTimeout(function(){sp.classList.add('hide');var m=document.querySelector('meta[name=theme-color]');if(m&&window.__thmPrev!=null)m.setAttribute('content',window.__thmPrev);setTimeout(function(){sp.style.display='none';},600);},wait);})();
 // PWA: 서비스워커 + 설치 프롬프트
 let pwaPrompt=null;
 if('serviceWorker' in navigator){try{navigator.serviceWorker.register('/sw.js');}catch(e){}}
@@ -2483,6 +2519,11 @@ SB.auth.getSession().then(function(r){onAuth(r.data.session);}).catch(function()
 loadFeatured();loadDesigners();
 const _dp=new URLSearchParams(location.search).get('d');if(_dp&&dById(_dp))openD(_dp);
 const _du=new URLSearchParams(location.search).get('u');if(_du)openByUid(_du);
+(function(){try{var vw=new URLSearchParams(location.search).get('view');if(vw&&['explore','designers','saved','reels'].indexOf(vw)>=0)setView(vw);}catch(e){}})();
+(function(){try{var dp=new URLSearchParams(location.search).get('deposit');if(!dp)return;
+ if(dp==='success')toast(({ko:'보증금 결제 완료 ✨ 예약이 확정돼요',en:'Deposit paid ✨ booking confirmed',ja:'デポジット決済完了 ✨',th:'ชำระมัดจำแล้ว ✨',zh:'保证金已支付 ✨'}[LANG])||'Deposit paid ✨');
+ else if(dp==='cancel')toast(({ko:'결제가 취소됐어요 (예약은 남아있어요)',en:'Payment canceled (booking kept)',ja:'決済がキャンセルされました',th:'ยกเลิกการชำระเงิน',zh:'支付已取消'}[LANG])||'Payment canceled');
+ history.replaceState({},'',location.pathname);}catch(e){}})();
 fetch('https://ipapi.co/json/').then(function(r){return r.ok?r.json():null;}).then(function(j){if(!j)return;
  if(typeof j.latitude==='number'&&typeof j.longitude==='number')USERLOC={lat:j.latitude,lng:j.longitude,city:j.city||'',country:j.country_code||''};
  updateNearby();
