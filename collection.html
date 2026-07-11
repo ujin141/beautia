@@ -591,6 +591,10 @@ body.mlock{position:fixed;left:0;right:0;width:100%;overflow:hidden;}
 @media(max-width:760px){.grid{column-count:2;}}
 .tile{break-inside:avoid;margin-bottom:18px;position:relative;border-radius:18px;overflow:hidden;background:var(--soft);cursor:pointer;}
 .tile img{width:100%;}
+.tile>img{opacity:0;transition:opacity .5s ease;}
+.tile>img.ld{opacity:1;}
+.tile.__sk::after{content:"";position:absolute;inset:0;z-index:1;pointer-events:none;background:linear-gradient(100deg,transparent 30%,rgba(255,255,255,.45) 50%,transparent 70%);background-size:200% 100%;animation:tskel 1.2s linear infinite;}
+@keyframes tskel{0%{background-position:200% 0}100%{background-position:-200% 0}}
 .tile .ov{position:absolute;inset:0;background:linear-gradient(180deg,rgba(20,12,16,0) 42%,rgba(20,12,16,.72) 100%);opacity:0;transition:.2s;}
 .tile:hover .ov{opacity:1;}
 .tile .meta{position:absolute;left:15px;right:15px;bottom:13px;color:#fff;opacity:0;transform:translateY(6px);transition:.2s;}
@@ -1203,6 +1207,30 @@ function tileHtml(t){return `<div class="tile" onclick="openWork('${t.wid}')">
  <div class="meta"><div class="nm">${esc(t.flag)} ${esc(t.name)}</div><div class="ct"><span class="star" style="color:#C9A063">★ ${esc(t.rating)}</span> · ${esc(cl(t.cat))} · ${t.area?esc(t.area)+', ':''}${esc(t.city||'')}</div></div>
 </div>`;}
 
+/* ── 스켈레톤(shimmer) + 이미지 블러업(LQIP) + 페이드인 ── */
+(function(){
+  function enh(img){
+    var tile=img.parentElement; if(!tile||!tile.classList||!tile.classList.contains('tile'))return;
+    if(!img.dataset.blz){img.dataset.blz='1';
+      tile.classList.add('__sk');
+      var src=img.getAttribute('src')||'';
+      if(/[?&]w=\d+/.test(src)){
+        var lq=src.replace(/([?&]w=)\d+/,'$140').replace(/([?&]h=)\d+/,'$140');
+        lq+=(lq.indexOf('?')>=0?'&':'?')+'blur=8';
+        var pre=new Image();
+        pre.onload=function(){try{tile.style.backgroundImage='url("'+lq+'")';tile.style.backgroundSize='cover';tile.style.backgroundPosition='center';}catch(e){}};
+        pre.src=lq;
+      }
+    }
+    function done(){img.classList.add('ld');tile.classList.remove('__sk');}
+    if(img.complete&&img.naturalWidth>0)done();
+    else{img.addEventListener('load',done);img.addEventListener('error',done);}
+  }
+  function scan(){var a=document.querySelectorAll('.tile>img');for(var i=0;i<a.length;i++)enh(a[i]);}
+  var host=document.getElementById('grid')||document.documentElement;
+  try{ new MutationObserver(scan).observe(host,{childList:true,subtree:true}); }catch(e){}
+  if(document.readyState!=='loading')scan();else document.addEventListener('DOMContentLoaded',scan);
+})();
 const CITY_COORDS={Tokyo:[35.68,139.69],Osaka:[34.69,135.5],Fukuoka:[33.59,130.4],Seoul:[37.57,126.98],'New York':[40.71,-74.0],Paris:[48.86,2.35],London:[51.51,-0.13]};
 let USERLOC=null;
 function haversine(a,b){var R=6371,dLat=(b[0]-a[0])*Math.PI/180,dLng=(b[1]-a[1])*Math.PI/180,la1=a[0]*Math.PI/180,la2=b[0]*Math.PI/180;var x=Math.sin(dLat/2)*Math.sin(dLat/2)+Math.cos(la1)*Math.cos(la2)*Math.sin(dLng/2)*Math.sin(dLng/2);return 2*R*Math.asin(Math.sqrt(x));}
