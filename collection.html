@@ -648,6 +648,10 @@ body.mlock{position:fixed;left:0;right:0;width:100%;overflow:hidden;}
 .mrow.me .mbub{background:var(--plum);color:#fff;border-color:var(--plum);border-bottom-left-radius:16px;border-bottom-right-radius:5px;}
 .morig{font-size:11px;color:var(--accent);font-weight:700;margin-top:3px;padding:1px 2px;}
 .cinput{display:flex;gap:8px;padding:12px;border-top:1px solid var(--line);flex:0 0 auto;}
+.qreplies{display:flex;gap:6px;overflow-x:auto;padding:8px 12px 0;flex:0 0 auto;-webkit-overflow-scrolling:touch;}
+.qreplies::-webkit-scrollbar{display:none;}
+.qrchip{flex:0 0 auto;background:#f7f2f1;border:1px solid var(--line);color:var(--ink2);font-size:13px;font-weight:600;padding:7px 13px;border-radius:999px;white-space:nowrap;cursor:pointer;}
+.qrchip:active{opacity:.65;}
 .cinput input{flex:1;border:1px solid var(--line);border-radius:999px;padding:11px 16px;font-size:14.5px;font-family:inherit;outline:none;background:var(--soft);}
 .cinput input:focus{border-color:var(--accent);}
 .cinput button{flex:0 0 auto;width:44px;height:44px;border-radius:50%;background:var(--plum);color:#fff;font-size:19px;display:flex;align-items:center;justify-content:center;}
@@ -2060,6 +2064,13 @@ async function openChatWith(did){if(!(await ensureLoginC()))return;var conv=awai
 async function openConvo(c){curConv=c;var msgs=[];try{msgs=(await SB.from('messages').select('*').eq('conversation',c.id).order('created_at',{ascending:true})).data||[];}catch(e){}c._msgs=msgs;renderThread();markChatSeen();if(chatSub){try{SB.removeChannel(chatSub);}catch(e){}}chatSub=SB.channel('msg-'+c.id).on('postgres_changes',{event:'INSERT',schema:'public',table:'messages',filter:'conversation=eq.'+c.id},function(p){var m=p.new;if((c._msgs||[]).some(function(x){return x.id===m.id;}))return;c._msgs.push(m);renderThread(true);}).subscribe();}
 function msgText(m){if(!m.lang||m.lang===LANG)return m.body;return (m.tr&&m.tr[LANG])?m.tr[LANG]:m.body;}
 function renderThread(){var c=curConv;if(!c)return;var o=PROFCACHE[otherUid(c)]||{name:'User'};var body=(c._msgs||[]).map(function(m){var mine=m.sender===ME.uid;return `<div class="mrow ${mine?'me':''}"><div class="mbub">${esc(msgText(m))}</div>${(!mine&&m.body)?`<button class="morig" onclick="transChat(this)">${trLabel()}</button>`:''}</div>`;}).join('');$('chatcard').innerHTML=`<div class="chead"><button class="cback" onclick="backToList()"><i class="ti ti-chevron-left"></i></button>${avChip(o)}<div class="chl2">${esc(o.name)}</div><button class="cx" onclick="closeChat()">×</button></div><div class="cthread" id="cthread">${body||('<div class="cempty"><p>'+T[LANG].sayHi+'</p></div>')}</div><div class="cinput"><input id="cmsg" maxlength="1000" placeholder="${T[LANG].typeMsg}" onkeydown="if(event.key==='Enter')sendChat()"><button onclick="sendChat()"><i class="ti ti-send"></i></button></div>`;var th=$('cthread');if(th)th.scrollTop=th.scrollHeight;}
+/* ── 채팅 빠른 답장 칩 (다국어, 역할별) ── */
+T.ko.qrCust=['예약 가능한가요?','가격이 궁금해요','위치가 어디예요?','포트폴리오 더 보여주세요'];T.ko.qrDsgn=['네, 가능합니다','예약 확정되었어요','그 시간은 어려워요','포트폴리오 보내드릴게요'];
+T.en.qrCust=['Are you available?','How much is it?','Where are you located?','Show me more portfolio'];T.en.qrDsgn=['Yes, available','Booking confirmed','That time is unavailable',"I'll send my portfolio"];
+T.ja.qrCust=['予約できますか？','料金はいくらですか？','場所はどこですか？','ポートフォリオをもっと見たいです'];T.ja.qrDsgn=['はい、可能です','予約確定しました','その時間は難しいです','ポートフォリオをお送りします'];
+T.th.qrCust=['ว่างไหมคะ/ครับ?','ราคาเท่าไหร่?','อยู่ที่ไหน?','ขอดูผลงานเพิ่ม'];T.th.qrDsgn=['ได้ค่ะ/ครับ ว่าง','ยืนยันการจองแล้ว','เวลานั้นไม่ว่าง','จะส่งผลงานให้'];
+function injectQuickReplies(){try{var c=curConv;if(!c)return;var input=document.querySelector('.chatcard .cinput');if(!input)return;if(document.querySelector('.chatcard .qreplies'))return;var iAmDsgn=(ME&&c.designer===ME.uid);var qs=(iAmDsgn?T[LANG].qrDsgn:T[LANG].qrCust)||[];if(!qs.length)return;var row=document.createElement('div');row.className='qreplies';qs.forEach(function(q){var b=document.createElement('button');b.className='qrchip';b.type='button';b.textContent=q;b.onclick=function(){var inp=document.getElementById('cmsg');if(inp)inp.value=q;sendChat();};row.appendChild(b);});input.parentNode.insertBefore(row,input);}catch(e){}}
+(function(){var _rt=renderThread;renderThread=function(){_rt.apply(this,arguments);injectQuickReplies();};})();
 function backToList(){if(chatSub){try{SB.removeChannel(chatSub);}catch(e){}chatSub=null;}curConv=null;loadConvos();}
 async function sendChat(){var inp=$('cmsg');if(!inp||!curConv)return;var v=inp.value.trim();if(!v)return;inp.value='';curConv._msgs=curConv._msgs||[];try{var data=(await SB.from('messages').insert({conversation:curConv.id,sender:ME.uid,body:v,lang:LANG,tr:{}}).select('*').maybeSingle()).data;if(data&&!curConv._msgs.some(function(x){return x.id===data.id;}))curConv._msgs.push(data);}catch(e){}try{SB.from('conversations').update({last_at:new Date().toISOString()}).eq('id',curConv.id).then(function(){},function(){});}catch(e){}
  try{pushNotify(otherUid(curConv),'💬 '+(ME.name||'Beautia'),v.slice(0,80));}catch(e){}
@@ -2210,6 +2221,7 @@ async function submitBooking(){const d=dById(bkSel.did);if(!d||!d.uid||!ME||!ME.
  }catch(e){toast(T[LANG].bkFail);return;}
  bkNotifyConv(ME.uid,d.uid,'📅 '+T[LANG].bkTitle+': '+svc.n+(svc.p?' ('+svc.p+')':'')+' · '+date+' '+time+(note?'\n'+note:''));
  pushNotify(d.uid,'📅 '+T[LANG].bkNew,(ME.name||'')+' · '+svc.n+' · '+date+' '+time);
+ pushNotify(ME.uid,'📅 '+T[LANG].bkSent,svc.n+' · '+date+' '+time);
  closeBk();toast(T[LANG].bkSent);}
 // 예약 이벤트를 기존 채팅으로 알림 (대화 없으면 고객 쪽에서만 생성 가능 — conversations RLS)
 async function bkNotifyConv(customerUid,designerUid,text){try{
