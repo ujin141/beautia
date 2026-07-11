@@ -1282,7 +1282,8 @@ var REELS_MIN=6, _reelIO=null;
 function reelVideos(){return TILES.filter(function(t){return t.vid;});}
 function reelsReady(){return reelVideos().length>=REELS_MIN;}
 function updateReelsTab(){var on=reelsReady();var a=$('navReels'),b=$('tabReels');if(a)a.style.display=on?'':'none';if(b)b.style.display=on?'':'none';}
-function teardownReels(){if(_reelIO){try{_reelIO.disconnect();}catch(e){}_reelIO=null;}}
+function stopAllVideos(){try{[].forEach.call(document.querySelectorAll('video'),function(v){try{v.pause();}catch(e){}});}catch(e){}}
+function teardownReels(){if(_reelIO){try{_reelIO.disconnect();}catch(e){}_reelIO=null;}var _rh=document.getElementById('reels');if(_rh){[].forEach.call(_rh.querySelectorAll('video'),function(v){try{v.pause();v.removeAttribute('src');v.load();v.remove();}catch(e){}});}}
 function renderReels(){
   var vids=reelVideos();var g=$('grid');g.classList.remove('dgview');
   if(!vids.length){g.innerHTML='<div class="empty"><i class="ti ti-player-play"></i><p>'+esc(T[LANG].reelsEmpty||'아직 영상이 없어요')+'</p></div>';return;}
@@ -1378,7 +1379,7 @@ function openWork(wid){const t=TILES.find(x=>x.wid===wid);if(!t)return;const d=d
 function claimFeatured(){closeWork();openLogin('');toast(T[LANG].claimToast);}
 function closeWork(){$('wmodal').classList.remove('on');curW=null;}
 function goDesigner(id){closeWork();openD(id);}
-function openD(did,keep){const d=dById(did);if(!d)return;curD=did;const gi=D.indexOf(d);
+function openD(did,keep){stopAllVideos();const d=dById(did);if(!d)return;curD=did;const gi=D.indexOf(d);
  const fav=isSaved(d.id+'_0');
  const name=(LANG==='ko'&&d.ko)?d.ko:d.name;
  const SNSBASE={instagram:'https://instagram.com/',tiktok:'https://tiktok.com/@',youtube:'https://youtube.com/@',x:'https://x.com/'};
