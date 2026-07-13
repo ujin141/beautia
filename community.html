@@ -63,7 +63,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 <script src="https://cdn.jsdelivr.net/npm/qrcode-generator@1.4.4/qrcode.js" integrity="sha384-8FWZA6BGMXhsfO+BLtrJK0We6gg5o1JyO8xQm6peWDEUs17ACA5ziE/NIAkl9z2k" crossorigin="anonymous"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.110.0/dist/umd/supabase.js" integrity="sha384-3wY11tldQ5+yWqAvmTN4XtQvnjoTva0cV15O/O/O5NTtp0ivVopSzLOzsVXWZse9" crossorigin="anonymous"></script>
 <style>
-:root{--ink:#1c1418;--ink2:#574c51;--sub:#9b9095;--line:#efeae8;--bg:#fff;--soft:#f7f2f1;--accent:#B5828C;--plum:#6E4A50;--rosebg:#f3e7e9;--gold:#C9A063;--green:#3E7C6A;}
+:root{--ink:#1c1418;--ink2:#574c51;--sub:#a89e97;--line:#ece3db;--bg:#f8f3ec;--soft:#f4ede5;--accent:#a9808a;--plum:#573f47;--rosebg:#efe3e2;--gold:#C9A063;--green:#3E7C6A;}
 *{margin:0;padding:0;box-sizing:border-box;}
 html,body{overflow-x:hidden;max-width:100%;}
 body{font-family:'Pretendard','Malgun Gothic',sans-serif;color:var(--ink);background:var(--bg);-webkit-font-smoothing:antialiased;-webkit-tap-highlight-color:transparent;}
@@ -926,6 +926,36 @@ html.native-app a,html.native-app button,html.native-app [role=button],html.nati
 .lbxcount{position:absolute;top:calc(env(safe-area-inset-top) + 18px);left:50%;transform:translateX(-50%);color:rgba(255,255,255,.92);font-size:13px;font-weight:700;letter-spacing:.4px;z-index:2;}
 .lbxnav{position:absolute;top:50%;transform:translateY(-50%);width:44px;height:44px;border:none;border-radius:50%;background:rgba(255,255,255,.13);color:#fff;font-size:26px;line-height:1;display:none;align-items:center;justify-content:center;cursor:pointer;z-index:2;-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px);}
 .lbxnav.prev{left:12px;}.lbxnav.next{right:12px;}
+/* ===== SOFT LUXURY 정제 (전역 · 승인 시안) ===== */
+/* 헤더 아이콘 3개 통일 */
+.langBtn,.bellBtn,.applyBtn{background:#fff !important;border:1px solid var(--line) !important;color:var(--plum) !important;box-shadow:0 1px 3px rgba(70,45,55,.04) !important;font-weight:600 !important;}
+/* 로그인: 딥플럼 필(쨍한 검정 제거) */
+.loginBtn{background:var(--plum) !important;border-radius:999px !important;font-weight:700 !important;letter-spacing:.2px !important;}
+/* 브랜드 서브텍스트 */
+.brand .b2{letter-spacing:2.6px !important;color:var(--accent) !important;font-weight:700 !important;}
+/* 검색바: 크림 위 흰 필드 */
+.hsearch{background:#fff !important;box-shadow:0 3px 14px -8px rgba(80,50,60,.12) !important;border-radius:16px !important;}
+/* 히어로 라운드·부드러운 그림자 */
+.hero,.heroslides,.heroslide{border-radius:24px !important;}
+.heroslides,.heroslide{box-shadow:0 22px 46px -24px rgba(65,42,52,.5) !important;}
+/* 스토리 링 정제(단색 톤) */
+.sty .ring{background:linear-gradient(145deg,#dcc7c1,#c9a9ad) !important;padding:2.5px !important;box-shadow:0 4px 12px -8px rgba(90,60,70,.4) !important;}
+/* 칩·정렬 통일 */
+.cat{border-radius:999px !important;font-weight:600 !important;}
+.cat.on{background:var(--plum) !important;border-color:var(--plum) !important;}
+.sortsel,.citysel{background:#fff !important;border:1px solid var(--line) !important;border-radius:999px !important;box-shadow:none !important;color:var(--plum) !important;}
+.sortsel select,.citysel select{font-weight:600 !important;color:var(--plum) !important;}
+/* 섹션 헤더(에디토리얼) */
+.pophead{margin-bottom:14px !important;}
+.pophead h3.serif{font-size:22px !important;letter-spacing:-.3px !important;color:#241a1e !important;}
+.popsub{font-size:13px !important;color:var(--sub) !important;font-weight:500 !important;}
+/* 카드: 흰 카드 + 부드러운 그림자 */
+.pcard{border:1px solid #efe6df !important;border-radius:18px !important;box-shadow:0 14px 32px -22px rgba(70,45,55,.4) !important;}
+.pcbook{border-radius:12px !important;font-weight:700 !important;}
+/* 하단 탭바 */
+.tabbar{border-top:1px solid var(--line) !important;box-shadow:0 -8px 24px -18px rgba(70,45,55,.3) !important;}
+/* FAB */
+.askfab{box-shadow:0 14px 28px -12px rgba(87,63,71,.6) !important;}
 </style>
 <style id="splashcss">
 #splash{position:fixed;inset:0;z-index:99999;display:none;flex-direction:column;align-items:center;justify-content:center;background:radial-gradient(120% 85% at 50% 12%,#70505a 0%,#48323a 42%,#281b21 100%);transition:opacity .6s ease,transform .6s cubic-bezier(.4,0,.2,1),filter .6s ease;transform-origin:50% 46%;will-change:opacity,transform;}
@@ -1184,13 +1214,13 @@ const SUWT={ko:{t:'활동 형태',shop:'샵 소속',free:'프리랜서',shopFree
  zh:{t:'工作形式',shop:'在沙龙',free:'自由职业',shopFree:'品牌 · 使用名（可选）',areaFree:'服务地区 · 可上门（可选）'}};
 
 const D=[
- {id:'r1',name:'Woojin',ko:'우진',cat:'Hair',city:'서울',area:'서울',flag:'🇰🇷',rating:5.0,rev:0,years:'',ko_ok:1,ver:1,uid:'e579ff23-4b1a-43c9-b9e2-49e6061668d6',
+ {id:'r1',name:'Woojin',ko:'우진',cat:'Hair',city:'서울',area:'서울',flag:'',rating:5.0,rev:0,years:'',ko_ok:1,ver:1,uid:'e579ff23-4b1a-43c9-b9e2-49e6061668d6',
   spec:['헤어컷','펌','염색','한국어 OK'],bio:'서울 기반 헤어 디자이너 · 컷/펌/염색. @00.07.28',insta:'00.07.28',
   avatar:'https://pzbxcktaljhesrfnqwzq.supabase.co/storage/v1/object/public/beautia/e579ff23-4b1a-43c9-b9e2-49e6061668d6/1782655335644-crj6ox.jpg',
   works:['https://pzbxcktaljhesrfnqwzq.supabase.co/storage/v1/object/public/beautia/e579ff23-4b1a-43c9-b9e2-49e6061668d6/1782655359147-aepfe2.jpg','https://pzbxcktaljhesrfnqwzq.supabase.co/storage/v1/object/public/beautia/e579ff23-4b1a-43c9-b9e2-49e6061668d6/1782655367800-yviuhn.jpg'],
   ba:['https://pzbxcktaljhesrfnqwzq.supabase.co/storage/v1/object/public/beautia/e579ff23-4b1a-43c9-b9e2-49e6061668d6/1782655367800-yviuhn.jpg','https://pzbxcktaljhesrfnqwzq.supabase.co/storage/v1/object/public/beautia/e579ff23-4b1a-43c9-b9e2-49e6061668d6/1782655359147-aepfe2.jpg'],
   sns:['instagram'],reviews:[]},
- {id:'r2',name:'soin eyelash salon',ko:'소인 아이래쉬 살롱',cat:'Lash',city:'오사카',area:'오사카 사카이스지혼마치',flag:'🇯🇵',rating:5.0,rev:0,years:6,ko_ok:1,ver:1,uid:'21a1661c-4974-477a-8d0d-f806457db5a4',
+ {id:'r2',name:'soin eyelash salon',ko:'소인 아이래쉬 살롱',cat:'Lash',city:'오사카',area:'오사카 사카이스지혼마치',flag:'',rating:5.0,rev:0,years:6,ko_ok:1,ver:1,uid:'21a1661c-4974-477a-8d0d-f806457db5a4',
   spec:['속눈썹','래쉬 펌','한국어 OK'],bio:'📍堺筋本町駅 徒歩4分 · 完全個室のプライベートサロン。エクステパーマが大人気です🪄 @soin_eyelash',insta:'soin_eyelash',
   avatar:'https://pzbxcktaljhesrfnqwzq.supabase.co/storage/v1/object/public/beautia/21a1661c-4974-477a-8d0d-f806457db5a4/1782731361298-5ny4zx.jpg',
   works:['https://pzbxcktaljhesrfnqwzq.supabase.co/storage/v1/object/public/beautia/21a1661c-4974-477a-8d0d-f806457db5a4/1782731424179-6dzmzs.jpg','https://pzbxcktaljhesrfnqwzq.supabase.co/storage/v1/object/public/beautia/21a1661c-4974-477a-8d0d-f806457db5a4/1782731426098-xdb79x.jpg','https://pzbxcktaljhesrfnqwzq.supabase.co/storage/v1/object/public/beautia/21a1661c-4974-477a-8d0d-f806457db5a4/1782731427505-osr1j8.jpg'],
@@ -1205,7 +1235,7 @@ function avHtml(d,cls){var nm=(LANG==='ko'&&d.ko)?d.ko:(d.name||'U');return d.av
 // ===== Featured(발견한 작업): 원작자 인스타 크레딧+링크, 사칭 X. {insta, cat, city, area, imgs:[...]} 로 채우기 =====
 const FEATURED=[
 ];
-function featuredDesigners(){return FEATURED.map(function(f,i){var h=igClean(f.insta||'');var imgs=(f.imgs||[]).filter(Boolean);return {id:'f'+i,name:h?('@'+h):'Featured',ko:'',cat:f.cat||'Hair',city:f.city||'',area:f.area||'',flag:'📌',rating:0,rev:0,years:'',ko_ok:0,ver:0,featured:true,insta:h,handles:h?{instagram:h}:{},bio:'',avatar:'',works:imgs,ba:[imgs[0],imgs[Math.min(1,imgs.length-1)]],sns:h?['instagram']:[],reviews:[]};}).filter(function(d){return d.works.length;});}
+function featuredDesigners(){return FEATURED.map(function(f,i){var h=igClean(f.insta||'');var imgs=(f.imgs||[]).filter(Boolean);return {id:'f'+i,name:h?('@'+h):'Featured',ko:'',cat:f.cat||'Hair',city:f.city||'',area:f.area||'',flag:'',rating:0,rev:0,years:'',ko_ok:0,ver:0,featured:true,insta:h,handles:h?{instagram:h}:{},bio:'',avatar:'',works:imgs,ba:[imgs[0],imgs[Math.min(1,imgs.length-1)]],sns:h?['instagram']:[],reviews:[]};}).filter(function(d){return d.works.length;});}
 let DUSERS=[];
 function allD(){const m=meDesigner();var others=DUSERS.filter(function(d){return !(m&&d.uid===m.uid)&&!D.some(function(x){return x.uid===d.uid;});});var dd=D.filter(function(x){return !(m&&x.uid===m.uid);});var base=featuredDesigners().concat(others).concat(dd).filter(function(x){return !isBlocked(x.uid);});return m?[m].concat(base):base;}
 function dById(id){return allD().find(d=>d.id===id);}
@@ -1380,13 +1410,7 @@ function priceApprox(p,dcur){var n=priceNum(p);if(!n)return '';var vcur=langCur(
 function chipsOf(d){return (d&&d.tags&&d.tags.length)?d.tags:((d&&d.spec)||[]);}
 // 나라 국기: shop.country(KR/JP/…) 우선, 없으면 지역·주소 텍스트로 판별
 function flagFor(country,region,area){
-  var c=String(country||'').toUpperCase();
-  if(c==='KR')return '🇰🇷';if(c==='JP')return '🇯🇵';if(c==='US')return '🇺🇸';if(c==='TH')return '🇹🇭';if(c==='VN')return '🇻🇳';
-  var r=String(region||'')+' '+String(area||'');
-  if(/大阪|大坂|東京|京都|福岡|札幌|名古屋|osaka|tokyo|kyoto|fukuoka|일본|japan|オオサカ|오사카|도쿄|교토|후쿠오카|삿포로|나고야/i.test(r))return '🇯🇵';
-  if(/[가-힣]/.test(r)||/korea|seoul|busan|daegu|incheon|gwangju|gimpo|bundang|seongnam/i.test(r))return '🇰🇷';
-  if(/thai|bangkok|방콕|태국/i.test(r))return '🇹🇭';
-  return '🌎';
+  return ''; // 국기 이모지 제거(소프트 럭셔리) — 국가는 도시·지역 텍스트로 충분
 }
 
 function renderCats(){$('cats').innerHTML=CATS.map(c=>`<button class="cat ${CAT===c?'on':''}" onclick="setCat('${c}')">${cl(c)}</button>`).join('');}
