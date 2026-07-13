@@ -1662,7 +1662,7 @@ function openD(did,keep){stopAllVideos();const d=dById(did);if(!d)return;curD=di
  const handles=Object.assign({},d.handles||(d.insta?{instagram:d.insta}:{}));
  const snsHtml=Object.keys(SNSBASE).map(function(p){var h=igClean(handles[p]||'');return h?`<a href="${SNSBASE[p]}${h}" target="_blank" rel="noopener"><i class="ti ${SNSMETA[p][0]}"></i></a>`:'';}).join('');
  const naverHtml=(function(){var u=safeUrl(d.naver);return u?`<a href="${esc(u)}" target="_blank" rel="noopener" class="sns-nv" title="네이버 예약">N</a>`:'';})();
- const bookingHtml=(function(){var bu=safeUrl(d.bookingUrl);if(!bu)return '';var u=bu.toLowerCase();var lb=T[LANG].extBook,c='#573f47',ic='ti-calendar-check';
+ const bookingHtml=(function(){if(d.bookMode==='external')return '';var bu=safeUrl(d.bookingUrl);if(!bu)return '';var u=bu.toLowerCase();var lb=T[LANG].extBook,c='#573f47',ic='ti-calendar-check';
   if(/line\.me|lin\.ee|liff/.test(u)){lb=(LANG==='ja'?'LINEで予約':(LANG==='ko'?'LINE으로 예약':'Book on LINE'));c='#06C755';ic='ti-brand-line';}
   else if(/naver\./.test(u)){lb=(LANG==='ja'?'NAVERで予約':(LANG==='ko'?'네이버 예약':'Book on NAVER'));c='#03C75A';}
   else if(/hotpepper|hpb\.jp|beauty\.hotpepper/.test(u)){lb='HotPepper 予約';c='#E9531F';}
@@ -1708,7 +1708,10 @@ function openD(did,keep){stopAllVideos();const d=dById(did);if(!d)return;curD=di
  <div class="dfoot">
    <button class="cbtn save ${fav?'on':''}" onclick="toggleSave('${d.id}_0',event)"><i class="ti ti-heart${fav?'-filled':''}"></i><span>${fav?T[LANG].saved2:T[LANG].save}</span></button>
    ${d.uid&&!d.isMe?`<button class="cbtn" style="flex:0 0 auto;padding:0 16px" onclick="openChatWith('${d.id}')" title="${T[LANG].messages}"><i class="ti ti-message-2"></i></button>`:''}
-   <button class="cbtn book" onclick="${d.uid&&!d.isMe?`openBook('${d.id}')`:`openChatWith('${d.id}')`}"><i class="ti ti-calendar-heart"></i> ${T[LANG].book}</button>
+   ${(function(){var ext=(d.bookMode==='external')&&(safeUrl(d.bookingUrl)||safeUrl(d.naver));
+     if(ext)return '<a class="cbtn book" href="'+esc(ext)+'" target="_blank" rel="noopener"><i class="ti ti-calendar-heart"></i> '+T[LANG].book+'</a>';
+     var act=(d.uid&&!d.isMe)?("openBook('"+d.id+"')"):("openChatWith('"+d.id+"')");
+     return '<button class="cbtn book" onclick="'+act+'"><i class="ti ti-calendar-heart"></i> '+T[LANG].book+'</button>';})()}
  </div>`;
  if(d.uid)loadRevsFor(d);
  if(!keep){var wasOpen=$('dmodal').classList.contains('on');$('dmodal').classList.add('on');
@@ -2475,7 +2478,7 @@ function applyDesignerRows(rows){
       city:p.region||s.area||'',area:s.area||'',flag:flagFor(s.country,p.region,s.area),
       rating:5.0,rev:0,years:s.career||'',ko_ok:1,ver:1,
       spec:(s.specialties&&s.specialties.length)?s.specialties:((p.interests&&p.interests.length)?p.interests:['Hair']),
-      bio:p.bio||'',avatar:s.avatar||p.avatar_url||'',insta:(s.insta||'').replace(/^@/,''),naver:s.naver||'',blog:s.blog||'',bookingUrl:s.bookingUrl||'',sched:s.sched||null,newAt:s.lastWorkAt||0,
+      bio:p.bio||'',avatar:s.avatar||p.avatar_url||'',insta:(s.insta||'').replace(/^@/,''),naver:s.naver||'',blog:s.blog||'',bookingUrl:s.bookingUrl||'',bookMode:s.bookMode||'app',sched:s.sched||null,newAt:s.lastWorkAt||0,
       handles:s.sns||(s.insta?{instagram:(s.insta||'').replace(/^@/,'')}:{}),
       works:photos,ba:baFrom(s.ba,photos),
       sns:Object.keys(s.sns||{}).filter(function(k){return (s.sns||{})[k];}),services:svcNormalize(s.services),cur:s.cur||'',tags:s.tags||[],shopName:s.name||'',freelancer:!!s.freelancer,shopRaw:s,reviews:[]});
