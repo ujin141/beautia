@@ -789,11 +789,11 @@ function enterDashboard(){
 }
 // ===== 임시계정 최초 로그인: 본인 이메일(ID)·비밀번호 변경 =====
 var RS={
- ko:{title:'환영합니다 👋',desc:'보안을 위해 본인 이메일과 비밀번호로 바꿔주세요. 이 이메일이 앞으로 로그인 아이디이자 알림 받는 주소가 돼요.',emL:'내 이메일 (로그인 아이디)',pwL:'새 비밀번호 (8자 이상)',pw2L:'새 비밀번호 확인',save:'변경하고 시작하기',min:'비밀번호는 8자 이상이어야 해요',mism:'비밀번호가 일치하지 않아요',emBad:'올바른 이메일을 입력해주세요',pwFail:'비밀번호 변경 실패: ',emSent:'새 이메일로 확인 링크를 보냈어요. 링크를 눌러야 아이디가 바뀌어요. 비밀번호는 바로 적용됐어요 ✓',okPwOnly:'비밀번호가 변경됐어요 ✓',emErr:'비번은 변경됐지만 이메일 변경은 실패했어요(나중에 설정에서 가능): '},
- en:{title:'Welcome 👋',desc:'For security, set your own email and password. This email becomes your login ID and where notifications go.',emL:'Your email (login ID)',pwL:'New password (8+ chars)',pw2L:'Confirm new password',save:'Save & start',min:'Password must be at least 8 characters',mism:'Passwords do not match',emBad:'Enter a valid email',pwFail:'Password change failed: ',emSent:'Confirmation link sent to your new email. Click it to change your ID. Password already updated ✓',okPwOnly:'Password updated ✓',emErr:'Password changed, but email change failed (you can set it later): '},
- ja:{title:'ようこそ 👋',desc:'安全のため、ご自身のメールとパスワードに変更してください。このメールが今後のログインIDと通知先になります。',emL:'あなたのメール（ログインID）',pwL:'新しいパスワード（8文字以上）',pw2L:'新しいパスワード（確認）',save:'変更して開始',min:'パスワードは8文字以上',mism:'パスワードが一致しません',emBad:'正しいメールを入力してください',pwFail:'パスワード変更失敗: ',emSent:'新しいメールに確認リンクを送信しました。リンクを押すとIDが変わります。パスワードは適用済み ✓',okPwOnly:'パスワードを変更しました ✓',emErr:'パスワードは変更、メール変更は失敗（後で設定可）: '},
- th:{title:'ยินดีต้อนรับ 👋',desc:'เพื่อความปลอดภัย โปรดตั้งอีเมลและรหัสผ่านของคุณเอง อีเมลนี้จะเป็นไอดีเข้าสู่ระบบและที่รับการแจ้งเตือน',emL:'อีเมลของคุณ (ไอดี)',pwL:'รหัสผ่านใหม่ (8+ ตัว)',pw2L:'ยืนยันรหัสผ่านใหม่',save:'บันทึกและเริ่ม',min:'รหัสผ่านต้องอย่างน้อย 8 ตัว',mism:'รหัสผ่านไม่ตรงกัน',emBad:'กรอกอีเมลให้ถูกต้อง',pwFail:'เปลี่ยนรหัสผ่านล้มเหลว: ',emSent:'ส่งลิงก์ยืนยันไปอีเมลใหม่แล้ว กดลิงก์เพื่อเปลี่ยนไอดี รหัสผ่านใช้ได้แล้ว ✓',okPwOnly:'เปลี่ยนรหัสผ่านแล้ว ✓',emErr:'เปลี่ยนรหัสผ่านแล้วแต่เปลี่ยนอีเมลล้มเหลว: '},
- zh:{title:'欢迎 👋',desc:'为了安全，请设置你自己的邮箱和密码。此邮箱将作为登录账号和接收通知的地址。',emL:'你的邮箱（登录账号）',pwL:'新密码（8位以上）',pw2L:'确认新密码',save:'保存并开始',min:'密码至少8位',mism:'两次密码不一致',emBad:'请输入有效邮箱',pwFail:'修改密码失败：',emSent:'已向新邮箱发送确认链接，点击后即可更改账号。密码已生效 ✓',okPwOnly:'密码已修改 ✓',emErr:'密码已改，但邮箱修改失败（可稍后在设置更改）：'}
+ ko:{title:'환영합니다 👋',desc:'보안을 위해 본인 이메일과 비밀번호로 바꿔주세요. 이 이메일이 앞으로 로그인 아이디이자 알림 받는 주소가 돼요.',emL:'내 이메일 (로그인 아이디)',pwL:'새 비밀번호 (8자 이상)',pw2L:'새 비밀번호 확인',save:'변경하고 시작하기',min:'비밀번호는 8자 이상이어야 해요',mism:'비밀번호가 일치하지 않아요',emBad:'올바른 이메일을 입력해주세요',pwFail:'비밀번호 변경 실패: ',emDone:'아이디·비밀번호가 변경됐어요. 다음부터 새 이메일로 로그인하세요 ✓',okPwOnly:'비밀번호가 변경됐어요 ✓',emErr:'비번은 변경됐지만 이메일 변경은 실패했어요(나중에 설정에서 가능): '},
+ en:{title:'Welcome 👋',desc:'For security, set your own email and password. This email becomes your login ID and where notifications go.',emL:'Your email (login ID)',pwL:'New password (8+ chars)',pw2L:'Confirm new password',save:'Save & start',min:'Password must be at least 8 characters',mism:'Passwords do not match',emBad:'Enter a valid email',pwFail:'Password change failed: ',emDone:'Your login ID and password are updated. Sign in with your new email next time ✓',okPwOnly:'Password updated ✓',emErr:'Password changed, but email change failed (you can set it later): '},
+ ja:{title:'ようこそ 👋',desc:'安全のため、ご自身のメールとパスワードに変更してください。このメールが今後のログインIDと通知先になります。',emL:'あなたのメール（ログインID）',pwL:'新しいパスワード（8文字以上）',pw2L:'新しいパスワード（確認）',save:'変更して開始',min:'パスワードは8文字以上',mism:'パスワードが一致しません',emBad:'正しいメールを入力してください',pwFail:'パスワード変更失敗: ',emDone:'ログインIDとパスワードを変更しました。次回から新しいメールでログインしてください ✓',okPwOnly:'パスワードを変更しました ✓',emErr:'パスワードは変更、メール変更は失敗（後で設定可）: '},
+ th:{title:'ยินดีต้อนรับ 👋',desc:'เพื่อความปลอดภัย โปรดตั้งอีเมลและรหัสผ่านของคุณเอง อีเมลนี้จะเป็นไอดีเข้าสู่ระบบและที่รับการแจ้งเตือน',emL:'อีเมลของคุณ (ไอดี)',pwL:'รหัสผ่านใหม่ (8+ ตัว)',pw2L:'ยืนยันรหัสผ่านใหม่',save:'บันทึกและเริ่ม',min:'รหัสผ่านต้องอย่างน้อย 8 ตัว',mism:'รหัสผ่านไม่ตรงกัน',emBad:'กรอกอีเมลให้ถูกต้อง',pwFail:'เปลี่ยนรหัสผ่านล้มเหลว: ',emDone:'เปลี่ยนไอดีและรหัสผ่านแล้ว เข้าสู่ระบบด้วยอีเมลใหม่ครั้งต่อไป ✓',okPwOnly:'เปลี่ยนรหัสผ่านแล้ว ✓',emErr:'เปลี่ยนรหัสผ่านแล้วแต่เปลี่ยนอีเมลล้มเหลว: '},
+ zh:{title:'欢迎 👋',desc:'为了安全，请设置你自己的邮箱和密码。此邮箱将作为登录账号和接收通知的地址。',emL:'你的邮箱（登录账号）',pwL:'新密码（8位以上）',pw2L:'确认新密码',save:'保存并开始',min:'密码至少8位',mism:'两次密码不一致',emBad:'请输入有效邮箱',pwFail:'修改密码失败：',emDone:'账号和密码已更改，下次用新邮箱登录 ✓',okPwOnly:'密码已修改 ✓',emErr:'密码已改，但邮箱修改失败（可稍后在设置更改）：'}
 };
 function rst(k){var o=RS[LANG]||RS.ko;return o[k]!=null?o[k]:RS.ko[k];}
 function openReset(){
@@ -824,18 +824,24 @@ async function saveCredentials(){
   // 1) 비밀번호 변경(즉시 적용)
   var r1=await SB.auth.updateUser({password:p1});
   if(r1.error){$('rsBtn').disabled=false;msg(rst('pwFail')+r1.error.message);return;}
-  // 2) 이메일(로그인 아이디) 변경 — 현재와 다르면 확인메일 발송
-  var emailPending=false, emailErr='';
+  // 2) 이메일(로그인 아이디) 변경 — Edge Function(change-email)으로 확인메일 없이 즉시 변경
+  var emailChanged=false, emailErr='';
   if(em.toLowerCase()!==(EMAIL||'').toLowerCase()){
-    var r2=await SB.auth.updateUser({email:em});
-    if(r2.error){emailErr=r2.error.message;}else{emailPending=true;}
+    try{
+      var sess=(await SB.auth.getSession()).data.session;
+      var tok=sess&&sess.access_token;
+      var rr=await fetch(SB_URL+'/functions/v1/change-email',{method:'POST',headers:{'content-type':'application/json',apikey:SB_KEY,authorization:'Bearer '+tok},body:JSON.stringify({email:em})});
+      var jj=await rr.json().catch(function(){return {};});
+      if(rr.ok&&jj.ok){emailChanged=true;EMAIL=em;if($('who'))$('who').textContent=em;}
+      else{emailErr=(jj&&jj.error)||('HTTP '+rr.status);}
+    }catch(e){emailErr=String((e&&e.message)||e);}
   }
   // 3) 플래그 해제(다음 로그인부터 모달 안 뜸)
   var newShop=Object.assign({},ME.shop||{},{must_reset:false});
   try{await SB.from('profiles').update({shop:newShop}).eq('id',UID);}catch(e){}
   ME.shop=newShop;
   closeReset();enterDashboard();
-  if(emailPending)toast(rst('emSent'));
+  if(emailChanged)toast(rst('emDone'));
   else if(emailErr)toast(rst('emErr')+emailErr);
   else toast(rst('okPwOnly'));
 }
