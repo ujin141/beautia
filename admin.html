@@ -996,18 +996,19 @@ function renderBookings(err){
   if(!list.length){$('bklist').innerHTML='<div class="empty"><i class="ti ti-calendar"></i><p>해당 예약이 없어요</p></div>';return;}
   $('bklist').innerHTML=list.map(b=>{const s=st[b.status]||[b.status||'대기','y'];let svc=b.service;if(svc&&typeof svc==='object')svc=svc.n||'상담';
     const stt=b.status||'pending';const bid=esc(String(b.id));
+    const undo=`<button class="btn ghost sm" onclick="setBk('${bid}','pending')">되돌리기</button>`;
     const acts=stt==='pending'
       ? `<button class="btn sm" onclick="setBk('${bid}','accepted')">수락</button> <button class="btn ghost sm" onclick="setBk('${bid}','declined')">거절</button>`
       : ((stt==='accepted'||stt==='confirmed')
-        ? `<button class="btn sm" onclick="setBk('${bid}','done')">완료</button> <button class="btn ghost sm" onclick="setBk('${bid}','noshow')">노쇼</button>`
-        : '');
+        ? `<button class="btn sm" onclick="setBk('${bid}','done')">완료</button> <button class="btn ghost sm" onclick="setBk('${bid}','noshow')">노쇼</button> ${undo}`
+        : undo);
     return `<div class="li"><div class="lh"><div><div class="ln">${esc(dName(b.designer))}</div><div class="ls">${esc(svc||'상담')} · ${esc(b.date||'')} ${esc(b.time||'')}</div></div><span class="lbadge ${s[1]}">${esc(s[0])}</span></div>${b.note?`<div class="ls" style="margin-top:8px">📝 ${esc(b.note)}</div>`:''}${acts?`<div class="bkacts" style="display:flex;gap:8px;margin-top:12px">${acts}</div>`:''}</div>`;
   }).join('');
 }
 async function setBk(id,status){
   if(!id||id==='undefined'){toast('이 예약은 ID가 없어 처리할 수 없어요');return;}
-  const label={accepted:'수락',declined:'거절',done:'완료',noshow:'노쇼'}[status]||status;
-  if((status==='declined'||status==='noshow')&&!confirm('이 예약을 "'+label+'"(으)로 처리할까요?'))return;
+  const label={accepted:'수락',declined:'거절',done:'완료',noshow:'노쇼',pending:'대기로 되돌림'}[status]||status;
+  if((status==='declined'||status==='noshow'||status==='done')&&!confirm('이 예약을 "'+label+'"(으)로 처리할까요?'))return;
   const {error}=await SB.from('bookings').update({status}).eq('id',id);
   if(error){toast('처리 실패: '+error.message+' — db_enable_owner_admin.sql 재실행 필요');return;}
   const b=BOOKINGS.find(x=>String(x.id)===String(id));if(b)b.status=status;
