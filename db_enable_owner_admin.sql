@@ -42,3 +42,12 @@ drop policy if exists "reviews_owner_delete" on public.designer_reviews;
 create policy "reviews_owner_delete" on public.designer_reviews
   for delete to authenticated
   using ((auth.jwt() ->> 'email') = 'ujin141@naver.com');
+
+-- ===== 오너: 예약 상태 변경(수락/거절/완료) — /admin 에서 예약 처리 =====
+-- 디자이너 본인 대신 오너가 예약을 수락/거절할 수 있게 UPDATE 허용.
+grant update on public.bookings to authenticated;
+drop policy if exists "bookings_owner_update" on public.bookings;
+create policy "bookings_owner_update" on public.bookings
+  for update to authenticated
+  using ((auth.jwt() ->> 'email') = 'ujin141@naver.com')
+  with check ((auth.jwt() ->> 'email') = 'ujin141@naver.com');
