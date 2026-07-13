@@ -68,12 +68,13 @@ const NT: Record<"title" | "body", Record<string, Record<string, string>>> = {
   },
 };
 function normLang(l?: string): string { return String(l || "").slice(0, 2).toLowerCase(); }
-// key가 있고 수신자 언어 템플릿이 있으면 그 언어로, 없으면 전달된 fallback(발신자 언어) 사용
+// 수신자 언어를 아는 경우에만 그 언어로 렌더. 모르면(=lang 없음) 영어가 아니라
+// 전달된 fallback(발신자 언어)을 사용 — lang 컬럼 채워지기 전까지 최소한 발신자 언어 유지.
 function localized(kind: "title" | "body", key: string | undefined, lang: string, fallback: string): string {
   if (!key) return fallback;
   const m = NT[kind][key];
-  if (!m) return fallback;
-  return m[lang] || m.en || fallback;
+  if (!m || !lang || !m[lang]) return fallback;
+  return m[lang];
 }
 
 async function apnsSend(host: string, token: string, jwt: string, topic: string, payload: object): Promise<number> {
