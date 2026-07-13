@@ -662,11 +662,16 @@ body.mlock{position:fixed;left:0;right:0;width:100%;overflow:hidden;}
 .qreplies::-webkit-scrollbar{display:none;}
 .qrchip{flex:0 0 auto;background:#f7f2f1;border:1px solid var(--line);color:var(--ink2);font-size:13px;font-weight:600;padding:7px 13px;border-radius:999px;white-space:nowrap;cursor:pointer;}
 .qrchip:active{opacity:.65;}
+.mbub.bkcard{background:linear-gradient(180deg,#fbf5f7,#fff) !important;color:var(--ink) !important;border:1px solid #ecd9de !important;border-left:3px solid var(--plum) !important;border-radius:14px !important;font-weight:600;box-shadow:0 3px 12px -6px rgba(110,74,80,.28);}
+.mrow.me .mbub.bkcard{border-bottom-right-radius:14px !important;}
+.mrow .mbub.bkcard{border-bottom-left-radius:14px !important;}
 .cinput input{flex:1;border:1px solid var(--line);border-radius:999px;padding:11px 16px;font-size:14.5px;font-family:inherit;outline:none;background:var(--soft);}
 .cinput input:focus{border-color:var(--accent);}
 .cinput button{flex:0 0 auto;width:44px;height:44px;border-radius:50%;background:var(--plum);color:#fff;font-size:19px;display:flex;align-items:center;justify-content:center;}
 .empty{text-align:center;padding:90px 20px;color:var(--sub);column-span:all;}
-.empty i{font-size:52px;color:var(--line);} .empty p{margin-top:12px;font-size:16px;}
+.empty i{font-size:54px;color:#e0cdd3;}
+.empty .ectabtn{margin-top:16px;display:inline-flex;align-items:center;gap:6px;background:var(--plum);color:#fff;font-size:14px;font-weight:800;padding:11px 22px;border-radius:999px;border:0;cursor:pointer;}
+.empty .ectabtn:active{transform:scale(.96);} .empty p{margin-top:12px;font-size:16px;}
 
 /* modal */
 .modal{position:fixed;inset:0;z-index:60;background:rgba(20,12,16,.55);backdrop-filter:blur(4px);display:none;align-items:center;justify-content:center;padding:30px 18px;}
@@ -1493,7 +1498,7 @@ function render(){renderBanner();renderStories();renderPopular();
  if(_sv==='new')list=list.slice().sort(function(a,b){return (b.newAt||0)-(a.newAt||0);});
  else if(_sv==='rating')list=list.slice().sort(function(a,b){return (b.rating||0)-(a.rating||0);});
  else if(_sv==='near'&&USERLOC)list=list.slice().sort(function(a,b){return distOf(a.city)-distOf(b.city);});
- if(!list.length){g.innerHTML=`<div class="empty"><i class="ti ti-${VIEW==='saved'?'heart':'search'}"></i><p>${VIEW==='saved'?T[LANG].emptyS:T[LANG].noRes}</p></div>`;return;}
+ if(!list.length){g.innerHTML=`<div class="empty"><i class="ti ti-${VIEW==='saved'?'heart':'search'}"></i><p>${VIEW==='saved'?T[LANG].emptyS:T[LANG].noRes}</p><button class="ectabtn" onclick="setCat('All');var q=$('q');if(q)q.value='';var c=$('city');if(c)c.value='';setView('explore')"><i class="ti ti-compass"></i>${T[LANG].browseAll}</button></div>`;return;}
  g.innerHTML=list.map(tileHtml).join('');
 }
 function renderDesigners(q,city){var g=$('grid');g.classList.add('dgview');
@@ -1528,7 +1533,7 @@ let curW=null;
 function openWork(wid){const t=TILES.find(x=>x.wid===wid);if(!t)return;const d=dById(t.did);if(!d)return;curW=wid;const nm=(LANG==='ko'&&d.ko)?d.ko:d.name;const feat=d.featured,ig=igClean(d.insta);
  $('wcard').innerHTML=`<button class="wclose" onclick="closeWork()">×</button>
   <button class="wheart ${isSaved(t.wid)?'on':''}" onclick="toggleSave('${t.wid}',event)"><i class="ti ti-heart${isSaved(t.wid)?'-filled':''}"></i></button>
-  ${isVid(t.img)?`<video class="wimg wimgvid" src="${vsrc(t.img)}" ${t.poster?`poster="${im(t.poster,1200)}"`:''} preload="auto" controls autoplay loop playsinline></video>`:`<img class="wimg" src="${im(t.img,1200)}" alt="">`}
+  ${isVid(t.img)?`<video class="wimg wimgvid" src="${vsrc(t.img)}" ${t.poster?`poster="${im(t.poster,1200)}"`:''} preload="auto" controls autoplay loop playsinline muted></video>`:`<img class="wimg" src="${im(t.img,1200)}" alt="">`}
   ${t.text?`<div class="wtext">${esc(t.text)}</div>`:''}
   <div class="wbar">${avHtml(d,'wav')}
    <div class="wbinfo">${feat?`<div class="wkick"><i class="ti ti-external-link"></i> ${T[LANG].featured} · @${esc(ig)}</div><div class="wname">@${esc(ig)}</div><div class="wsub">${esc(cl(t.cat))}${t.city?' · '+esc(t.city):''}</div>`:`<div class="wkick"><i class="ti ti-photo"></i> ${T[LANG].byDesigner.replace('{n}',esc(nm))}</div><div class="wname">${esc(d.flag)} ${esc(nm)} ${d.ver?'<i class="ti ti-rosette-discount-check-filled" style="color:var(--gold);font-size:17px"></i>':''}</div><div class="wsub">${esc(cl(t.cat))}${t.area?' · '+esc(t.area):''}${t.city?', '+esc(t.city):''}</div>`}</div>
@@ -2278,8 +2283,10 @@ T.en.qrCust=['Are you available?','How much is it?','Where are you located?','Sh
 T.ja.qrCust=['予約できますか？','料金はいくらですか？','場所はどこですか？','ポートフォリオをもっと見たいです'];T.ja.qrDsgn=['はい、可能です','予約確定しました','その時間は難しいです','ポートフォリオをお送りします'];
 T.th.qrCust=['ว่างไหมคะ/ครับ?','ราคาเท่าไหร่?','อยู่ที่ไหน?','ขอดูผลงานเพิ่ม'];T.th.qrDsgn=['ได้ค่ะ/ครับ ว่าง','ยืนยันการจองแล้ว','เวลานั้นไม่ว่าง','จะส่งผลงานให้'];
 T.zh.qrCust=['可以预约吗？','多少钱？','在哪里？','想看更多作品'];T.zh.qrDsgn=['可以，有空','预约已确认','那个时间不行','我发作品给你'];
+T.ko.browseAll='둘러보기';T.en.browseAll='Browse all';T.ja.browseAll='すべて見る';T.th.browseAll='ดูทั้งหมด';T.zh.browseAll='浏览全部';
 function injectQuickReplies(){try{var c=curConv;if(!c)return;var input=document.querySelector('.chatcard .cinput');if(!input)return;if(document.querySelector('.chatcard .qreplies'))return;var iAmDsgn=(ME&&c.designer===ME.uid);var qs=(iAmDsgn?T[LANG].qrDsgn:T[LANG].qrCust)||[];if(!qs.length)return;var row=document.createElement('div');row.className='qreplies';qs.forEach(function(q){var b=document.createElement('button');b.className='qrchip';b.type='button';b.textContent=q;b.onclick=function(){var inp=document.getElementById('cmsg');if(inp)inp.value=q;sendChat();};row.appendChild(b);});input.parentNode.insertBefore(row,input);}catch(e){}}
-(function(){var _rt=renderThread;renderThread=function(){_rt.apply(this,arguments);injectQuickReplies();};})();
+function styleBkCards(){try{var a=document.querySelectorAll('.chatcard .mrow .mbub');for(var i=0;i<a.length;i++){var b=a[i];if(b.getAttribute('data-bk'))continue;if((b.textContent||'').indexOf('📅')===0){b.classList.add('bkcard');b.setAttribute('data-bk','1');}}}catch(e){}}
+(function(){var _rt=renderThread;renderThread=function(){_rt.apply(this,arguments);injectQuickReplies();styleBkCards();};})();
 function backToList(){if(chatSub){try{SB.removeChannel(chatSub);}catch(e){}chatSub=null;}curConv=null;loadConvos();}
 async function sendChat(){var inp=$('cmsg');if(!inp||!curConv)return;var v=inp.value.trim();if(!v)return;inp.value='';curConv._msgs=curConv._msgs||[];try{var data=(await SB.from('messages').insert({conversation:curConv.id,sender:ME.uid,body:v,lang:LANG,tr:{}}).select('*').maybeSingle()).data;if(data&&!curConv._msgs.some(function(x){return x.id===data.id;}))curConv._msgs.push(data);}catch(e){}try{SB.from('conversations').update({last_at:new Date().toISOString()}).eq('id',curConv.id).then(function(){},function(){});}catch(e){}
  try{pushNotify(otherUid(curConv),'💬 '+(ME.name||'Beautia'),v.slice(0,80));}catch(e){}
