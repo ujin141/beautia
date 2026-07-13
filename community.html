@@ -2203,6 +2203,23 @@ async function buildNotifs(){
   var revs=[];try{revs=(await SB.from('designer_reviews').select('stars,body,created_at').eq('designer',ME.uid).order('created_at',{ascending:false}).limit(10)).data||[];}catch(e){}
   revs.forEach(function(r){list.push({icon:'ti-star',title:N.review+' ★'+(r.stars||5),sub:(r.body||'').slice(0,44),ts:r.created_at,onclick:'closeNotif()'});});
  }
+ // 메시지 알림 — 상대가 보낸 최근 메시지(대화별 최신 1개). 예약 카드(📅)는 예약 알림과 중복이라 제외
+ try{
+  var mconvs=(await SB.from('conversations').select('id,customer,designer').or('customer.eq.'+ME.uid+',designer.eq.'+ME.uid).limit(30)).data||[];
+  if(mconvs.length){
+   var mids=mconvs.map(function(c){return c.id;});
+   var mparty={};mconvs.forEach(function(c){mparty[c.id]=(c.customer===ME.uid?c.designer:c.customer);});
+   var mm=(await SB.from('messages').select('conversation,sender,body,created_at').in('conversation',mids).neq('sender',ME.uid).order('created_at',{ascending:false}).limit(20)).data||[];
+   try{await fetchProfiles(mconvs.map(function(c){return mparty[c.id];}));}catch(e){}
+   var mseen={};
+   mm.forEach(function(m){
+    if(mseen[m.conversation])return;mseen[m.conversation]=1;
+    if((m.body||'').indexOf('📅')===0)return;
+    var oid=mparty[m.conversation];var onm=(PROFCACHE[oid]||{}).name||'';
+    list.push({icon:'ti-message-dots',title:'💬 '+onm,sub:(m.body||'').slice(0,60),ts:m.created_at,onclick:'closeNotif();openChat()'});
+   });
+  }
+ }catch(e){}
  list.sort(function(a,b){return new Date(b.ts)-new Date(a.ts);});
  list=list.slice(0,25);
  NOTIFS=list;
