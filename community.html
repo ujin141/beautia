@@ -2086,11 +2086,10 @@ function renderCoupCard(){var el=$('coupCard');if(!el)return;
   '<div class="coupreg"><input id="coupCode" maxlength="40" placeholder="'+esc(T[LANG].couponCodePh)+'" onkeydown="if(event.key===\'Enter\')registerCoupon()"><button onclick="registerCoupon()">'+esc(T[LANG].couponAdd)+'</button></div>'+
   '<div class="couplist">'+(items||('<div class="coupempty"><i class="ti ti-ticket-off"></i><p>'+esc(T[LANG].couponEmpty)+'</p></div>'))+'</div>';}
 async function registerCoupon(){if(!(ME&&ME.uid))return;var inp=$('coupCode');var code=((inp&&inp.value)||'').trim();if(!code)return;
+ // 서버측 redeem_coupon RPC — 코드로 조회+검증+발급을 원자 처리(코드 미노출·대소문자 무시·한도 검사)
  try{
-  var c=(await SB.from('coupons').select('id,active,expires_at').eq('code',code).eq('active',true).maybeSingle()).data;
-  if(!c||(c.expires_at&&new Date(c.expires_at)<new Date())){toast(T[LANG].couponBad);return;}
-  var r=await SB.from('user_coupons').insert({coupon:c.id,holder:ME.uid});
-  if(r.error){toast(String(r.error.code)==='23505'?T[LANG].couponDup:T[LANG].couponBad);return;}
+  var r=await SB.rpc('redeem_coupon',{p_code:code});
+  if(r.error){var m=String(r.error.message||'');toast(/already_redeemed|23505/.test(m)?T[LANG].couponDup:T[LANG].couponBad);return;}
   if(inp)inp.value='';toast(T[LANG].couponAdded);await loadCoupons();renderCoupCard();
  }catch(e){toast(T[LANG].couponBad);}}
 function renderAuth(){const li=$('loginBtn'),av=$('avatar'),jb=$('joinBtn');if(jb)jb.style.display=ME?'none':'';
