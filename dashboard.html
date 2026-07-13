@@ -830,7 +830,7 @@ async function saveCredentials(){
     try{
       var sess=(await SB.auth.getSession()).data.session;
       var tok=sess&&sess.access_token;
-      var rr=await fetch(SB_URL+'/functions/v1/change-email',{method:'POST',headers:{'content-type':'application/json',apikey:SB_KEY,authorization:'Bearer '+tok},body:JSON.stringify({email:em})});
+      var rr=await fetch(SB_URL+'/functions/v1/hyper-endpoint',{method:'POST',headers:{'content-type':'application/json',apikey:SB_KEY,authorization:'Bearer '+tok},body:JSON.stringify({email:em})});
       var jj=await rr.json().catch(function(){return {};});
       if(rr.ok&&jj.ok){emailChanged=true;EMAIL=em;if($('who'))$('who').textContent=em;}
       else{emailErr=(jj&&jj.error)||('HTTP '+rr.status);}
