@@ -392,6 +392,10 @@ body.mlock{position:fixed;left:0;right:0;width:100%;overflow:hidden;}
 .bksvc.on{border-color:var(--plum);background:var(--rosebg);}
 .bksvc .bsn{flex:1;font-weight:700;font-size:14.5px;color:var(--ink);}
 .bksvc .bsp{font-weight:800;font-size:14px;color:var(--plum);} .bksvc .bsd{font-size:12px;color:var(--sub);}
+.bkcoups{display:flex;flex-wrap:wrap;gap:8px;margin-top:6px;}
+.bkcoup{border:1.5px solid var(--line);border-radius:12px;padding:9px 13px;background:#fff;cursor:pointer;font-size:13.5px;color:var(--ink);transition:.12s;}
+.bkcoup b{color:var(--plum);}
+.bkcoup.on{border-color:var(--plum);background:var(--rosebg);}
 .bkdates{display:flex;gap:8px;overflow-x:auto;padding:6px 2px 2px;-webkit-overflow-scrolling:touch;scrollbar-width:none;} .bkdates::-webkit-scrollbar{display:none;}
 .bkchip.bdate{flex:0 0 auto;display:flex;flex-direction:column;align-items:center;gap:2px;min-width:52px;padding:10px 8px;border:1.5px solid var(--line);border-radius:14px;background:#fff;cursor:pointer;transition:.12s;}
 .bkchip.bdate.on{border-color:var(--plum);background:var(--plum);color:#fff;}
@@ -1978,7 +1982,9 @@ function renderMe(){var el=document.getElementById('mepage');if(!el)return;if(!M
 function savedCount(){return SAVED.length;}
 // ── 쿠폰 (고객: 개수·목록·코드 등록) ──
 function coupVal(c){if(!c)return '';return c.type==='percent'?((c.value||0)+'%'):((c.value||0).toLocaleString()+(!c.currency||c.currency==='KRW'?'원':' '+c.currency));}
-async function loadCoupons(){if(!(ME&&ME.uid)){couponCount=0;myCoupons=[];return;}try{var rows=(await SB.from('user_coupons').select('id,status,coupons(id,title,type,value,currency,expires_at)').eq('holder',ME.uid).eq('status','active').order('acquired_at',{ascending:false})).data||[];myCoupons=rows.filter(function(r){return r.coupons;});couponCount=myCoupons.length;if(VIEW==='me'){try{renderMe();}catch(e){}}}catch(e){}}
+async function loadCoupons(){if(!(ME&&ME.uid)){couponCount=0;myCoupons=[];return;}try{var rows=(await SB.from('user_coupons').select('id,status,coupons(id,title,type,value,currency,expires_at,issuer,scope)').eq('holder',ME.uid).eq('status','active').order('acquired_at',{ascending:false})).data||[];myCoupons=rows.filter(function(r){return r.coupons;});couponCount=myCoupons.length;if(VIEW==='me'){try{renderMe();}catch(e){}}}catch(e){}}
+// 예약 시 적용 가능한 쿠폰: 그 디자이너 발행분 또는 플랫폼(전체) 쿠폰 · 미만료
+function applicableCoupons(designerUid){var now=new Date();return myCoupons.filter(function(uc){var c=uc.coupons||{};if(c.expires_at&&new Date(c.expires_at)<now)return false;return c.issuer===designerUid||c.scope==='platform';});}
 function openCoupons(){if(!ME){openLogin('');return;}renderCoupCard();$('coupModal').classList.add('on');loadCoupons().then(function(){renderCoupCard();});}
 function closeCoup(){$('coupModal').classList.remove('on');}
 function renderCoupCard(){var el=$('coupCard');if(!el)return;
@@ -2326,6 +2332,9 @@ T.ko.couponEmpty='보유한 쿠폰이 없어요';T.en.couponEmpty='No coupons ye
 T.ko.couponAdded='쿠폰이 등록되었어요 ✨';T.en.couponAdded='Coupon added ✨';T.ja.couponAdded='クーポンを登録しました ✨';T.th.couponAdded='เพิ่มคูปองแล้ว ✨';T.zh.couponAdded='优惠券已添加 ✨';
 T.ko.couponBad='유효하지 않은 코드예요';T.en.couponBad='Invalid code';T.ja.couponBad='無効なコードです';T.th.couponBad='รหัสไม่ถูกต้อง';T.zh.couponBad='优惠码无效';
 T.ko.couponDup='이미 등록된 쿠폰이에요';T.en.couponDup='Already added';T.ja.couponDup='登録済みです';T.th.couponDup='เพิ่มไปแล้ว';T.zh.couponDup='已添加';
+T.ko.bkCoupon='쿠폰 적용';T.en.bkCoupon='Apply a coupon';T.ja.bkCoupon='クーポンを使う';T.th.bkCoupon='ใช้คูปอง';T.zh.bkCoupon='使用优惠券';
+T.ko.bkCouponNone='적용 안 함';T.en.bkCouponNone='None';T.ja.bkCouponNone='使わない';T.th.bkCouponNone='ไม่ใช้';T.zh.bkCouponNone='不使用';
+T.ko.bkCouponUse='쿠폰 사용';T.en.bkCouponUse='Coupon';T.ja.bkCouponUse='クーポン';T.th.bkCouponUse='คูปอง';T.zh.bkCouponUse='优惠券';
 function injectQuickReplies(){try{var c=curConv;if(!c)return;var input=document.querySelector('.chatcard .cinput');if(!input)return;if(document.querySelector('.chatcard .qreplies'))return;var iAmDsgn=(ME&&c.designer===ME.uid);var qs=(iAmDsgn?T[LANG].qrDsgn:T[LANG].qrCust)||[];if(!qs.length)return;var row=document.createElement('div');row.className='qreplies';qs.forEach(function(q){var b=document.createElement('button');b.className='qrchip';b.type='button';b.textContent=q;b.onclick=function(){var inp=document.getElementById('cmsg');if(inp)inp.value=q;sendChat();};row.appendChild(b);});input.parentNode.insertBefore(row,input);}catch(e){}}
 function styleBkCards(){try{var a=document.querySelectorAll('.chatcard .mrow .mbub');for(var i=0;i<a.length;i++){var b=a[i];if(b.getAttribute('data-bk'))continue;if((b.textContent||'').indexOf('📅')===0){b.classList.add('bkcard');b.setAttribute('data-bk','1');}}}catch(e){}}
 (function(){var _rt=renderThread;renderThread=function(){_rt.apply(this,arguments);injectQuickReplies();styleBkCards();};})();
@@ -2466,7 +2475,14 @@ function bkRender(){var d=dById(bkSel.did);if(!d)return;
   <div class="il">${T[LANG].bkDate}</div><div class="bkdates">${bkDateChips()}</div>
   <div class="il">${T[LANG].bkTime}</div><div class="bkslots">${bkTimeGrid()}</div>
   <div class="il">${T[LANG].bkNote}</div><textarea class="linput" id="bkNote" rows="2" style="resize:none" placeholder="${T[LANG].bkNotePh}">${esc(bkSel.note||'')}</textarea>
+  ${bkCouponRow(d)}
   <button class="lcont" style="width:100%;margin-top:16px${can?'':';opacity:.5'}" onclick="submitBooking()"><i class="ti ti-calendar-heart"></i> ${can?(T[LANG].bkSend+' · '+bkSel.time):T[LANG].bkPickSlot}</button>`;}
+function bkCouponRow(d){var av=applicableCoupons(d.uid);if(!av.length)return '';
+ return '<div class="il">'+esc(T[LANG].bkCoupon)+'</div><div class="bkcoups">'+
+  '<button class="bkcoup'+(bkSel.coupon?'':' on')+'" onclick="bkPickCoupon(\'\')">'+esc(T[LANG].bkCouponNone)+'</button>'+
+  av.map(function(uc){var c=uc.coupons||{};return '<button class="bkcoup'+(bkSel.coupon===uc.id?' on':'')+'" onclick="bkPickCoupon(\''+uc.id+'\')"><b>'+esc(coupVal(c))+'</b> '+esc(c.title||'')+'</button>';}).join('')+
+  '</div>';}
+function bkPickCoupon(ucId){bkSel.coupon=(bkSel.coupon===ucId)?'':ucId;bkRender();}
 async function submitBooking(){const d=dById(bkSel.did);if(!d||!d.uid||!ME||!ME.uid)return;
  var si=bkSel.svc;var svc=(si>=0&&d.services&&d.services[si])?{n:svcLabel(d.services[si],LANG),key:d.services[si].key||'',tr:d.services[si].tr||null,p:d.services[si].p||'',du:d.services[si].du||''}:{n:T[LANG].bkConsult,p:'',du:''};
  var date=bkSel.date,time=bkSel.time;var nt=$('bkNote');bkSel.note=nt?nt.value:'';var note=(bkSel.note||'').slice(0,1000);
@@ -2479,9 +2495,16 @@ async function submitBooking(){const d=dById(bkSel.did);if(!d||!d.uid||!ME||!ME.
   if(r.error){toast(T[LANG].bkFail+': '+r.error.message);return;}
   _bid=r.data&&r.data.id;
  }catch(e){toast(T[LANG].bkFail);return;}
- bkNotifyConv(ME.uid,d.uid,'📅 '+T[LANG].bkTitle+': '+svc.n+(svc.p?' ('+svc.p+')':'')+' · '+date+' '+time+(note?'\n'+note:''));
- pushNotify(d.uid,'📅 '+T[LANG].bkNew,(ME.name||'')+' · '+svc.n+' · '+date+' '+time);
+ // 쿠폰 적용(기록 방식): 선택한 쿠폰을 이 예약에 사용 처리 → 현장에서 할인
+ var coupTxt='';
+ if(bkSel.coupon&&_bid){var uc=myCoupons.filter(function(x){return x.id===bkSel.coupon;})[0];
+  if(uc&&uc.coupons){coupTxt='\n🎟️ '+T[LANG].bkCouponUse+': '+coupVal(uc.coupons)+' '+(uc.coupons.title||'');
+   try{await SB.from('user_coupons').update({status:'used',booking:_bid,used_at:new Date().toISOString()}).eq('id',uc.id).eq('holder',ME.uid);}catch(e){}
+   loadCoupons();}}
+ bkNotifyConv(ME.uid,d.uid,'📅 '+T[LANG].bkTitle+': '+svc.n+(svc.p?' ('+svc.p+')':'')+' · '+date+' '+time+(note?'\n'+note:'')+coupTxt);
+ pushNotify(d.uid,'📅 '+T[LANG].bkNew,(ME.name||'')+' · '+svc.n+' · '+date+' '+time+(coupTxt?' · 🎟️':''));
  pushNotify(ME.uid,'📅 '+T[LANG].bkSent,svc.n+' · '+date+' '+time);
+ bkSel.coupon='';
  closeBk();
  if(_bid){tryDeposit(_bid,d);}else{toast(T[LANG].bkSent);}}
 // 디자이너가 보증금을 켰으면 예약 직후 결제로 이동(없으면 그냥 예약 완료)
