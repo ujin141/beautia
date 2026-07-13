@@ -9,11 +9,13 @@ import webpush from "npm:web-push@3.6.7";
 
 const SUPABASE_URL = Deno.env.get("SUPABASE_URL")!;
 const SRK = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
-webpush.setVapidDetails(
-  "mailto:hello@beautia.io",
-  Deno.env.get("VAPID_PUBLIC_KEY") || "",
-  Deno.env.get("VAPID_PRIVATE_KEY") || "",
-);
+const VAPID_PUB = Deno.env.get("VAPID_PUBLIC_KEY");
+const VAPID_PRIV = Deno.env.get("VAPID_PRIVATE_KEY");
+const WEBPUSH_ON = !!(VAPID_PUB && VAPID_PRIV);
+if (WEBPUSH_ON) {
+  // 빈/무효 키로 호출하면 throw → VAPID 설정된 경우에만 초기화
+  webpush.setVapidDetails("mailto:hello@beautia.io", VAPID_PUB!, VAPID_PRIV!);
+}
 
 const cors = {
   "Access-Control-Allow-Origin": "*",
@@ -99,9 +101,9 @@ Deno.serve(async (req) => {
     const b = String(body || "").slice(0, 180);
     const u = /^\/[\w\-/?=&.%]*$/.test(String(url || "")) ? String(url) : "/community";
 
-    // ───────── 1) 웹푸시 (VAPID / push_subs) ─────────
+    // ───────── 1) 웹푸시 (VAPID / push_subs) — VAPID 설정된 경우만 ─────────
     let sent = 0, subsTotal = 0;
-    try {
+    if (WEBPUSH_ON) try {
       const r = await fetch(`${SUPABASE_URL}/rest/v1/push_subs?user_id=eq.${encodeURIComponent(to)}&select=endpoint,sub`, { headers: H });
       const subs: { endpoint: string; sub: object }[] = r.ok ? await r.json() : [];
       subsTotal = subs.length;
