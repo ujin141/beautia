@@ -242,6 +242,16 @@ textarea.inp{resize:vertical;min-height:80px;line-height:1.6;}
 /* 고객 관리 */
 .clsum{display:flex;gap:16px;margin-top:10px;font-size:12.5px;font-weight:800;color:var(--plum);}
 .clhrow{display:flex;justify-content:space-between;align-items:center;gap:10px;}
+.dcrow{display:flex;align-items:center;gap:12px;border:1px solid var(--line);border-radius:14px;padding:11px 13px;margin-bottom:9px;background:#fff;}
+.dcrow.off{opacity:.55;}
+.dcval{flex:none;min-width:58px;text-align:center;font-weight:800;font-size:15px;color:#fff;background:linear-gradient(135deg,#b56576,#6d597a);border-radius:11px;padding:9px 8px;letter-spacing:-.3px;}
+.dcmid{flex:1;min-width:0;}
+.dcname{font-weight:700;font-size:14.5px;color:var(--ink);}
+.dcsub{font-size:12px;color:var(--sub);margin-top:3px;}
+.dccode{font-family:ui-monospace,Menlo,monospace;font-weight:700;color:var(--ink2);background:#f4ecef;border-radius:6px;padding:1px 6px;}
+.dcoff{font-size:11px;font-weight:700;color:#c0392b;background:#fbe9e7;border-radius:6px;padding:1px 6px;margin-left:5px;}
+.dcdel{flex:none;width:34px;height:34px;border:none;background:transparent;color:#c3a9b0;font-size:18px;cursor:pointer;border-radius:9px;}
+.dcdel:active{background:#f4ecef;color:#c0392b;}
 .clrow{border:1px solid var(--line);border-radius:14px;margin-bottom:9px;overflow:hidden;background:#fff;}
 .clhead{display:flex;align-items:center;gap:11px;padding:12px 13px;cursor:pointer;}
 .clav{width:40px;height:40px;border-radius:50%;background:var(--rosebg);color:var(--plum);font-weight:800;display:flex;align-items:center;justify-content:center;font-size:17px;flex:0 0 auto;text-transform:uppercase;}
@@ -392,6 +402,24 @@ textarea.inp{resize:vertical;min-height:80px;line-height:1.6;}
       <div class="prog"><div class="progbar" id="progBar"></div></div>
       <div class="hint" id="progPct" style="margin:8px 0 0"></div>
       <div id="progTips"></div>
+    </div>
+    <div class="card" id="coupCard">
+      <div class="clhrow"><h2 style="margin:0"><i class="ti ti-ticket"></i> <span data-t="dcTitle">쿠폰 · 이벤트</span></h2><button class="btn ghost sm" onclick="toggleCoupForm()"><i class="ti ti-plus"></i> <span data-t="dcNew">쿠폰 만들기</span></button></div>
+      <div class="hint" style="margin:2px 0 12px" data-t="dcHint">고객에게 줄 할인 쿠폰을 만들어요. 코드를 정하면 손님이 앱에서 직접 등록할 수 있어요.</div>
+      <div id="coupForm" class="hide" style="margin-bottom:14px">
+        <div class="row"><label data-t="dcTitleL">쿠폰 이름</label><input class="inp" id="dcTitle" data-tph="dcTitlePh" placeholder="예: 첫 방문 10% 할인"></div>
+        <div class="two">
+          <div class="row"><label data-t="dcTypeL">할인 종류</label><select class="inp" id="dcType" onchange="dcTypeChange()"><option value="amount" data-t="dcAmount">정액 할인</option><option value="percent" data-t="dcPercent">% 할인</option></select></div>
+          <div class="row"><label id="dcValLbl" data-t="dcValAmount">할인 금액</label><input class="inp" id="dcValue" type="number" min="0" inputmode="numeric" placeholder="10000"></div>
+        </div>
+        <div class="two">
+          <div class="row"><label><span data-t="dcCode">쿠폰 코드</span> <span class="hint" style="display:inline;font-weight:600" data-t="dcOpt">· 선택</span></label><input class="inp" id="dcCode" data-tph="dcCodePh" placeholder="예: WELCOME10" style="text-transform:uppercase"></div>
+          <div class="row"><label><span data-t="dcExpiry">만료일</span> <span class="hint" style="display:inline;font-weight:600" data-t="dcOpt">· 선택</span></label><input class="inp" id="dcExpiry" type="date"></div>
+        </div>
+        <div class="hint" style="margin:2px 0 12px" data-t="dcCodeHint">코드를 정하면 손님이 "쿠폰함 → 코드 등록"으로 받아요. 비우면 목록 노출용이에요.</div>
+        <button class="btn" id="dcSaveBtn" onclick="saveCoupon()"><i class="ti ti-ticket"></i> <span data-t="dcCreate">쿠폰 발행</span></button>
+      </div>
+      <div id="coupList"></div>
     </div>
     <button class="advtoggle" id="advToggle" onclick="toggleAdv()"><span data-t="advMore">성과·인사이트 더보기</span> <i class="ti ti-chevron-down"></i></button>
     <div id="homeAdv" class="hide">
@@ -650,6 +678,11 @@ Object.assign(T.zh,{
 });
 Object.assign(T.ja,{revTrend:'月別売上',posterBtn:'販促ポスター',reviewReqBtn:'レビュー依頼',reviewReqMsg:'施術のレビューを残していただけますか 😊 こちらからどうぞ：',reviewReqCopied:'レビュー依頼をコピーしました ✨',posterCta:'今すぐ予約 ✨',posterScan:'QRをスキャン、または下のリンクへ',posterPrintHint:'印刷画面で「PDFで保存」または印刷を選んでください（Ctrl+P）。'});
 Object.assign(T.th,{revTrend:'รายได้รายเดือน',posterBtn:'โปสเตอร์',reviewReqBtn:'ขอรีวิว',reviewReqMsg:'ฝากรีวิวการใช้บริการด้วยนะคะ 😊 กดที่ลิงก์นี้ได้เลย:',reviewReqCopied:'คัดลอกข้อความขอรีวิวแล้ว ✨',posterCta:'จองเลยตอนนี้ ✨',posterScan:'สแกน QR หรือเข้าลิงก์ด้านล่าง',posterPrintHint:'เลือก “บันทึกเป็น PDF” หรือพิมพ์ในหน้าต่าง (Ctrl+P).'});
+Object.assign(T.ko,{dcTitle:'쿠폰 · 이벤트',dcNew:'쿠폰 만들기',dcHint:'고객에게 줄 할인 쿠폰을 만들어요. 코드를 정하면 손님이 앱에서 직접 등록할 수 있어요.',dcTitleL:'쿠폰 이름',dcTitlePh:'예: 첫 방문 10% 할인',dcTypeL:'할인 종류',dcAmount:'정액 할인',dcPercent:'% 할인',dcValAmount:'할인 금액',dcValPercent:'할인율 (%)',dcCode:'쿠폰 코드',dcOpt:'· 선택',dcCodePh:'예: WELCOME10',dcExpiry:'만료일',dcCodeHint:'코드를 정하면 손님이 "쿠폰함 → 코드 등록"으로 받아요. 비우면 목록 노출용이에요.',dcCreate:'쿠폰 발행',dcEmpty:'아직 만든 쿠폰이 없어요. 위에서 첫 쿠폰을 만들어보세요 🎟️',dcUsedN:'{n}회 사용',dcUntil:'{d}까지',dcExpired:'만료',dcInactive:'비활성',dcNeedTitle:'쿠폰 이름을 입력하세요',dcNeedValue:'할인 값을 입력하세요',dcMaxPct:'할인율은 100%를 넘을 수 없어요',dcDupCode:'이미 쓰이는 코드예요. 다른 코드를 넣어주세요',dcCreated:'쿠폰이 발행됐어요 🎟️',dcDelConfirm:'이 쿠폰을 삭제할까요?',dcDeleted:'쿠폰이 삭제됐어요'});
+Object.assign(T.en,{dcTitle:'Coupons · Events',dcNew:'New coupon',dcHint:'Create discount coupons for clients. Set a code and they can register it in the app.',dcTitleL:'Coupon name',dcTitlePh:'e.g. 10% off first visit',dcTypeL:'Discount type',dcAmount:'Fixed amount',dcPercent:'Percent',dcValAmount:'Discount amount',dcValPercent:'Discount (%)',dcCode:'Coupon code',dcOpt:'· optional',dcCodePh:'e.g. WELCOME10',dcExpiry:'Expiry date',dcCodeHint:'With a code, clients redeem it via "My coupons → Enter code". Leave blank for list-only.',dcCreate:'Issue coupon',dcEmpty:'No coupons yet. Create your first one above 🎟️',dcUsedN:'{n} used',dcUntil:'until {d}',dcExpired:'Expired',dcInactive:'Inactive',dcNeedTitle:'Enter a coupon name',dcNeedValue:'Enter a discount value',dcMaxPct:'Percent cannot exceed 100%',dcDupCode:'That code is taken. Try another one',dcCreated:'Coupon issued 🎟️',dcDelConfirm:'Delete this coupon?',dcDeleted:'Coupon deleted'});
+Object.assign(T.ja,{dcTitle:'クーポン · イベント',dcNew:'クーポン作成',dcHint:'お客様に配る割引クーポンを作成。コードを設定すると、お客様がアプリで登録できます。',dcTitleL:'クーポン名',dcTitlePh:'例：初回10%オフ',dcTypeL:'割引タイプ',dcAmount:'定額割引',dcPercent:'％割引',dcValAmount:'割引金額',dcValPercent:'割引率（％）',dcCode:'クーポンコード',dcOpt:'· 任意',dcCodePh:'例：WELCOME10',dcExpiry:'有効期限',dcCodeHint:'コードを設定すると、お客様が「クーポン → コード入力」で受け取れます。空欄なら一覧表示用。',dcCreate:'クーポン発行',dcEmpty:'まだクーポンがありません。上で最初の1枚を作りましょう 🎟️',dcUsedN:'{n}回利用',dcUntil:'{d}まで',dcExpired:'期限切れ',dcInactive:'無効',dcNeedTitle:'クーポン名を入力してください',dcNeedValue:'割引の値を入力してください',dcMaxPct:'割引率は100％を超えられません',dcDupCode:'そのコードは使用中です。別のコードを入力してください',dcCreated:'クーポンを発行しました 🎟️',dcDelConfirm:'このクーポンを削除しますか？',dcDeleted:'クーポンを削除しました'});
+Object.assign(T.th,{dcTitle:'คูปอง · อีเวนต์',dcNew:'สร้างคูปอง',dcHint:'สร้างคูปองส่วนลดให้ลูกค้า ตั้งรหัสแล้วลูกค้าลงทะเบียนในแอปได้เลย',dcTitleL:'ชื่อคูปอง',dcTitlePh:'เช่น ลด 10% ครั้งแรก',dcTypeL:'ประเภทส่วนลด',dcAmount:'จำนวนเงิน',dcPercent:'เปอร์เซ็นต์',dcValAmount:'จำนวนส่วนลด',dcValPercent:'ส่วนลด (%)',dcCode:'รหัสคูปอง',dcOpt:'· ไม่บังคับ',dcCodePh:'เช่น WELCOME10',dcExpiry:'วันหมดอายุ',dcCodeHint:'ถ้าตั้งรหัส ลูกค้ารับผ่าน "คูปองของฉัน → กรอกรหัส" เว้นว่างไว้ = แสดงในรายการ',dcCreate:'ออกคูปอง',dcEmpty:'ยังไม่มีคูปอง สร้างใบแรกด้านบนเลย 🎟️',dcUsedN:'ใช้ {n} ครั้ง',dcUntil:'ถึง {d}',dcExpired:'หมดอายุ',dcInactive:'ปิดใช้',dcNeedTitle:'กรอกชื่อคูปอง',dcNeedValue:'กรอกค่าส่วนลด',dcMaxPct:'ส่วนลดต้องไม่เกิน 100%',dcDupCode:'รหัสนี้ถูกใช้แล้ว ลองรหัสอื่น',dcCreated:'ออกคูปองแล้ว 🎟️',dcDelConfirm:'ลบคูปองนี้?',dcDeleted:'ลบคูปองแล้ว'});
+Object.assign(T.zh,{dcTitle:'优惠券 · 活动',dcNew:'新建优惠券',dcHint:'为顾客创建折扣券。设置代码后，顾客可在 App 中自行登记。',dcTitleL:'优惠券名称',dcTitlePh:'例：首次到店 9 折',dcTypeL:'折扣类型',dcAmount:'固定金额',dcPercent:'百分比',dcValAmount:'折扣金额',dcValPercent:'折扣（%）',dcCode:'优惠券代码',dcOpt:'· 可选',dcCodePh:'例：WELCOME10',dcExpiry:'到期日',dcCodeHint:'设置代码后，顾客通过“我的优惠券 → 输入代码”领取。留空则仅在列表展示。',dcCreate:'发行优惠券',dcEmpty:'还没有优惠券。在上方创建第一张吧 🎟️',dcUsedN:'已用 {n} 次',dcUntil:'至 {d}',dcExpired:'已过期',dcInactive:'未启用',dcNeedTitle:'请输入优惠券名称',dcNeedValue:'请输入折扣值',dcMaxPct:'折扣不能超过 100%',dcDupCode:'该代码已被使用，请换一个',dcCreated:'优惠券已发行 🎟️',dcDelConfirm:'删除这张优惠券？',dcDeleted:'优惠券已删除'});
 function t(k){var o=T[LANG]||T.ko;return (k in o)?o[k]:(T.ko[k]!=null?T.ko[k]:k);}
 function tf(k,map){var s=t(k);for(var x in (map||{}))s=String(s).split('{'+x+'}').join(map[x]);return s;}
 function catLabel(en){var k='cat_'+en,o=T[LANG]||T.ko;if(k in o)return o[k];if(k in T.ko)return T.ko[k];return en;}
@@ -747,6 +780,77 @@ function renderHome(){
   var _wc=$('wizCta');if(_wc)_wc.classList.toggle('hide',pct>=100);
   const missing=checks.filter(c=>!c[1]).slice(0,4);
   $('progTips').innerHTML=missing.length?missing.map(c=>`<div class="tip"><i class="ti ti-circle-plus"></i> ${esc(tf('fillTip',{label:c[0]}))}</div>`).join(''):`<div class="tip" style="color:var(--green)"><i class="ti ti-circle-check"></i> ${esc(t('profileComplete'))}</div>`;
+  loadCoupons();
+}
+
+// ---------- 쿠폰 (디자이너 발행) ----------
+var myCoupons=[];
+function toggleCoupForm(){var f=$('coupForm');if(f)f.classList.toggle('hide');}
+function dcTypeChange(){var ty=($('dcType')||{}).value||'amount';var lbl=$('dcValLbl');if(lbl){var k=ty==='percent'?'dcValPercent':'dcValAmount';lbl.setAttribute('data-t',k);lbl.textContent=t(k);}var v=$('dcValue');if(v)v.placeholder=ty==='percent'?'10':'10000';}
+function coupValLabel(c){if(c.type==='percent')return Number(c.value||0)+'%';return curSym(c.currency||'KRW')+Number(c.value||0).toLocaleString();}
+async function loadCoupons(){
+  if(!UID){myCoupons=[];renderCoupList();return;}
+  try{
+    var r=await SB.from('coupons').select('id,title,type,value,currency,code,expires_at,active,used_count').eq('issuer',UID).order('created_at',{ascending:false});
+    myCoupons=r.error?[]:(r.data||[]);
+  }catch(e){myCoupons=[];}
+  renderCoupList();
+}
+function renderCoupList(){
+  var el=$('coupList');if(!el)return;
+  if(!myCoupons.length){el.innerHTML='<div class="hint" style="text-align:center;padding:12px 0;margin:0">'+esc(t('dcEmpty'))+'</div>';return;}
+  var now=new Date();
+  el.innerHTML=myCoupons.map(function(c){
+    var exp=c.expires_at?new Date(c.expires_at):null;
+    var expired=exp&&exp.getTime()<now.getTime();
+    var off=(c.active===false)||expired;
+    var sub=[];
+    if(c.code)sub.push('<span class="dccode">'+esc(c.code)+'</span>');
+    sub.push(esc(tf('dcUsedN',{n:c.used_count||0})));
+    if(exp)sub.push((expired?'⚠ ':'')+esc(tf('dcUntil',{d:exp.toISOString().slice(0,10)})));
+    return '<div class="dcrow'+(off?' off':'')+'">'+
+      '<div class="dcval">'+esc(coupValLabel(c))+'</div>'+
+      '<div class="dcmid"><div class="dcname">'+esc(c.title)+(off?' <span class="dcoff">'+esc(t(expired?'dcExpired':'dcInactive'))+'</span>':'')+'</div>'+
+      '<div class="dcsub">'+sub.join(' · ')+'</div></div>'+
+      '<button class="dcdel" onclick="delCoupon(\''+c.id+'\')" aria-label="delete"><i class="ti ti-trash"></i></button>'+
+    '</div>';
+  }).join('');
+}
+async function saveCoupon(){
+  var title=((($('dcTitle')||{}).value)||'').trim();
+  var type=($('dcType')||{}).value||'amount';
+  var value=parseInt((($('dcValue')||{}).value)||'',10);
+  var code=((($('dcCode')||{}).value)||'').trim().toUpperCase();
+  var expiry=(($('dcExpiry')||{}).value)||'';
+  if(!title){toast(t('dcNeedTitle'));return;}
+  if(!(value>0)){toast(t('dcNeedValue'));return;}
+  if(type==='percent'&&value>100){toast(t('dcMaxPct'));return;}
+  var btn=$('dcSaveBtn');if(btn)btn.disabled=true;
+  var rec={issuer:UID,scope:'designer',title:title,type:type,value:value,currency:state.cur||langCur(LANG),active:true};
+  if(code)rec.code=code;
+  if(expiry)rec.expires_at=new Date(expiry+'T23:59:59').toISOString();
+  try{
+    var r=await SB.from('coupons').insert(rec).select('id').maybeSingle();
+    if(r.error){
+      if(r.error.code==='23505')toast(t('dcDupCode'));
+      else toast(t('saveFailPre')+r.error.message);
+      if(btn)btn.disabled=false;return;
+    }
+    toast(t('dcCreated'));
+    ['dcTitle','dcValue','dcCode','dcExpiry'].forEach(function(id){var e=$(id);if(e)e.value='';});
+    var f=$('coupForm');if(f)f.classList.add('hide');
+    loadCoupons();
+  }catch(e){toast(t('errPre')+(e.message||e));}
+  if(btn)btn.disabled=false;
+}
+async function delCoupon(id){
+  if(!confirm(t('dcDelConfirm')))return;
+  try{
+    var r=await SB.from('coupons').delete().eq('id',id).eq('issuer',UID);
+    if(r.error){toast(t('errPre')+r.error.message);return;}
+    myCoupons=myCoupons.filter(function(c){return c.id!==id;});
+    renderCoupList();toast(t('dcDeleted'));
+  }catch(e){toast(t('errPre')+(e.message||e));}
 }
 
 // ---------- 프로필 채우기/저장 ----------
