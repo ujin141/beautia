@@ -2744,6 +2744,27 @@ var NB={native:false,pushToken:null};
  try{if(P.StatusBar){P.StatusBar.setStyle({style:'DARK'});if(PLAT==='android')P.StatusBar.setBackgroundColor({color:'#ffffff'});}}catch(e){}
  // 2) 네이티브 공유 시트로 대체 (WKWebView엔 navigator.share 없음)
  try{if(P.Share){navigator.share=function(data){data=data||{};if(data.files&&data.files.length)return Promise.reject(new Error('files-unsupported'));return P.Share.share({title:data.title||'Beautia',text:data.text||'',url:data.url||'',dialogTitle:'Beautia'}).then(function(){});};}}catch(e){}
+ // 2.5) 외부/별도페이지 링크 → 인앱 브라우저(SFSafariViewController). 앱 안에서 열고 "완료"로 바로 복귀(사파리로 안 튕김).
+ //      Browser 플러그인 없는 구버전 앱이면 이 블록은 건너뛰고 기존 동작(사파리) 유지.
+ try{if(P.Browser){
+   var openIn=function(u){try{P.Browser.open({url:u,presentationStyle:'popover'});}catch(_){}};
+   var isBeautia=function(h){return /(^|\.)beautia\.io$/i.test(h);};
+   var routeUrl=function(raw){ // 인앱 브라우저로 열어야 하면 절대URL, 아니면 null
+     if(!raw||/^(#|javascript:|mailto:|tel:|sms:|data:)/i.test(raw))return null;
+     var a;try{a=new URL(raw,location.href);}catch(_){return null;}
+     if(a.protocol!=='http:'&&a.protocol!=='https:')return null;
+     var ext=!isBeautia(a.hostname);                       // 외부 도메인(인스타·네이버·지도 등)
+     var sep=isBeautia(a.hostname)&&/\.html($|[?#])/i.test(a.pathname); // 별도 정적페이지(약관·정책 등)
+     return (ext||sep)?a.href:null;
+   };
+   document.addEventListener('click',function(e){
+     var a=e.target&&e.target.closest&&e.target.closest('a[href]');if(!a)return;
+     var u=routeUrl(a.getAttribute('href'));if(!u)return;
+     e.preventDefault();e.stopPropagation();openIn(u);
+   },true);
+   var _open=window.open;
+   window.open=function(u,n,f){var r=routeUrl(u);if(r){openIn(r);return null;}return _open?_open.call(window,u,n,f):null;};
+ }}catch(e){}
  // 3) 햅틱 — 주요 버튼 탭에 가벼운 진동
  try{if(P.Haptics){document.addEventListener('click',function(e){var t=e.target&&e.target.closest&&e.target.closest('button.pri,.savebtn,.invshare,[data-hap]');if(t){try{P.Haptics.impact({style:'LIGHT'});}catch(_){}}},{capture:true,passive:true});}}catch(e){}
  // 4) 앱 생명주기 — 딥링크/뒤로가기(안드)/복귀
