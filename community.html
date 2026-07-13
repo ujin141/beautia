@@ -1095,6 +1095,9 @@ function workText(w){return (w&&typeof w==='object')?(w.text||''):'';}
 function isVid(w){var u=(w&&typeof w==='object')?(w.img||''):(w||'');return /\.(mp4|webm|mov|m4v|ogv)(\?|#|$)/i.test(String(u));}
 function vsrc(w){return safeUrl(workImg(w));}
 function workPoster(w){return (w&&typeof w==='object'&&w.poster)?w.poster:'';}
+// 포스터가 없는 영상: 첫 프레임만(메타데이터) 정지 썸네일로 표시. 재생 바이트는 로드 안 함.
+// .thv 안에 넣으면 .thv video 규칙으로 꽉 채워지고 clip 됨.
+function vidStill(w){var u=safeUrl(workImg(w));if(!u)return '';var sep=(u.indexOf('#')>=0?'':'#t=0.1');return '<video src="'+u+sep+'" preload="metadata" muted playsinline tabindex="-1" aria-hidden="true"></video>';}
 function imgWorks(ws){return (ws||[]).filter(function(w){return !isVid(w);});}
 // 트래픽 절감: 영상은 절대 배경/피드에 로드하지 않고 '포스터 이미지'만 사용(수십KB, weserv CDN).
 // 대표 정지 이미지 URL: 이미지는 자신, 영상은 포스터. 없으면 ''.
@@ -1103,8 +1106,8 @@ function stillOf(w){return isVid(w)?workPoster(w):workImg(w);}
 function firstImg(ws){ws=ws||[];for(var i=0;i<ws.length;i++){if(!isVid(ws[i]))return ws[i];}for(var j=0;j<ws.length;j++){if(workPoster(ws[j]))return {img:workPoster(ws[j])};}return ws[0]||'';}
 // 썸네일: 영상은 포스터 이미지(있으면)로 배경 표시 + play 배지. 영상 바이트는 로드 안 함.
 function thumbBg(w,size,cls,extra){cls=cls||'';extra=extra||'';
- if(isVid(w)){var ps=workPoster(w);var bg=ps?(' style="background-image:url(\''+im(ps,size)+'\')"'):'';
-   return '<div class="'+cls+' thv"'+bg+' '+extra+'><span class="thvb"><i class="ti ti-player-play-filled"></i></span></div>';}
+ if(isVid(w)){var ps=workPoster(w);var bg=ps?(' style="background-image:url(\''+im(ps,size)+'\')"'):'';var still=ps?'':vidStill(w);
+   return '<div class="'+cls+' thv"'+bg+' '+extra+'>'+still+'<span class="thvb"><i class="ti ti-player-play-filled"></i></span></div>';}
  return '<div class="'+cls+'" style="background-image:url(\''+im(w,size)+'\')" '+extra+'></div>';}
 // 클릭 시에만 <video>를 mount(그 전엔 영상 바이트 0). 재생은 range 요청으로 부분 로드.
 function playInline(el,url){if(!el||el.dataset.playing)return;el.dataset.playing='1';el.innerHTML='';el.style.background='#000';
@@ -1204,13 +1207,13 @@ function renderPopular(){var el=$('popwrap');if(!el)return;
    var dw=[];for(var _j=0;_j<tot;_j++)dw.push(d.works[oi(_j)]);
    var rest=dw.slice(1,4);var more=tot-1-rest.length;
    var thumbs=rest.map(function(w,i){var last=(i===rest.length-1&&more>0);var mo=last?'<span class="pmore">+'+more+'</span>':'';var oc='event.stopPropagation();openWork(\''+d.id+'_'+oi(i+1)+'\')';
-     if(isVid(w)){var ps=workPoster(w);var bg=ps?(' style="background-image:url(\''+im(ps,220)+'\')"'):'';return '<div class="pth thv" onclick="'+oc+'"'+bg+'><span class="thvb"><i class="ti ti-player-play-filled"></i></span>'+mo+'</div>';}
+     if(isVid(w)){var ps=workPoster(w);var bg=ps?(' style="background-image:url(\''+im(ps,220)+'\')"'):'';var still=ps?'':vidStill(w);return '<div class="pth thv" onclick="'+oc+'"'+bg+'>'+still+'<span class="thvb"><i class="ti ti-player-play-filled"></i></span>'+mo+'</div>';}
      return '<div class="pth" onclick="'+oc+'" style="background-image:url(\''+im(w,220)+'\')">'+mo+'</div>';}).join('');
    // 썸네일 칸 3개 고정(빈칸 채움)
    for(var k=rest.length;k<3;k++)thumbs+='<div class="pth pthx"></div>';
    var w0=dw[0];var w0v=isVid(w0);var w0ps=w0v?workPoster(w0):'';var w0bg=w0v?w0ps:workImg(w0);
    return '<div class="pcard" onclick="openD(\''+d.id+'\')">'+
-     '<div class="pcimg'+(w0v&&!w0ps?' thv':'')+'"'+(w0bg?' style="background-image:url(\''+im(w0bg,500)+'\')"':'')+' onclick="event.stopPropagation();openWork(\''+d.id+'_'+off+'\')">'+(w0v?'<span class="thvb"><i class="ti ti-player-play-filled"></i></span>':'')+(d.featured?'<span class="pcbadge"><i class="ti ti-flame-filled"></i> HOT</span>':'')+'<span class="pccount"><i class="ti ti-photo"></i> '+tot+'</span></div>'+
+     '<div class="pcimg'+(w0v&&!w0ps?' thv':'')+'"'+(w0bg?' style="background-image:url(\''+im(w0bg,500)+'\')"':'')+' onclick="event.stopPropagation();openWork(\''+d.id+'_'+off+'\')">'+(w0v&&!w0ps?vidStill(w0):'')+(w0v?'<span class="thvb"><i class="ti ti-player-play-filled"></i></span>':'')+(d.featured?'<span class="pcbadge"><i class="ti ti-flame-filled"></i> HOT</span>':'')+'<span class="pccount"><i class="ti ti-photo"></i> '+tot+'</span></div>'+
      '<div class="pthumbs">'+thumbs+'</div>'+
      '<div class="pcb"><div class="pcn">'+esc(d.flag)+' '+esc(nm)+'</div>'+
       '<div class="pcm">'+rateInline(d)+' · '+esc(cl(d.cat))+(d.city?' · '+esc(d.city):'')+'</div>'+
