@@ -1915,7 +1915,7 @@ async function onAuth(session){
  const um=session.user.user_metadata||{};
  SU={role:pend.role||'',name:pend.name||um.name||um.full_name||'',country:'',city:'',spec:[],career:'',avatar:um.avatar_url||um.picture||'',insta:'',contact:session.user.email||'',verified:true,uid:session.user.id,provider:'google',code:'',tos:false,priv:false,mktg:false,step:2,edit:false};
  renderSU();$('lmodal').classList.add('on');}
-SB.auth.onAuthStateChange(function(ev,session){if(ev==='SIGNED_OUT'){ME=null;renderAuth();buildTiles();render();}else{onAuth(session);}});
+SB.auth.onAuthStateChange(function(ev,session){if(ev==='SIGNED_OUT'){ME=null;renderAuth();buildTiles();render();}else{onAuth(session);try{savePushToken();}catch(_){}}});
 function roleLabel(r){return r==='desg'?T[LANG].desg:T[LANG].cust;}
 function renderMe(){var el=document.getElementById('mepage');if(!el)return;if(!ME){el.innerHTML='';return;}
  var av=ME.avatar&&im(ME.avatar,240);var isD=ME.role==='desg';
