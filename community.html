@@ -2278,7 +2278,7 @@ document.addEventListener('click',function(){closeUmenu();});
 // 언어 자동: 1) 브라우저 로케일로 즉시 기본값 → 2) IP 국가로 덮어쓰기(권위)
 (function(){var saved='';try{saved=localStorage.getItem('beautia_lang')||'';}catch(e){}
  if(['ko','en','ja','th','zh'].indexOf(saved)>=0){LANG=saved;return;}
- var nl=(navigator.language||'en').toLowerCase();LANG=nl.indexOf('ko')===0?'ko':nl.indexOf('ja')===0?'ja':nl.indexOf('th')===0?'th':nl.indexOf('zh')===0?'zh':'en';})();
+ LANG='en';})(); // 기본 언어: 영어 (사용자가 직접 고르면 저장돼 유지)
 document.documentElement.lang=LANG;
 fxRefresh();
 (function(){var _q=new URLSearchParams(location.search).get('q');if(_q&&$('q'))$('q').value=_q.slice(0,80);})();
@@ -2890,7 +2890,8 @@ const _du=new URLSearchParams(location.search).get('u');if(_du)openByUid(_du);
 fetch('https://ipapi.co/json/').then(function(r){return r.ok?r.json():null;}).then(function(j){if(!j)return;
  if(typeof j.latitude==='number'&&typeof j.longitude==='number')USERLOC={lat:j.latitude,lng:j.longitude,city:j.city||'',country:j.country_code||''};
  updateNearby();
- var cc=(j.country_code||'').toUpperCase();var l=cc==='KR'?'ko':cc==='JP'?'ja':cc==='TH'?'th':(cc==='CN'||cc==='TW'||cc==='HK'||cc==='MO'||cc==='SG')?'zh':(cc?'en':LANG);
+ // 기본은 영어. IP 국가가 잡히면 그 나라 언어로 자동 전환(사용자가 직접 고른 언어는 그대로 존중).
+ var cc=(j.country_code||'').toUpperCase();var l=cc==='KR'?'ko':cc==='JP'?'ja':cc==='TH'?'th':(cc==='CN'||cc==='TW'||cc==='HK'||cc==='MO'||cc==='SG')?'zh':'en';
  var _sl='';try{_sl=localStorage.getItem('beautia_lang')||'';}catch(e){}if(_sl){render();}else if(l!==LANG){setLang(l);}else{render();}
 }).catch(function(){});
 // 모달 열리면 스크롤 위치 보존하며 배경 잠금
