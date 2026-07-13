@@ -906,6 +906,18 @@ body.mlock .apppop{opacity:0!important;pointer-events:none!important;}
   .rolepick{flex-direction:column;} .pmstats{gap:18px;}
   .chatmodal{padding:0;z-index:50;} .chatcard{height:100%;max-height:100%;max-width:100%;border-radius:0;padding-bottom:calc(60px + env(safe-area-inset-bottom));box-sizing:border-box;} .cback{display:flex;align-items:center;}
 }
+/* ===== 네이티브 앱 전용: 웹 티나는 브라우저 동작 제거 (html.native-app 일 때만 · 브라우저 사용자는 정상 웹) ===== */
+html.native-app, html.native-app *{-webkit-tap-highlight-color:transparent !important;-webkit-touch-callout:none !important;}
+html.native-app{-webkit-text-size-adjust:100%;overscroll-behavior:none;}
+html.native-app body{-webkit-user-select:none;user-select:none;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;text-rendering:optimizeLegibility;overscroll-behavior:none;touch-action:manipulation;}
+/* 텍스트 입력·메시지·주소/설명은 선택·복사 허용(롱프레스 메뉴 포함) */
+html.native-app input,html.native-app textarea,html.native-app select,html.native-app [contenteditable],html.native-app .mbub,html.native-app .styl,html.native-app .selectable{-webkit-user-select:text !important;user-select:text !important;-webkit-touch-callout:default !important;}
+/* 이미지 롱프레스 저장 메뉴·드래그 방지(네이티브 갤러리 느낌) */
+html.native-app img{-webkit-user-drag:none;user-drag:none;}
+/* 탭 시 파란/회색 포커스 아웃라인 제거 — 버튼/링크만(입력창 포커스는 유지) */
+html.native-app button:focus,html.native-app a:focus,html.native-app [role=button]:focus,html.native-app .tb:focus,html.native-app .cat:focus{outline:none !important;}
+/* 탭 지연 제거 + 더블탭 확대 방지(스냅한 반응) */
+html.native-app a,html.native-app button,html.native-app [role=button],html.native-app .tb,html.native-app .cat,html.native-app .qrchip{touch-action:manipulation !important;}
 </style>
 <style id="splashcss">
 #splash{position:fixed;inset:0;z-index:99999;display:none;flex-direction:column;align-items:center;justify-content:center;background:radial-gradient(120% 85% at 50% 12%,#70505a 0%,#48323a 42%,#281b21 100%);transition:opacity .6s ease,transform .6s cubic-bezier(.4,0,.2,1),filter .6s ease;transform-origin:50% 46%;will-change:opacity,transform;}
@@ -2683,6 +2695,8 @@ var NB={native:false,pushToken:null};
  NB.native=true;var P=C.Plugins||{};
  var PLAT=(C.getPlatform&&C.getPlatform())||'ios';
  document.documentElement.classList.add('native-app','native-'+PLAT);
+ // 앱: 입력창 포커스/핀치 확대(웹 티) 방지 — viewport-fit=cover(세이프에어리어)는 유지
+ try{var vm=document.querySelector('meta[name=viewport]');var vc='width=device-width,initial-scale=1,viewport-fit=cover,maximum-scale=1,user-scalable=no';if(vm)vm.setAttribute('content',vc);else{vm=document.createElement('meta');vm.name='viewport';vm.setAttribute('content',vc);(document.head||document.documentElement).appendChild(vm);}}catch(e){}
  // 1) 네이티브 스플래시 숨김 + 상태바
  try{if(P.SplashScreen)setTimeout(function(){P.SplashScreen.hide();},350);}catch(e){}
  try{if(P.StatusBar){P.StatusBar.setStyle({style:'DARK'});if(PLAT==='android')P.StatusBar.setBackgroundColor({color:'#ffffff'});}}catch(e){}
