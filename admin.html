@@ -260,6 +260,7 @@ textarea.inp{resize:vertical;min-height:70px;line-height:1.5;}
       <button class="tab" id="tab-users" onclick="tab('users')">사용자</button>
       <button class="tab" id="tab-inquiries" onclick="tab('inquiries')">문의<span class="tbadge hide" id="inqBadge"></span></button>
       <button class="tab" id="tab-announce" onclick="tab('announce')">공지</button>
+      <button class="tab" id="tab-coupons" onclick="tab('coupons')">쿠폰</button>
       <button class="tab" id="tab-bookings" onclick="tab('bookings')">예약</button>
       <button class="tab" id="tab-reviews" onclick="tab('reviews')">후기</button>
       <button class="tab" id="tab-access" onclick="tab('access')">접속기록</button>
@@ -296,6 +297,24 @@ textarea.inp{resize:vertical;min-height:70px;line-height:1.5;}
         <div class="saveBar" style="margin-top:12px"><button class="mini" onclick="postAnnounce()"><i class="ti ti-send"></i> 공지 발송</button></div>
       </div>
       <div class="rowlist" id="annlist"></div>
+    </div>
+    <div id="sec-coupons" class="hide">
+      <div class="card">
+        <h3><i class="ti ti-ticket"></i> 플랫폼 쿠폰 발행</h3>
+        <div class="note" style="margin:2px 0 12px"><i class="ti ti-info-circle"></i> 여기서 만든 쿠폰은 <b>전체 디자이너 예약</b>에 쓸 수 있어요(플랫폼 발행). 코드를 정하면 고객이 앱에서 등록합니다.</div>
+        <div class="row"><label>쿠폰 이름</label><input class="inp" id="cpT" placeholder="예: 신규가입 5,000원 할인"></div>
+        <div class="two">
+          <div class="row"><label>할인 종류</label><select class="inp" id="cpType" onchange="cpTypeChange()"><option value="amount">정액 할인</option><option value="percent">% 할인</option></select></div>
+          <div class="row"><label id="cpValLbl">할인 금액</label><input class="inp" id="cpVal" type="number" min="0" placeholder="5000"></div>
+        </div>
+        <div class="two">
+          <div class="row"><label>통화 <span style="font-weight:400;color:#999">· 정액</span></label><select class="inp" id="cpCur"><option>KRW</option><option>USD</option><option>JPY</option><option>THB</option><option>CNY</option></select></div>
+          <div class="row"><label>만료일 <span style="font-weight:400;color:#999">· 선택</span></label><input class="inp" id="cpExp" type="date"></div>
+        </div>
+        <div class="row"><label>쿠폰 코드 <span style="font-weight:400;color:#999">· 선택(비우면 목록 노출용)</span></label><input class="inp" id="cpCode" placeholder="예: WELCOME5000" style="text-transform:uppercase"></div>
+        <div class="saveBar" style="margin-top:12px"><button class="mini" onclick="createPlatformCoupon()"><i class="ti ti-ticket"></i> 쿠폰 발행</button></div>
+      </div>
+      <div class="rowlist" id="cplist"></div>
     </div>
     <div id="sec-bookings" class="hide">
       <div class="searchbar"><input class="inp" id="bkq" placeholder="디자이너·서비스·메모 검색…" oninput="renderBookings()"></div>
@@ -645,6 +664,69 @@ async function toggleAnn(id,val){
     var a=ANNS.find(x=>x.id===id);if(a)a.active=val;renderAnnounce();toast(val?'게시됨':'숨김 처리됨');
   }catch(e){toast('오류: '+e.message);}
 }
+// ── 쿠폰 관리(어드민) ──
+let COUPONS=[],COUPUSE={};
+function cpTypeChange(){var ty=($('cpType')||{}).value;var lbl=$('cpValLbl');if(lbl)lbl.textContent=(ty==='percent')?'할인율 (%)':'할인 금액';var v=$('cpVal');if(v)v.placeholder=(ty==='percent')?'10':'5000';}
+function cpValLabel(c){if(c.type==='percent')return (c.value||0)+'%';var sym={KRW:'₩',USD:'$',JPY:'¥',THB:'฿',CNY:'¥'}[c.currency||'KRW']||'';return sym+Number(c.value||0).toLocaleString();}
+async function loadAdminCoupons(){
+  try{
+    const {data,error}=await SB.from('coupons').select('*').order('created_at',{ascending:false}).limit(300);
+    if(error){$('cplist').innerHTML='<div class="empty"><i class="ti ti-lock"></i><p>쿠폰을 불러올 수 없어요<br><span style="font-size:12px">'+esc(error.message)+'<br>(coupons_schema.sql 실행이 필요할 수 있어요)</span></p></div>';return;}
+    COUPONS=data||[];
+    COUPUSE={};
+    try{const {data:uc}=await SB.from('user_coupons').select('coupon,status');(uc||[]).forEach(function(r){var k=r.coupon;if(!COUPUSE[k])COUPUSE[k]={held:0,used:0};COUPUSE[k].held++;if(r.status==='used')COUPUSE[k].used++;});}catch(e){}
+    renderAdminCoupons();
+  }catch(e){$('cplist').innerHTML='<div class="empty"><p>'+esc(e.message)+'</p></div>';}
+}
+function renderAdminCoupons(){
+  var el=$('cplist');if(!el)return;
+  if(!COUPONS.length){el.innerHTML='<div class="empty"><i class="ti ti-ticket"></i><p>발행된 쿠폰이 없어요</p></div>';return;}
+  var now=new Date();
+  el.innerHTML=COUPONS.map(function(c){
+    var u=COUPUSE[c.id]||{held:0,used:0};
+    var exp=c.expires_at?new Date(c.expires_at):null;var expired=exp&&exp<now;
+    var off=(c.active===false)||expired;
+    var who=(c.scope==='platform'||!c.issuer)?'<span class="ubadge c">플랫폼</span>':('<span class="ubadge d">디자이너</span> '+esc((PMAP[c.issuer]&&PMAP[c.issuer].nickname)||String(c.issuer||'').slice(0,8)));
+    var meta=[cpValLabel(c),who];
+    if(c.code)meta.push('코드 <b>'+esc(c.code)+'</b>');
+    meta.push('보유 '+u.held+' · 사용 '+u.used);
+    if(exp)meta.push((expired?'⚠ 만료 ':'~ ')+esc(String(c.expires_at).slice(0,10)));
+    return '<div class="li'+(off?' idone':'')+'"><div class="lh"><div><div class="ln">'+esc(c.title||'')+(off?' <span style="color:#c0392b;font-size:12px">'+(expired?'만료':'숨김')+'</span>':'')+'</div><div class="ls">'+meta.join(' · ')+'</div></div>'+
+      '<div style="display:flex;gap:6px"><button class="mini '+(c.active?'r':'g')+'" onclick="toggleCoupon(\''+c.id+'\','+(c.active?'false':'true')+')">'+(c.active?'숨기기':'게시')+'</button>'+
+      '<button class="mini r" onclick="deleteAdminCoupon(\''+c.id+'\')">삭제</button></div></div></div>';
+  }).join('');
+}
+async function createPlatformCoupon(){
+  var title=($('cpT').value||'').trim();if(!title){toast('쿠폰 이름을 입력하세요');return;}
+  var type=$('cpType').value||'amount';
+  var value=parseInt($('cpVal').value,10);
+  if(!(value>0)){toast('할인 값을 입력하세요');return;}
+  if(type==='percent'&&value>100){toast('할인율은 100%를 넘을 수 없어요');return;}
+  var code=($('cpCode').value||'').trim().toUpperCase();
+  var exp=($('cpExp').value||'');
+  var rec={issuer:null,scope:'platform',title:title,type:type,value:value,currency:$('cpCur').value||'KRW',active:true};
+  if(code)rec.code=code;
+  if(exp)rec.expires_at=new Date(exp+'T23:59:59').toISOString();
+  try{const {error}=await SB.from('coupons').insert(rec);
+    if(error){toast(String(error.code)==='23505'?'이미 쓰이는 코드예요':'발행 실패: '+error.message);return;}
+    ['cpT','cpVal','cpCode','cpExp'].forEach(function(id){$(id).value='';});
+    toast('쿠폰이 발행됐어요 🎟️');loadAdminCoupons();
+  }catch(e){toast('오류: '+e.message);}
+}
+async function toggleCoupon(id,val){
+  val=(val===true||val==='true');
+  try{const {error}=await SB.from('coupons').update({active:val}).eq('id',id);
+    if(error){toast('실패: '+error.message);return;}
+    var c=COUPONS.find(x=>x.id===id);if(c)c.active=val;renderAdminCoupons();toast(val?'게시됨':'숨김 처리됨');
+  }catch(e){toast('오류: '+e.message);}
+}
+async function deleteAdminCoupon(id){
+  if(!confirm('이 쿠폰을 삭제할까요? 고객이 보유한 쿠폰도 함께 사라져요.'))return;
+  try{const {error}=await SB.from('coupons').delete().eq('id',id);
+    if(error){toast('삭제 실패: '+error.message);return;}
+    COUPONS=COUPONS.filter(x=>x.id!==id);renderAdminCoupons();toast('삭제됐어요');
+  }catch(e){toast('오류: '+e.message);}
+}
 function renderList(){
   const q=($('q').value||'').toLowerCase().trim();
   let list=DESIGNERS.filter(isDesigner);
@@ -936,8 +1018,8 @@ async function delReview(id,ev){
 var CURTAB='designers';
 function tab(t){
   CURTAB=t;
-  ['designers','applications','users','inquiries','announce','bookings','reviews','access'].forEach(x=>{$('sec-'+x).classList.toggle('hide',x!==t);$('tab-'+x).classList.toggle('on',x===t);});
-  if(t==='users')renderUsers();if(t==='inquiries')renderInquiries();if(t==='announce')renderAnnounce();if(t==='access')loadAccessLog();
+  ['designers','applications','users','inquiries','announce','coupons','bookings','reviews','access'].forEach(x=>{$('sec-'+x).classList.toggle('hide',x!==t);$('tab-'+x).classList.toggle('on',x===t);});
+  if(t==='users')renderUsers();if(t==='inquiries')renderInquiries();if(t==='announce')renderAnnounce();if(t==='coupons')loadAdminCoupons();if(t==='access')loadAccessLog();
 }
 
 (async function(){
