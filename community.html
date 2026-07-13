@@ -918,6 +918,14 @@ html.native-app img{-webkit-user-drag:none;user-drag:none;}
 html.native-app button:focus,html.native-app a:focus,html.native-app [role=button]:focus,html.native-app .tb:focus,html.native-app .cat:focus{outline:none !important;}
 /* 탭 지연 제거 + 더블탭 확대 방지(스냅한 반응) */
 html.native-app a,html.native-app button,html.native-app [role=button],html.native-app .tb,html.native-app .cat,html.native-app .qrchip{touch-action:manipulation !important;}
+/* ===== 인앱 사진 라이트박스 ===== */
+.lbx{position:fixed;inset:0;z-index:1000;background:rgba(14,9,12,.94);display:none;align-items:center;justify-content:center;touch-action:none;opacity:0;transition:opacity .2s ease;-webkit-backdrop-filter:blur(2px);backdrop-filter:blur(2px);}
+.lbx.on{display:flex;opacity:1;}
+.lbx img{max-width:100%;max-height:calc(100% - env(safe-area-inset-top) - env(safe-area-inset-bottom) - 24px);object-fit:contain;-webkit-user-select:none;user-select:none;-webkit-user-drag:none;user-drag:none;border-radius:4px;}
+.lbxclose{position:absolute;top:calc(env(safe-area-inset-top) + 10px);right:16px;width:40px;height:40px;border:none;border-radius:50%;background:rgba(255,255,255,.15);color:#fff;font-size:24px;line-height:1;display:flex;align-items:center;justify-content:center;cursor:pointer;z-index:2;-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);}
+.lbxcount{position:absolute;top:calc(env(safe-area-inset-top) + 18px);left:50%;transform:translateX(-50%);color:rgba(255,255,255,.92);font-size:13px;font-weight:700;letter-spacing:.4px;z-index:2;}
+.lbxnav{position:absolute;top:50%;transform:translateY(-50%);width:44px;height:44px;border:none;border-radius:50%;background:rgba(255,255,255,.13);color:#fff;font-size:26px;line-height:1;display:none;align-items:center;justify-content:center;cursor:pointer;z-index:2;-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px);}
+.lbxnav.prev{left:12px;}.lbxnav.next{right:12px;}
 </style>
 <style id="splashcss">
 #splash{position:fixed;inset:0;z-index:99999;display:none;flex-direction:column;align-items:center;justify-content:center;background:radial-gradient(120% 85% at 50% 12%,#70505a 0%,#48323a 42%,#281b21 100%);transition:opacity .6s ease,transform .6s cubic-bezier(.4,0,.2,1),filter .6s ease;transform-origin:50% 46%;will-change:opacity,transform;}
@@ -1125,6 +1133,40 @@ function thumbBg(w,size,cls,extra){cls=cls||'';extra=extra||'';
 function playInline(el,url){if(!el||el.dataset.playing)return;el.dataset.playing='1';el.innerHTML='';el.style.background='#000';
  var v=document.createElement('video');v.src=safeUrl(url);v.controls=true;v.autoplay=true;v.loop=true;v.playsInline=true;v.setAttribute('preload','auto');
  v.style.cssText='width:100%;height:100%;object-fit:cover;display:block;background:#000';el.appendChild(v);}
+// ===== 인앱 사진 라이트박스 (사파리로 안 튕기고 앱 내에서 크게보기 · 아래로 스와이프 닫기 · 좌우 스와이프 넘기기) =====
+var LBX={urls:[],i:0,el:null};
+function lbxEnsure(){
+ if(LBX.el)return LBX.el;
+ var d=document.createElement('div');d.className='lbx';d.id='lbx';
+ d.innerHTML='<button class="lbxclose" onclick="closeLightbox()" aria-label="close">×</button><div class="lbxcount" id="lbxcount"></div><button class="lbxnav prev" onclick="event.stopPropagation();lbxNav(-1)" aria-label="prev">‹</button><button class="lbxnav next" onclick="event.stopPropagation();lbxNav(1)" aria-label="next">›</button><img id="lbximg" alt="">';
+ document.body.appendChild(d);
+ var img=d.querySelector('#lbximg');
+ d.addEventListener('click',function(e){if(e.target===d)closeLightbox();});
+ var sx=0,sy=0,dx=0,dy=0,drag=false;
+ d.addEventListener('touchstart',function(e){if(e.touches.length!==1)return;drag=true;sx=e.touches[0].clientX;sy=e.touches[0].clientY;dx=dy=0;img.style.transition='none';},{passive:true});
+ d.addEventListener('touchmove',function(e){if(!drag||e.touches.length!==1)return;dx=e.touches[0].clientX-sx;dy=e.touches[0].clientY-sy;if(Math.abs(dy)>Math.abs(dx)){img.style.transform='translateY('+dy+'px)';d.style.opacity=String(Math.max(.35,1-Math.abs(dy)/520));}},{passive:true});
+ d.addEventListener('touchend',function(){if(!drag)return;drag=false;img.style.transition='transform .2s ease';d.style.transition='opacity .2s ease';
+  if(Math.abs(dy)>110&&Math.abs(dy)>Math.abs(dx)){closeLightbox();return;}
+  if(Math.abs(dx)>60&&Math.abs(dx)>Math.abs(dy)){lbxNav(dx<0?1:-1);}
+  img.style.transform='';d.style.opacity='1';},{passive:true});
+ document.addEventListener('keydown',function(e){if(!LBX.el||!LBX.el.classList.contains('on'))return;if(e.key==='Escape')closeLightbox();else if(e.key==='ArrowRight')lbxNav(1);else if(e.key==='ArrowLeft')lbxNav(-1);});
+ LBX.el=d;return d;
+}
+function openLightbox(el){
+ var scope=el.closest('.dgrid')||el.closest('.revphs')||el.parentElement||document.body;
+ var nodes=[].slice.call(scope.querySelectorAll('[data-full]'));
+ if(nodes.indexOf(el)<0)nodes=[el];
+ LBX.urls=nodes.map(function(x){return x.getAttribute('data-full');}).filter(Boolean);
+ if(!LBX.urls.length)return;
+ LBX.i=Math.max(0,nodes.indexOf(el));
+ lbxEnsure();lbxShow();document.body.style.overflow='hidden';LBX.el.classList.add('on');
+ try{var H=window.Capacitor&&Capacitor.Plugins&&Capacitor.Plugins.Haptics;if(H)H.impact({style:'LIGHT'}).catch(function(){});}catch(_e){}
+}
+function lbxShow(){var img=document.getElementById('lbximg');if(!img||!LBX.el)return;img.style.transform='';img.src=LBX.urls[LBX.i]||'';
+ var c=document.getElementById('lbxcount');if(c)c.textContent=LBX.urls.length>1?((LBX.i+1)+' / '+LBX.urls.length):'';
+ var multi=LBX.urls.length>1;var nav=LBX.el.querySelectorAll('.lbxnav');for(var k=0;k<nav.length;k++)nav[k].style.display=multi?'flex':'none';}
+function lbxNav(step){if(!LBX.urls.length)return;LBX.i=(LBX.i+step+LBX.urls.length)%LBX.urls.length;lbxShow();}
+function closeLightbox(){if(!LBX.el)return;LBX.el.classList.remove('on');document.body.style.overflow='';var img=document.getElementById('lbximg');if(img){img.style.transform='';setTimeout(function(){if(LBX.el&&!LBX.el.classList.contains('on'))img.src='';},240);}}
 const im=(id,w)=>{if(id&&typeof id==='object')id=id.img||'';id=String(id||'');
  // 스토리지/외부 https 이미지는 weserv로 리사이즈(모바일 대역폭·메모리 절감 → 사진 누락 방지). 실패 시 아래 error 핸들러가 원본으로 폴백.
  if(/^https:\/\//.test(id))return safeUrl('https://images.weserv.nl/?url='+encodeURIComponent('ssl:'+id.replace(/^https:\/\//,''))+'&w='+(w||600)+'&q=80&output=webp');
@@ -1621,7 +1663,7 @@ function openD(did,keep){stopAllVideos();const d=dById(did);if(!d)return;curD=di
    </div>
   </div>
   ${(d.services&&d.services.length)?`<div class="dsec"><div class="st">${T[LANG].svcTitle}</div>${d.services.map((s,i)=>`<div class="svc"><div class="svci"><div class="svcn">${esc(svcLabel(s,LANG))}</div><div class="svcm">${svcDur(s,LANG)?esc(svcDur(s,LANG))+' · ':''}<b>${esc(priceDisp(s.p,svcCur(d)))}</b>${priceApprox(s.p,svcCur(d))?`<span class="svcapprox"> ${esc(priceApprox(s.p,svcCur(d)))}</span>`:''}</div></div>${d.uid&&!d.isMe?`<button class="svcbk" onclick="openBook('${d.id}',${i})">${T[LANG].book2}</button>`:''}</div>`).join('')}</div>`:''}
-  <div class="dsec"><div class="st">${T[LANG].portfolio}</div><div class="dgrid">${d.works.map(w=>isVid(w)?`<div class="dgvid" onclick="playInline(this,'${vsrc(w)}')"${workPoster(w)?` style="background-image:url('${im(workPoster(w),700)}')"`:''}><span class="thvb"><i class="ti ti-player-play-filled"></i></span></div>`:`<img src="${im(w,500)}" onclick="window.open('${im(w,1200)}','_blank')">`).join('')}</div></div>
+  <div class="dsec"><div class="st">${T[LANG].portfolio}</div><div class="dgrid">${d.works.map(w=>isVid(w)?`<div class="dgvid" onclick="playInline(this,'${vsrc(w)}')"${workPoster(w)?` style="background-image:url('${im(workPoster(w),700)}')"`:''}><span class="thvb"><i class="ti ti-player-play-filled"></i></span></div>`:`<img src="${im(w,500)}" data-full="${im(w,1200)}" onclick="openLightbox(this)">`).join('')}</div></div>
   <div class="dsec" id="revsec"><div class="st">${T[LANG].reviews} · ${esc(d.rev)}</div>${d.reviews.map((r,i)=>`<div class="rev"><div class="ra" style="background:${GR[(gi+i)%GR.length]}">${esc((r.n||'?')[0])}</div><div style="flex:1"><div class="rn">${esc(r.n)}</div><div class="rs">${stars(r.s)}</div><div class="rt">${esc(r.t)}</div></div><button class="revreport" title="${esc(mt().report)}" onclick="reportContent('review','${esc(d.uid||d.id)}','${mlbl(r.n)}')"><i class="ti ti-flag"></i></button></div>`).join('')}</div>
   ${(snsHtml||naverHtml||blogHtml||bookingHtml)?`<div class="dsec" style="border:none"><div class="st">${T[LANG].connect}</div>${bookingHtml}<div class="sns">${snsHtml}${naverHtml}${blogHtml}</div></div>`:''}
   ${mapHtml}
@@ -2634,7 +2676,7 @@ async function loadRevsFor(d){try{
  var ds=document.getElementById('dstars');if(ds)ds.innerHTML='<span class="star">★</span> '+avg+' ('+rows.length+')';
  if(!el)return;
  el.innerHTML=trust+`<div class="st">${T[LANG].reviews} · ${rows.length} · ★ ${avg}</div>`+rows.map(function(r,i){var p=PROFCACHE[r.customer]||{name:'User'};
-  var phs=(r.photos&&r.photos.length)?`<div class="revphs">${r.photos.slice(0,4).map(function(u){var su=safeUrl(u);return su?`<a class="revph" href="${esc(su)}" target="_blank" rel="noopener" style="background-image:url('${su}')"></a>`:'';}).join('')}</div>`:'';
+  var phs=(r.photos&&r.photos.length)?`<div class="revphs">${r.photos.slice(0,4).map(function(u){var su=safeUrl(u);return su?`<div class="revph" data-full="${esc(su)}" onclick="openLightbox(this)" style="background-image:url('${su}')"></div>`:'';}).join('')}</div>`:'';
   var rply=(d.shopRaw&&d.shopRaw.reviewReplies&&d.shopRaw.reviewReplies[r.id])||'';
   var rplyHtml=rply?`<div class="rreply"><b><i class="ti ti-corner-down-right"></i> ${esc((LANG==='ko'&&d.ko)?d.ko:(d.name||''))}</b> ${esc(rply)}</div>`:'';
   return `<div class="rev"><div class="ra" style="background:${GR[i%GR.length]}">${esc((p.name||'?')[0])}</div><div style="flex:1"><div class="rn">${esc(p.name)}</div><div class="rs">${stars(r.stars)}</div><div class="rt">${esc(r.body||'')}</div>${trBtnHtml(r.body)}${phs}${rplyHtml}</div></div>`;}).join('');
@@ -2709,6 +2751,7 @@ var NB={native:false,pushToken:null};
    P.App.addListener('appUrlOpen',function(d){try{var u=new URL(d.url);if(/(^|\.)beautia\.io$/.test(u.hostname))location.href=u.pathname+u.search+u.hash;}catch(_){}});
    P.App.addListener('appStateChange',function(s){if(s&&s.isActive)savePushToken();});
    if(PLAT==='android')P.App.addListener('backButton',function(){
+     if(document.querySelector('.lbx.on')){closeLightbox();return;}
      var m=document.querySelector('.on[class*=modal],.apppop.on,.sheet.on,.idmodal.on');
      if(m){m.classList.remove('on');return;}
      if(window.history.length>1)window.history.back();else P.App.exitApp();
