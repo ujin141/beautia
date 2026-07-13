@@ -2505,7 +2505,7 @@ async function submitBooking(){const d=dById(bkSel.did);if(!d||!d.uid||!ME||!ME.
    try{await SB.from('user_coupons').update({status:'used',booking:_bid,used_at:new Date().toISOString()}).eq('id',uc.id).eq('holder',ME.uid);}catch(e){}
    loadCoupons();}}
  bkNotifyConv(ME.uid,d.uid,'📅 '+T[LANG].bkTitle+': '+svc.n+(svc.p?' ('+svc.p+')':'')+' · '+date+' '+time+(note?'\n'+note:'')+coupTxt);
- pushNotify(d.uid,'📅 '+T[LANG].bkNew,(ME.name||'')+' · '+svc.n+' · '+date+' '+time+(coupTxt?' · 🎟️':''));
+ pushNotify(d.uid,'📅 '+T[LANG].bkNew,(ME.name||'')+' · '+svc.n+' · '+date+' '+time+(coupTxt?' · 🎟️':''),null,{titleKey:'bkNew'});
  pushNotify(ME.uid,'📅 '+T[LANG].bkSent,svc.n+' · '+date+' '+time);
  bkSel.coupon='';
  closeBk();
@@ -2567,7 +2567,7 @@ function renderBookings(){var isD=ME&&ME.role==='desg';
     <div class="bkacts">${acts}</div></div>`;
  }).join('');}
 async function setBk(id,status,cu,de){try{var r=await SB.from('bookings').update({status:status}).eq('id',id);if(r.error){toast(T[LANG].bkFail);return;}}catch(e){toast(T[LANG].bkFail);return;}
- if(cu&&de){bkNotifyConv(cu,de,'📅 '+bkStatusLabel(status));pushNotify(ME.uid===cu?de:cu,'📅 Beautia',bkStatusLabel(status));}
+ if(cu&&de){bkNotifyConv(cu,de,'📅 '+bkStatusLabel(status));pushNotify(ME.uid===cu?de:cu,'📅 Beautia',bkStatusLabel(status),null,{bodyKey:'bk_'+status});}
  toast(bkStatusLabel(status)+' ✓');loadBkBadge();openBookings();}
 var rvPhotos=[];
 function openReview(bid,designer){rvStars=5;rvPhotos=[];
@@ -2720,6 +2720,8 @@ async function savePushToken(){try{
  var s=(await SB.auth.getSession()).data.session;if(!s||!s.user)return;
  var plat=(window.Capacitor.getPlatform&&window.Capacitor.getPlatform())||'ios';
  await SB.from('push_tokens').upsert({user_id:s.user.id,token:NB.pushToken,platform:plat,updated_at:new Date().toISOString()},{onConflict:'token'});
+ // 수신자 언어로 푸시를 렌더하기 위해 기기 언어 저장(컬럼 없으면 조용히 무시 → 토큰 저장은 유지)
+ try{await SB.from('push_tokens').update({lang:LANG}).eq('token',NB.pushToken);}catch(_e){}
 }catch(e){}}
 // 당겨서 새로고침 (모바일, 스크롤 최상단에서만)
 (function(){
@@ -2758,7 +2760,8 @@ async function enablePush(){closeUmenu();
   if(r.error){toast(T[LANG].bkFail+': '+r.error.message);return;}
   toast(T[LANG].pushOn);
  }catch(e){toast(T[LANG].pushUnsupported);}}
-function pushNotify(to,title,body,url){if(!to)return;try{SB.functions.invoke('notify',{body:{to:to,title:title,body:body,url:url||'/community'}}).then(function(){},function(){});}catch(e){}}
+// tr(선택): {titleKey,bodyKey} — 서버가 수신자 기기 언어로 제목/본문을 렌더. 없으면 전달된 title/body(발신자 언어) 사용.
+function pushNotify(to,title,body,url,tr){if(!to)return;try{SB.functions.invoke('notify',{body:{to:to,title:title,body:body,url:url||'/community',tr:tr||null}}).then(function(){},function(){});}catch(e){}}
 SB.auth.getSession().then(function(r){onAuth(r.data.session);}).catch(function(){});
 loadFeatured();loadDesigners();
 const _dp=new URLSearchParams(location.search).get('d');if(_dp&&dById(_dp))openD(_dp);

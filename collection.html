@@ -2249,7 +2249,7 @@ async function submitBooking(){const d=dById(bkSel.did);if(!d||!d.uid||!ME||!ME.
   if(r.error){toast(T[LANG].bkFail+': '+r.error.message);return;}
  }catch(e){toast(T[LANG].bkFail);return;}
  bkNotifyConv(ME.uid,d.uid,'📅 '+T[LANG].bkTitle+': '+svc.n+(svc.p?' ('+svc.p+')':'')+' · '+date+' '+time+(note?'\n'+note:''));
- pushNotify(d.uid,'📅 '+T[LANG].bkNew,(ME.name||'')+' · '+svc.n+' · '+date+' '+time);
+ pushNotify(d.uid,'📅 '+T[LANG].bkNew,(ME.name||'')+' · '+svc.n+' · '+date+' '+time,null,{titleKey:'bkNew'});
  pushNotify(ME.uid,'📅 '+T[LANG].bkSent,svc.n+' · '+date+' '+time);
  closeBk();toast(T[LANG].bkSent);}
 // 예약 이벤트를 기존 채팅으로 알림 (대화 없으면 고객 쪽에서만 생성 가능 — conversations RLS)
@@ -2295,7 +2295,7 @@ function renderBookings(){var isD=ME&&ME.role==='desg';
     <div class="bkacts">${acts}</div></div>`;
  }).join('');}
 async function setBk(id,status,cu,de){try{var r=await SB.from('bookings').update({status:status}).eq('id',id);if(r.error){toast(T[LANG].bkFail);return;}}catch(e){toast(T[LANG].bkFail);return;}
- if(cu&&de){bkNotifyConv(cu,de,'📅 '+bkStatusLabel(status));pushNotify(ME.uid===cu?de:cu,'📅 Beautia',bkStatusLabel(status));}
+ if(cu&&de){bkNotifyConv(cu,de,'📅 '+bkStatusLabel(status));pushNotify(ME.uid===cu?de:cu,'📅 Beautia',bkStatusLabel(status),null,{bodyKey:'bk_'+status});}
  toast(bkStatusLabel(status)+' ✓');loadBkBadge();openBookings();}
 var rvPhotos=[];
 function openReview(bid,designer){rvStars=5;rvPhotos=[];
@@ -2436,7 +2436,7 @@ async function enablePush(){closeUmenu();
   if(r.error){toast(T[LANG].bkFail+': '+r.error.message);return;}
   toast(T[LANG].pushOn);
  }catch(e){toast(T[LANG].pushUnsupported);}}
-function pushNotify(to,title,body,url){if(!to)return;try{SB.functions.invoke('notify',{body:{to:to,title:title,body:body,url:url||'/community'}}).then(function(){},function(){});}catch(e){}}
+function pushNotify(to,title,body,url,tr){if(!to)return;try{SB.functions.invoke('notify',{body:{to:to,title:title,body:body,url:url||'/community',tr:tr||null}}).then(function(){},function(){});}catch(e){}}
 SB.auth.getSession().then(function(r){onAuth(r.data.session);}).catch(function(){});
 loadFeatured();loadDesigners();
 const _dp=new URLSearchParams(location.search).get('d');if(_dp&&dById(_dp))openD(_dp);

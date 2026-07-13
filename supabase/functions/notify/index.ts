@@ -54,6 +54,28 @@ async function apnsJWT(): Promise<string> {
   const sig = await crypto.subtle.sign({ name: "ECDSA", hash: "SHA-256" }, key, new TextEncoder().encode(header + "." + payload));
   return `${header}.${payload}.${b64url(sig)}`;
 }
+// ───────── 다국어 알림 템플릿 (수신자 기기 언어로 렌더) ─────────
+const NT: Record<"title" | "body", Record<string, Record<string, string>>> = {
+  title: {
+    bkNew: { ko: "📅 새 예약 요청이 왔어요", en: "📅 New booking request", ja: "📅 新しい予約リクエスト", th: "📅 มีคำขอจองใหม่", zh: "📅 新的预约申请" },
+  },
+  body: {
+    bk_pending:   { ko: "대기중",  en: "Pending",   ja: "承認待ち",   th: "รอดำเนินการ", zh: "待处理" },
+    bk_accepted:  { ko: "수락됨",  en: "Accepted",  ja: "承認済み",   th: "ยืนยันแล้ว",  zh: "已接受" },
+    bk_declined:  { ko: "거절됨",  en: "Declined",  ja: "お断り",     th: "ปฏิเสธ",      zh: "已拒绝" },
+    bk_done:      { ko: "완료",    en: "Completed", ja: "完了",       th: "เสร็จสิ้น",   zh: "已完成" },
+    bk_cancelled: { ko: "취소됨",  en: "Cancelled", ja: "キャンセル", th: "ยกเลิก",      zh: "已取消" },
+  },
+};
+function normLang(l?: string): string { return String(l || "").slice(0, 2).toLowerCase(); }
+// key가 있고 수신자 언어 템플릿이 있으면 그 언어로, 없으면 전달된 fallback(발신자 언어) 사용
+function localized(kind: "title" | "body", key: string | undefined, lang: string, fallback: string): string {
+  if (!key) return fallback;
+  const m = NT[kind][key];
+  if (!m) return fallback;
+  return m[lang] || m.en || fallback;
+}
+
 async function apnsSend(host: string, token: string, jwt: string, topic: string, payload: object): Promise<number> {
   const res = await fetch(`${host}/3/device/${token}`, {
     method: "POST",
@@ -73,8 +95,11 @@ async function apnsSend(host: string, token: string, jwt: string, topic: string,
 Deno.serve(async (req) => {
   if (req.method === "OPTIONS") return new Response("ok", { headers: cors });
   try {
-    const { to, title, body, url } = await req.json();
+    const { to, title, body, url, tr } = await req.json();
     if (!to || !/^[0-9a-fA-F-]{30,}$/.test(String(to))) return J({ error: "valid 'to' uid required" }, 400);
+    // tr(선택): 수신자 언어 렌더용 키. 값은 고정 템플릿에서만 조회되므로 임의값은 무시됨(주입 안전).
+    const titleKey = tr && typeof tr.titleKey === "string" ? tr.titleKey.slice(0, 40) : undefined;
+    const bodyKey  = tr && typeof tr.bodyKey  === "string" ? tr.bodyKey.slice(0, 40)  : undefined;
 
     // === 발신자 인증: 유효한 로그인 사용자만 ===
     const authz = req.headers.get("Authorization") || "";
@@ -123,15 +148,18 @@ Deno.serve(async (req) => {
     if (Deno.env.get("APNS_KEY")) {
       try {
         const topic = Deno.env.get("APNS_BUNDLE_ID") || "io.beautia.app";
-        const tr = await fetch(`${SUPABASE_URL}/rest/v1/push_tokens?user_id=eq.${encodeURIComponent(to)}&select=token,platform`, { headers: H });
-        const toks: { token: string; platform: string }[] = tr.ok ? await tr.json() : [];
+        // select=* : lang 컬럼이 아직 없어도 에러 없이 동작(있으면 lang 포함)
+        const tres = await fetch(`${SUPABASE_URL}/rest/v1/push_tokens?user_id=eq.${encodeURIComponent(to)}&select=*`, { headers: H });
+        const toks: { token: string; platform?: string; lang?: string }[] = tres.ok ? await tres.json() : [];
         const iosToks = toks.filter((x) => (x.platform || "ios") === "ios");
         apnsTotal = iosToks.length;
         if (iosToks.length) {
           const jwt = await apnsJWT();
-          const payload = { aps: { alert: { title: t, body: b }, sound: "default" }, url: u };
           const PROD = "https://api.push.apple.com", SANDBOX = "https://api.sandbox.push.apple.com";
           await Promise.all(iosToks.map(async (tk) => {
+            // 수신자 기기 언어로 렌더(없으면 발신자 언어 fallback)
+            const L = normLang(tk.lang);
+            const payload = { aps: { alert: { title: localized("title", titleKey, L, t), body: localized("body", bodyKey, L, b) }, sound: "default" }, url: u };
             // 프로덕션 먼저 → BadDeviceToken(400)이면 샌드박스 재시도(개발 빌드 토큰 대응)
             let st = await apnsSend(PROD, tk.token, jwt, topic, payload);
             if (st === 400) st = await apnsSend(SANDBOX, tk.token, jwt, topic, payload);
