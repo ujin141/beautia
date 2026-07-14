@@ -3,6 +3,9 @@
   "trailingSlash": false,
   "redirects": [
     { "source": "/", "destination": "/community", "permanent": false },
+    { "source": "/ig", "destination": "/community?utm_source=instagram&utm_medium=caption", "permanent": false },
+    { "source": "/bio", "destination": "/community?utm_source=instagram&utm_medium=bio", "permanent": false },
+    { "source": "/qr", "destination": "/community?utm_source=qr&utm_medium=offline", "permanent": false },
     { "source": "/community_admin", "destination": "/admin", "permanent": false },
     { "source": "/community_admin.html", "destination": "/admin", "permanent": false },
     { "source": "/community-admin", "destination": "/admin", "permanent": false },
