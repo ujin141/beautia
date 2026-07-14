@@ -1722,6 +1722,7 @@ function render(){renderBanner();renderStories();renderPopular();
  if(_sv==='new')list=list.slice().sort(function(a,b){return (b.newAt||0)-(a.newAt||0);});
  else if(_sv==='rating')list=list.slice().sort(function(a,b){return (b.rating||0)-(a.rating||0);});
  else if(_sv==='near'&&USERLOC)list=list.slice().sort(function(a,b){return distOf(a.city)-distOf(b.city);});
+ else if(_sv==='rec'&&DCLICKS)list=list.slice().sort(function(a,b){var f=(isFollowing(b.uid)?1:0)-(isFollowing(a.uid)?1:0);if(f)return f;return (DCLICKS[b.uid]||0)-(DCLICKS[a.uid]||0);}); // 추천순 = 실제 클릭 인기순(팔로잉 우선)
  if(!list.length){g.innerHTML=`<div class="empty"><i class="ti ti-${VIEW==='saved'?'heart':'search'}"></i><p>${VIEW==='saved'?T[LANG].emptyS:T[LANG].noRes}</p><button class="ectabtn" onclick="setCat('All');var q=$('q');if(q)q.value='';var c=$('city');if(c)c.value='';setView('explore')"><i class="ti ti-compass"></i>${T[LANG].browseAll}</button></div>`;return;}
  g.innerHTML=list.map(tileHtml).join('');
 }
@@ -1733,6 +1734,7 @@ function renderDesigners(q,city){var g=$('grid');g.classList.add('dgview');
  if(dgFollowOnly)ds=ds.filter(function(d){return isFollowing(d.uid);});
  if(USERLOC&&!city)ds=ds.slice().sort(function(x,y){return distOf(x.city)-distOf(y.city);});
  if(FOLLOWS.length&&!dgFollowOnly)ds=ds.slice().sort(function(a,b){return (isFollowing(b.uid)?1:0)-(isFollowing(a.uid)?1:0);});
+ if(DCLICKS)ds=ds.slice().sort(function(a,b){var f=(isFollowing(b.uid)?1:0)-(isFollowing(a.uid)?1:0);if(f)return f;return (DCLICKS[b.uid]||0)-(DCLICKS[a.uid]||0);}); // 실제 클릭 인기순
  var fbar=FOLLOWS.length?`<div class="dgfollowbar"><button class="dgfb${dgFollowOnly?'':' on'}" onclick="dgFollowOnly=false;render()">${T[LANG].dgAll}</button><button class="dgfb${dgFollowOnly?' on':''}" onclick="dgFollowOnly=true;markFollowSeen();render()"><i class="ti ti-user-check"></i> ${T[LANG].following} ${FOLLOWS.length}</button></div>`:'';
  if(!ds.length){g.innerHTML=fbar+`<div class="empty" style="grid-column:1/-1"><i class="ti ti-user-heart"></i><p>${dgFollowOnly?T[LANG].noFollowing:T[LANG].noRes}</p></div>`;return;}
  g.innerHTML=fbar+ds.map(function(d){var nm=(LANG==='ko'&&d.ko)?d.ko:d.name;var thumbs=d.works.slice(0,3);var L=hyb();
@@ -1768,6 +1770,7 @@ function claimFeatured(){closeWork();openLogin('');toast(T[LANG].claimToast);}
 function closeWork(){$('wmodal').classList.remove('on');curW=null;}
 function goDesigner(id){closeWork();openD(id);}
 function openD(did,keep){stopAllVideos();const d=dById(did);if(!d)return;curD=did;const gi=D.indexOf(d);
+ if(!keep&&d.uid)logDclick(d.uid); // 인기 순위용 클릭 기록(리렌더 제외)
  const fav=isSaved(d.id+'_0');
  const name=(LANG==='ko'&&d.ko)?d.ko:d.name;
  const SNSBASE={instagram:'https://instagram.com/',tiktok:'https://tiktok.com/@',youtube:'https://youtube.com/@',x:'https://x.com/'};
@@ -2156,6 +2159,21 @@ const SB=window.supabase.createClient(SB_URL,SB_KEY,{auth:{persistSession:true,a
     if(!r||!r.error){ok();return;}
     // ref 컬럼이 아직 없으면(SQL 미실행) 기존 방식으로 폴백
     SB.from('page_visits').insert({visitor:vid,path:location.pathname}).then(function(r2){if(!r2||!r2.error)ok();},function(){});
+  },function(){});
+}catch(e){}})();
+/* 디자이너 프로필 클릭 추적 — 인기 순위용 (기기·디자이너·일 1회) */
+var DCLICKS=null;
+function logDclick(uid){try{
+  if(!uid)return; if(ME&&ME.uid===uid)return; // 본인 조회 제외
+  var kst=new Date(Date.now()+9*3600000).toISOString().slice(0,10);
+  var key='beautia_dc_'+String(uid).slice(0,8)+'_'+kst;
+  if(localStorage.getItem(key))return;
+  var vid=localStorage.getItem('beautia_vid')||'anon';
+  SB.from('designer_clicks').insert({designer:uid,visitor:vid}).then(function(r){if(!r||!r.error){try{localStorage.setItem(key,'1');}catch(e){}}},function(){});
+}catch(e){}}
+(function loadDclicks(){try{
+  SB.rpc('designer_click_counts',{p_days:30}).then(function(r){
+    if(r&&!r.error&&r.data){DCLICKS={};r.data.forEach(function(x){DCLICKS[x.designer]=+x.clicks;});try{if(typeof render==='function')render();}catch(e){}}
   },function(){});
 }catch(e){}})();
 function roleIn(r){return (r==='designer'||r==='owner'||r==='desg')?'desg':'cust';}
