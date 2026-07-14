@@ -3009,7 +3009,13 @@ var NB={native:false,pushToken:null};
  try{if(P.Network){P.Network.addListener('networkStatusChange',function(s){if(s&&!s.connected){try{toast(({ko:'인터넷 연결이 끊겼어요',en:'You are offline',ja:'オフラインです',th:'ออฟไลน์อยู่',zh:'网络已断开'}[LANG])||'You are offline');}catch(_){}}});}}catch(e){}
  // 6) 푸시 알림 — 예약 리마인더용 토큰 등록
  (async function initPush(){try{
-   if(!P.PushNotifications)return;var PN=P.PushNotifications;
+   if(!P.PushNotifications)return;
+   // ⚠️ 안드로이드 푸시는 Firebase(FCM)+google-services.json 설정이 있어야 함.
+   //   미설정 상태에서 register() 호출 시 "Default FirebaseApp is not initialized" 네이티브 크래시(JS try/catch로 못 막음).
+   //   → Firebase 붙이기 전까지 안드로이드에서는 푸시 등록을 건너뜀(iOS/APNs는 정상).
+   var __plat=(window.Capacitor&&window.Capacitor.getPlatform&&window.Capacitor.getPlatform())||'';
+   if(__plat==='android')return;
+   var PN=P.PushNotifications;
    var perm=await PN.checkPermissions();
    if(perm.receive==='prompt'||perm.receive==='prompt-with-rationale')perm=await PN.requestPermissions();
    if(perm.receive!=='granted')return;
