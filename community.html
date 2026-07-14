@@ -2686,6 +2686,7 @@ function openBook(did,svcIdx){const d=dById(did);if(!d||!d.uid)return;
  bkRender();$('bkmodal').classList.add('on');}
 function bkGoSvc(){var nt=$('bkNote');if(nt)bkSel.note=nt.value;bkSel.step=1;bkRender();}
 function bkRender(){var d=dById(bkSel.did);if(!d)return;
+ var _nt=$('bkNote');if(_nt)bkSel.note=_nt.value; // 다시 그리기 전 요청사항 입력값 보존(날짜·시간·쿠폰 변경 시 안 날아가게)
  const name=(LANG==='ko'&&d.ko)?d.ko:d.name;const svcs=d.services||[];
  var can=!!(bkSel.date&&bkSel.time);
  var head=`<button class="iclose" onclick="closeBk()" style="position:absolute;top:16px;right:20px;font-size:24px;color:var(--sub);z-index:2">×</button>
