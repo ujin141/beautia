@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>계정 삭제 · Delete your account — Beautia</title>
+<meta name="robots" content="index,follow">
+<link rel="icon" href="/logo-mark.png">
+<style>
+  :root{--plum:#6E4A50;--plum2:#48323a;--gold:#C9A063;--ink:#2e2326;--sub:#8a7a76;--line:#efe4de;--cream:#faf6f3}
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{font-family:'Pretendard',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;color:var(--ink);background:var(--cream);line-height:1.65;-webkit-font-smoothing:antialiased}
+  .hd{background:var(--plum2);color:#fff;padding:38px 24px 30px;text-align:center}
+  .hd img{width:44px;display:block;margin:0 auto 10px}
+  .hd .wm{font-family:Georgia,'Times New Roman',serif;font-size:24px;font-weight:bold;letter-spacing:.3px}
+  .hd .sub{font-size:13.5px;color:rgba(255,255,255,.7);margin-top:6px}
+  .wrap{max-width:680px;margin:0 auto;padding:34px 22px 70px}
+  h1{font-size:26px;font-weight:800;color:var(--plum2);margin-bottom:6px}
+  .lead{font-size:15px;color:var(--sub);margin-bottom:26px}
+  .lang{display:flex;gap:8px;margin-bottom:24px}
+  .lang a{font-size:13px;font-weight:700;padding:7px 14px;border-radius:999px;border:1.5px solid var(--line);color:var(--sub);text-decoration:none;background:#fff;cursor:pointer}
+  .lang a.on{background:var(--plum);color:#fff;border-color:var(--plum)}
+  .card{background:#fff;border:1px solid var(--line);border-radius:16px;padding:22px 22px;margin-bottom:16px}
+  .card h2{font-size:17px;font-weight:800;color:var(--plum);margin-bottom:10px;display:flex;align-items:center;gap:8px}
+  .card h2 .n{width:26px;height:26px;border-radius:50%;background:var(--plum);color:#fff;font-size:14px;display:flex;align-items:center;justify-content:center;flex:0 0 auto}
+  .card p,.card li{font-size:14.5px;color:var(--ink)}
+  .card ul{margin:6px 0 0 2px;padding-left:18px}
+  .card li{margin:3px 0}
+  a.mail{color:var(--plum);font-weight:800;text-decoration:none;border-bottom:1.5px solid var(--gold)}
+  .muted{font-size:13px;color:var(--sub);margin-top:8px}
+  .foot{font-size:12.5px;color:var(--sub);text-align:center;margin-top:28px;line-height:1.7}
+  .foot b{color:var(--ink)}
+  [data-l]{display:none}
+  body.ko [data-l="ko"]{display:block}
+  body.en [data-l="en"]{display:block}
+  .card [data-l="ko"],.card [data-l="en"]{display:none}
+  body.ko .card [data-l="ko"]{display:block}
+  body.en .card [data-l="en"]{display:block}
+  li[data-l]{display:none}
+  body.ko li[data-l="ko"]{display:list-item}
+  body.en li[data-l="en"]{display:list-item}
+</style>
+</head>
+<body class="ko">
+<div class="hd">
+  <img src="/logo-mark-white.png" alt="Beautia">
+  <div class="wm">Beautia</div>
+  <div class="sub">Account & data deletion</div>
+</div>
+<div class="wrap">
+  <div class="lang">
+    <a class="on" onclick="setL('ko',this)">한국어</a>
+    <a onclick="setL('en',this)">English</a>
+  </div>
+
+  <div data-l="ko">
+    <h1>계정 삭제</h1>
+    <div class="lead">Beautia 계정과 관련 개인 데이터를 삭제하는 방법입니다.</div>
+  </div>
+  <div data-l="en">
+    <h1>Delete your account</h1>
+    <div class="lead">How to delete your Beautia account and associated personal data.</div>
+  </div>
+
+  <div class="card">
+    <h2><span class="n">1</span><span data-l="ko">앱에서 바로 삭제</span><span data-l="en">Delete in the app</span></h2>
+    <p data-l="ko">Beautia 앱 → <b>프로필(내 정보) 탭</b> → 하단의 <b>‘회원탈퇴’</b> → 확인. 계정과 개인 데이터가 삭제됩니다.</p>
+    <p data-l="en">Open the Beautia app → <b>Profile tab</b> → tap <b>“Delete account”</b> at the bottom → confirm. Your account and personal data are deleted.</p>
+  </div>
+
+  <div class="card">
+    <h2><span class="n">2</span><span data-l="ko">웹으로 삭제 요청 (앱 없이)</span><span data-l="en">Request deletion via web (no app needed)</span></h2>
+    <p data-l="ko">앱에 접근할 수 없다면 가입한 이메일 주소로 <a class="mail" href="mailto:hello@beautia.io?subject=계정%20삭제%20요청">hello@beautia.io</a> 에 “계정 삭제 요청”을 보내주세요. 본인 확인 후 처리해 드립니다.</p>
+    <p data-l="en">If you can’t access the app, email <a class="mail" href="mailto:hello@beautia.io?subject=Account%20deletion%20request">hello@beautia.io</a> from your registered email with an “Account deletion request”. We’ll verify and process it.</p>
+    <p class="muted" data-l="ko">처리 기간: 요청 확인 후 영업일 기준 최대 7일 이내.</p>
+    <p class="muted" data-l="en">Processing time: within 7 business days of confirming your request.</p>
+  </div>
+
+  <div class="card">
+    <h2><span class="n">3</span><span data-l="ko">삭제되는 데이터</span><span data-l="en">What gets deleted</span></h2>
+    <p data-l="ko">삭제 시 다음 개인 데이터가 제거됩니다:</p>
+    <p data-l="en">The following personal data is removed:</p>
+    <ul>
+      <li data-l="ko">계정 정보(이메일·이름·프로필 사진)</li>
+      <li data-l="ko">포트폴리오·업로드 사진, 저장한 항목</li>
+      <li data-l="ko">예약·후기·메시지 내역</li>
+      <li data-l="ko">포인트·기기 식별자·푸시 토큰</li>
+      <li data-l="en">Account info (email, name, profile photo)</li>
+      <li data-l="en">Portfolio & uploaded photos, saved items</li>
+      <li data-l="en">Bookings, reviews, and messages</li>
+      <li data-l="en">Points, device identifiers, and push tokens</li>
+    </ul>
+    <p class="muted" data-l="ko">보관: 법령상 보관 의무가 있는 거래·정산 기록은 관련 법이 정한 기간 동안만 최소한으로 보관 후 파기합니다. 그 외 개인 데이터는 삭제 시 제거됩니다.</p>
+    <p class="muted" data-l="en">Retention: Records we are legally required to keep (e.g., transaction/tax records) are retained only for the period required by law, then deleted. All other personal data is removed upon deletion.</p>
+  </div>
+
+  <div class="foot">
+    <span data-l="ko">운영: <b>LUNATICS GROUP LLC</b> · 한국 사업자 <b>루나틱스</b> (783-03-03627)<br>문의: hello@beautia.io · 개인정보처리방침: <a href="/privacy" style="color:var(--plum)">beautia.io/privacy</a></span>
+    <span data-l="en">Operated by <b>LUNATICS GROUP LLC</b> · Korea business <b>Lunatics</b> (783-03-03627)<br>Contact: hello@beautia.io · Privacy Policy: <a href="/privacy" style="color:var(--plum)">beautia.io/privacy</a></span>
+  </div>
+</div>
+<script>
+function setL(l,el){document.body.className=l;document.querySelectorAll('.lang a').forEach(a=>a.classList.remove('on'));el.classList.add('on');document.documentElement.lang=l;}
+</script>
+</body>
+</html>
