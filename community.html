@@ -1410,7 +1410,7 @@ function svcNormalize(arr){return (arr||[]).map(function(s){if(!s||typeof s!=='o
 // 통화 · 실시간 환율(대략 환산 표시용)
 var CURSYM={KRW:'₩',JPY:'¥',THB:'฿',USD:'$',EUR:'€',CNY:'¥',TWD:'NT$',SGD:'S$',VND:'₫',GBP:'£',AUD:'A$'};
 var CURDEC={USD:1,EUR:1,SGD:1,AUD:1,GBP:1};
-function curFmt(amt,cur){var d=CURDEC[cur]||0;var v=d?Number(amt).toFixed(d):Math.round(amt).toLocaleString();return (CURSYM[cur]||(cur+' '))+v;}
+function curFmt(amt,cur){var dec=CURDEC[cur]||0;var n=Number(amt)||0;var v=dec?((n%1===0)?Math.round(n).toLocaleString():n.toFixed(2)):Math.round(n).toLocaleString();return (CURSYM[cur]||(cur+' '))+v;}
 function langCur(l){return {ko:'KRW',ja:'JPY',th:'THB',en:'USD',zh:'CNY'}[l||LANG]||'USD';}
 var FX={rates:{USD:1,KRW:1360,JPY:150,THB:36,EUR:0.92,CNY:7.2,TWD:32,SGD:1.35,VND:25400,GBP:0.79,AUD:1.5},ts:0};
 (function(){try{var s=JSON.parse(localStorage.getItem('beautia_fx')||'null');if(s&&s.rates&&s.rates.USD)FX=s;}catch(e){}})();
