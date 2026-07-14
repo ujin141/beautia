@@ -398,6 +398,10 @@ body.mlock{position:fixed;left:0;right:0;width:100%;overflow:hidden;}
 .bksvc.consult{grid-column:1/-1;flex-direction:row;align-items:center;justify-content:center;padding:11px;background:#faf6f4;border-style:dashed;}
 .bksvc.consult .bsn{padding-right:0;font-weight:600;color:var(--ink2);-webkit-line-clamp:1;}
 .bksvc.consult.on{background:var(--rosebg);border-style:solid;}
+.bksum{display:flex;align-items:center;gap:10px;border:1.5px solid var(--line);border-radius:14px;padding:12px 14px;background:#faf6f4;margin-top:6px;}
+.bksum .bsn{flex:1;font-weight:700;font-size:13.5px;color:var(--ink);line-height:1.3;}
+.bksum .bsp{font-weight:800;font-size:13px;color:var(--plum);white-space:nowrap;}
+.bksum .bkchg{flex:0 0 auto;border:none;background:none;color:var(--plum);font-size:12.5px;font-weight:700;text-decoration:underline;cursor:pointer;padding:0;}
 .bkcoups{display:flex;flex-wrap:wrap;gap:8px;margin-top:6px;}
 .bkcoup{border:1.5px solid var(--line);border-radius:12px;padding:9px 13px;background:#fff;cursor:pointer;font-size:13.5px;color:var(--ink);transition:.12s;}
 .bkcoup b{color:var(--plum);}
@@ -2046,10 +2050,10 @@ Object.assign(T.ko,{sloganFull:'아티스트를 더욱 아티스트답게 · Art
 Object.assign(T.en,{sloganFull:'Artists, more artist.'});
 Object.assign(T.ja,{sloganFull:'アーティストを、もっとアーティストらしく · Artists, more artist.'});
 Object.assign(T.th,{sloganFull:'ทำให้ศิลปินเป็นศิลปินยิ่งขึ้น · Artists, more artist.'});
-Object.assign(T.ko,{bkDoneT:'예약이 접수됐어요! 🎉',bkDoneS:'디자이너 확인 후 확정돼요. 채팅으로도 알려드려요.',prodPromo:'이 시술과 어울리는 추천 제품',relatedProd:'추천 제품',buyBtn:'구매'});
-Object.assign(T.en,{bkDoneT:'Booking received! 🎉',bkDoneS:"The designer will confirm shortly. We'll notify you in chat.",prodPromo:'Products that pair with this service',relatedProd:'Recommended products',buyBtn:'Shop'});
-Object.assign(T.ja,{bkDoneT:'予約を受け付けました！🎉',bkDoneS:'デザイナーの確認後に確定します。チャットでもお知らせします。',prodPromo:'この施術に合うおすすめ商品',relatedProd:'おすすめ商品',buyBtn:'購入'});
-Object.assign(T.th,{bkDoneT:'รับการจองแล้ว! 🎉',bkDoneS:'ดีไซเนอร์จะยืนยันเร็วๆ นี้ และแจ้งในแชท',prodPromo:'สินค้าที่เข้ากับบริการนี้',relatedProd:'สินค้าแนะนำ',buyBtn:'ซื้อ'});
+Object.assign(T.ko,{bkDoneT:'예약이 접수됐어요! 🎉',bkDoneS:'디자이너 확인 후 확정돼요. 채팅으로도 알려드려요.',prodPromo:'이 시술과 어울리는 추천 제품',relatedProd:'추천 제품',buyBtn:'구매',bkChange:'변경'});
+Object.assign(T.en,{bkDoneT:'Booking received! 🎉',bkDoneS:"The designer will confirm shortly. We'll notify you in chat.",prodPromo:'Products that pair with this service',relatedProd:'Recommended products',buyBtn:'Shop',bkChange:'Change'});
+Object.assign(T.ja,{bkDoneT:'予約を受け付けました！🎉',bkDoneS:'デザイナーの確認後に確定します。チャットでもお知らせします。',prodPromo:'この施術に合うおすすめ商品',relatedProd:'おすすめ商品',buyBtn:'購入',bkChange:'変更'});
+Object.assign(T.th,{bkDoneT:'รับการจองแล้ว! 🎉',bkDoneS:'ดีไซเนอร์จะยืนยันเร็วๆ นี้ และแจ้งในแชท',prodPromo:'สินค้าที่เข้ากับบริการนี้',relatedProd:'สินค้าแนะนำ',buyBtn:'ซื้อ',bkChange:'เปลี่ยน'});
 Object.assign(T.en,{askTitle:'Contact us',askSub:"Leave your question — we'll get back to you.",askMsgPh:'Write your message…',askContactPh:'Email · phone · Instagram to reach you (optional)',askSend:'Send',askNeedMsg:'Please enter your message',askSent:"Got it! ✨ We'll get back to you soon.",askFail:'Failed to send'});
 Object.assign(T.ja,{askTitle:'お問い合わせ',askSub:'ご質問をどうぞ。確認してご返信します。',askMsgPh:'お問い合わせ内容を入力…',askContactPh:'返信先メール・電話・Instagram（任意）',askSend:'送信',askNeedMsg:'内容を入力してください',askSent:'受け付けました ✨ 確認してご返信します。',askFail:'送信に失敗しました'});
 Object.assign(T.th,{askTitle:'ติดต่อเรา',askSub:'ฝากคำถามไว้ได้เลย เราจะติดต่อกลับ',askMsgPh:'พิมพ์ข้อความของคุณ…',askContactPh:'อีเมล·เบอร์·Instagram สำหรับติดต่อกลับ (ไม่บังคับ)',askSend:'ส่ง',askNeedMsg:'กรุณากรอกข้อความ',askSent:'รับเรื่องแล้ว ✨ เราจะติดต่อกลับเร็ว ๆ นี้',askFail:'ส่งไม่สำเร็จ'});
@@ -2101,7 +2105,7 @@ Object.assign(T.zh,{
  fbHead5:'你身边的\n实力设计师',fbSub5:'找到你附近、契合你品味的设计师。',
  fbHead6:'全球美业\n尽在一处',fbSub6:'韩国、日本及更多 — 全汇聚于此。'
 });
-Object.assign(T.zh,{sloganFull:'让艺术家更像艺术家 · Artists, more artist.',bkDoneT:'预约已提交！🎉',bkDoneS:'设计师确认后即预订成功，也会在聊天中通知你。',prodPromo:'与此服务搭配的推荐产品',relatedProd:'推荐产品',buyBtn:'购买'});
+Object.assign(T.zh,{sloganFull:'让艺术家更像艺术家 · Artists, more artist.',bkDoneT:'预约已提交！🎉',bkDoneS:'设计师确认后即预订成功，也会在聊天中通知你。',prodPromo:'与此服务搭配的推荐产品',relatedProd:'推荐产品',buyBtn:'购买',bkChange:'更改'});
 // 태국어: 영어 전체를 상속받고 주요 문자열만 태국어로 (누락 키는 영어로 자동 폴백)
 T.th=Object.assign({},T.th,{
  explore:'สำรวจ',designers:'ดีไซเนอร์',reels:'รีลส์',reelsEmpty:'ยังไม่มีวิดีโอ',saved:'บันทึกไว้',join:'สมัคร',my:'ฉัน',messages:'ข้อความ',
@@ -2671,21 +2675,34 @@ function bkTimeGrid(){var d=dById(bkSel.did);var now=new Date();var isToday=bkSe
  return out;}
 function bkPickDate(v){bkSel.date=v;bkSel.time='';bkRender();if(bkTaken[v]===undefined)loadBkTaken(v);}
 function bkPickTime(v){bkSel.time=v;bkRender();}
-function bkPickSvc(i){bkSel.svc=i;bkRender();}
+function bkPickSvc(i){bkSel.svc=i;bkSel.step=2;bkRender();}
 function openBook(did,svcIdx){const d=dById(did);if(!d||!d.uid)return;
  if(!(ME&&ME.uid)){openLogin('');toast(T[LANG].needLogin);return;}
  if(ME.uid===d.uid){toast(T[LANG].cantChatSelf);return;}
- bkSel={did:did,svc:(svcIdx!=null?svcIdx:((d.services&&d.services.length)?0:-1)),date:new Date().toISOString().slice(0,10),time:''};
+ // 단계형: 서비스가 있고 특정 서비스 지정 없이 열면 1단계(서비스 선택)부터, 아니면 바로 2단계(날짜·시간)
+ var hasSvc=!!(d.services&&d.services.length);
+ bkSel={did:did,svc:(svcIdx!=null?svcIdx:(hasSvc?0:-1)),date:new Date().toISOString().slice(0,10),time:'',step:(hasSvc&&svcIdx==null)?1:2};
  bkTaken={};loadBkTaken(bkSel.date);
  bkRender();$('bkmodal').classList.add('on');}
+function bkGoSvc(){var nt=$('bkNote');if(nt)bkSel.note=nt.value;bkSel.step=1;bkRender();}
 function bkRender(){var d=dById(bkSel.did);if(!d)return;
  const name=(LANG==='ko'&&d.ko)?d.ko:d.name;const svcs=d.services||[];
  var can=!!(bkSel.date&&bkSel.time);
- $('bkcard').innerHTML=`<button class="iclose" onclick="closeBk()" style="position:absolute;top:16px;right:20px;font-size:24px;color:var(--sub);z-index:2">×</button>
+ var head=`<button class="iclose" onclick="closeBk()" style="position:absolute;top:16px;right:20px;font-size:24px;color:var(--sub);z-index:2">×</button>
   <h3 class="serif">${T[LANG].bkTitle}</h3>
-  <div class="pfsub">${esc(d.flag)} ${esc(name)} · ${esc(cl(d.cat))}${d.city?' · '+esc(d.city):''}</div>
-  ${svcs.length?`<div class="il">${T[LANG].bkService}</div><div class="bksvcs">${svcs.map((s,i)=>`<button class="bksvc${i===bkSel.svc?' on':''}" onclick="bkPickSvc(${i})"><span class="bsn">${esc(svcLabel(s,LANG))}</span>${priceNum(s.p)?`<span class="bsp">${esc(priceDisp(s.p,svcCur(d)))}${priceApprox(s.p,svcCur(d))?` <span class="bsapx">${esc(priceApprox(s.p,svcCur(d)))}</span>`:''}</span>`:(s.p?`<span class="bsp">${esc(s.p)}</span>`:'')}${svcDur(s,LANG)?`<span class="bsd">${esc(svcDur(s,LANG))}</span>`:''}</button>`).join('')}<button class="bksvc consult${bkSel.svc<0?' on':''}" onclick="bkPickSvc(-1)"><span class="bsn">💬 ${T[LANG].bkConsult}</span></button></div>`:''}
-  <div class="il">${T[LANG].bkDate}</div><div class="bkdates">${bkDateChips()}</div>
+  <div class="pfsub">${esc(d.flag)} ${esc(name)} · ${esc(cl(d.cat))}${d.city?' · '+esc(d.city):''}</div>`;
+ // ── 1단계: 서비스 선택 (누르면 자동으로 2단계) ──
+ if(bkSel.step===1&&svcs.length){
+  $('bkcard').innerHTML=head
+   +`<div class="il">${T[LANG].bkService}</div>
+  <div class="bksvcs" style="max-height:min(58vh,460px)">${svcs.map((s,i)=>`<button class="bksvc${i===bkSel.svc?' on':''}" onclick="bkPickSvc(${i})"><span class="bsn">${esc(svcLabel(s,LANG))}</span>${priceNum(s.p)?`<span class="bsp">${esc(priceDisp(s.p,svcCur(d)))}${priceApprox(s.p,svcCur(d))?` <span class="bsapx">${esc(priceApprox(s.p,svcCur(d)))}</span>`:''}</span>`:(s.p?`<span class="bsp">${esc(s.p)}</span>`:'')}${svcDur(s,LANG)?`<span class="bsd">${esc(svcDur(s,LANG))}</span>`:''}</button>`).join('')}<button class="bksvc consult${bkSel.svc<0?' on':''}" onclick="bkPickSvc(-1)"><span class="bsn">💬 ${T[LANG].bkConsult}</span></button></div>`;
+  return;
+ }
+ // ── 2단계: 날짜·시간·요청사항 (+선택한 서비스 요약) ──
+ var s=(bkSel.svc>=0&&svcs[bkSel.svc])?svcs[bkSel.svc]:null;
+ var sum=svcs.length?`<div class="il">${T[LANG].bkService}</div><div class="bksum"><span class="bsn">${s?esc(svcLabel(s,LANG)):('💬 '+T[LANG].bkConsult)}</span>${s&&priceNum(s.p)?`<span class="bsp">${esc(priceDisp(s.p,svcCur(d)))}</span>`:(s&&s.p?`<span class="bsp">${esc(s.p)}</span>`:'')}<button class="bkchg" onclick="bkGoSvc()">${T[LANG].bkChange}</button></div>`:'';
+ $('bkcard').innerHTML=head+sum
+  +`<div class="il">${T[LANG].bkDate}</div><div class="bkdates">${bkDateChips()}</div>
   <div class="il">${T[LANG].bkTime}</div><div class="bkslots">${bkTimeGrid()}</div>
   <div class="il">${T[LANG].bkNote}</div><textarea class="linput" id="bkNote" rows="2" style="resize:none" placeholder="${T[LANG].bkNotePh}">${esc(bkSel.note||'')}</textarea>
   ${bkCouponRow(d)}
