@@ -2880,7 +2880,15 @@ buildTiles();renderCats();renderCities();applyI18n();render();renderAuth();updat
 (function(){var sp=document.getElementById('splash');if(!sp||sp.style.display!=='flex')return;var t0=(window.__splashT0||performance.now());var wait=Math.max(0,1250-(performance.now()-t0));setTimeout(function(){sp.classList.add('hide');var m=document.querySelector('meta[name=theme-color]');if(m&&window.__thmPrev!=null)m.setAttribute('content',window.__thmPrev);setTimeout(function(){sp.style.display='none';},600);},wait);})();
 // PWA: 서비스워커 + 설치 프롬프트
 let pwaPrompt=null;
-if('serviceWorker' in navigator){try{navigator.serviceWorker.register('/sw.js');}catch(e){}}
+if('serviceWorker' in navigator){try{navigator.serviceWorker.register('/sw.js').then(function(reg){
+  // 앱 포그라운드 복귀 시 새 배포 확인 → 있으면 SW가 활성화되며 자동 새로고침(옛 코드 탈출).
+  // 단, 예약/채팅/로그인 등 모달이 열려 있으면(작성 중) 건너뜀 → 입력 유실 방지.
+  document.addEventListener('visibilitychange',function(){
+    if(document.visibilityState==='visible'&&reg&&!document.querySelector('.bkmodal.on,.chatmodal.on,.lmodal.on,.on[class*=modal],.sheet.on,.bookedov.on')){
+      try{reg.update();}catch(e){}
+    }
+  });
+});}catch(e){}}
 window.addEventListener('beforeinstallprompt',function(e){e.preventDefault();pwaPrompt=e;});
 // ── 네이티브 앱 브리지 (Capacitor) — 앱 안에서만 실행, 일반 웹은 전부 무시 ──
 var NB={native:false,pushToken:null};
