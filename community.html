@@ -388,10 +388,13 @@ body.mlock{position:fixed;left:0;right:0;width:100%;overflow:hidden;}
 @media (min-width:861px){ .mepage{display:none!important;} }
 /* 간편 예약 (서비스칩·날짜칩·시간슬롯) */
 .bksvcs{display:flex;flex-direction:column;gap:8px;margin-top:6px;}
-.bksvc{display:flex;align-items:center;gap:8px;text-align:left;border:1.5px solid var(--line);border-radius:14px;padding:12px 14px;background:#fff;cursor:pointer;transition:.12s;}
-.bksvc.on{border-color:var(--plum);background:var(--rosebg);}
-.bksvc .bsn{flex:1;font-weight:700;font-size:14.5px;color:var(--ink);}
-.bksvc .bsp{font-weight:800;font-size:14px;color:var(--plum);} .bksvc .bsd{font-size:12px;color:var(--sub);}
+.bksvc{display:flex;align-items:center;justify-content:space-between;gap:12px;text-align:left;border:1.5px solid var(--line);border-radius:14px;padding:12px 14px;background:#fff;cursor:pointer;transition:.12s;}
+.bksvc.on{border-color:var(--plum);background:var(--soft);}
+.bksvc .bstx{flex:1;min-width:0;display:flex;flex-direction:column;gap:2px;}
+.bksvc .bsn{font-weight:700;font-size:14px;color:var(--ink);line-height:1.3;}
+.bksvc .bsd{font-size:11.5px;font-weight:600;color:var(--sub);}
+.bksvc .bspwrap{flex:0 0 auto;display:flex;flex-direction:column;align-items:flex-end;gap:1px;}
+.bksvc .bsp{font-weight:800;font-size:14.5px;color:var(--ink);white-space:nowrap;}
 .bkcoups{display:flex;flex-wrap:wrap;gap:8px;margin-top:6px;}
 .bkcoup{border:1.5px solid var(--line);border-radius:12px;padding:9px 13px;background:#fff;cursor:pointer;font-size:13.5px;color:var(--ink);transition:.12s;}
 .bkcoup b{color:var(--plum);}
@@ -2678,7 +2681,7 @@ function bkRender(){var d=dById(bkSel.did);if(!d)return;
  $('bkcard').innerHTML=`<button class="iclose" onclick="closeBk()" style="position:absolute;top:16px;right:20px;font-size:24px;color:var(--sub);z-index:2">×</button>
   <h3 class="serif">${T[LANG].bkTitle}</h3>
   <div class="pfsub">${esc(d.flag)} ${esc(name)} · ${esc(cl(d.cat))}${d.city?' · '+esc(d.city):''}</div>
-  ${svcs.length?`<div class="il">${T[LANG].bkService}</div><div class="bksvcs">${svcs.map((s,i)=>`<button class="bksvc${i===bkSel.svc?' on':''}" onclick="bkPickSvc(${i})"><span class="bsn">${esc(svcLabel(s,LANG))}</span>${priceNum(s.p)?`<span class="bsp">${esc(priceDisp(s.p,svcCur(d)))}${priceApprox(s.p,svcCur(d))?` <span class="bsapx">${esc(priceApprox(s.p,svcCur(d)))}</span>`:''}</span>`:(s.p?`<span class="bsp">${esc(s.p)}</span>`:'')}${svcDur(s,LANG)?`<span class="bsd">${esc(svcDur(s,LANG))}</span>`:''}</button>`).join('')}<button class="bksvc${bkSel.svc<0?' on':''}" onclick="bkPickSvc(-1)"><span class="bsn">${T[LANG].bkConsult}</span></button></div>`:''}
+  ${svcs.length?`<div class="il">${T[LANG].bkService}</div><div class="bksvcs">${svcs.map((s,i)=>`<button class="bksvc${i===bkSel.svc?' on':''}" onclick="bkPickSvc(${i})"><span class="bstx"><span class="bsn">${esc(svcLabel(s,LANG))}</span>${svcDur(s,LANG)?`<span class="bsd">${esc(svcDur(s,LANG))}</span>`:''}</span>${priceNum(s.p)?`<span class="bspwrap"><span class="bsp">${esc(priceDisp(s.p,svcCur(d)))}</span>${priceApprox(s.p,svcCur(d))?`<span class="bsapx">${esc(priceApprox(s.p,svcCur(d)))}</span>`:''}</span>`:(s.p?`<span class="bspwrap"><span class="bsp">${esc(s.p)}</span></span>`:'')}</button>`).join('')}<button class="bksvc${bkSel.svc<0?' on':''}" onclick="bkPickSvc(-1)"><span class="bstx"><span class="bsn">${T[LANG].bkConsult}</span></span></button></div>`:''}
   <div class="il">${T[LANG].bkDate}</div><div class="bkdates">${bkDateChips()}</div>
   <div class="il">${T[LANG].bkTime}</div><div class="bkslots">${bkTimeGrid()}</div>
   <div class="il">${T[LANG].bkNote}</div><textarea class="linput" id="bkNote" rows="2" style="resize:none" placeholder="${T[LANG].bkNotePh}">${esc(bkSel.note||'')}</textarea>
