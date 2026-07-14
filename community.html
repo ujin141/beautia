@@ -2585,7 +2585,7 @@ function applyDesignerRows(rows){
 }
 var DCACHE_TTL=10*60*1000; // 10분: 이보다 최신이면 재조회 생략(트래픽 절감)
 async function loadDesigners(){
-  var cached=null;try{cached=JSON.parse(localStorage.getItem('beautia_dcache')||'null');}catch(e){}
+  var cached=null;try{cached=JSON.parse(localStorage.getItem('beautia_dcache2')||'null');}catch(e){}
   if(cached&&cached.rows&&cached.rows.length){try{applyDesignerRows(cached.rows);}catch(e){}
     if(Date.now()-(cached.t||0)<DCACHE_TTL)return; // 캐시 신선 → Supabase 재조회 생략
   }
@@ -2593,7 +2593,7 @@ async function loadDesigners(){
     var rows=(await SB.from('profiles').select('id,nickname,role,region,bio,interests,shop,avatar_url,created_at').limit(300)).data;
     if(!rows)return;
     applyDesignerRows(rows);
-    try{localStorage.setItem('beautia_dcache',JSON.stringify({t:Date.now(),rows:rows}));}catch(e){}
+    try{localStorage.setItem('beautia_dcache2',JSON.stringify({t:Date.now(),rows:rows}));}catch(e){}
   }catch(e){}
 }
 function openFeaturedAdd(){if(!(ME&&ME.isOwner)){toast('오너만 사용 가능');return;}$('facard').innerHTML=`<button class="iclose" onclick="closeFa()" style="position:absolute;top:16px;right:20px;font-size:24px;color:var(--sub);z-index:2">×</button>
