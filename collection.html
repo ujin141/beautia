@@ -1739,7 +1739,20 @@ const SB=window.supabase.createClient(SB_URL,SB_KEY,{auth:{persistSession:true,a
   var key='beautia_vlog_'+kst;
   if(localStorage.getItem(key))return;
   var vid=localStorage.getItem('beautia_vid');if(!vid){vid=Math.random().toString(36).slice(2,12);try{localStorage.setItem('beautia_vid',vid);}catch(e){}}
-  SB.from('page_visits').insert({visitor:vid,path:location.pathname}).then(function(r){if(!r||!r.error){try{localStorage.setItem(key,'1');}catch(e){}}},function(){});
+  var ref='';try{
+    var q=new URLSearchParams(location.search);
+    var utm=['utm_source','utm_medium','utm_campaign','ref'].map(function(k){var v=q.get(k);return v?(k+'='+v):'';}).filter(Boolean).join('&');
+    var r=document.referrer||'';
+    if(r){var h='';try{h=new URL(r).hostname;}catch(e){}if(h&&!/(^|\.)beautia\.io$/i.test(h))ref=h;}
+    if(utm)ref=(ref?ref+' | ':'')+utm;
+    if(!ref)ref='direct';
+  }catch(e){}
+  var row={visitor:vid,path:location.pathname,ref:ref.slice(0,200)};
+  var ok=function(){try{localStorage.setItem(key,'1');}catch(e){}};
+  SB.from('page_visits').insert(row).then(function(r){
+    if(!r||!r.error){ok();return;}
+    SB.from('page_visits').insert({visitor:vid,path:location.pathname}).then(function(r2){if(!r2||!r2.error)ok();},function(){});
+  },function(){});
 }catch(e){}})();
 function roleIn(r){return (r==='designer'||r==='owner'||r==='desg')?'desg':'cust';}
 function profToMe(p){const s=p.shop||{};const photos=[];(s.photos||[]).forEach(function(x){if(x&&photos.indexOf(x)<0)photos.push(x);});

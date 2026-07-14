@@ -10,6 +10,9 @@ create table if not exists public.page_visits (
 );
 create index if not exists page_visits_day_idx on public.page_visits (day);
 
+-- 유입경로(리퍼러·UTM) — 어디서 들어왔는지 추적 (2026-07-14 추가, 재실행 안전)
+alter table public.page_visits add column if not exists ref text;
+
 alter table public.page_visits enable row level security;
 
 -- 방문 기록: anon 은 삽입만 (조회/수정/삭제 불가)

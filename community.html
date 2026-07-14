@@ -2135,13 +2135,28 @@ let ME=null,SU=null;
 const SB_URL='https://pzbxcktaljhesrfnqwzq.supabase.co';
 const SB_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InB6Ynhja3RhbGpoZXNyZm5xd3pxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjgxNjc1MjYsImV4cCI6MjA4Mzc0MzUyNn0.aUZbTgfWbjEISNr1-cu9YJnOGj1lzjXeRVifHygAplc';
 const SB=window.supabase.createClient(SB_URL,SB_KEY,{auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:true}});
-/* 방문 로깅 — 기기별 하루 1회 (어드민 방문자 통계용) */
+/* 방문 로깅 — 기기별 하루 1회 (어드민 방문자 통계용) · 유입경로(리퍼러+UTM) 포함 */
 (function logVisit(){try{
   var kst=new Date(Date.now()+9*3600000).toISOString().slice(0,10);
   var key='beautia_vlog_'+kst;
   if(localStorage.getItem(key))return;
   var vid=localStorage.getItem('beautia_vid');if(!vid){vid=Math.random().toString(36).slice(2,12);try{localStorage.setItem('beautia_vid',vid);}catch(e){}}
-  SB.from('page_visits').insert({visitor:vid,path:location.pathname}).then(function(r){if(!r||!r.error){try{localStorage.setItem(key,'1');}catch(e){}}},function(){});
+  // 유입경로: 외부 리퍼러 + utm/ref 파라미터 (없으면 direct)
+  var ref='';try{
+    var q=new URLSearchParams(location.search);
+    var utm=['utm_source','utm_medium','utm_campaign','ref'].map(function(k){var v=q.get(k);return v?(k+'='+v):'';}).filter(Boolean).join('&');
+    var r=document.referrer||'';
+    if(r){var h='';try{h=new URL(r).hostname;}catch(e){}if(h&&!/(^|\.)beautia\.io$/i.test(h))ref=h;}
+    if(utm)ref=(ref?ref+' | ':'')+utm;
+    if(!ref)ref='direct';
+  }catch(e){}
+  var row={visitor:vid,path:location.pathname,ref:ref.slice(0,200)};
+  var ok=function(){try{localStorage.setItem(key,'1');}catch(e){}};
+  SB.from('page_visits').insert(row).then(function(r){
+    if(!r||!r.error){ok();return;}
+    // ref 컬럼이 아직 없으면(SQL 미실행) 기존 방식으로 폴백
+    SB.from('page_visits').insert({visitor:vid,path:location.pathname}).then(function(r2){if(!r2||!r2.error)ok();},function(){});
+  },function(){});
 }catch(e){}})();
 function roleIn(r){return (r==='designer'||r==='owner'||r==='desg')?'desg':'cust';}
 function profToMe(p){const s=p.shop||{};const photos=[];(s.photos||[]).forEach(function(x){if(x&&photos.indexOf(x)<0)photos.push(x);});
