@@ -1024,7 +1024,7 @@ html.native-app a,html.native-app button,html.native-app [role=button],html.nati
 .revreport:active{color:#573f47;}
 @media (prefers-color-scheme:dark){.repcard{background:#241a1f;}.reptitle{color:#ece4e6;}.repreason{background:#2a2025;border-color:#3a2c31;color:#ece4e6;}.repcancel{background:#332830;color:#cdbfc4;}}
 </style></head><body>
-<div id="splash" aria-hidden="true"><div class="score"><div class="swrap"><img class="sm" src="/logo-mark-white.png" alt=""><span class="smsheen"></span></div><div class="sw"><span>B</span><span>e</span><span>a</span><span>u</span><span>t</span><span>i</span><span>a</span></div><div class="sl"></div><div class="st">Your style, found.</div></div><div class="sdots"><i></i><i></i><i></i></div></div>
+<div id="splash" aria-hidden="true"><div class="score"><div class="swrap"><img class="sm" src="/logo-mark-white.png" alt=""><span class="smsheen"></span></div><div class="sw"><span>B</span><span>e</span><span>a</span><span>u</span><span>t</span><span>i</span><span>a</span></div><div class="sl"></div><div class="st">Your style, found.</div><div class="st" style="margin-top:5px;opacity:.78;font-size:.92em">Artists, more artist.</div></div><div class="sdots"><i></i><i></i><i></i></div></div>
 <script>(function(){try{var app=window.matchMedia&&window.matchMedia('(display-mode: standalone)').matches;var seen=false;try{seen=sessionStorage.getItem('beautia_splashed')==='1';}catch(e){}if(app||!seen){document.getElementById('splash').style.display='flex';window.__splashT0=performance.now();var m=document.querySelector('meta[name=theme-color]');if(m){window.__thmPrev=m.getAttribute('content');m.setAttribute('content','#48323a');}if(!app){try{sessionStorage.setItem('beautia_splashed','1');}catch(e){}}}}catch(e){}})();</script>
 <!-- Google Tag Manager (noscript) -->
 <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-5SNMQDGD" height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
@@ -1114,6 +1114,7 @@ html.native-app a,html.native-app button,html.native-app [role=button],html.nati
       <a href="mailto:hello@beautia.io" data-t="footContact">Contact</a>
       <a href="https://instagram.com/beautia.collection" target="_blank" rel="noopener">Instagram</a>
     </nav>
+    <div class="sf-copy" data-t="sloganFull" style="font-family:'Fraunces',Georgia,serif;font-style:italic;color:var(--gold,#C9A063)">아티스트를 더욱 아티스트답게 · Artists, more artist.</div>
     <div class="sf-copy">© 2026 Beautia. All rights reserved.</div>
     <div class="sf-legal">Operated by <b>LUNATICS GROUP LLC</b> · 254 Chapman Rd, Ste 208 #26785, Newark, DE 19702, USA · Delaware Entity ID 10500367<br>한국 사업자: <b>루나틱스</b> · 대표 송우진 · 사업자등록번호 783-03-03627 · 서울특별시 광진구 아차산로 356 제이타워 702호<br>Beautia는 이용자와 독립적인 뷰티 디자이너를 연결하는 중개 플랫폼이며 예약·서비스 거래의 당사자가 아닙니다. Beautia is a platform connecting users with independent beauty designers and is not a party to, or responsible for, any booking or service.</div>
   </div>
@@ -2020,11 +2021,14 @@ document.addEventListener('keydown',e=>{if(e.key==='Escape'){closeBk();closeFa()
 Object.assign(T.en,{idCard:'ID Card',idDl:'Download',idShare:'Share',idPrep:'Creating image…',idFail:'Download failed (try Share)',linkCopied:'Link copied ✨',saveHint:'Press & hold the image to save it 📥',done:'Done',idKind:'ID CARD',idScan:'SCAN TO VIEW & BOOK',fbKick:'Featured work',fbView:'View portfolio'});
 Object.assign(T.ko,{idCard:'ID 카드',idDl:'다운로드',idShare:'공유',idPrep:'이미지 만드는 중…',idFail:'다운로드 실패 (공유로 시도)',linkCopied:'링크 복사됨 ✨',saveHint:'이미지를 꾹 눌러 저장하세요 📥',done:'닫기',idKind:'ID 카드',idScan:'스캔해서 예약하기',fbKick:'추천 작업',fbView:'포트폴리오 보기'});
 Object.assign(T.ko,{askTitle:'문의하기',askSub:'궁금한 점을 남겨주세요. 확인 후 답변드릴게요.',askMsgPh:'문의 내용을 적어주세요…',askContactPh:'답변받을 이메일·연락처·인스타 (선택)',askSend:'보내기',askNeedMsg:'문의 내용을 입력해주세요',askSent:'문의가 접수됐어요 ✨ 확인 후 답변드릴게요.',askFail:'전송 실패'});
+Object.assign(T.ko,{sloganFull:'아티스트를 더욱 아티스트답게 · Artists, more artist.'});
+Object.assign(T.en,{sloganFull:'Artists, more artist.'});
+Object.assign(T.ja,{sloganFull:'アーティストを、もっとアーティストらしく · Artists, more artist.'});
+Object.assign(T.th,{sloganFull:'ทำให้ศิลปินเป็นศิลปินยิ่งขึ้น · Artists, more artist.'});
 Object.assign(T.ko,{bkDoneT:'예약이 접수됐어요! 🎉',bkDoneS:'디자이너 확인 후 확정돼요. 채팅으로도 알려드려요.',prodPromo:'이 시술과 어울리는 추천 제품',relatedProd:'추천 제품',buyBtn:'구매'});
 Object.assign(T.en,{bkDoneT:'Booking received! 🎉',bkDoneS:"The designer will confirm shortly. We'll notify you in chat.",prodPromo:'Products that pair with this service',relatedProd:'Recommended products',buyBtn:'Shop'});
 Object.assign(T.ja,{bkDoneT:'予約を受け付けました！🎉',bkDoneS:'デザイナーの確認後に確定します。チャットでもお知らせします。',prodPromo:'この施術に合うおすすめ商品',relatedProd:'おすすめ商品',buyBtn:'購入'});
 Object.assign(T.th,{bkDoneT:'รับการจองแล้ว! 🎉',bkDoneS:'ดีไซเนอร์จะยืนยันเร็วๆ นี้ และแจ้งในแชท',prodPromo:'สินค้าที่เข้ากับบริการนี้',relatedProd:'สินค้าแนะนำ',buyBtn:'ซื้อ'});
-Object.assign(T.zh,{bkDoneT:'预约已提交！🎉',bkDoneS:'设计师确认后即预订成功，也会在聊天中通知你。',prodPromo:'与此服务搭配的推荐产品',relatedProd:'推荐产品',buyBtn:'购买'});
 Object.assign(T.en,{askTitle:'Contact us',askSub:"Leave your question — we'll get back to you.",askMsgPh:'Write your message…',askContactPh:'Email · phone · Instagram to reach you (optional)',askSend:'Send',askNeedMsg:'Please enter your message',askSent:"Got it! ✨ We'll get back to you soon.",askFail:'Failed to send'});
 Object.assign(T.ja,{askTitle:'お問い合わせ',askSub:'ご質問をどうぞ。確認してご返信します。',askMsgPh:'お問い合わせ内容を入力…',askContactPh:'返信先メール・電話・Instagram（任意）',askSend:'送信',askNeedMsg:'内容を入力してください',askSent:'受け付けました ✨ 確認してご返信します。',askFail:'送信に失敗しました'});
 Object.assign(T.th,{askTitle:'ติดต่อเรา',askSub:'ฝากคำถามไว้ได้เลย เราจะติดต่อกลับ',askMsgPh:'พิมพ์ข้อความของคุณ…',askContactPh:'อีเมล·เบอร์·Instagram สำหรับติดต่อกลับ (ไม่บังคับ)',askSend:'ส่ง',askNeedMsg:'กรุณากรอกข้อความ',askSent:'รับเรื่องแล้ว ✨ เราจะติดต่อกลับเร็ว ๆ นี้',askFail:'ส่งไม่สำเร็จ'});
@@ -2076,6 +2080,7 @@ Object.assign(T.zh,{
  fbHead5:'你身边的\n实力设计师',fbSub5:'找到你附近、契合你品味的设计师。',
  fbHead6:'全球美业\n尽在一处',fbSub6:'韩国、日本及更多 — 全汇聚于此。'
 });
+Object.assign(T.zh,{sloganFull:'让艺术家更像艺术家 · Artists, more artist.',bkDoneT:'预约已提交！🎉',bkDoneS:'设计师确认后即预订成功，也会在聊天中通知你。',prodPromo:'与此服务搭配的推荐产品',relatedProd:'推荐产品',buyBtn:'购买'});
 // 태국어: 영어 전체를 상속받고 주요 문자열만 태국어로 (누락 키는 영어로 자동 폴백)
 T.th=Object.assign({},T.th,{
  explore:'สำรวจ',designers:'ดีไซเนอร์',reels:'รีลส์',reelsEmpty:'ยังไม่มีวิดีโอ',saved:'บันทึกไว้',join:'สมัคร',my:'ฉัน',messages:'ข้อความ',
