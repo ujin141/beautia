@@ -65,6 +65,8 @@ const NT: Record<"title" | "body", Record<string, Record<string, string>>> = {
     bk_declined:  { ko: "거절됨",  en: "Declined",  ja: "お断り",     th: "ปฏิเสธ",      zh: "已拒绝" },
     bk_done:      { ko: "완료",    en: "Completed", ja: "完了",       th: "เสร็จสิ้น",   zh: "已完成" },
     bk_cancelled: { ko: "취소됨",  en: "Cancelled", ja: "キャンセル", th: "ยกเลิก",      zh: "已取消" },
+    // 채팅 푸시 본문 — 원문/발신자 입력을 절대 싣지 않음(피싱 텍스트 주입 차단), 고정 문구만
+    chatMsg:      { ko: "새 메시지가 도착했어요", en: "New message", ja: "新しいメッセージ", th: "มีข้อความใหม่", zh: "收到新消息" },
   },
 };
 function normLang(l?: string): string { return String(l || "").slice(0, 2).toLowerCase(); }
@@ -101,6 +103,8 @@ Deno.serve(async (req) => {
     // tr(선택): 수신자 언어 렌더용 키. 값은 고정 템플릿에서만 조회되므로 임의값은 무시됨(주입 안전).
     const titleKey = tr && typeof tr.titleKey === "string" ? tr.titleKey.slice(0, 40) : undefined;
     const bodyKey  = tr && typeof tr.bodyKey  === "string" ? tr.bodyKey.slice(0, 40)  : undefined;
+    const kind     = tr && typeof tr.kind     === "string" ? tr.kind.slice(0, 20)     : undefined;
+    const isChat   = kind === "chat";
 
     // === 발신자 인증: 유효한 로그인 사용자만 ===
     const authz = req.headers.get("Authorization") || "";
@@ -123,8 +127,21 @@ Deno.serve(async (req) => {
     }
     if (!allowed) return J({ error: "not authorized to notify this user" }, 403);
 
-    const t = String(title || "Beautia").slice(0, 80);
-    const b = String(body || "").slice(0, 180);
+    // 채팅 푸시: 제목은 발신자의 실제 프로필 닉네임을 서버에서 조회(클라이언트 입력·이모지 미신뢰),
+    //           본문은 언어별 고정 문구(chatMsg)만 사용 → 알림에 임의 텍스트/링크가 실리지 않음.
+    let senderName = "Beautia";
+    if (isChat) {
+      try {
+        const pr = await fetch(`${SUPABASE_URL}/rest/v1/profiles?id=eq.${encodeURIComponent(callerId)}&select=nickname`, { headers: H });
+        const prof = pr.ok ? await pr.json() : [];
+        const nm = Array.isArray(prof) && prof[0] && typeof prof[0].nickname === "string" ? prof[0].nickname.trim() : "";
+        if (nm) senderName = nm.slice(0, 40);
+      } catch (_e) { /* 닉네임 조회 실패 시 기본값 */ }
+    }
+    // 기본 title/body — 채팅이면 서버 렌더 값으로 강제(클라이언트 입력 무시)
+    const t = isChat ? senderName : String(title || "Beautia").slice(0, 80);
+    const b = isChat ? NT.body.chatMsg.en : String(body || "").slice(0, 180);
+    const effBodyKey = isChat ? "chatMsg" : bodyKey;   // 채팅 본문은 언어별 고정 문구로
     const u = /^\/[\w\-/?=&.%]*$/.test(String(url || "")) ? String(url) : "/community";
 
     // ───────── 1) 웹푸시 (VAPID / push_subs) — VAPID 설정된 경우만 ─────────
@@ -160,7 +177,7 @@ Deno.serve(async (req) => {
           await Promise.all(iosToks.map(async (tk) => {
             // 수신자 기기 언어로 렌더(없으면 발신자 언어 fallback)
             const L = normLang(tk.lang);
-            const payload = { aps: { alert: { title: localized("title", titleKey, L, t), body: localized("body", bodyKey, L, b) }, sound: "default" }, url: u };
+            const payload = { aps: { alert: { title: localized("title", titleKey, L, t), body: localized("body", effBodyKey, L, b) }, sound: "default" }, url: u };
             // 프로덕션 먼저 → BadDeviceToken(400)이면 샌드박스 재시도(개발 빌드 토큰 대응)
             let st = await apnsSend(PROD, tk.token, jwt, topic, payload);
             if (st === 400) st = await apnsSend(SANDBOX, tk.token, jwt, topic, payload);

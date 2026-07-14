@@ -1540,7 +1540,7 @@ async function sendReply(){var inp=$('dmsg');if(!inp||!curConv)return;var v=(inp
   curConv._msgs=curConv._msgs||[];
   try{var data=(await SB.from('messages').insert({conversation:curConv.id,sender:UID,body:v,lang:LANG,tr:{}}).select('*').maybeSingle()).data;if(data&&!curConv._msgs.some(function(x){return x.id===data.id;}))curConv._msgs.push(data);else if(!data)toast(t('msgSendFail'));}catch(e){toast(t('msgSendFail'));}
   try{SB.from('conversations').update({last_at:new Date().toISOString()}).eq('id',curConv.id).then(function(){},function(){});}catch(e){}
-  try{SB.functions.invoke('notify',{body:{to:curConv.customer,title:'💬 '+((ME&&ME.nickname)||'Beautia'),body:v.slice(0,80),url:'/community'}}).then(function(){},function(){});}catch(e){}
+  try{SB.functions.invoke('notify',{body:{to:curConv.customer,title:'💬 '+((ME&&ME.nickname)||'Beautia'),body:v.slice(0,80),url:'/community',tr:{kind:'chat'}}}).then(function(){},function(){});}catch(e){}
   renderThread();
 }
 function backToConvos(){if(chatSub){try{SB.removeChannel(chatSub);}catch(e){}chatSub=null;}curConv=null;loadConvos();}

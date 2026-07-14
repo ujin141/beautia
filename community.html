@@ -2532,7 +2532,7 @@ function styleBkCards(){try{var a=document.querySelectorAll('.chatcard .mrow .mb
 (function(){var _rt=renderThread;renderThread=function(){_rt.apply(this,arguments);injectQuickReplies();styleBkCards();};})();
 function backToList(){if(chatSub){try{SB.removeChannel(chatSub);}catch(e){}chatSub=null;}curConv=null;loadConvos();}
 async function sendChat(){var inp=$('cmsg');if(!inp||!curConv)return;var v=inp.value.trim();if(!v)return;inp.value='';curConv._msgs=curConv._msgs||[];try{var data=(await SB.from('messages').insert({conversation:curConv.id,sender:ME.uid,body:v,lang:LANG,tr:{}}).select('*').maybeSingle()).data;if(data&&!curConv._msgs.some(function(x){return x.id===data.id;}))curConv._msgs.push(data);}catch(e){}try{SB.from('conversations').update({last_at:new Date().toISOString()}).eq('id',curConv.id).then(function(){},function(){});}catch(e){}
- try{pushNotify(otherUid(curConv),'💬 '+(ME.name||'Beautia'),v.slice(0,80));}catch(e){}
+ try{pushNotify(otherUid(curConv),'💬 '+(ME.name||'Beautia'),v.slice(0,80),null,{kind:'chat'});}catch(e){}
  renderThread();}
 async function transChat(btn){
  var bub=btn.parentNode.querySelector('.mbub');if(!bub)return;
