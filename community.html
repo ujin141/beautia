@@ -369,6 +369,13 @@ body.mlock{position:fixed;left:0;right:0;width:100%;overflow:hidden;}
 .mehero .meav{width:88px;height:88px;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:34px;box-shadow:0 10px 30px -10px rgba(110,74,80,.5);}
 .mehero .men{font-size:21px;font-weight:800;color:var(--ink);margin-top:14px;display:flex;align-items:center;gap:6px;letter-spacing:-.02em;}
 .mehero .mesub{font-size:13.5px;color:var(--sub);margin-top:4px;font-weight:600;}
+.mepoints{margin:2px 0 14px;padding:18px 20px;border-radius:18px;background:linear-gradient(135deg,#48323a,#6E4A50);color:#fff;box-shadow:0 14px 34px -16px rgba(110,74,80,.6);position:relative;overflow:hidden;}
+.mepoints::after{content:'';position:absolute;right:-30px;top:-30px;width:130px;height:130px;border-radius:50%;background:radial-gradient(circle,rgba(201,160,99,.34),transparent 70%);}
+.mepoints .mptop{display:flex;align-items:center;gap:7px;font-size:13px;font-weight:700;color:#F0D98F;letter-spacing:.02em;}
+.mepoints .mptop i{font-size:17px;}
+.mepoints .mpval{font-family:'Fraunces',serif;font-weight:600;font-size:40px;line-height:1.05;margin-top:6px;}
+.mepoints .mpp{font-size:22px;font-weight:600;opacity:.85;}
+.mepoints .mphint{font-size:12px;color:rgba(255,255,255,.72);margin-top:6px;}
 .mestats{display:flex;gap:10px;margin:4px 0 20px;}
 .mestat{flex:1;background:var(--soft);border:none;border-radius:16px;padding:15px 8px;cursor:pointer;text-align:center;}
 .mestat:active{background:var(--rosebg);}
@@ -2049,10 +2056,10 @@ document.addEventListener('keydown',e=>{if(e.key==='Escape'){closeBk();closeFa()
 Object.assign(T.en,{idCard:'ID Card',idDl:'Download',idShare:'Share',idPrep:'Creating image…',idFail:'Download failed (try Share)',linkCopied:'Link copied ✨',saveHint:'Press & hold the image to save it 📥',done:'Done',idKind:'ID CARD',idScan:'SCAN TO VIEW & BOOK',fbKick:'Featured work',fbView:'View portfolio'});
 Object.assign(T.ko,{idCard:'ID 카드',idDl:'다운로드',idShare:'공유',idPrep:'이미지 만드는 중…',idFail:'다운로드 실패 (공유로 시도)',linkCopied:'링크 복사됨 ✨',saveHint:'이미지를 꾹 눌러 저장하세요 📥',done:'닫기',idKind:'ID 카드',idScan:'스캔해서 예약하기',fbKick:'추천 작업',fbView:'포트폴리오 보기'});
 Object.assign(T.ko,{askTitle:'문의하기',askSub:'궁금한 점을 남겨주세요. 확인 후 답변드릴게요.',askMsgPh:'문의 내용을 적어주세요…',askContactPh:'답변받을 이메일·연락처·인스타 (선택)',askSend:'보내기',askNeedMsg:'문의 내용을 입력해주세요',askSent:'문의가 접수됐어요 ✨ 확인 후 답변드릴게요.',askFail:'전송 실패'});
-Object.assign(T.ko,{sloganFull:'아티스트를 더욱 아티스트답게 · Artists, more artist.'});
-Object.assign(T.en,{sloganFull:'Artists, more artist.'});
-Object.assign(T.ja,{sloganFull:'アーティストを、もっとアーティストらしく · Artists, more artist.'});
-Object.assign(T.th,{sloganFull:'ทำให้ศิลปินเป็นศิลปินยิ่งขึ้น · Artists, more artist.'});
+Object.assign(T.ko,{sloganFull:'아티스트를 더욱 아티스트답게 · Artists, more artist.',myPoints:'내 포인트',pointsHint:'예약을 완료할 때마다 포인트가 쌓여요'});
+Object.assign(T.en,{sloganFull:'Artists, more artist.',myPoints:'My points',pointsHint:'Earn points every time you complete a booking'});
+Object.assign(T.ja,{sloganFull:'アーティストを、もっとアーティストらしく · Artists, more artist.',myPoints:'マイポイント',pointsHint:'予約が完了するたびにポイントが貯まります'});
+Object.assign(T.th,{sloganFull:'ทำให้ศิลปินเป็นศิลปินยิ่งขึ้น · Artists, more artist.',myPoints:'พอยต์ของฉัน',pointsHint:'รับพอยต์ทุกครั้งที่จองสำเร็จ'});
 Object.assign(T.ko,{bkDoneT:'예약이 접수됐어요! 🎉',bkDoneS:'디자이너 확인 후 확정돼요. 채팅으로도 알려드려요.',prodPromo:'이 시술과 어울리는 추천 제품',relatedProd:'추천 제품',buyBtn:'구매',bkChange:'변경'});
 Object.assign(T.en,{bkDoneT:'Booking received! 🎉',bkDoneS:"The designer will confirm shortly. We'll notify you in chat.",prodPromo:'Products that pair with this service',relatedProd:'Recommended products',buyBtn:'Shop',bkChange:'Change'});
 Object.assign(T.ja,{bkDoneT:'予約を受け付けました！🎉',bkDoneS:'デザイナーの確認後に確定します。チャットでもお知らせします。',prodPromo:'この施術に合うおすすめ商品',relatedProd:'おすすめ商品',buyBtn:'購入',bkChange:'変更'});
@@ -2108,7 +2115,7 @@ Object.assign(T.zh,{
  fbHead5:'你身边的\n实力设计师',fbSub5:'找到你附近、契合你品味的设计师。',
  fbHead6:'全球美业\n尽在一处',fbSub6:'韩国、日本及更多 — 全汇聚于此。'
 });
-Object.assign(T.zh,{sloganFull:'让艺术家更像艺术家 · Artists, more artist.',bkDoneT:'预约已提交！🎉',bkDoneS:'设计师确认后即预订成功，也会在聊天中通知你。',prodPromo:'与此服务搭配的推荐产品',relatedProd:'推荐产品',buyBtn:'购买',bkChange:'更改'});
+Object.assign(T.zh,{myPoints:'我的积分',pointsHint:'每次完成预约都能累积积分',sloganFull:'让艺术家更像艺术家 · Artists, more artist.',bkDoneT:'预约已提交！🎉',bkDoneS:'设计师确认后即预订成功，也会在聊天中通知你。',prodPromo:'与此服务搭配的推荐产品',relatedProd:'推荐产品',buyBtn:'购买',bkChange:'更改'});
 // 태국어: 영어 전체를 상속받고 주요 문자열만 태국어로 (누락 키는 영어로 자동 폴백)
 T.th=Object.assign({},T.th,{
  explore:'สำรวจ',designers:'ดีไซเนอร์',reels:'รีลส์',reelsEmpty:'ยังไม่มีวิดีโอ',saved:'บันทึกไว้',join:'สมัคร',my:'ฉัน',messages:'ข้อความ',
@@ -2178,12 +2185,12 @@ function logDclick(uid){try{
 }catch(e){}})();
 function roleIn(r){return (r==='designer'||r==='owner'||r==='desg')?'desg':'cust';}
 function profToMe(p){const s=p.shop||{};const photos=[];(s.photos||[]).forEach(function(x){if(x&&photos.indexOf(x)<0)photos.push(x);});
- return {uid:p.id,role:roleIn(p.role),name:p.nickname||p.full_name||'',country:s.country||'',city:p.region||s.area||'',area:s.area||'',spec:(s.specialties||p.interests||[]),career:s.career||'',avatar:s.avatar||p.avatar_url||'',insta:(s.insta||'').replace(/^@/,''),sns:s.sns||(s.insta?{instagram:(s.insta||'').replace(/^@/,'')}:{}),naver:s.naver||'',shopName:s.name||'',freelancer:!!s.freelancer,bio:p.bio||'',works:photos,ba:(s.ba&&s.ba.length===2)?s.ba.slice():null,shopRaw:s,idCols:s.idCols||2,idColor:s.idColor||'',idTheme:s.idTheme||'light',services:svcNormalize(s.services),cur:s.cur||'',tags:s.tags||[],verified:true,provider:'email',joined:p.created_at?new Date(p.created_at).getTime():Date.now()};}
+ return {uid:p.id,role:roleIn(p.role),name:p.nickname||p.full_name||'',country:s.country||'',city:p.region||s.area||'',area:s.area||'',spec:(s.specialties||p.interests||[]),career:s.career||'',avatar:s.avatar||p.avatar_url||'',insta:(s.insta||'').replace(/^@/,''),sns:s.sns||(s.insta?{instagram:(s.insta||'').replace(/^@/,'')}:{}),naver:s.naver||'',shopName:s.name||'',freelancer:!!s.freelancer,bio:p.bio||'',works:photos,ba:(s.ba&&s.ba.length===2)?s.ba.slice():null,shopRaw:s,idCols:s.idCols||2,idColor:s.idColor||'',idTheme:s.idTheme||'light',services:svcNormalize(s.services),cur:s.cur||'',tags:s.tags||[],points:(p.points||0),verified:true,provider:'email',joined:p.created_at?new Date(p.created_at).getTime():Date.now()};}
 async function uploadOne(dataUrl){try{const sess=(await SB.auth.getSession()).data.session;if(!sess||dataUrl.indexOf('data:')!==0)return dataUrl;const uid=sess.user.id;const blob=await (await fetch(dataUrl)).blob();const path=uid+'/'+Date.now()+'-'+Math.random().toString(36).slice(2,8)+'.jpg';const up=await SB.storage.from('beautia').upload(path,blob,{contentType:'image/jpeg',cacheControl:'31536000',upsert:false});if(up.error){console.warn('[beautia] storage upload failed → base64 fallback:',up.error&&up.error.message);return dataUrl;}const pu=SB.storage.from('beautia').getPublicUrl(path);return (pu.data&&pu.data.publicUrl)||dataUrl;}catch(e){return dataUrl;}}
 async function persistShop(){if(!ME||!ME.uid)return;try{await SB.from('profiles').update({shop:Object.assign({},ME.shopRaw||{},{name:ME.shopName||'',area:ME.city||'',freelancer:!!ME.freelancer,specialties:ME.spec||[],avatar:ME.avatar||'',photos:ME.works||[],ba:(ME.ba&&ME.ba.length===2)?ME.ba:[],career:ME.career||'',insta:ME.insta||'',sns:ME.sns||{},idCols:ME.idCols||2,idColor:ME.idColor||'',idTheme:ME.idTheme||'light',services:ME.services||[],tags:ME.tags||[]})}).eq('id',ME.uid);}catch(e){}}
 async function onAuth(session){
  if(!session){ME=null;renderAuth();buildTiles();render();return;}
- let prof=null;try{prof=(await SB.from('profiles').select('id,nickname,role,region,bio,interests,shop,avatar_url,full_name,created_at').eq('id',session.user.id).maybeSingle()).data;}catch(e){}
+ let prof=null;try{prof=(await SB.from('profiles').select('id,nickname,role,region,bio,interests,shop,avatar_url,full_name,created_at,points').eq('id',session.user.id).maybeSingle()).data;}catch(e){}
  if(prof&&prof.nickname){ME=profToMe(prof);closeLogin();renderAuth();buildTiles();render();loadSaves();loadFollows();loadBlocks();checkUnread();refreshOwner();loadBkBadge();loadCoupons();return;}
  if($('lmodal')&&$('lmodal').classList.contains('on'))return;
  let pend={};try{pend=JSON.parse(localStorage.getItem('beautia_coll_pending')||'{}');}catch(e){}
@@ -2201,6 +2208,11 @@ function renderMe(){var el=document.getElementById('mepage');if(!el)return;if(!M
    <div class="meav" style="${av?`background-image:url('${av}');background-size:cover;background-position:center`:`background:${gradFor(ME.name||'U')}`}">${av?'':esc((ME.name||'U')[0].toUpperCase())}</div>
    <div class="men">${esc(ME.name||'')} ${ME.verified?`<i class="ti ti-rosette-discount-check-filled" style="color:var(--green);font-size:18px"></i>`:''}</div>
    <div class="mesub">${roleLabel(ME.role)}${ME.city?' · '+esc(ME.city):''}</div>
+ </div>
+ <div class="mepoints">
+   <div class="mptop"><i class="ti ti-coins"></i> <span>${T[LANG].myPoints}</span></div>
+   <div class="mpval">${(ME.points||0).toLocaleString()}<span class="mpp"> P</span></div>
+   <div class="mphint">${T[LANG].pointsHint}</div>
  </div>
  <div class="mestats">
    <button class="mestat" onclick="setView('saved')"><div class="mn">${savedCount()}</div><div class="ml">${T[LANG].saved}</div></button>
@@ -2387,7 +2399,7 @@ async function suSendCode(){suSnapshot();const em=(SU.contact||'').trim();if(em.
 async function suVerify(){const v=$('suCode')?$('suCode').value.trim():'';if(!v){toast(T[LANG].needCode||T[LANG].needContact);return;}
  const {data,error}=await SB.auth.verifyOtp({email:SU.contact,token:v,type:'email'});
  if(error){toast(T[LANG].codeWrong);return;}
- const uid=data.user.id;let prof=null;try{prof=(await SB.from('profiles').select('id,nickname,role,region,bio,interests,shop,avatar_url,full_name,created_at').eq('id',uid).maybeSingle()).data;}catch(e){}
+ const uid=data.user.id;let prof=null;try{prof=(await SB.from('profiles').select('id,nickname,role,region,bio,interests,shop,avatar_url,full_name,created_at,points').eq('id',uid).maybeSingle()).data;}catch(e){}
  if(prof&&prof.nickname){ME=profToMe(prof);closeLogin();renderAuth();buildTiles();render();loadSaves();loadFollows();loadBlocks();checkUnread();refreshOwner();loadBkBadge();toast(T[LANG].welcomeBack||T[LANG].verifiedToast);return;}
  SU.verified=true;SU.uid=uid;renderSU();toast(T[LANG].verifiedToast);}
 async function suFinish(){const wasEdit=SU.edit;
@@ -2405,7 +2417,7 @@ async function suFinish(){const wasEdit=SU.edit;
   shop:Object.assign({},(wasEdit&&ME&&ME.shopRaw)||{},{name:SU.shopName||'',area:SU.area||SU.city||'',freelancer:!!SU.freelancer,specialties:(SU.spec||[]).slice(),avatar:avatar,photos:oldWorks,career:SU.career||'',insta:insta,sns:sns,idCols:(wasEdit&&ME?ME.idCols:2)||2,idColor:(wasEdit&&ME?ME.idColor:'')||'',idTheme:(wasEdit&&ME?ME.idTheme:'')||'tint',services:(wasEdit&&ME?ME.services:[])||[],tags:(SU.tags||[]).slice()})};
  const {error}=await SB.from('profiles').upsert(payload);
  if(error){toast('저장 실패: '+error.message);return;}
- let prof=(await SB.from('profiles').select('id,nickname,role,region,bio,interests,shop,avatar_url,full_name,created_at').eq('id',uid).maybeSingle()).data;
+ let prof=(await SB.from('profiles').select('id,nickname,role,region,bio,interests,shop,avatar_url,full_name,created_at,points').eq('id',uid).maybeSingle()).data;
  ME=prof?profToMe(prof):null;
  loadSaves();loadFollows();loadBlocks();checkUnread();refreshOwner();loadBkBadge();
  try{localStorage.removeItem('beautia_coll_pending');}catch(e){}
