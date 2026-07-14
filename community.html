@@ -430,6 +430,8 @@ body.mlock{position:fixed;left:0;right:0;width:100%;overflow:hidden;}
 @keyframes ptrspin{to{transform:rotate(360deg)}}
 /* 사이트 푸터 */
 .sitefoot{border-top:1px solid var(--line);margin-top:40px;background:var(--soft);}
+/* 네이티브 앱(Capacitor)에선 웹 푸터 숨김 — 약관·개인정보·문의는 Me 탭에 있음 → 앱답게 */
+html.native-app .sitefoot{display:none !important;}
 .sf-in{max-width:1320px;margin:0 auto;padding:30px 28px 34px;display:flex;flex-direction:column;gap:12px;}
 .sf-brand{display:flex;align-items:center;gap:8px;font-family:'Outfit',sans-serif;font-weight:800;font-size:13px;letter-spacing:.24em;color:var(--ink2);}
 .sf-logo{height:20px;width:auto;opacity:.8;}
