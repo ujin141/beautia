@@ -61,6 +61,10 @@ $$;
 
 alter table public.shops enable row level security;
 
+-- 테이블 GRANT (RLS와 별개) — 롤에 테이블 접근권이 없으면 "permission denied for table shops"
+grant select on public.shops to anon, authenticated;
+grant insert, update, delete on public.shops to authenticated;
+
 -- 읽기: 활성 지점은 누구나 (손님이 지점/브랜드 페이지를 봐야 함)
 drop policy if exists shops_read on public.shops;
 create policy shops_read on public.shops

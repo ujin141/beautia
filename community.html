@@ -2728,12 +2728,11 @@ function attachShop(d){
   if(s.book_mode==='link'&&s.book_link){d.bookMode='external';d.bookingUrl=s.book_link;}
 }
 function shopLabel(d){return (d&&(d.brand||d.branch))?[d.brand,d.branch].filter(Boolean).join(' · '):(d&&d.shopName||'');}
-var DCACHE_TTL=10*60*1000; // 10분: 이보다 최신이면 재조회 생략(트래픽 절감)
 async function loadDesigners(){
+  // stale-while-revalidate: 캐시가 있으면 즉시 그려서 빠르게 보여주되,
+  // 항상 서버로 재검증해서 최신 데이터로 갱신한다(옛 캐시에 갇히는 문제 방지).
   var cached=null;try{cached=JSON.parse(localStorage.getItem('beautia_dcache2')||'null');}catch(e){}
-  if(cached&&cached.rows&&cached.rows.length){try{applyDesignerRows(cached.rows);}catch(e){}
-    if(Date.now()-(cached.t||0)<DCACHE_TTL)return; // 캐시 신선 → Supabase 재조회 생략
-  }
+  if(cached&&cached.rows&&cached.rows.length){try{applyDesignerRows(cached.rows);}catch(e){}}
   try{
     var rows=(await SB.from('profiles').select('id,nickname,role,region,bio,interests,shop,shop_id,avatar_url,created_at').limit(300)).data;
     if(!rows)return;
