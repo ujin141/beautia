@@ -21,7 +21,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 <link rel="preconnect" href="https://pzbxcktaljhesrfnqwzq.supabase.co" crossorigin>
 <link rel="preconnect" href="https://images.weserv.nl" crossorigin>
 <link rel="dns-prefetch" href="https://cdnjs.cloudflare.com">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://cdnjs.cloudflare.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdn.jsdelivr.net; font-src 'self' data: https://fonts.gstatic.com https://cdn.jsdelivr.net; img-src 'self' data: blob: https:; media-src 'self' blob: data: https://*.supabase.co; connect-src 'self' https://*.supabase.co wss://*.supabase.co https://ipapi.co https://open.er-api.com https://cdn.jsdelivr.net; frame-src https://www.google.com https://maps.google.com; object-src 'none'; base-uri 'self'; form-action 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://cdnjs.cloudflare.com https://www.googletagmanager.com https://static.cloudflareinsights.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdn.jsdelivr.net; font-src 'self' data: https://fonts.gstatic.com https://cdn.jsdelivr.net; img-src 'self' data: blob: https:; media-src 'self' blob: data: https://*.supabase.co; connect-src 'self' https://*.supabase.co wss://*.supabase.co https://ipapi.co https://open.er-api.com https://cdn.jsdelivr.net https://www.googletagmanager.com https://*.google-analytics.com https://www.google-analytics.com https://region1.google-analytics.com https://analytics.google.com https://*.analytics.google.com https://static.cloudflareinsights.com https://cloudflareinsights.com; frame-src https://www.google.com https://maps.google.com https://www.googletagmanager.com; object-src 'none'; base-uri 'self'; form-action 'self'">
 <title>Beautia — Find a designer who gets your style · Beauty designers, worldwide</title>
 <meta name="description" content="Beauty designers, worldwide. Browse real portfolios — hair, makeup, nail, lash, skin & bridal — save your favorites and book or message the designer directly.">
 <meta name="keywords" content="beauty designer, hair designer, makeup artist, nail artist, eyelash extensions, bridal makeup, beauty portfolio, find beauty salon, book beauty appointment, Korean beauty, Japanese beauty, Tokyo, Seoul, Osaka">
@@ -720,6 +720,22 @@ html.native-app .sitefoot{display:none !important;}
 .dhcap{position:absolute;left:30px;bottom:22px;right:30px;color:#fff;z-index:2;}
 .dhcap .dn{font-family:'Pretendard','Malgun Gothic',sans-serif;font-weight:700;font-size:34px;display:flex;align-items:center;gap:10px;flex-wrap:wrap;text-shadow:0 3px 16px rgba(0,0,0,.5);}
 .dshop{font-size:13px;color:#fff;margin-top:4px;font-weight:600;text-shadow:0 1px 6px rgba(0,0,0,.5);display:flex;align-items:center;gap:5px;}
+.dshoplink{cursor:pointer;background:rgba(255,255,255,.16);backdrop-filter:blur(4px);padding:4px 11px;border-radius:999px;width:fit-content;transition:background .15s;}
+.dshoplink:hover{background:rgba(255,255,255,.28);}
+.dcbranch{margin-top:3px;font-size:11.5px;font-weight:700;color:var(--plum);display:inline-flex;align-items:center;gap:4px;cursor:pointer;background:var(--rosebg);padding:2px 9px;border-radius:999px;}
+.dcbranch:hover{background:#f3e4e6;}
+/* 지점 페이지 */
+.shopcover{height:150px;background:linear-gradient(135deg,#48323a,#2e2326);background-size:cover;background-position:center;position:relative;}
+.shopcover::after{content:'';position:absolute;inset:0;background:linear-gradient(0deg,rgba(0,0,0,.5),transparent 60%);}
+.shophead{padding:16px 20px 6px;margin-top:-42px;position:relative;z-index:2;}
+.shoplogo{width:70px;height:70px;border-radius:18px;background:#fff center/cover;box-shadow:0 8px 22px -8px rgba(0,0,0,.4);border:3px solid #fff;display:flex;align-items:center;justify-content:center;font-family:'Fraunces',serif;font-weight:700;font-size:30px;color:var(--plum);}
+.shopbrand{font-family:'Fraunces',serif;font-size:22px;font-weight:700;color:var(--ink);margin-top:10px;}
+.shopbranch{font-size:14px;color:var(--sub);font-weight:600;margin-top:2px;display:flex;align-items:center;gap:6px;flex-wrap:wrap;}
+.shopbranch .sbc{background:var(--rosebg);color:var(--plum);padding:2px 10px;border-radius:999px;font-size:12px;font-weight:700;}
+.shopaddr{margin:12px 20px;padding:12px 14px;background:var(--card);border:1px solid var(--line);border-radius:14px;display:flex;align-items:center;gap:10px;font-size:13.5px;color:var(--ink);text-decoration:none;}
+.shopaddr i{color:var(--plum);font-size:20px;}
+.shopsec{padding:6px 20px 20px;}
+.shopsec .st{font-weight:800;font-size:14px;color:var(--ink);margin:8px 0 12px;display:flex;align-items:center;gap:7px;}
 .vbadge{font-size:12.5px;font-weight:800;color:#4a3212;background:linear-gradient(135deg,#F4E3B8,#DDC488 45%,#C29A54);padding:6px 15px 6px 11px;border-radius:999px;display:inline-flex;align-items:center;gap:6px;letter-spacing:.03em;box-shadow:0 6px 16px -6px rgba(150,110,45,.7),inset 0 1px 0 rgba(255,255,255,.78),inset 0 -2px 5px rgba(120,86,35,.34);}
 .vbadge i{font-size:15px;color:#6b4a15;}
 .fbadge{font-size:12.5px;font-weight:800;color:var(--plum);background:var(--rosebg);border:1px solid rgba(110,74,80,.16);padding:5px 12px;border-radius:999px;display:inline-flex;align-items:center;gap:5px;}
@@ -1141,6 +1157,7 @@ html.native-app a,html.native-app button,html.native-app [role=button],html.nati
   </div>
 </footer>
 <div class="modal" id="dmodal" onclick="if(event.target===this)closeD()"><div class="sheet" id="dsheet"></div></div>
+<div class="modal" id="shopmodal" onclick="if(event.target===this)closeShop()"><div class="sheet" id="shopsheet"></div></div>
 <div class="wmodal" id="wmodal" onclick="if(event.target===this)closeWork()"><div class="wcard" id="wcard"></div></div>
 <div class="chatmodal" id="chatmodal" onclick="if(event.target===this)closeChat()"><div class="chatcard" id="chatcard"></div></div>
 <div class="lmodal" id="famodal" onclick="if(event.target===this)closeFa()"><div class="lcard" id="facard" style="text-align:left"></div></div>
@@ -1758,7 +1775,7 @@ function renderDesigners(q,city){var g=$('grid');g.classList.add('dgview');
     <div class="dcbody" onclick="openD('${d.id}')">
       ${avHtml(d,'dcav')}
       <div class="dci"><div class="dcn">${esc(d.flag)} ${esc(nm)} ${d.ver?`<i class="ti ti-rosette-discount-check-filled" style="color:var(--gold);font-size:15px"></i>`:''}</div>
-       <div class="dcm">${rateInline(d)} · ${esc(cl(d.cat))}${d.city?' · '+esc(cityLabel(d.city)):''}</div></div>
+       <div class="dcm">${rateInline(d)} · ${esc(cl(d.cat))}${d.city?' · '+esc(cityLabel(d.city)):''}</div>${(d.brand||d.branch)?`<div class="dcbranch" onclick="event.stopPropagation();openShop('${d.shopId}')"><i class="ti ti-building-store"></i> ${esc(shopLabel(d))}</div>`:''}</div>
     </div>
     ${badges?`<div class="dctrust">${badges}</div>`:''}
     ${(chipsOf(d).length)?`<div class="dcchips">${chipsOf(d).slice(0,3).map(function(s){return `<span>${esc(s)}</span>`;}).join('')}</div>`:''}
@@ -1808,7 +1825,7 @@ function openD(did,keep){stopAllVideos();const d=dById(did);if(!d)return;curD=di
    <button class="dclose" onclick="closeD()">×</button>
    <div class="dhcap">
      ${avHtml(d,'dav-c')}
-     <div class="dn">${esc(d.flag)} ${esc(name)} ${d.ver?`<span class="vbadge"><i class="ti ti-rosette-discount-check-filled"></i>${T[LANG].verified}</span>`:''}${d.freelancer?`<span class="fbadge"><i class="ti ti-user-star"></i>${esc(FRLZ[LANG]||FRLZ.ko)}</span>`:''}</div>${d.shopName?`<div class="dshop"><i class="ti ti-building-store"></i> ${esc(d.shopName)}</div>`:''}
+     <div class="dn">${esc(d.flag)} ${esc(name)} ${d.ver?`<span class="vbadge"><i class="ti ti-rosette-discount-check-filled"></i>${T[LANG].verified}</span>`:''}${d.freelancer?`<span class="fbadge"><i class="ti ti-user-star"></i>${esc(FRLZ[LANG]||FRLZ.ko)}</span>`:''}</div>${d.shopId&&SHOPS[d.shopId]?`<div class="dshop dshoplink" onclick="event.stopPropagation();openShop('${d.shopId}')"><i class="ti ti-building-store"></i> ${esc(shopLabel(d))} <i class="ti ti-chevron-right" style="font-size:14px;opacity:.7"></i></div>`:(d.shopName?`<div class="dshop"><i class="ti ti-building-store"></i> ${esc(d.shopName)}</div>`:'')}
      <div class="dmeta"><span id="dstars">${rateInline(d,{count:true})}</span>${d.cat?`<span>${esc(cl(d.cat))}</span>`:''}<span><i class="ti ti-map-pin" style="font-size:16px"></i> ${esc(cityLabel(d.city)||d.area)}</span>${d.years?`<span><i class="ti ti-briefcase" style="font-size:16px"></i> ${esc(d.years)}${LANG==='en'?' ':''}${T[LANG].years}</span>`:''}</div>
      ${(d.uid&&!d.isMe)?followBtnHtml(d.uid,'dhfollow'):''}
    </div>
@@ -1848,7 +1865,39 @@ function baMove(v){$('baBefore').style.width=v+'%';$('baDiv').style.left=v+'%';}
 let dHist=false; // 프로필 열 때 history를 쌓아 뒤로가기(제스처)로 닫히게
 function closeD(fromPop){$('dmodal').classList.remove('on');curD=null;setSEO(SEO_TITLE,SEO_DESC);
  if(fromPop!==true&&dHist){dHist=false;try{history.back();}catch(e){}}else dHist=false;}
-window.addEventListener('popstate',function(){if($('dmodal').classList.contains('on'))closeD(true);});
+window.addEventListener('popstate',function(){if($('shopmodal').classList.contains('on')){closeShop();return;}if($('dmodal').classList.contains('on'))closeD(true);});
+// ===== 지점(샵) 페이지 =====
+var SHOPL={ko:{branchOf:'{n}개 지점',designers:'소속 디자이너',members:'{n}명',loc:'위치',mapOpen:'지도에서 열기',noDes:'아직 등록된 디자이너가 없어요',otherBranches:'다른 지점',book:'예약'},
+ en:{branchOf:'{n} branches',designers:'Designers',members:'{n}',loc:'Location',mapOpen:'Open in Maps',noDes:'No designers yet',otherBranches:'Other branches',book:'Book'},
+ ja:{branchOf:'{n}店舗',designers:'在籍デザイナー',members:'{n}名',loc:'場所',mapOpen:'地図で開く',noDes:'まだデザイナーがいません',otherBranches:'他の店舗',book:'予約'},
+ th:{branchOf:'{n} สาขา',designers:'ดีไซเนอร์',members:'{n}',loc:'ที่ตั้ง',mapOpen:'เปิดในแผนที่',noDes:'ยังไม่มีดีไซเนอร์',otherBranches:'สาขาอื่น',book:'จอง'},
+ zh:{branchOf:'{n}家分店',designers:'旗下设计师',members:'{n}人',loc:'位置',mapOpen:'在地图中打开',noDes:'暂无设计师',otherBranches:'其他分店',book:'预约'}};
+function openShop(sid){var s=SHOPS[sid];if(!s){toast('...');return;}var L=SHOPL[LANG]||SHOPL.en;
+ var mem=(DUSERS||[]).filter(function(d){return d.shopId===sid;});
+ var brandShops=s.brand?Object.keys(SHOPS).map(function(k){return SHOPS[k];}).filter(function(x){return x.brand===s.brand&&x.id!==sid;}):[];
+ var addr=[s.address,s.city,s.country].filter(Boolean).join(', ');
+ var initial=(s.brand||s.branch||'B').trim().charAt(0).toUpperCase();
+ var mapCard=addr?`<a class="shopaddr" href="https://www.google.com/maps/search/?api=1&query=${encodeURIComponent([s.brand,s.branch,addr].filter(Boolean).join(' '))}" target="_blank" rel="noopener"><i class="ti ti-map-pin-filled"></i><div><b>${esc([s.brand,s.branch].filter(Boolean).join(' '))}</b><div style="font-size:12px;color:var(--sub);margin-top:1px">${esc(addr)}</div></div><i class="ti ti-external-link" style="margin-left:auto;font-size:16px;color:var(--sub)"></i></a>`:'';
+ var mini=mem.length?mem.map(function(d){var nm=(LANG==='ko'&&d.ko)?d.ko:d.name;return `<div class="dcard" style="margin-bottom:12px">
+   <div class="dcthumbs" onclick="openShopDesigner('${d.id}')">${d.works.slice(0,3).map(function(w){return thumbBg(w,400,'dcth');}).join('')}</div>
+   <div class="dcbody" onclick="openShopDesigner('${d.id}')">${avHtml(d,'dcav')}<div class="dci"><div class="dcn">${esc(d.flag)} ${esc(nm)} ${d.ver?'<i class="ti ti-rosette-discount-check-filled" style="color:var(--gold);font-size:15px"></i>':''}</div><div class="dcm">${rateInline(d)} · ${esc(cl(d.cat))}</div></div></div>
+   <div class="dcact"><button class="dcbtn book" onclick="openShopDesigner('${d.id}')"><i class="ti ti-calendar-heart"></i> ${esc(L.book)}</button></div></div>`;}).join(''):`<div class="empty"><i class="ti ti-user-heart"></i><p>${L.noDes}</p></div>`;
+ var others=brandShops.length?`<div class="shopsec"><div class="st"><i class="ti ti-building"></i> ${esc(L.otherBranches)}</div>${brandShops.map(function(x){return `<a class="shopaddr" style="cursor:pointer" onclick="openShop('${x.id}')"><i class="ti ti-map-pin"></i><div><b>${esc(x.branch||x.brand)}</b><div style="font-size:12px;color:var(--sub)">${esc([x.city,x.country].filter(Boolean).join(', '))} · ${(SHOPCOUNT[x.id]||0)}${(SHOPL[LANG]||SHOPL.en).members.replace('{n}','')}</div></div><i class="ti ti-chevron-right" style="margin-left:auto;color:var(--sub)"></i></a>`;}).join('')}</div>`:'';
+ $('shopsheet').innerHTML=`<div class="dbody">
+   <div class="shopcover" style="${s.cover?`background-image:url('${im(s.cover,900)}')`:''}"><button class="dclose" onclick="closeShop()">×</button></div>
+   <div class="shophead">
+     <div class="shoplogo" style="${s.logo?`background-image:url('${im(s.logo,200)}')`:''}">${s.logo?'':esc(initial)}</div>
+     <div class="shopbrand">${esc(s.brand||s.branch)}</div>
+     <div class="shopbranch">${s.branch&&s.brand?`<span class="sbc">${esc(s.branch)}</span>`:''}${(s.city||s.country)?`<span><i class="ti ti-map-pin" style="font-size:14px"></i> ${esc([s.city,s.country].filter(Boolean).join(', '))}</span>`:''}<span><i class="ti ti-users" style="font-size:14px"></i> ${L.members.replace('{n}',mem.length)}</span></div>
+   </div>
+   ${mapCard}
+   <div class="shopsec"><div class="st"><i class="ti ti-scissors"></i> ${esc(L.designers)} · ${mem.length}</div>${mini}</div>
+   ${others}
+ </div>`;
+ $('shopmodal').classList.add('on');
+}
+function openShopDesigner(id){closeShop();setTimeout(function(){openD(id);},60);}
+function closeShop(){$('shopmodal').classList.remove('on');}
 // ===== BEAUTIA ID 카드 (네컷 포트폴리오 + QR) =====
 let idDid=null;
 function idUrl(id){return location.origin+location.pathname.replace(/[^/]*$/,'community.html')+'?d='+id;}
@@ -2651,11 +2700,34 @@ function applyDesignerRows(rows){
       bio:p.bio||'',avatar:s.avatar||p.avatar_url||'',insta:(s.insta||'').replace(/^@/,''),naver:s.naver||'',blog:s.blog||'',bookingUrl:s.bookingUrl||'',bookMode:s.bookMode||'app',sched:s.sched||null,newAt:s.lastWorkAt||0,
       handles:s.sns||(s.insta?{instagram:(s.insta||'').replace(/^@/,'')}:{}),
       works:photos,ba:baFrom(s.ba,photos),
-      sns:Object.keys(s.sns||{}).filter(function(k){return (s.sns||{})[k];}),services:svcNormalize(s.services),cur:s.cur||'',tags:s.tags||[],shopName:s.name||'',freelancer:!!s.freelancer,shopRaw:s,reviews:[]});
+      sns:Object.keys(s.sns||{}).filter(function(k){return (s.sns||{})[k];}),services:svcNormalize(s.services),cur:s.cur||'',tags:s.tags||[],shopName:s.name||'',freelancer:!!s.freelancer,shopId:p.shop_id||'',shopRaw:s,reviews:[]});
   });
+  list.forEach(attachShop);
   DUSERS=list;buildTiles();renderCities();render();maybeNotifyNewWork();
   var _pu=new URLSearchParams(location.search).get('u');if(_pu&&!document.querySelector('.dmodal.on'))openByUid(_pu);
 }
+// ===== 브랜드 · 지점(샵) =====
+var SHOPS={};            // shop_id -> shop row
+var SHOPCOUNT={};        // shop_id -> 소속 디자이너 수
+async function loadShops(){
+  try{
+    var rows=(await SB.from('shops').select('*').eq('active',true)).data||[];
+    SHOPS={};rows.forEach(function(s){SHOPS[s.id]=s;});
+    try{var cs=(await SB.rpc('shop_designer_counts')).data||[];SHOPCOUNT={};cs.forEach(function(r){SHOPCOUNT[r.shop_id]=r.n;});}catch(e){}
+    if(DUSERS&&DUSERS.length){DUSERS.forEach(attachShop);buildTiles&&buildTiles();render();}
+  }catch(e){}
+}
+// 지점이 있으면 그 지점을 진실의 원천으로 삼아 위치/브랜드/예약모드를 덮어씀
+function attachShop(d){
+  var s=d&&d.shopId?SHOPS[d.shopId]:null;
+  if(!s){d.brand='';d.branch='';return;}
+  d.brand=s.brand||'';d.branch=s.branch||'';
+  if(s.brand||s.branch)d.shopName=[s.brand,s.branch].filter(Boolean).join(' ');
+  if(s.city)d.city=s.city; if(s.country)d.country=(s.country||'').toUpperCase();
+  if(s.address)d.address=s.address;
+  if(s.book_mode==='link'&&s.book_link){d.bookMode='external';d.bookingUrl=s.book_link;}
+}
+function shopLabel(d){return (d&&(d.brand||d.branch))?[d.brand,d.branch].filter(Boolean).join(' · '):(d&&d.shopName||'');}
 var DCACHE_TTL=10*60*1000; // 10분: 이보다 최신이면 재조회 생략(트래픽 절감)
 async function loadDesigners(){
   var cached=null;try{cached=JSON.parse(localStorage.getItem('beautia_dcache2')||'null');}catch(e){}
@@ -2663,7 +2735,7 @@ async function loadDesigners(){
     if(Date.now()-(cached.t||0)<DCACHE_TTL)return; // 캐시 신선 → Supabase 재조회 생략
   }
   try{
-    var rows=(await SB.from('profiles').select('id,nickname,role,region,bio,interests,shop,avatar_url,created_at').limit(300)).data;
+    var rows=(await SB.from('profiles').select('id,nickname,role,region,bio,interests,shop,shop_id,avatar_url,created_at').limit(300)).data;
     if(!rows)return;
     applyDesignerRows(rows);
     try{localStorage.setItem('beautia_dcache2',JSON.stringify({t:Date.now(),rows:rows}));}catch(e){}
@@ -3047,7 +3119,7 @@ async function savePushToken(){try{
   if(pull>0&&window.scrollY<=0){var p=Math.min(pull,150);el.style.transform='translateX(-50%) translateY('+(p*0.5)+'px) rotate('+(p*1.8)+'deg)';el.style.opacity=Math.min(1,p/70);}},{passive:true});
  window.addEventListener('touchend',async function(){if(!active)return;active=false;
   if(pull>90&&window.scrollY<=0&&!busy){busy=true;el.classList.add('spin');
-   try{await Promise.all([loadDesigners(),loadFeatured()]);if(ME&&ME.uid){loadSaves();loadFollows();loadBlocks();checkUnread();loadBkBadge();}}catch(e){}
+   try{await Promise.all([loadDesigners(),loadFeatured(),loadShops()]);if(ME&&ME.uid){loadSaves();loadFollows();loadBlocks();checkUnread();loadBkBadge();}}catch(e){}
    el.classList.remove('spin');busy=false;toast(T[LANG].refreshed);}
   el.style.transform='translateX(-50%) translateY(0)';el.style.opacity=0;pull=0;});
 })();
@@ -3077,8 +3149,9 @@ async function enablePush(){closeUmenu();
 // tr(선택): {titleKey,bodyKey} — 서버가 수신자 기기 언어로 제목/본문을 렌더. 없으면 전달된 title/body(발신자 언어) 사용.
 function pushNotify(to,title,body,url,tr){if(!to)return;try{SB.functions.invoke('notify',{body:{to:to,title:title,body:body,url:url||'/community',tr:tr||null}}).then(function(){},function(){});}catch(e){}}
 SB.auth.getSession().then(function(r){onAuth(r.data.session);}).catch(function(){});
-loadFeatured();loadDesigners();
+loadFeatured();loadDesigners();loadShops();
 const _dp=new URLSearchParams(location.search).get('d');if(_dp&&dById(_dp))openD(_dp);
+const _sp=new URLSearchParams(location.search).get('shop');if(_sp)setTimeout(function(){openShop(_sp);},400);
 const _du=new URLSearchParams(location.search).get('u');if(_du)openByUid(_du);
 (function(){try{var vw=new URLSearchParams(location.search).get('view');if(vw&&['explore','designers','saved','reels'].indexOf(vw)>=0)setView(vw);}catch(e){}})();
 (function(){try{var dp=new URLSearchParams(location.search).get('deposit');if(!dp)return;

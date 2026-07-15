@@ -256,6 +256,7 @@ textarea.inp{resize:vertical;min-height:70px;line-height:1.5;}
     </div>
     <div class="tabs">
       <button class="tab on" id="tab-designers" onclick="tab('designers')">디자이너 관리</button>
+      <button class="tab" id="tab-shops" onclick="tab('shops')">브랜드·지점</button>
       <button class="tab" id="tab-applications" onclick="tab('applications')">신청<span class="tbadge hide" id="appBadge"></span></button>
       <button class="tab" id="tab-users" onclick="tab('users')">사용자</button>
       <button class="tab" id="tab-inquiries" onclick="tab('inquiries')">문의<span class="tbadge hide" id="inqBadge"></span></button>
@@ -271,6 +272,12 @@ textarea.inp{resize:vertical;min-height:70px;line-height:1.5;}
       <div class="searchbar"><input class="inp" id="q" placeholder="이름·지역·시술 검색…" oninput="renderList()"><button class="mini g" onclick="loadAll()">새로고침</button></div>
       <div class="note" style="margin-bottom:12px"><i class="ti ti-info-circle"></i> 신규 디자이너 <b>생성</b>은 등록 스크립트로 진행합니다. 여기서는 기존 디자이너 <b>편집·사진·서비스·노출</b>을 관리합니다.</div>
       <div class="dlist" id="dlist"></div>
+    </div>
+
+    <div id="sec-shops" class="hide">
+      <div class="note" style="margin-bottom:12px"><i class="ti ti-info-circle"></i> <b>브랜드</b>는 같은 이름의 지점끼리 묶여요. <b>지점</b>마다 주소·예약방식을 정하고, 디자이너를 배치하세요. (db_shops.sql 실행 필요)</div>
+      <div style="display:flex;justify-content:flex-end;margin-bottom:10px"><button class="mini" onclick="openShopEdit()"><i class="ti ti-plus"></i> 지점 추가</button></div>
+      <div class="rowlist" id="shoplist"></div>
     </div>
 
     <div id="sec-applications" class="hide"><div class="note" style="margin-bottom:12px"><i class="ti ti-info-circle"></i> 승인하면 신청자 계정이 <b>디자이너로 전환</b>되고 포트폴리오·정보가 프로필에 채워집니다.</div><div class="rowlist" id="aplist"></div></div>
@@ -332,6 +339,11 @@ textarea.inp{resize:vertical;min-height:70px;line-height:1.5;}
 <div class="drawer" id="drawer">
   <div class="dh"><div class="dt" id="edTitle">디자이너 편집</div><a class="mini g" id="edView" target="_blank">공개 프로필</a><button class="x" onclick="closeEdit()">×</button></div>
   <div class="dbody" id="edBody"></div>
+</div>
+<div class="scrim" id="shopScrim" onclick="closeShopEdit()"></div>
+<div class="drawer" id="shopDrawer">
+  <div class="dh"><div class="dt" id="shopEdTitle">지점 편집</div><button class="x" onclick="closeShopEdit()">×</button></div>
+  <div class="dbody" id="shopEdBody"></div>
 </div>
 
 <div class="toast" id="toast"></div>
@@ -415,10 +427,10 @@ function gate(user){
 
 async function loadAll(){
   try{
-    const {data,error}=await SB.from('profiles').select('id,nickname,role,region,bio,shop,avatar_url,full_name,created_at,blocked').limit(400);
+    const {data,error}=await SB.from('profiles').select('id,nickname,role,region,bio,shop,shop_id,avatar_url,full_name,created_at,blocked').limit(400);
     if(error){toast('불러오기 실패: '+error.message);return;}
     DESIGNERS=(data||[]).map(p=>{const s=p.shop||{};return {
-      id:p.id, nickname:p.nickname||s.name||p.full_name||'디자이너', role:p.role||'', region:p.region||s.area||'', bio:p.bio||'',
+      id:p.id, nickname:p.nickname||s.name||p.full_name||'디자이너', role:p.role||'', region:p.region||s.area||'', bio:p.bio||'', shop_id:p.shop_id||'',
       shop:s, avatar:s.avatar||p.avatar_url||'', photos:(s.photos||[]).filter(Boolean),
       spec:(s.specialties&&s.specialties.length)?s.specialties.slice():[], tags:(s.tags||[]).slice(), services:(s.services||[]).slice(),
       shopName:s.name||'', area:s.area||'', career:s.career||'', insta:(s.insta||'').replace(/^@/,''), naver:s.naver||'', blog:s.blog||'',
@@ -1035,11 +1047,91 @@ async function delReview(id,ev){
   $('stR').textContent=REVIEWS.length;renderReviews();toast('후기를 삭제했어요 ✓');
 }
 
+// ===== 브랜드 · 지점 관리 =====
+var SHOPSA=[], SHOPCNT={};
+async function loadShopsAdmin(){
+  var el=$('shoplist');if(el)el.innerHTML='<div class="note">불러오는 중…</div>';
+  try{
+    var r=await SB.from('shops').select('*').order('brand',{ascending:true}).order('branch',{ascending:true});
+    if(r.error){if(el)el.innerHTML='<div class="empty"><i class="ti ti-lock"></i><p>지점을 불러올 수 없어요<br><span style="font-size:12px">'+esc(r.error.message)+'<br>(db_shops.sql 실행 필요)</span></p></div>';return;}
+    SHOPSA=r.data||[];
+    SHOPCNT={};SHOPSA.forEach(s=>{SHOPCNT[s.id]=DESIGNERS.filter(d=>d.shop_id===s.id).length;});
+    renderShopsAdmin();
+  }catch(e){if(el)el.innerHTML='<div class="empty"><p>'+esc(e.message)+'</p></div>';}
+}
+function renderShopsAdmin(){
+  var el=$('shoplist');if(!el)return;
+  if(!SHOPSA.length){el.innerHTML='<div class="empty"><i class="ti ti-building-store"></i><p>아직 지점이 없어요<br><span style="font-size:12px">우측 상단 "지점 추가"로 첫 지점을 만들어보세요</span></p></div>';return;}
+  var brands={};SHOPSA.forEach(s=>{(brands[s.brand||'(브랜드 없음)']=brands[s.brand||'(브랜드 없음)']||[]).push(s);});
+  el.innerHTML=Object.keys(brands).map(function(b){
+    var shops=brands[b];
+    return '<div style="margin-bottom:20px"><div style="font-weight:800;font-size:15px;color:var(--ink);margin:6px 2px 10px;display:flex;align-items:center;gap:7px"><i class="ti ti-building"></i> '+esc(b)+' <span style="font-size:12px;color:var(--sub);font-weight:600">· '+shops.length+'개 지점</span></div>'
+      + shops.map(function(s){
+        var members=DESIGNERS.filter(d=>d.shop_id===s.id);
+        var mChips=members.length?members.map(function(d){return '<span class="tagc">'+esc(d.nickname)+'<button onclick="unassignDesigner(\''+d.id+'\')" title="지점에서 빼기"><i class="ti ti-x"></i></button></span>';}).join(''):'<span style="font-size:12px;color:var(--sub);font-weight:600">배치된 디자이너 없음</span>';
+        return '<div class="row" style="flex-direction:column;align-items:stretch;gap:10px;padding:14px">'
+          + '<div style="display:flex;align-items:center;gap:10px"><div style="flex:1"><div style="font-weight:800;font-size:14px">'+esc(s.branch||'(지점명 없음)')+'</div><div style="font-size:12px;color:var(--sub);margin-top:2px">'+esc([s.city,s.country].filter(Boolean).join(', ')||s.address||'주소 미입력')+' · '+(s.book_mode==='link'?'외부 예약링크':'앱 내 예약')+'</div></div>'
+          + '<button class="mini g" onclick="openShopEdit(\''+s.id+'\')">편집</button><button class="mini r" onclick="delShop(\''+s.id+'\')">삭제</button></div>'
+          + '<div style="border-top:1px solid var(--line);padding-top:10px"><div style="font-size:12px;color:var(--sub);font-weight:700;margin-bottom:7px">소속 디자이너 '+members.length+'명</div><div style="display:flex;flex-wrap:wrap;gap:6px;align-items:center">'+mChips
+          + ' <select class="inp" style="width:auto;min-width:150px;padding:6px 10px;font-size:12.5px" onchange="if(this.value){assignDesigner(\''+s.id+'\',this.value);this.value=\'\';}"><option value="">+ 디자이너 배치…</option>'
+          + DESIGNERS.filter(d=>d.shop_id!==s.id&&(d.photos.length>0||d.role==='designer'||d.shopName)).map(function(d){return '<option value="'+d.id+'">'+esc(d.nickname)+(d.shop_id?' (이동)':'')+'</option>';}).join('')
+          + '</select></div></div></div>';
+      }).join('')+'</div>';
+  }).join('');
+}
+var shopEd=null;
+function openShopEdit(id){
+  var s=id?SHOPSA.find(x=>x.id===id):null;
+  shopEd=s?Object.assign({},s):{id:'',brand:'',branch:'',address:'',city:'',country:'',book_mode:'app',book_link:'',phone:'',logo:'',cover:'',active:true};
+  $('shopEdTitle').textContent=s?(s.brand+' '+s.branch):'새 지점';
+  var brandList=[...new Set(SHOPSA.map(x=>x.brand).filter(Boolean))];
+  $('shopEdBody').innerHTML=
+    '<div class="fld"><label>브랜드명 <span style="color:var(--sub);font-weight:600">(같은 이름끼리 묶여요)</span></label><input class="inp" id="shBrand" list="brandDL" value="'+esc(shopEd.brand)+'" placeholder="예: 차홍아르떼"><datalist id="brandDL">'+brandList.map(b=>'<option value="'+esc(b)+'">').join('')+'</datalist></div>'
+    +'<div class="fld"><label>지점명</label><input class="inp" id="shBranch" value="'+esc(shopEd.branch)+'" placeholder="예: 강남점"></div>'
+    +'<div class="fld"><label>주소</label><input class="inp" id="shAddr" value="'+esc(shopEd.address)+'" placeholder="도로명 주소"></div>'
+    +'<div style="display:flex;gap:10px"><div class="fld" style="flex:1"><label>도시</label><input class="inp" id="shCity" value="'+esc(shopEd.city)+'" placeholder="Seoul"></div><div class="fld" style="width:90px"><label>국가(ISO2)</label><input class="inp" id="shCountry" value="'+esc(shopEd.country)+'" placeholder="KR" maxlength="2"></div></div>'
+    +'<div class="fld"><label>전화</label><input class="inp" id="shPhone" value="'+esc(shopEd.phone||'')+'" placeholder="02-000-0000"></div>'
+    +'<div class="fld"><label>예약 방식</label><select class="inp" id="shMode" onchange="document.getElementById(\'shLinkFld\').style.display=this.value===\'link\'?\'\':\'none\'"><option value="app"'+(shopEd.book_mode!=='link'?' selected':'')+'>앱 내 예약 (기본)</option><option value="link"'+(shopEd.book_mode==='link'?' selected':'')+'>외부 예약 링크</option></select></div>'
+    +'<div class="fld" id="shLinkFld" style="display:'+(shopEd.book_mode==='link'?'':'none')+'"><label>외부 예약 URL</label><input class="inp" id="shLink" value="'+esc(shopEd.book_link||'')+'" placeholder="https://booking.naver.com/..."></div>'
+    +'<div class="fld"><label>로고 URL (선택)</label><input class="inp" id="shLogo" value="'+esc(shopEd.logo||'')+'" placeholder="https://..."></div>'
+    +'<div class="fld"><label>커버 URL (선택)</label><input class="inp" id="shCover" value="'+esc(shopEd.cover||'')+'" placeholder="https://..."></div>'
+    +'<button class="mini" style="width:100%;justify-content:center;padding:12px;margin-top:8px" onclick="saveShop()"><i class="ti ti-check"></i> 저장</button>';
+  $('shopScrim').classList.add('on');$('shopDrawer').classList.add('on');document.body.style.overflow='hidden';
+}
+function closeShopEdit(){$('shopScrim').classList.remove('on');$('shopDrawer').classList.remove('on');document.body.style.overflow='';shopEd=null;}
+async function saveShop(){
+  var v=id=>{var e=$(id);return e?e.value.trim():'';};
+  var payload={brand:v('shBrand'),branch:v('shBranch'),address:v('shAddr'),city:v('shCity'),country:v('shCountry').toUpperCase(),phone:v('shPhone'),book_mode:$('shMode').value,book_link:v('shLink'),logo:v('shLogo'),cover:v('shCover'),active:true};
+  if(!payload.brand&&!payload.branch){toast('브랜드 또는 지점명을 입력하세요');return;}
+  try{
+    var res;
+    if(shopEd&&shopEd.id){res=await SB.from('shops').update(payload).eq('id',shopEd.id).select('id');}
+    else{payload.owner_id=(await SB.auth.getUser()).data.user.id;res=await SB.from('shops').insert(payload).select('id');}
+    if(res.error){toast('저장 실패: '+res.error.message);return;}
+    closeShopEdit();toast('저장됐어요 ✨');loadShopsAdmin();
+  }catch(e){toast('오류: '+e.message);}
+}
+async function delShop(id){
+  var s=SHOPSA.find(x=>x.id===id);var n=DESIGNERS.filter(d=>d.shop_id===id).length;
+  if(!confirm('"'+(s?s.brand+' '+s.branch:'')+'" 지점을 삭제할까요?'+(n?'\n소속 디자이너 '+n+'명의 지점 연결이 해제됩니다.':'')))return;
+  try{var res=await SB.from('shops').delete().eq('id',id);if(res.error){toast('삭제 실패: '+res.error.message);return;}
+    DESIGNERS.forEach(d=>{if(d.shop_id===id)d.shop_id='';});toast('삭제됐어요');loadShopsAdmin();}catch(e){toast('오류: '+e.message);}
+}
+async function assignDesigner(shopId,desId){
+  try{var res=await SB.rpc('owner_set_designer_shop',{p_designer:desId,p_shop:shopId});
+    if(res.error){toast('배치 실패: '+res.error.message);return;}
+    var d=PMAP[desId];if(d)d.shop_id=shopId;toast('배치됐어요 ✨');renderShopsAdmin();}catch(e){toast('오류: '+e.message);}
+}
+async function unassignDesigner(desId){
+  try{var res=await SB.rpc('owner_set_designer_shop',{p_designer:desId,p_shop:null});
+    if(res.error){toast('해제 실패: '+res.error.message);return;}
+    var d=PMAP[desId];if(d)d.shop_id='';toast('지점에서 뺐어요');renderShopsAdmin();}catch(e){toast('오류: '+e.message);}
+}
 var CURTAB='designers';
 function tab(t){
   CURTAB=t;
-  ['designers','applications','users','inquiries','announce','coupons','bookings','reviews','access'].forEach(x=>{$('sec-'+x).classList.toggle('hide',x!==t);$('tab-'+x).classList.toggle('on',x===t);});
-  if(t==='users')renderUsers();if(t==='inquiries')renderInquiries();if(t==='announce')renderAnnounce();if(t==='coupons')loadAdminCoupons();if(t==='access')loadAccessLog();
+  ['designers','shops','applications','users','inquiries','announce','coupons','bookings','reviews','access'].forEach(x=>{$('sec-'+x).classList.toggle('hide',x!==t);$('tab-'+x).classList.toggle('on',x===t);});
+  if(t==='users')renderUsers();if(t==='inquiries')renderInquiries();if(t==='announce')renderAnnounce();if(t==='coupons')loadAdminCoupons();if(t==='access')loadAccessLog();if(t==='shops')loadShopsAdmin();
 }
 
 (async function(){
