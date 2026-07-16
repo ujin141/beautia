@@ -37,15 +37,23 @@ Supabase → SQL Editor 에서 **`db_security_audit.sql`** 실행.
 ## §3. 계정/접근 보안
 
 - 관리자(/admin)는 **2단계 인증(TOTP) 필수** — 최초 로그인 시 인증 앱(Google Authenticator 등) 등록.
-  - 사전조건: Supabase → Authentication → **MFA(TOTP) 활성화**.
-- (선택·강화) DB 레벨에서도 관리자 작업에 `aal2` 요구하려면 owner 정책에 MFA 조건 추가 —
-  **단, MFA 등록·정상 동작 확인 후** 적용할 것 (미등록 상태에서 걸면 잠금 위험).
+  - TOTP는 **모든 Supabase 프로젝트에 기본 활성**이라 대시보드에서 켤 것이 없다.
+    (이전 문서에 "Authentication → MFA 활성화" 사전조건이 적혀 있었으나 사실이 아니어서 바로잡음.)
+- **2중 방어**: 화면(`enforceMFA` in admin.html) + DB(`is_platform_admin()` 이 `aal2` 요구).
+  - 화면 검사만 있으면 비밀번호를 아는 사람이 REST API를 직접 호출해 우회 가능 → MFA가 무의미.
+  - `db_mfa_enforce.sql` 로 적용. 정의 원본은 `db_shops.sql` 에 있으므로 **둘 다** aal2를 유지해야 한다
+    (security-scan #18이 회귀를 감시).
+- **인증 앱은 반드시 2곳에 등록** — 폰 + 비번 관리자(1Password/Bitwarden). Supabase엔 복구 코드 기능이 없다.
+- **폰 분실 시 복구**: Supabase 대시보드 로그인은 앱 MFA와 별개다.
+  SQL Editor에서 `db_mfa_enforce.sql` 맨 아래 `[복구]` 쿼리 실행 → 다음 /admin 로그인 때 QR 재발급.
 
 ## 최근 하드닝 로그
 
 - 2026-07: 지점 소속 **사칭 방지 트리거**(`guard_profile_shop`) + self-가입 금지
 - 2026-07: **지점 생성 남용 제한**(계정당 30개 상한) `guard_shop_insert`
 - 2026-07: 관리자 **2단계 인증(TOTP)** 도입
+- 2026-07-16: MFA를 **DB 레벨까지 강제** — `is_platform_admin()` 이 email + `aal2` 요구(`db_mfa_enforce.sql`).
+  그전엔 화면에서만 검사해서, 비밀번호만 알면 REST 직접호출로 관리자 권한 획득이 가능했음(창문 열린 상태).
 - 2026-07: 아이콘 폰트 **자체호스팅**(CDN 의존·무결성 리스크 축소)
 - (이전) 레거시 테이블 RLS·auth.users 노출 뷰 정리, 쿠폰 무한재귀 수정, 예약 웹훅 하드닝
 

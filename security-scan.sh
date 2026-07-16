@@ -78,6 +78,16 @@ if grep -q "enforceMFA" admin.html 2>/dev/null && grep -qE "await +enforceMFA\(\
 # 17) 보안요원(라이브 감시) 유지 — 실시간 침입/새IP 경보 트리거 + 관리자 모니터
 if grep -q "trg_guard_admin_access" db_security_guard.sql 2>/dev/null && grep -q "security_alerts" admin.html 2>/dev/null; then ok "보안요원(라이브 감시) 유지"; else red "보안요원 감시(trg_guard_admin_access/security_alerts) 누락"; fi
 
+# 18) 관리자 권한이 DB에서도 2단계 인증(aal2)을 요구하는지.
+#     이메일만 보면 화면(enforceMFA)을 건너뛰고 REST API를 직접 호출해 우회 가능 → MFA가 무의미해짐.
+#     is_platform_admin() 정의는 db_shops.sql 에 있고, db_mfa_enforce.sql 이 같은 정의를 재적용한다.
+for f in db_shops.sql db_mfa_enforce.sql; do
+  def=$(grep -A4 "create or replace function public.is_platform_admin" "$f" 2>/dev/null)
+  if [ -z "$def" ]; then red "$f: is_platform_admin() 정의 없음"; continue; fi
+  echo "$def" | grep -q "aal2" || red "$f: is_platform_admin() 이 aal2(2단계 인증)를 요구하지 않음 — REST 직접호출로 MFA 우회 가능"
+done
+ok "관리자 권한 aal2 요구 검사 완료"
+
 echo "-----"
 if [ "$FAIL" -eq 0 ]; then echo "🛡️ 보안 회귀 없음 — 통과"; else echo "⚠️ 보안 회귀 발견 — 위 [FAIL] 확인 필요"; fi
 exit $FAIL

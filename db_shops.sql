@@ -60,9 +60,13 @@ grant update (shop_id) on public.profiles to authenticated;
 
 -- 3) RLS ----------------------------------------------------------
 -- 플랫폼 관리자(우진) 판별 — 어떤 지점이든 관리 가능하게 우회
+-- 이메일만으로는 부족하다: 비밀번호를 아는 사람이 화면을 건너뛰고 REST API를 직접
+-- 호출하면 2단계 인증 없이 관리자 권한을 얻는다. aal2(인증 앱 코드까지 통과한 세션)를
+-- 함께 요구해야 DB가 직접 막는다. 상세는 db_mfa_enforce.sql 참고.
 create or replace function public.is_platform_admin()
 returns boolean language sql stable set search_path = public as $$
   select coalesce(auth.jwt() ->> 'email','') = 'ujin141@naver.com'
+     and coalesce(auth.jwt() ->> 'aal','')   = 'aal2'
 $$;
 
 alter table public.shops enable row level security;
