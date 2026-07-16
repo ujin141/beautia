@@ -52,6 +52,12 @@ alter table public.profiles add column if not exists shop_id uuid
   references public.shops(id) on delete set null;
 create index if not exists profiles_shop_idx on public.profiles(shop_id);
 
+-- 중요: profiles 는 컬럼 단위 GRANT 로 하드닝돼 있을 수 있음.
+-- 새로 추가한 shop_id 를 명시적으로 허용하지 않으면, 이 컬럼을 포함한 조회가
+-- 통째로 401(42501 permission denied) → 손님에게 디자이너 목록이 안 보인다.
+grant select (shop_id) on public.profiles to anon, authenticated;
+grant update (shop_id) on public.profiles to authenticated;
+
 -- 3) RLS ----------------------------------------------------------
 -- 플랫폼 관리자(우진) 판별 — 어떤 지점이든 관리 가능하게 우회
 create or replace function public.is_platform_admin()
