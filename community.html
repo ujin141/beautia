@@ -398,23 +398,24 @@ body.mlock{position:fixed;left:0;right:0;width:100%;overflow:hidden;}
 .mever{text-align:center;font-size:11px;color:var(--sub);margin-top:18px;letter-spacing:.02em;}
 @media (min-width:861px){ .mepage{display:none!important;} }
 /* 간편 예약 (서비스칩·날짜칩·시간슬롯) */
-.bksvcs{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:6px;max-height:236px;overflow-y:auto;padding:2px;scrollbar-width:thin;}
-.bksvc{position:relative;display:flex;flex-direction:column;align-items:flex-start;gap:3px;text-align:left;border:1.5px solid var(--line);border-radius:14px;padding:11px 12px;background:#fff;cursor:pointer;transition:.12s;}
+.bksvcs{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:8px;margin-top:6px;max-height:236px;overflow-y:auto;padding:2px;scrollbar-width:thin;}
+.bksvc{position:relative;display:flex;flex-direction:column;align-items:flex-start;gap:3px;min-width:0;text-align:left;border:1.5px solid var(--line);border-radius:14px;padding:11px 12px;background:#fff;cursor:pointer;transition:.12s;}
 .bksvc.on{border-color:var(--plum);background:var(--rosebg);}
 .bksvc.on::after{content:'✓';position:absolute;top:8px;right:9px;width:18px;height:18px;border-radius:50%;background:var(--plum);color:#fff;font-size:11px;font-weight:800;display:flex;align-items:center;justify-content:center;}
-.bksvc .bsn{font-weight:700;font-size:13.5px;line-height:1.3;color:var(--ink);padding-right:18px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;}
+.bksvc .bsn{font-weight:700;font-size:var(--fs-base);line-height:1.3;color:var(--ink);padding-right:18px;align-self:stretch;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
 .bksvc .bsp{font-weight:800;font-size:13.5px;color:var(--plum);}
 .bksvc .bsp .bsapx{font-weight:600;font-size:11px;color:var(--sub);}
 .bksvc .bsd{display:inline-flex;align-items:center;gap:4px;font-size:11.5px;font-weight:600;color:var(--sub);}
 .bksvc.consult{grid-column:1/-1;flex-direction:row;align-items:center;justify-content:center;padding:11px;background:#faf6f4;border-style:dashed;}
-.bksvc.consult .bsn{padding-right:0;font-weight:600;color:var(--ink2);-webkit-line-clamp:1;}
+.bksvc.consult .bsn{padding-right:0;font-weight:600;color:var(--ink2);align-self:auto;}
 .bksvc.consult.on{background:var(--rosebg);border-style:solid;}
 .bksum{display:flex;align-items:center;gap:10px;border:1.5px solid var(--line);border-radius:14px;padding:12px 14px;background:#faf6f4;margin-top:6px;}
-.bksum .bsn{flex:1;font-weight:700;font-size:13.5px;color:var(--ink);line-height:1.3;}
+.bksum .bsn{flex:1;min-width:0;font-weight:700;font-size:var(--fs-base);color:var(--ink);line-height:1.3;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
 .bksum .bsp{font-weight:800;font-size:13px;color:var(--plum);white-space:nowrap;}
 .bksum .bkchg{flex:0 0 auto;border:none;background:none;color:var(--plum);font-size:12.5px;font-weight:700;text-decoration:underline;cursor:pointer;padding:0;}
+#bkcard .pfsub{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
 .bkcoups{display:flex;flex-wrap:wrap;gap:8px;margin-top:6px;}
-.bkcoup{border:1.5px solid var(--line);border-radius:12px;padding:9px 13px;background:#fff;cursor:pointer;font-size:13.5px;color:var(--ink);transition:.12s;}
+.bkcoup{border:1.5px solid var(--line);border-radius:12px;padding:9px 13px;background:#fff;cursor:pointer;font-size:var(--fs-base);color:var(--ink);transition:.12s;max-width:100%;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
 .bkcoup b{color:var(--plum);}
 .bkcoup.on{border-color:var(--plum);background:var(--rosebg);}
 .bkdates{display:flex;gap:8px;overflow-x:auto;padding:6px 2px 2px;-webkit-overflow-scrolling:touch;scrollbar-width:none;} .bkdates::-webkit-scrollbar{display:none;}
