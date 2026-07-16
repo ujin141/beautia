@@ -56,11 +56,12 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 <script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"What is Beautia Collection?","acceptedAnswer":{"@type":"Answer","text":"Beautia Collection is a global gallery of beauty designer portfolios across hair, makeup, nail, lash, skin and bridal. Customers browse real work, save their favorites, and book or message the designer directly."}},{"@type":"Question","name":"Is it free to browse designers?","acceptedAnswer":{"@type":"Answer","text":"Yes. Browsing portfolios and saving favorites is completely free. You only reach out when you want to book or ask a question."}},{"@type":"Question","name":"How do I find a beauty designer near me?","acceptedAnswer":{"@type":"Answer","text":"Beautia automatically sorts designers by distance from your location, and you can filter by city and by category such as hair, makeup, nail, lash, skin or bridal."}},{"@type":"Question","name":"Can I book or contact a designer directly?","acceptedAnswer":{"@type":"Answer","text":"Yes. Every designer profile has a Book / Inquiry button plus their Instagram link, so you can request the exact style you saved."}},{"@type":"Question","name":"Which cities and countries does Beautia cover?","acceptedAnswer":{"@type":"Answer","text":"Beautia is a global, multilingual (English, Korean, Japanese) platform. Current designers include Seoul, South Korea and Osaka, Japan, and the collection is expanding worldwide."}}]}</script>
 <script type="application/ld+json">{"@context":"https://schema.org","@type":"ItemList","name":"Beauty designers on Beautia Collection","itemListElement":[{"@type":"ListItem","position":1,"url":"https://beautia.io/d/21a1661c-4974-477a-8d0d-f806457db5a4","item":{"@type":"Person","name":"soin eyelash salon","jobTitle":"Eyelash designer","image":"https://pzbxcktaljhesrfnqwzq.supabase.co/storage/v1/object/public/beautia/21a1661c-4974-477a-8d0d-f806457db5a4/1782731424179-6dzmzs.jpg","areaServed":"Osaka, Japan","knowsAbout":["Eyelash extensions","Lash perm"],"sameAs":["https://instagram.com/soin_eyelash"],"url":"https://beautia.io/d/21a1661c-4974-477a-8d0d-f806457db5a4"}},{"@type":"ListItem","position":2,"url":"https://beautia.io/d/e579ff23-4b1a-43c9-b9e2-49e6061668d6","item":{"@type":"Person","name":"Woojin","jobTitle":"Hair designer","image":"https://pzbxcktaljhesrfnqwzq.supabase.co/storage/v1/object/public/beautia/e579ff23-4b1a-43c9-b9e2-49e6061668d6/1782655359147-aepfe2.jpg","areaServed":"Seoul, South Korea","knowsAbout":["Hair cut","Perm","Color"],"sameAs":["https://instagram.com/00.07.28"],"url":"https://beautia.io/d/e579ff23-4b1a-43c9-b9e2-49e6061668d6"}},{"@type":"ListItem","position":3,"url":"https://beautia.io/d/fa9263ea-3a9f-4f11-aaaa-71bd4bb3ea09","item":{"@type":"Person","name":"시영","jobTitle":"Nail designer","areaServed":"Osaka, Japan","knowsAbout":["Nail"],"sameAs":["https://instagram.com/s1on_nail"],"url":"https://beautia.io/d/fa9263ea-3a9f-4f11-aaaa-71bd4bb3ea09"}}]}</script>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css" integrity="sha384-uGEvnSEpW2nM9xJFsrxrwakwrk9QdDTQIBJh0hVMu90OaVyMAMpAK1rIn0/Kh1/k" crossorigin="anonymous">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Outfit:wght@500;600;700;800;900&display=swap">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,500;0,600;1,400;1,500&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Outfit:wght@500;600;700;800;900&display=swap" media="print" onload="this.media='all'">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,500;0,600;1,400;1,500&display=swap" media="print" onload="this.media='all'">
+<noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Outfit:wght@500;600;700;800;900&display=swap"><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,500;0,600;1,400;1,500&display=swap"></noscript>
 <link rel="stylesheet" href="/icons/tabler-icons.css">
 <!-- html2canvas: ID카드 다운로드/공유 시에만 지연 로드 (ensureH2C) — 초기 로드 경량화 -->
-<script src="https://cdn.jsdelivr.net/npm/qrcode-generator@1.4.4/qrcode.js" integrity="sha384-8FWZA6BGMXhsfO+BLtrJK0We6gg5o1JyO8xQm6peWDEUs17ACA5ziE/NIAkl9z2k" crossorigin="anonymous"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/qrcode-generator@1.4.4/qrcode.js" integrity="sha384-8FWZA6BGMXhsfO+BLtrJK0We6gg5o1JyO8xQm6peWDEUs17ACA5ziE/NIAkl9z2k" crossorigin="anonymous"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.110.0/dist/umd/supabase.js" integrity="sha384-3wY11tldQ5+yWqAvmTN4XtQvnjoTva0cV15O/O/O5NTtp0ivVopSzLOzsVXWZse9" crossorigin="anonymous"></script>
 <style>
 :root{--ink:#191512;--ink2:#4a443f;--sub:#9a938c;--line:#eae5df;--bg:#ffffff;--soft:#f3f0eb;--accent:#a59c92;--plum:#221e1a;--rosebg:#f2efea;--gold:#9a8f7c;--green:#3E7C6A;}
@@ -541,7 +542,7 @@ html.native-app .sitefoot{display:none !important;}
 .grid{column-count:4;column-gap:18px;}
 /* 디자이너 디렉토리(카드형) */
 .grid.dgview{column-count:unset;display:grid;grid-template-columns:repeat(3,1fr);gap:18px;}
-.dcard{background:#fff;border:1px solid var(--line);border-radius:18px;overflow:hidden;cursor:pointer;transition:transform .12s,box-shadow .12s;break-inside:avoid;}
+.dcard{background:#fff;border:1px solid var(--line);border-radius:18px;overflow:hidden;cursor:pointer;transition:transform .12s,box-shadow .12s;break-inside:avoid;content-visibility:auto;contain-intrinsic-size:auto 360px;}
 .dcard:hover{transform:translateY(-3px);box-shadow:0 18px 40px -22px rgba(40,20,40,.4);}
 .dcthumbs{position:relative;display:grid;grid-template-columns:2fr 1fr;grid-template-rows:1fr 1fr;gap:2px;height:150px;background:var(--soft);}
 .dcthumbs .dcth{background-size:cover;background-position:center;background-color:var(--soft);}
@@ -618,7 +619,7 @@ html.native-app .sitefoot{display:none !important;}
 @media(max-width:600px){.grid.dgview{grid-template-columns:1fr;gap:14px;} .dcthumbs{height:170px;}}
 @media(max-width:1100px){.grid{column-count:3;}}
 @media(max-width:760px){.grid{column-count:2;}}
-.tile{break-inside:avoid;margin-bottom:18px;position:relative;border-radius:18px;overflow:hidden;background:var(--soft);cursor:pointer;}
+.tile{break-inside:avoid;margin-bottom:18px;position:relative;border-radius:18px;overflow:hidden;background:var(--soft);cursor:pointer;content-visibility:auto;contain-intrinsic-size:auto 300px;}
 .tile img{width:100%;}
 .tile>img{opacity:0;transition:opacity .5s ease;}
 .tile>img.ld{opacity:1;}
