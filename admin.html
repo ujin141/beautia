@@ -501,13 +501,17 @@ async function mfaSubmit(){
   if(code.length!==6){$('mfaMsg').textContent='6자리 코드를 입력하세요';return;}
   $('mfaBtn').disabled=true;$('mfaMsg').textContent='확인 중…';
   try{
-    if(!MFA.challengeId){var c=await SB.auth.mfa.challenge({factorId:MFA.factorId});if(c.error)throw c.error;MFA.challengeId=c.data.id;}
-    var v=await SB.auth.mfa.verify({factorId:MFA.factorId,challengeId:MFA.challengeId,code:code});
+    // 챌린지는 수 분 내 만료 → 코드 입력 시점에 '새 챌린지'를 만들어 즉시 검증(만료 방지)
+    var c=await SB.auth.mfa.challenge({factorId:MFA.factorId});if(c.error)throw c.error;
+    var v=await SB.auth.mfa.verify({factorId:MFA.factorId,challengeId:c.data.id,code:code});
     if(v.error)throw v.error;
     $('mfaMsg').textContent='인증 완료 ✓';
     var u=(await SB.auth.getUser()).data.user;
     showAdmin(u);
-  }catch(e){$('mfaMsg').textContent='인증 실패: '+(e.message||'코드를 다시 확인하세요');MFA.challengeId='';}
+  }catch(e){
+    var m=e&&e.message||'';
+    $('mfaMsg').textContent=/expired/i.test(m)?'코드가 만료됐어요 — 인증 앱의 새 6자리로 다시 시도하세요':('인증 실패: '+(m||'코드를 다시 확인하세요'));
+  }
   $('mfaBtn').disabled=false;
 }
 
