@@ -619,9 +619,9 @@ html.native-app .sitefoot{display:none !important;}
 @media(max-width:1100px){.grid{column-count:3;}}
 @media(max-width:760px){.grid{column-count:2;}}
 .tile{break-inside:avoid;margin-bottom:18px;position:relative;border-radius:18px;overflow:hidden;background:var(--soft);cursor:pointer;content-visibility:auto;contain-intrinsic-size:auto 300px;}
-.tile img{width:100%;}
+.tile img{width:100%;height:auto;display:block;aspect-ratio:3/4;}/* CLS: 로드 전 세로형 비율로 공간 예약 */
 .tile>img{opacity:0;transition:opacity .5s ease;}
-.tile>img.ld{opacity:1;}
+.tile>img.ld{opacity:1;aspect-ratio:auto;}/* 로드 완료 → 실제 비율로 전환 */
 .tile.__sk::after{content:"";position:absolute;inset:0;z-index:1;pointer-events:none;background:linear-gradient(100deg,transparent 30%,rgba(255,255,255,.45) 50%,transparent 70%);background-size:200% 100%;animation:tskel 1.2s linear infinite;}
 @keyframes tskel{0%{background-position:200% 0}100%{background-position:-200% 0}}
 .tile .ov{position:absolute;inset:0;background:linear-gradient(180deg,rgba(20,12,16,0) 42%,rgba(20,12,16,.72) 100%);opacity:0;transition:.2s;}
