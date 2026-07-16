@@ -121,13 +121,15 @@ grant execute on function public.owner_set_designer_shop(uuid,uuid) to authentic
 -- 5) 디자이너 본인이 지점에 합류/탈퇴 (셀프서비스) ---------------
 --    합류는 브랜드/지점 코드 없이도 되도록: 원장이 만든 지점을 골라 신청 대신
 --    바로 연결(초대 링크 방식). 여기선 본인이 자기 shop_id 를 바꾸는 것만 허용.
+-- 보안: self-가입은 사칭 위험이라 금지. 탈퇴(NULL)만 셀프서비스로 허용.
+-- 가입 배치는 원장/관리자(owner_set_designer_shop). 상세는 db_shops_security.sql 참고.
 create or replace function public.join_shop(p_shop uuid)
 returns void language plpgsql security definer set search_path = public as $$
 begin
-  if p_shop is not null and not exists (select 1 from public.shops where id = p_shop and active) then
-    raise exception 'shop not found';
+  if p_shop is not null then
+    raise exception '지점 가입은 원장/관리자가 배치합니다. 직접 가입은 불가해요.';
   end if;
-  update public.profiles set shop_id = p_shop where id = auth.uid();
+  update public.profiles set shop_id = null where id = auth.uid();
 end;
 $$;
 revoke all on function public.join_shop(uuid) from public;

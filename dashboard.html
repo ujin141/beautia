@@ -720,6 +720,11 @@ Object.assign(T.en,{shopTitle:'Brand · Branches',shopHint:'If your brand has mu
 Object.assign(T.ja,{shopTitle:'ブランド · 店舗',shopHint:'複数店舗のブランドなら店舗を作ってデザイナーを配置しましょう。フリーランス/単独なら空欄でOK。',shopMemberL:'所属店舗',shopNone:'所属なし（フリーランス/単独）',shopJoined:'{n}に所属しています',shopLeft:'店舗の所属を解除しました',shopJoinOk:'店舗に参加しました ✨',shopOwnerL:'運営する店舗（オーナー）',shopAddBranch:'店舗を追加',shopMembers:'所属デザイナー {n}名',shopNoBranch:'まだ店舗がありません',shopBrandPh:'ブランド名（例：チャホン）',shopBranchPh:'店舗名（例：江南店）',shopAddrPh:'住所',shopCityPh:'都市',shopSave:'保存',shopDelConfirm:'この店舗を削除しますか？所属デザイナーの連携が解除されます。',shopSaved:'保存しました ✨',shopDeleted:'削除しました',shopNeedName:'ブランドまたは店舗名を入力してください',shopErr:'店舗機能を有効にするにはdb_shops.sqlを実行してください'});
 Object.assign(T.th,{shopTitle:'แบรนด์ · สาขา',shopHint:'ถ้าแบรนด์มีหลายสาขา สร้างสาขาและจัดดีไซเนอร์ ถ้าเป็นฟรีแลนซ์/เดี่ยว เว้นว่างได้',shopMemberL:'สาขาของฉัน',shopNone:'ไม่มี (ฟรีแลนซ์/เดี่ยว)',shopJoined:'คุณสังกัด {n}',shopLeft:'ออกจากสาขาแล้ว',shopJoinOk:'เข้าร่วมสาขาแล้ว ✨',shopOwnerL:'สาขาที่ฉันดูแล (เจ้าของ)',shopAddBranch:'เพิ่มสาขา',shopMembers:'ดีไซเนอร์ {n} คน',shopNoBranch:'ยังไม่มีสาขา',shopBrandPh:'ชื่อแบรนด์',shopBranchPh:'ชื่อสาขา',shopAddrPh:'ที่อยู่',shopCityPh:'เมือง',shopSave:'บันทึก',shopDelConfirm:'ลบสาขานี้? ดีไซเนอร์ที่สังกัดจะถูกยกเลิกการเชื่อมโยง',shopSaved:'บันทึกแล้ว ✨',shopDeleted:'ลบแล้ว',shopNeedName:'กรอกชื่อแบรนด์หรือสาขา',shopErr:'รัน db_shops.sql เพื่อเปิดใช้สาขา'});
 Object.assign(T.zh,{shopTitle:'品牌 · 门店',shopHint:'如果品牌有多家门店，请创建门店并分配设计师。自由职业/单独可留空。',shopMemberL:'我的门店',shopNone:'无（自由职业/单独）',shopJoined:'你属于 {n}',shopLeft:'已退出门店',shopJoinOk:'已加入门店 ✨',shopOwnerL:'我运营的门店（店主）',shopAddBranch:'添加门店',shopMembers:'{n} 位设计师',shopNoBranch:'还没有门店',shopBrandPh:'品牌名（例：Chahong）',shopBranchPh:'门店名（例：江南店）',shopAddrPh:'地址',shopCityPh:'城市',shopSave:'保存',shopDelConfirm:'删除此门店？已分配的设计师将被解除关联。',shopSaved:'已保存 ✨',shopDeleted:'已删除',shopNeedName:'请输入品牌或门店名',shopErr:'运行 db_shops.sql 以启用门店'});
+Object.assign(T.ko,{shopLeaveBtn:'지점 나가기',shopLeaveConfirm:'이 지점 소속을 해제할까요?',shopAssignedHint:'지점 소속은 지점 원장·관리자가 배치해요. (사칭 방지 · 배치 후 나가기만 가능)'});
+Object.assign(T.en,{shopLeaveBtn:'Leave branch',shopLeaveConfirm:'Leave this branch?',shopAssignedHint:'Branch membership is assigned by the branch owner/admin. (Anti-impersonation · you can only leave after being added)'});
+Object.assign(T.ja,{shopLeaveBtn:'店舗を退会',shopLeaveConfirm:'この店舗の所属を解除しますか？',shopAssignedHint:'店舗の所属は店舗オーナー・管理者が配置します。（なりすまし防止・配置後は退会のみ可能）'});
+Object.assign(T.th,{shopLeaveBtn:'ออกจากสาขา',shopLeaveConfirm:'ออกจากสาขานี้?',shopAssignedHint:'การสังกัดสาขากำหนดโดยเจ้าของสาขา/แอดมิน (ป้องกันการแอบอ้าง · ออกได้หลังถูกเพิ่มเท่านั้น)'});
+Object.assign(T.zh,{shopLeaveBtn:'退出门店',shopLeaveConfirm:'退出此门店？',shopAssignedHint:'门店归属由门店店主/管理员分配。（防止冒充 · 被添加后仅可退出）'});
 function t(k){var o=T[LANG]||T.ko;return (k in o)?o[k]:(T.ko[k]!=null?T.ko[k]:k);}
 function tf(k,map){var s=t(k);for(var x in (map||{}))s=String(s).split('{'+x+'}').join(map[x]);return s;}
 function catLabel(en){var k='cat_'+en,o=T[LANG]||T.ko;if(k in o)return o[k];if(k in T.ko)return T.ko[k];return en;}
@@ -1152,13 +1157,18 @@ async function loadShopSection(){
 }
 function renderShopSection(){
   var el=$('shopMine');if(!el)return;
-  // 1) 내 소속 지점 선택 (디자이너 합류)
+  // 1) 내 소속 지점 — 배치는 원장/관리자만(사칭 방지), 디자이너는 탈퇴만 가능
   var cur=ME.shop_id||'';
-  var opts='<option value="">'+esc(t('shopNone'))+'</option>'+ALLSHOPS.map(function(s){
-    return '<option value="'+s.id+'"'+(s.id===cur?' selected':'')+'>'+esc([s.brand,s.branch].filter(Boolean).join(' '))+'</option>';
-  }).join('');
-  var memberBlock='<div class="fld"><label>'+esc(t('shopMemberL'))+'</label>'
-    +'<select class="inp" id="myShopSel" onchange="joinMyShop(this.value)">'+opts+'</select></div>';
+  var curShop=cur?ALLSHOPS.find(function(s){return s.id===cur;}):null;
+  var memberBlock='<div class="fld"><label>'+esc(t('shopMemberL'))+'</label>';
+  if(curShop){
+    memberBlock+='<div style="display:flex;align-items:center;justify-content:space-between;gap:10px;background:#faf6f2;border:1px solid var(--line);border-radius:12px;padding:12px 14px">'
+      +'<span style="font-weight:700;font-size:14px"><i class="ti ti-building-store" style="color:var(--plum,#6E4A50)"></i> '+esc([curShop.brand,curShop.branch].filter(Boolean).join(' '))+'</span>'
+      +'<button class="btn ghost sm" onclick="leaveMyShop()">'+esc(t('shopLeaveBtn'))+'</button></div>';
+  }else{
+    memberBlock+='<div class="hint">'+esc(t('shopAssignedHint'))+'</div>';
+  }
+  memberBlock+='</div>';
   // 2) 원장: 내가 운영하는 지점
   var ownerBlock='<div style="margin-top:18px;border-top:1px solid var(--line);padding-top:14px">'
     +'<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px"><label style="font-size:12.5px;font-weight:800;color:var(--ink2)">'+esc(t('shopOwnerL'))+'</label>'
@@ -1184,10 +1194,11 @@ function shopFormHtml(){
 }
 function toggleShopForm(){shopFormOpen=!shopFormOpen;if(!shopFormOpen)window._branchEd=null;renderShopSection();}
 function editBranch(id){window._branchEd=MYSHOPS.find(function(s){return s.id===id;})||null;shopFormOpen=true;renderShopSection();}
-async function joinMyShop(v){
-  try{var r=await SB.rpc('join_shop',{p_shop:v||null});
+async function leaveMyShop(){
+  if(!confirm(t('shopLeaveConfirm')))return;
+  try{var r=await SB.rpc('join_shop',{p_shop:null});
     if(r.error){toast('실패: '+r.error.message);return;}
-    ME.shop_id=v||'';toast(v?t('shopJoinOk'):t('shopLeft'));loadShopSection();
+    ME.shop_id='';toast(t('shopLeft'));loadShopSection();
   }catch(e){toast('오류: '+e.message);}
 }
 async function saveBranch(){
