@@ -75,6 +75,9 @@ if grep -q "alter table public.shops enable row level security" db_shops.sql 2>/
 # 16) 관리자 2단계 인증(MFA) 게이트 유지 (게이트 제거 시 이메일만으로 관리자 접근)
 if grep -q "enforceMFA" admin.html 2>/dev/null && grep -qE "await +enforceMFA\(\)" admin.html 2>/dev/null; then ok "관리자 2단계 인증(MFA) 게이트 유지"; else red "admin.html MFA 게이트(enforceMFA) 제거/약화"; fi
 
+# 17) 보안요원(라이브 감시) 유지 — 실시간 침입/새IP 경보 트리거 + 관리자 모니터
+if grep -q "trg_guard_admin_access" db_security_guard.sql 2>/dev/null && grep -q "security_alerts" admin.html 2>/dev/null; then ok "보안요원(라이브 감시) 유지"; else red "보안요원 감시(trg_guard_admin_access/security_alerts) 누락"; fi
+
 echo "-----"
 if [ "$FAIL" -eq 0 ]; then echo "🛡️ 보안 회귀 없음 — 통과"; else echo "⚠️ 보안 회귀 발견 — 위 [FAIL] 확인 필요"; fi
 exit $FAIL

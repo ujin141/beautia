@@ -273,6 +273,7 @@ textarea.inp{resize:vertical;min-height:70px;line-height:1.5;}
     <div class="tabs">
       <button class="tab on" id="tab-designers" onclick="tab('designers')">디자이너 관리</button>
       <button class="tab" id="tab-shops" onclick="tab('shops')">브랜드·지점</button>
+      <button class="tab" id="tab-security" onclick="tab('security')">🛡️ 보안<span class="tbadge hide" id="secBadge"></span></button>
       <button class="tab" id="tab-applications" onclick="tab('applications')">신청<span class="tbadge hide" id="appBadge"></span></button>
       <button class="tab" id="tab-users" onclick="tab('users')">사용자</button>
       <button class="tab" id="tab-inquiries" onclick="tab('inquiries')">문의<span class="tbadge hide" id="inqBadge"></span></button>
@@ -294,6 +295,12 @@ textarea.inp{resize:vertical;min-height:70px;line-height:1.5;}
       <div class="note" style="margin-bottom:12px"><i class="ti ti-info-circle"></i> <b>브랜드</b>는 같은 이름의 지점끼리 묶여요. <b>지점</b>마다 주소·예약방식을 정하고, 디자이너를 배치하세요. (db_shops.sql 실행 필요)</div>
       <div style="display:flex;justify-content:flex-end;margin-bottom:10px"><button class="mini" onclick="openShopEdit()"><i class="ti ti-plus"></i> 지점 추가</button></div>
       <div class="rowlist" id="shoplist"></div>
+    </div>
+
+    <div id="sec-security" class="hide">
+      <div class="note" style="margin-bottom:12px"><i class="ti ti-shield-check"></i> <b>보안요원</b>이 24/7 순찰하며 수상한 일(권한없는 관리자 접근·새 IP 로그인·남용 급증)을 실시간 기록합니다. (db_security_guard.sql 실행 필요)</div>
+      <div style="display:flex;gap:8px;margin-bottom:12px"><button class="mini g" onclick="loadSecurityAlerts()"><i class="ti ti-refresh"></i> 새로고침</button><button class="mini g" onclick="runPatrol()"><i class="ti ti-walk"></i> 지금 순찰</button><button class="mini" onclick="markAlertsSeen()"><i class="ti ti-check"></i> 모두 확인</button></div>
+      <div class="rowlist" id="seclist"></div>
     </div>
 
     <div id="sec-applications" class="hide"><div class="note" style="margin-bottom:12px"><i class="ti ti-info-circle"></i> 승인하면 신청자 계정이 <b>디자이너로 전환</b>되고 포트폴리오·정보가 프로필에 채워집니다.</div><div class="rowlist" id="aplist"></div></div>
@@ -518,7 +525,7 @@ async function loadAll(){
     };});
     PMAP={};DESIGNERS.forEach(d=>PMAP[d.id]=d);
     DESIGNERS.sort((a,b)=>((b.photos.length>0)-(a.photos.length>0))||(new Date(b.created)-new Date(a.created)));
-    renderStats();renderList();renderUsers();loadBookings();loadReviews();loadApplications();loadInquiries();loadAnnounce();loadVisits();loadDashboard();loadAccessLog();
+    renderStats();renderList();renderUsers();loadBookings();loadReviews();loadApplications();loadInquiries();loadAnnounce();loadVisits();loadDashboard();loadAccessLog();refreshSecBadge();
   }catch(e){toast('오류: '+e.message);}
 }
 let APPS=[];
@@ -1206,11 +1213,46 @@ async function unassignDesigner(desId){
     if(res.error){toast('해제 실패: '+res.error.message);return;}
     var d=PMAP[desId];if(d)d.shop_id='';toast('지점에서 뺐어요');renderShopsAdmin();}catch(e){toast('오류: '+e.message);}
 }
+// ===== 🛡️ 보안요원 (Security Guard) 모니터 =====
+var ALERTS=[];
+async function refreshSecBadge(){
+  try{var r=await SB.rpc('unseen_alert_count');var n=(r&&r.data)||0;var b=$('secBadge');if(!b)return;
+    if(n>0){b.textContent=n;b.classList.remove('hide');}else{b.classList.add('hide');}
+  }catch(e){}
+}
+async function loadSecurityAlerts(){
+  var el=$('seclist');if(el&&!ALERTS.length)el.innerHTML='<div class="empty"><i class="ti ti-loader"></i><p>순찰 기록 불러오는 중…</p></div>';
+  try{
+    var r=await SB.from('security_alerts').select('*').order('created_at',{ascending:false}).limit(200);
+    if(r.error){if(el)el.innerHTML='<div class="empty"><i class="ti ti-shield-off"></i><p>보안요원을 불러올 수 없어요<br><span style="font-size:12px">'+esc(r.error.message)+'<br>(db_security_guard.sql 실행 필요)</span></p></div>';return;}
+    ALERTS=r.data||[];renderSecurityAlerts();refreshSecBadge();
+  }catch(e){if(el)el.innerHTML='<div class="empty"><p>'+esc(e.message)+'</p></div>';}
+}
+function renderSecurityAlerts(){
+  var el=$('seclist');if(!el)return;
+  if(!ALERTS.length){el.innerHTML='<div class="empty"><i class="ti ti-shield-check" style="color:#2e9e5b"></i><p>이상 없음 — 순찰 중 🛡️<br><span style="font-size:12px;color:var(--sub)">수상한 접근/남용이 감지되면 여기에 실시간으로 떠요</span></p></div>';return;}
+  var col={high:'#c0392b',med:'#c08a2e',low:'#7a6d64'};
+  var label={admin_denied:'무단 관리자 접근',admin_new_ip:'새 IP 관리자 로그인',abuse_signup:'가입 급증',abuse_shop:'지점 생성 급증'};
+  el.innerHTML=ALERTS.map(function(a){
+    var c=col[a.severity]||'#7a6d64';var ts='';try{ts=new Date(a.created_at).toLocaleString('ko-KR');}catch(e){ts=a.created_at||'';}
+    return '<div class="li" style="border-left:4px solid '+c+';'+(a.seen?'opacity:.6':'')+'">'
+      +'<div class="lh"><div><div class="ln">'+(a.seen?'':'<span style="color:'+c+'">● </span>')+esc(label[a.kind]||a.kind)+'</div>'
+      +'<div class="ls">'+esc(a.detail||'')+'</div><div class="ls" style="margin-top:3px">'+esc(ts)+'</div></div>'
+      +'<span class="lbadge" style="background:'+c+';color:#fff">'+esc((a.severity||'').toUpperCase())+'</span></div></div>';
+  }).join('');
+}
+async function runPatrol(){
+  try{var r=await SB.rpc('patrol_security');if(r.error){toast('순찰 실패: '+r.error.message);return;}toast('순찰 완료 🛡️');loadSecurityAlerts();}catch(e){toast('오류: '+e.message);}
+}
+async function markAlertsSeen(){
+  try{var r=await SB.from('security_alerts').update({seen:true}).eq('seen',false);if(r.error){toast('실패: '+r.error.message);return;}
+    ALERTS.forEach(function(a){a.seen=true;});renderSecurityAlerts();refreshSecBadge();toast('모두 확인 처리됨');}catch(e){toast('오류: '+e.message);}
+}
 var CURTAB='designers';
 function tab(t){
   CURTAB=t;
-  ['designers','shops','applications','users','inquiries','announce','coupons','bookings','reviews','access'].forEach(x=>{$('sec-'+x).classList.toggle('hide',x!==t);$('tab-'+x).classList.toggle('on',x===t);});
-  if(t==='users')renderUsers();if(t==='inquiries')renderInquiries();if(t==='announce')renderAnnounce();if(t==='coupons')loadAdminCoupons();if(t==='access')loadAccessLog();if(t==='shops')loadShopsAdmin();
+  ['designers','shops','security','applications','users','inquiries','announce','coupons','bookings','reviews','access'].forEach(x=>{$('sec-'+x).classList.toggle('hide',x!==t);$('tab-'+x).classList.toggle('on',x===t);});
+  if(t==='users')renderUsers();if(t==='inquiries')renderInquiries();if(t==='announce')renderAnnounce();if(t==='coupons')loadAdminCoupons();if(t==='access')loadAccessLog();if(t==='shops')loadShopsAdmin();if(t==='security')loadSecurityAlerts();
 }
 
 (async function(){
