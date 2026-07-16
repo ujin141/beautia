@@ -3171,7 +3171,7 @@ fetch('https://ipapi.co/json/').then(function(r){return r.ok?r.json():null;}).th
    if(open&&!locked){sy=window.scrollY||window.pageYOffset||0;document.body.style.top=(-sy)+'px';document.body.classList.add('mlock');locked=true;}
    else if(!open&&locked){document.body.classList.remove('mlock');document.body.style.top='';locked=false;window.scrollTo(0,sy);}}
  var mo=new MutationObserver(sync);
- ['dmodal','wmodal','lmodal','imodal','idmodal','pfmodal','chatmodal','famodal','bkmodal'].forEach(function(id){var el=document.getElementById(id);if(el)mo.observe(el,{attributes:true,attributeFilter:['class']});});
+ ['dmodal','shopmodal','wmodal','lmodal','imodal','idmodal','pfmodal','chatmodal','famodal','bkmodal'].forEach(function(id){var el=document.getElementById(id);if(el)mo.observe(el,{attributes:true,attributeFilter:['class']});});
 })();
 /* 필터바(sticky)가 헤더 실제 높이 바로 아래에 붙도록 --hh 동기화 */
 (function(){
