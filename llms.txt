@@ -1,58 +1,28 @@
-# Beautia Collection
+# Beautia
 
-> A global collection of beauty designer portfolios — hair, makeup, nail, lash, skin and bridal. Customers browse real work from designers worldwide, save the looks they love, and book or message the designer directly. Free to browse; multilingual (English / 한국어 / 日本語).
+> Global collection of beauty designer portfolios — hair, makeup, nail, lash, skin, bridal, semi-permanent. Browse real before/after work, save the looks you love, and book or message the designer directly. Free to browse; multilingual (English / 한국어 / 日本語 / ไทย / 中文).
 
-Beautia Collection is a two-sided platform (like Pinterest/Behance for beauty professionals):
-- Designers (hairstylists, makeup artists, nail/lash/skin/bridal pros) showcase their portfolios and get discovered by new clients worldwide.
-- Clients browse real portfolios, save the styles they want, and request that exact look from the designer.
+Beautia is a two-sided discovery and booking platform for independent beauty designers (like Pinterest/Behance for beauty pros). Designers showcase their portfolios and get discovered by new clients worldwide; clients browse real work, save the styles they want, and request that exact look. Listings are auto-sorted by distance from the visitor and can be filtered by city and by category (Hair, Makeup, Nail, Lash, Skin, Bridal). Booking happens in-app or via the designer's existing link (e.g. Naver). Operated by LUNATICS GROUP LLC.
 
-## How it works
-1. Browse — explore designer portfolios, auto-sorted by distance from your location; filter by city and by category.
-2. Save — heart the work you love.
-3. Book / message — contact the designer directly (Book / Inquiry button + Instagram) and request your saved style.
+## Core pages
 
-## Categories
-Hair · Makeup · Nail · Lash · Skin · Bridal
-
-## For designers
-Create a free profile, upload your portfolio, earn a verified badge, and get a shareable BEAUTIA ID card (a four-cut portfolio with QR code). Your work is seen worldwide and clients come to you first.
+- [Explore designers](https://beautia.io/community): main web app — browse portfolios, filter by city and category, save favorites, book or message
+- [Become a designer](https://beautia.io/community): free designer sign-up, portfolio upload, verified badge, shareable BEAUTIA ID card
+- [Privacy policy](https://beautia.io/privacy.html): how personal data is collected and handled
+- [Terms of service](https://beautia.io/terms.html): platform terms
+- [Delete account or data](https://beautia.io/delete-account.html): request account or partial data deletion
 
 ## Featured designers
-- soin eyelash salon — Osaka, Japan — eyelash extensions & lash perm — Instagram @soin_eyelash — https://beautia.io/community?d=r2
-- Woojin — Seoul, South Korea — hair cut, perm & color — Instagram @00.07.28 — https://beautia.io/community?d=r1
 
-## Links
-- Explore (web app): https://beautia.io/community
-- Instagram: https://instagram.com/beautia.collection
+- [soin eyelash salon](https://beautia.io/d/21a1661c-4974-477a-8d0d-f806457db5a4): Osaka, Japan — eyelash extensions and lash perm (Instagram @soin_eyelash)
+- [Woojin](https://beautia.io/d/e579ff23-4b1a-43c9-b9e2-49e6061668d6): Seoul, South Korea — hair cut, perm and color (Instagram @00.07.28)
+- [STROK87 Brow Studio](https://beautia.io/d/3f4e1a4f-fe62-41ba-bb47-61b04358284e): Seoul, South Korea — semi-permanent brows, lips and skincare (Instagram @kbeauty_jenie)
 
-## FAQ
-- Is it free? → Yes. Browsing portfolios and saving favorites is free; you only reach out when you want to book.
-- Do I need to speak the designer's language? → The platform is multilingual (English / Korean / Japanese) and auto-detects your language.
-- How do I find a designer near me? → Designers are automatically sorted by distance from your location and can be filtered by city and category.
-- Can I book or contact a designer directly? → Yes — every profile has a Book / Inquiry button and an Instagram link.
-- Where is Beautia available? → It is global. Current designers include Seoul (South Korea) and Osaka (Japan), and the collection is expanding worldwide.
+## Optional
 
----
+- [Instagram](https://instagram.com/beautia.collection): brand content, reels and new work
+- [Contact and partnerships](mailto:hello@beautia.io): support, designer onboarding, brand partnerships
 
-# Beautia Collection (한국어)
+## 한국어 요약
 
-> 전 세계 뷰티 디자이너의 포트폴리오 컬렉션 — 헤어·메이크업·네일·속눈썹·스킨·브라이덜. 실제 작업을 보고, 마음에 드는 스타일을 저장하고, 디자이너에게 바로 예약·문의하세요. 둘러보기 무료, 다국어(영어/한국어/일본어).
-
-Beautia 컬렉션은 양면 플랫폼입니다(뷰티 전문가용 핀터레스트·비핸스):
-- 디자이너(헤어·메이크업·네일·속눈썹·스킨·브라이덜)는 포트폴리오를 노출하고 전 세계 고객에게 발견됩니다.
-- 고객은 실제 포트폴리오를 둘러보고, 원하는 스타일을 저장해, 그 디자이너에게 "이렇게 해주세요"라고 요청합니다.
-
-## 이용 방법
-1. 둘러보기 — 현재 위치 기준 가까운 순으로 자동 정렬, 도시·카테고리 필터
-2. 저장 — 마음에 드는 작업에 하트
-3. 예약·문의 — 디자이너에게 바로 연락(예약/문의 버튼 + 인스타)하고 저장한 스타일 요청
-
-## 카테고리
-헤어 · 메이크업 · 네일 · 속눈썹 · 스킨 · 브라이덜
-
-## 디자이너라면
-무료로 프로필을 만들고 포트폴리오를 올리세요. 인증 배지와 공유용 BEAUTIA ID 카드(네컷 포트폴리오 + QR)를 받습니다. 당신의 작업을 전 세계가 보고, 고객이 먼저 찾아옵니다.
-
-## 링크
-- 둘러보기: https://beautia.io/community
-- 인스타그램: https://instagram.com/beautia.collection
+Beautia는 전 세계 뷰티 디자이너의 실제 포트폴리오를 모아 보여주고 바로 예약·문의할 수 있는 양면 플랫폼입니다. 헤어·메이크업·네일·속눈썹·스킨·브라이덜·반영구. 현재 위치 기준 가까운 순 자동 정렬, 도시·카테고리 필터. 둘러보기 무료, 다국어(영/한/일/태/중). 예약은 앱 내 또는 디자이너의 기존 링크(네이버 등)로 연결됩니다.

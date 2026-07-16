@@ -1137,9 +1137,9 @@ html.native-app a,html.native-app button,html.native-app [role=button],html.nati
 <div class="hero" id="hero"><h1 class="serif"></h1><p data-t="tagline"></p></div>
 <div class="stories" id="stories"></div>
 
-<div class="filterbar"><div class="fin"><div class="cats" id="cats"></div><div class="fsorts"><div class="citysel sortsel"><i class="ti ti-arrows-sort"></i><select id="sort" onchange="render()"><option value="rec" data-t="sortRec">추천순</option><option value="new" data-t="sortNew">최신순</option><option value="rating" data-t="sortRating">평점순</option><option value="near" data-t="sortNear">가까운순</option></select></div><div class="citysel"><i class="ti ti-map-pin"></i><select id="city" onchange="render()"></select></div></div></div></div>
+<div class="filterbar"><div class="fin"><div class="cats" id="cats"></div><div class="fsorts"><div class="citysel sortsel"><i class="ti ti-arrows-sort"></i><select id="sort" aria-label="정렬 기준" onchange="render()"><option value="rec" data-t="sortRec">추천순</option><option value="new" data-t="sortNew">최신순</option><option value="rating" data-t="sortRating">평점순</option><option value="near" data-t="sortNear">가까운순</option></select></div><div class="citysel"><i class="ti ti-map-pin"></i><select id="city" aria-label="도시 필터" onchange="render()"></select></div></div></div></div>
 
-<div class="wrap"><section id="popwrap" class="popwrap off"></section><div class="grid" id="grid"></div><div class="mepage" id="mepage" style="display:none"></div></div>
+<main class="wrap"><section id="popwrap" class="popwrap off" aria-label="오늘의 인기 스타일"></section><div class="grid" id="grid"></div><div class="mepage" id="mepage" style="display:none"></div></main>
 
 <footer class="sitefoot">
   <div class="sf-in">
