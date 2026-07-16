@@ -630,6 +630,28 @@ function renderUsers(){
     </div>`;}).join('');
 }
 function kdate(ms){return new Date(ms+9*3600000).toISOString().slice(0,10);}
+// 일자별 방문 집계.
+// 주의: PostgREST 는 기본 1000행까지만 돌려준다. 예전엔 select('day') 한 방으로 받아
+//   클라이언트에서 셌기 때문에, 누적이 1000건을 넘는 순간 '이번 주 방문'과 7일 그래프가
+//   조용히 적게 나왔다(오늘 249건인데 225건으로 표시). '오늘 방문자' stat 은 정확한
+//   count 라서 두 숫자가 어긋났다.
+// 1순위: 서버 집계 RPC(정확·1쿼리, db_visits_rpc.sql). 2순위: 1000행씩 끝까지 페이지네이션.
+async function visitDaily(since){
+  try{ const r=await SB.rpc('visits_daily',{p_since:since});
+    if(!r.error&&Array.isArray(r.data)){ const m={}; r.data.forEach(x=>{m[x.d]=Number(x.n)||0;}); return m; }
+  }catch(e){}
+  const m={}; const PAGE=1000; let from=0;
+  for(;;){
+    const r=await SB.from('page_visits').select('day').gte('day',since).range(from,from+PAGE-1);
+    if(r.error)return null;
+    const rows=r.data||[];
+    rows.forEach(x=>{m[x.day]=(m[x.day]||0)+1;});
+    if(rows.length<PAGE)break;
+    from+=PAGE;
+    if(from>500000)break; // 안전장치
+  }
+  return m;
+}
 async function cnt(q){try{const r=await q;return r.error?null:(r.count||0);}catch(e){return null;}}
 async function loadDashboard(){
   const el=$('dash'); if(!el)return;
@@ -640,11 +662,12 @@ async function loadDashboard(){
   const tot=await cnt(SB.from('page_visits').select('id',{count:'exact',head:true}));
   if(tot!==null){ vOk=true; vTotal=tot;
     try{ const since=kdate(now-13*D);
-      const rows=(await SB.from('page_visits').select('day').gte('day',since)).data||[];
-      rows.forEach(x=>{dc[x.day]=(dc[x.day]||0)+1;});
-      for(let i=0;i<7;i++)vWeek+=dc[kdate(now-i*D)]||0;
-      for(let i=7;i<14;i++)vLast+=dc[kdate(now-i*D)]||0;
-      vToday=dc[kdate(now)]||0;
+      const m=await visitDaily(since);
+      if(m){ Object.assign(dc,m);
+        for(let i=0;i<7;i++)vWeek+=dc[kdate(now-i*D)]||0;
+        for(let i=7;i<14;i++)vLast+=dc[kdate(now-i*D)]||0;
+        vToday=dc[kdate(now)]||0;
+      }
     }catch(e){}
   }
   // 예약
