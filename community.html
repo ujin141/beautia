@@ -544,7 +544,10 @@ html.native-app .sitefoot{display:none !important;}
 .wrap{max-width:1320px;margin:0 auto;padding:24px 28px 90px;}
 .grid{column-count:4;column-gap:18px;min-height:100vh;}/* CLS: 그리드 공간 예약 → 콘텐츠 채워질 때 푸터 점프 방지 */
 /* 디자이너 디렉토리(카드형) */
-.grid.dgview{column-count:unset;display:grid;grid-template-columns:repeat(3,1fr);gap:18px;}
+/* align-content:start 필수 — .grid 의 min-height:100vh(CLS용) 때문에 결과가 적으면
+   그리드가 남는 세로 공간을 행에 나눠주며 카드가 부풀어 오른다(필터 시 322→900px).
+   행을 위로 붙이고 자연 높이를 유지시킨다. */
+.grid.dgview{column-count:unset;display:grid;grid-template-columns:repeat(3,1fr);gap:18px;align-content:start;}
 .dcard{background:#fff;border:1px solid var(--line);border-radius:var(--r-lg);overflow:hidden;cursor:pointer;transition:transform .12s,box-shadow .12s;break-inside:avoid;content-visibility:auto;contain-intrinsic-size:auto 320px;}
 .dcard:hover{transform:translateY(-3px);box-shadow:0 18px 40px -22px rgba(40,20,40,.4);}
 .dcthumbs{position:relative;display:grid;grid-template-columns:2fr 1fr;grid-template-rows:1fr 1fr;gap:2px;height:172px;background:var(--soft);}
