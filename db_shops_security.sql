@@ -52,5 +52,29 @@ begin
 end;
 $$;
 
--- (참고) 스팸 방지: 아무 로그인 사용자나 shops 를 무제한 생성하는 것을 막고 싶으면
---   추후 지점 생성에 관리자 승인/개수 제한 트리거를 추가할 수 있음. (현재는 초기라 보류)
+-- ------------------------------------------------------------
+-- 지점 생성 남용(스팸) 제한 — 계정당 shops 개수 상한 + owner_id 위조 방지
+--   대형 프랜차이즈(다수 지점)는 관리자(우진)가 온보딩하므로 관리자는 예외.
+-- ------------------------------------------------------------
+create or replace function public.guard_shop_insert()
+returns trigger language plpgsql security definer set search_path = public as $$
+declare cnt int;
+begin
+  if public.is_platform_admin() then
+    return NEW;                                   -- 관리자는 무제한(프랜차이즈 온보딩)
+  end if;
+  if NEW.owner_id is distinct from auth.uid() then
+    raise exception 'owner_id는 본인만 지정할 수 있어요';
+  end if;
+  select count(*) into cnt from public.shops where owner_id = auth.uid();
+  if cnt >= 30 then
+    raise exception '지점 생성 한도를 초과했어요 (계정당 최대 30개). 더 필요하면 문의해 주세요.';
+  end if;
+  return NEW;
+end;
+$$;
+
+drop trigger if exists trg_guard_shop_insert on public.shops;
+create trigger trg_guard_shop_insert
+  before insert on public.shops
+  for each row execute function public.guard_shop_insert();

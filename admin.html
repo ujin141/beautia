@@ -236,6 +236,22 @@ textarea.inp{resize:vertical;min-height:70px;line-height:1.5;}
   </div>
 </div>
 
+<div id="mfaView" class="login hide">
+  <div class="lc">
+    <h1>2단계 인증</h1>
+    <p id="mfaDesc">보안을 위해 인증 앱(Google Authenticator 등)의 6자리 코드를 입력하세요.</p>
+    <div id="mfaQrBox" style="display:none;text-align:center;margin:10px 0 6px">
+      <div id="mfaQr" style="display:inline-block;background:#fff;padding:12px;border-radius:12px;border:1px solid var(--line)"></div>
+      <div class="msg" style="margin-top:8px">인증 앱으로 QR을 스캔한 뒤, 표시되는 코드를 입력하세요.</div>
+      <div id="mfaSecret" style="font-size:12px;color:var(--sub);margin-top:6px;word-break:break-all"></div>
+    </div>
+    <div class="fld"><label>인증 코드</label><input class="inp" id="mfaCode" inputmode="numeric" maxlength="6" placeholder="6자리 코드" autocomplete="one-time-code" onkeydown="if(event.key==='Enter'){event.preventDefault();mfaSubmit();}"></div>
+    <div class="fld"><button class="btn" id="mfaBtn" onclick="mfaSubmit()">확인</button></div>
+    <div class="msg" id="mfaMsg"></div>
+    <div class="fld"><button class="btn ghost" onclick="logout()">로그아웃</button></div>
+  </div>
+</div>
+
 <div id="adminView" class="hide">
   <div class="top"><div class="topin">
     <div class="brand"><span class="bg">ADMIN</span> Beautia</div>
@@ -412,17 +428,80 @@ function renderAccessLog(err){ var el=$('acclist'); if(!el)return;
   el.innerHTML=ACCESS.map(function(a){var deny=a.result==='denied';var loc=[a.city,a.country].filter(Boolean).join(', ');var ts='';try{ts=new Date(a.created_at).toLocaleString('ko-KR');}catch(e){ts=a.created_at||'';}
     return '<div class="li"><div class="lh"><div><div class="ln">'+esc(a.ip||'—')+(loc?' <span class="ls" style="display:inline;font-weight:600">· '+esc(loc)+'</span>':'')+'</div><div class="ls">'+esc(ts)+(a.email?' · '+esc(a.email):'')+'</div></div><span class="lbadge '+(deny?'':'g')+'">'+(deny?'거부 ⚠':'오너')+'</span></div><div class="ls" style="margin-top:6px;font-size:11px;color:var(--sub);word-break:break-all">'+esc(a.ua||'')+'</div></div>'; }).join(''); }
 
-function gate(user){
+async function gate(user){
   EMAIL=(user.email||'').toLowerCase();
   if(EMAIL!==OWNER_EMAIL.toLowerCase()){
     $('loginView').classList.add('hide');$('denyView').classList.remove('hide');$('denyEmail').textContent=user.email||'';
     logAccess('denied');
     return;
   }
-  $('loginView').classList.add('hide');$('denyView').classList.add('hide');$('adminView').classList.remove('hide');
-  $('who').textContent=user.email||'';
+  // 이메일 일치 → 2단계 인증(MFA) 강제
+  var pass=await enforceMFA();
+  if(!pass)return;               // enforceMFA가 MFA 화면을 띄우고 이어받음
+  showAdmin(user);
+}
+function showAdmin(user){
+  $('loginView').classList.add('hide');$('denyView').classList.add('hide');$('mfaView').classList.add('hide');$('adminView').classList.remove('hide');
+  $('who').textContent=(user&&user.email)||EMAIL;
   setupIdle();logAccess('owner');
   loadAll();
+}
+// ===== 관리자 2단계 인증 (TOTP) =====
+var MFA={factorId:'',challengeId:''};
+function showMfaView(){$('loginView').classList.add('hide');$('denyView').classList.add('hide');$('mfaView').classList.remove('hide');}
+async function enforceMFA(){
+  try{
+    if(!(SB.auth.mfa&&SB.auth.mfa.getAuthenticatorAssuranceLevel))return true;  // SDK 미지원 → 통과
+    var aal=await SB.auth.mfa.getAuthenticatorAssuranceLevel();
+    if(aal.data&&aal.data.currentLevel==='aal2')return true;            // 이미 MFA 통과
+    var fl=await SB.auth.mfa.listFactors();
+    var totp=(fl.data&&fl.data.totp)||[];
+    var verified=totp.filter(function(f){return f.status==='verified';});
+    if(verified.length){ showMfaView(); await mfaStartChallenge(verified[0].id); return false; }  // 등록됨 → 코드 입력
+    // 미등록 → 등록 시도. 성공하면 QR 화면, 실패(MFA 비활성 등)하면 락아웃 방지 위해 통과
+    var ok=await mfaTryEnroll();
+    if(ok){ showMfaView(); return false; }
+    console.warn('MFA 사용 불가(프로젝트 미활성?) — 통과. Supabase에서 MFA(TOTP) 켜세요.');
+    return true;
+  }catch(e){ console.warn('MFA 확인 실패, 통과:',e&&e.message); return true; }
+}
+async function mfaStartChallenge(factorId){
+  MFA.factorId=factorId;
+  $('mfaQrBox').style.display='none';
+  $('mfaDesc').textContent='보안을 위해 인증 앱의 6자리 코드를 입력하세요.';
+  try{var c=await SB.auth.mfa.challenge({factorId:factorId});if(c.error)throw c.error;MFA.challengeId=c.data.id;}catch(e){$('mfaMsg').textContent='코드 요청 실패: '+e.message;}
+  var el=$('mfaCode');if(el)el.focus();
+}
+// 등록 성공 시 QR 세팅 후 true, 실패 시(예: 프로젝트 MFA 미활성) false 반환(→락아웃 방지 통과)
+async function mfaTryEnroll(){
+  try{
+    var fl=await SB.auth.mfa.listFactors();var un=((fl.data&&fl.data.all)||[]).filter(function(f){return f.status!=='verified';});
+    for(var i=0;i<un.length;i++){try{await SB.auth.mfa.unenroll({factorId:un[i].id});}catch(e){}}
+    var r=await SB.auth.mfa.enroll({factorType:'totp',friendlyName:'Beautia Admin '+Date.now()});
+    if(r.error)throw r.error;
+    MFA.factorId=r.data.id;
+    var qr=r.data.totp&&r.data.totp.qr_code, secret=r.data.totp&&r.data.totp.secret;
+    $('mfaDesc').textContent='관리자 계정에 2단계 인증을 등록하세요. 인증 앱으로 QR을 스캔한 뒤 코드를 입력하세요.';
+    $('mfaQrBox').style.display='block';
+    $('mfaQr').innerHTML=qr?'<img src="'+qr+'" width="190" height="190" alt="QR">':'';
+    $('mfaSecret').textContent=secret?('수동 입력 키: '+secret):'';
+    var c=await SB.auth.mfa.challenge({factorId:MFA.factorId});if(c.error)throw c.error;MFA.challengeId=c.data.id;
+    return true;
+  }catch(e){ return false; }   // MFA 비활성/미지원 → 통과 신호
+}
+async function mfaSubmit(){
+  var code=($('mfaCode').value||'').replace(/\D/g,'').slice(0,6);
+  if(code.length!==6){$('mfaMsg').textContent='6자리 코드를 입력하세요';return;}
+  $('mfaBtn').disabled=true;$('mfaMsg').textContent='확인 중…';
+  try{
+    if(!MFA.challengeId){var c=await SB.auth.mfa.challenge({factorId:MFA.factorId});if(c.error)throw c.error;MFA.challengeId=c.data.id;}
+    var v=await SB.auth.mfa.verify({factorId:MFA.factorId,challengeId:MFA.challengeId,code:code});
+    if(v.error)throw v.error;
+    $('mfaMsg').textContent='인증 완료 ✓';
+    var u=(await SB.auth.getUser()).data.user;
+    showAdmin(u);
+  }catch(e){$('mfaMsg').textContent='인증 실패: '+(e.message||'코드를 다시 확인하세요');MFA.challengeId='';}
+  $('mfaBtn').disabled=false;
 }
 
 async function loadAll(){
