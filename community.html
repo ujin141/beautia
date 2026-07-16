@@ -594,7 +594,7 @@ html.native-app .sitefoot{display:none !important;}
 .popsub{font-size:12.5px;color:var(--sub);font-weight:600;}
 .poprow{display:flex;gap:13px;overflow-x:auto;padding:2px 2px 10px;scroll-snap-type:x mandatory;-webkit-overflow-scrolling:touch;}
 .poprow::-webkit-scrollbar{height:0;}
-.pcard{flex:0 0 auto;width:194px;scroll-snap-align:start;background:#fff;border:1px solid var(--line);border-radius:16px;overflow:hidden;cursor:pointer;transition:transform .12s,box-shadow .12s;}
+.pcard{flex:0 0 auto;width:194px;scroll-snap-align:start;background:#fff;border:1px solid var(--line);border-radius:16px;overflow:hidden;cursor:pointer;transition:transform .12s,box-shadow .12s;content-visibility:auto;contain-intrinsic-size:auto 260px;}
 .pcard:hover{transform:translateY(-3px);box-shadow:0 16px 34px -20px rgba(40,20,40,.4);}
 .pcimg{position:relative;height:186px;background-size:cover;background-position:center;background-color:var(--soft);cursor:zoom-in;}
 .pcbadge{position:absolute;top:9px;left:9px;display:inline-flex;align-items:center;gap:3px;font-size:10px;font-weight:800;color:#fff;background:linear-gradient(90deg,#F0663B,#E0447A);padding:4px 8px;border-radius:999px;letter-spacing:.3px;}
@@ -1311,7 +1311,7 @@ async function submitReport(reason){var L=mt();if(!_repPending||!(ME&&ME.uid)){c
 async function blockUser(uid,name){var L=mt();if(!(ME&&ME.uid)){openLogin('');return;}if(!uid)return;if(!window.confirm(L.blockConfirm.replace('{name}',name||'')))return;try{var r=await SB.from('user_blocks').insert({blocker:ME.uid,blocked:uid});if(r&&r.error){toast(L.fail);return;}if(BLOCKED.indexOf(uid)<0)BLOCKED.push(uid);try{closeD();}catch(e){}try{closeChat();}catch(e){}buildTiles();render();toast(L.blocked);}catch(e){toast(L.fail);}}
 function openByUid(uid){if(!uid)return false;var d=allD().find(function(x){return x.uid===uid;});if(d){openD(d.id);return true;}return false;}
 let TILES=[];
-var TILEW=(typeof window!=='undefined'&&window.innerWidth<=600)?480:640;  // 반응형 타일 이미지(모바일 데이터 절약)
+var TILEW=(typeof window!=='undefined'&&window.innerWidth<=600)?400:640;  // 반응형 타일 이미지(모바일 데이터 절약)
 function buildTiles(){TILES=[];var ds=allD().slice().sort(function(a,b){return ((b.featured?1:0)-(a.featured?1:0))||((parseFloat(b.rating)||0)-(parseFloat(a.rating)||0));});var mx=0;ds.forEach(function(d){if(d.works&&d.works.length>mx)mx=d.works.length;});for(var r=0;r<mx;r++){ds.forEach(function(d){var w=d.works&&d.works[r];if(w===undefined||w===null)return;TILES.push({wid:d.id+'_'+r,did:d.id,uid:d.uid||'',img:workImg(w),poster:workPoster(w),vid:isVid(w),text:workText(w),cat:d.cat,cats:(d.cats&&d.cats.length?d.cats:[d.cat]),city:d.city,area:d.area,name:d.name,flag:d.flag,rating:d.rating,rev:d.rev||0,ver:d.ver,newAt:d.newAt||0,featured:d.featured,insta:d.insta});});}}
 // 리뷰 0이면 가짜 5.0 대신 "신규" 배지 — 실제 리뷰가 쌓이면 진짜 평점 표시(신뢰도)
 function revCount(x){return parseInt((x&&x.rev)||0,10)||0;}
@@ -1344,13 +1344,13 @@ function renderPopular(){var el=$('popwrap');if(!el)return;
    var dw=[];for(var _j=0;_j<tot;_j++)dw.push(d.works[oi(_j)]);
    var rest=dw.slice(1,4);var more=tot-1-rest.length;
    var thumbs=rest.map(function(w,i){var last=(i===rest.length-1&&more>0);var mo=last?'<span class="pmore">+'+more+'</span>':'';var oc='event.stopPropagation();openWork(\''+d.id+'_'+oi(i+1)+'\')';
-     if(isVid(w)){var ps=workPoster(w);var bg=ps?(' style="background-image:url(\''+im(ps,220)+'\')"'):'';var still=ps?'':vidStill(w);return '<div class="pth thv" onclick="'+oc+'"'+bg+'>'+still+'<span class="thvb"><i class="ti ti-player-play-filled"></i></span>'+mo+'</div>';}
-     return '<div class="pth" onclick="'+oc+'" style="background-image:url(\''+im(w,220)+'\')">'+mo+'</div>';}).join('');
+     if(isVid(w)){var ps=workPoster(w);var bg=ps?(' style="background-image:url(\''+im(ps,120)+'\')"'):'';var still=ps?'':vidStill(w);return '<div class="pth thv" onclick="'+oc+'"'+bg+'>'+still+'<span class="thvb"><i class="ti ti-player-play-filled"></i></span>'+mo+'</div>';}
+     return '<div class="pth" onclick="'+oc+'" style="background-image:url(\''+im(w,120)+'\')">'+mo+'</div>';}).join('');
    // 썸네일 칸 3개 고정(빈칸 채움)
    for(var k=rest.length;k<3;k++)thumbs+='<div class="pth pthx"></div>';
    var w0=dw[0];var w0v=isVid(w0);var w0ps=w0v?workPoster(w0):'';var w0bg=w0v?w0ps:workImg(w0);
    return '<div class="pcard" onclick="openD(\''+d.id+'\')">'+
-     '<div class="pcimg'+(w0v&&!w0ps?' thv':'')+'"'+(w0bg?' style="background-image:url(\''+im(w0bg,500)+'\')"':'')+' onclick="event.stopPropagation();openWork(\''+d.id+'_'+off+'\')">'+(w0v&&!w0ps?vidStill(w0):'')+(w0v?'<span class="thvb"><i class="ti ti-player-play-filled"></i></span>':'')+(d.featured?'<span class="pcbadge"><i class="ti ti-flame-filled"></i> HOT</span>':'')+'<span class="pccount"><i class="ti ti-photo"></i> '+tot+'</span></div>'+
+     '<div class="pcimg'+(w0v&&!w0ps?' thv':'')+'"'+(w0bg?' style="background-image:url(\''+im(w0bg,360)+'\')"':'')+' onclick="event.stopPropagation();openWork(\''+d.id+'_'+off+'\')">'+(w0v&&!w0ps?vidStill(w0):'')+(w0v?'<span class="thvb"><i class="ti ti-player-play-filled"></i></span>':'')+(d.featured?'<span class="pcbadge"><i class="ti ti-flame-filled"></i> HOT</span>':'')+'<span class="pccount"><i class="ti ti-photo"></i> '+tot+'</span></div>'+
      '<div class="pthumbs">'+thumbs+'</div>'+
      '<div class="pcb"><div class="pcn">'+esc(d.flag)+' '+esc(nm)+'</div>'+
       '<div class="pcm">'+rateInline(d)+' · '+esc(cl(d.cat))+(d.city?' · '+esc(cityLabel(d.city)):'')+'</div>'+
