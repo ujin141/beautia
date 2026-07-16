@@ -490,7 +490,8 @@ async function mfaTryEnroll(){
     var qr=r.data.totp&&r.data.totp.qr_code, secret=r.data.totp&&r.data.totp.secret;
     $('mfaDesc').textContent='관리자 계정에 2단계 인증을 등록하세요. 인증 앱으로 QR을 스캔한 뒤 코드를 입력하세요.';
     $('mfaQrBox').style.display='block';
-    $('mfaQr').innerHTML=qr?'<img src="'+qr+'" width="190" height="190" alt="QR">':'';
+    var qrbox=$('mfaQr');qrbox.innerHTML='';
+    if(qr){var qimg=document.createElement('img');qimg.src=qr;qimg.width=190;qimg.height=190;qimg.alt='QR';qrbox.appendChild(qimg);}  // SVG data-uri 따옴표가 innerHTML을 깨므로 src를 속성으로 직접 설정
     $('mfaSecret').textContent=secret?('수동 입력 키: '+secret):'';
     var c=await SB.auth.mfa.challenge({factorId:MFA.factorId});if(c.error)throw c.error;MFA.challengeId=c.data.id;
     return true;
