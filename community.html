@@ -523,7 +523,7 @@ html.native-app .sitefoot{display:none !important;}
 .filterbar{position:sticky;top:var(--hh,69px);z-index:30;background:rgba(255,255,255,.93);backdrop-filter:blur(12px);border-bottom:1px solid var(--line);margin-top:22px;}
 .fin{max-width:1320px;margin:0 auto;display:flex;align-items:center;gap:12px;padding:13px 28px;}
 .fin::-webkit-scrollbar{display:none;}
-.cats{display:flex;gap:8px;flex:1 1 auto;min-width:0;overflow-x:auto;scrollbar-width:none;}
+.cats{display:flex;gap:8px;flex:1 1 auto;min-width:0;overflow-x:auto;scrollbar-width:none;min-height:38px;}
 .cats::-webkit-scrollbar{display:none;}
 .cat{font-size:14px;font-weight:700;color:var(--ink2);padding:10px 18px;border:1px solid var(--line);border-radius:999px;white-space:nowrap;transition:.15s;}
 .nearby{align-items:center;gap:6px;font-size:13px;font-weight:800;color:var(--plum);background:var(--rosebg);padding:8px 13px;border-radius:999px;white-space:nowrap;flex:0 0 auto;}
@@ -538,7 +538,7 @@ html.native-app .sitefoot{display:none !important;}
 .citysel select{border:none;background:none;outline:none;font:inherit;font-weight:700;}
 
 .wrap{max-width:1320px;margin:0 auto;padding:24px 28px 90px;}
-.grid{column-count:4;column-gap:18px;}
+.grid{column-count:4;column-gap:18px;min-height:100vh;}/* CLS: 그리드 공간 예약 → 콘텐츠 채워질 때 푸터 점프 방지 */
 /* 디자이너 디렉토리(카드형) */
 .grid.dgview{column-count:unset;display:grid;grid-template-columns:repeat(3,1fr);gap:18px;}
 .dcard{background:#fff;border:1px solid var(--line);border-radius:18px;overflow:hidden;cursor:pointer;transition:transform .12s,box-shadow .12s;break-inside:avoid;content-visibility:auto;contain-intrinsic-size:auto 360px;}
