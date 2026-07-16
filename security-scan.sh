@@ -11,7 +11,9 @@ CLIENT="community.html collection.html dashboard.html admin.html"
 APIS="$(ls api/*.js 2>/dev/null)"
 
 # 1) service_role / anon 아닌 JWT / sbkey 유출
-if grep -rl "service_role" $CLIENT $APIS 2>/dev/null; then red "클라이언트/그에 'service_role' 문자열 발견"; else ok "service_role 문자열 없음"; fi
+#    클라이언트 HTML엔 service_role 절대 금지. api/*.js 서버리스는 process.env로 쓰는게 정상이라
+#    문자열은 허용하되, 하드코딩된 anon 아닌 키는 아래 JWT-role 디코드 검사($APIS 포함)가 잡음.
+if grep -rl "service_role" $CLIENT 2>/dev/null; then red "클라이언트 HTML에 'service_role' 문자열 발견"; else ok "클라이언트 service_role 없음"; fi
 for t in $(grep -rhoE "eyJ[A-Za-z0-9_-]{10,}\.eyJ[A-Za-z0-9_-]{40,}\.[A-Za-z0-9_-]{10,}" $CLIENT $APIS 2>/dev/null | sort -u); do
   role=$(echo "$t" | cut -d. -f2 | tr '_-' '/+' | base64 -d 2>/dev/null | grep -oE '"role":"[a-z_]+"')
   if [ "$role" != '"role":"anon"' ] && [ -n "$role" ]; then red "배포물에 anon 아닌 키($role) 박힘"; fi
@@ -56,6 +58,22 @@ done
 
 # 11) 어드민 후기 삭제가 클라이언트 service_role 이 아닌 RLS(오너 정책)로만 동작하는지 (service_role 은 위 1)에서 이미 차단)
 if grep -qE "from\('designer_reviews'\)\.delete\(\)" admin.html 2>/dev/null && ! grep -q "reviews_owner_delete" db_enable_owner_admin.sql 2>/dev/null; then red "어드민 후기삭제 존재하나 오너 삭제 RLS 정책(db_enable_owner_admin.sql) 누락"; else ok "후기 삭제-오너 RLS 정책 정합성 유지"; fi
+
+# ===== 브랜드·지점(shops) / 관리자 MFA 회귀 검사 (2026-07 추가) =====
+# 12) 지점 소속 사칭 방지 트리거 유지 (없으면 아무나 유명 브랜드 소속 사칭 가능)
+if grep -q "trg_guard_profile_shop" db_shops_security.sql 2>/dev/null && grep -q "guard_profile_shop" db_shops_security.sql 2>/dev/null; then ok "지점 소속 사칭 방지 트리거 유지"; else red "지점 사칭 방지 트리거(guard_profile_shop) 누락"; fi
+
+# 13) join_shop 이 임의 지점 self-가입을 다시 허용하면 사칭 회귀
+if grep -qE "set shop_id *= *p_shop *where *id *= *auth.uid" db_shops.sql db_shops_security.sql 2>/dev/null; then red "join_shop이 임의 지점 self-가입 허용(사칭 회귀)"; else ok "join_shop self-가입 차단 유지"; fi
+
+# 14) 지점 생성 남용 제한 트리거 유지
+if grep -q "guard_shop_insert" db_shops_security.sql 2>/dev/null; then ok "지점 생성 남용 제한 유지"; else red "지점 생성 제한 트리거(guard_shop_insert) 누락"; fi
+
+# 15) shops 테이블 RLS 활성 유지
+if grep -q "alter table public.shops enable row level security" db_shops.sql 2>/dev/null; then ok "shops RLS 유지"; else red "shops 테이블 RLS 비활성/누락"; fi
+
+# 16) 관리자 2단계 인증(MFA) 게이트 유지 (게이트 제거 시 이메일만으로 관리자 접근)
+if grep -q "enforceMFA" admin.html 2>/dev/null && grep -qE "await +enforceMFA\(\)" admin.html 2>/dev/null; then ok "관리자 2단계 인증(MFA) 게이트 유지"; else red "admin.html MFA 게이트(enforceMFA) 제거/약화"; fi
 
 echo "-----"
 if [ "$FAIL" -eq 0 ]; then echo "🛡️ 보안 회귀 없음 — 통과"; else echo "⚠️ 보안 회귀 발견 — 위 [FAIL] 확인 필요"; fi
