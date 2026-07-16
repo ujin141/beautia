@@ -38,8 +38,8 @@ export default async function handler(req, res) {
   const og = (await exists(cardImg)) ? cardImg : (firstWork || av || `${SITE}/og-default.png`);
   const appUrl = `/community?u=${encodeURIComponent(u)}`;
   const canon = `${SITE}/c/${encodeURIComponent(u)}`;
-  const title = `${nick} · BEAUTIA ID card`;
-  const desc = (pr.bio && pr.bio.trim()) ? pr.bio.trim().slice(0, 110) : `${nick}'s beauty ID card on Beautia — discover beauty designers worldwide and book directly.`;
+  const title = `${nick} · BEAUTIA`;
+  const desc = (pr.bio && pr.bio.trim()) ? pr.bio.trim().slice(0, 110) : `${nick} on Beautia — discover beauty designers worldwide and book directly.`;
 
   const html = `<!DOCTYPE html><html lang="en"><head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
