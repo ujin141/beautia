@@ -447,6 +447,13 @@ textarea.inp{resize:vertical;min-height:80px;line-height:1.6;}
         <div id="followerList" class="flwrs"><div class="hint" data-t="loadingFollowers">불러오는 중…</div></div>
       </div>
     </div>
+    <!-- 운영팀 문의 — 모달 없이 인라인(대시보드는 단순하게). 어드민 '문의' 탭으로 들어감 -->
+    <div class="card" id="askAdminCard">
+      <h2><i class="ti ti-lifebuoy"></i> <span data-t="saTitle">운영팀에 문의</span></h2>
+      <div class="hint" style="margin:2px 0 12px" data-t="saHint">궁금한 점이나 불편한 점을 남겨주세요. 확인 후 답변드릴게요.</div>
+      <textarea class="inp" id="saMsg" rows="3" maxlength="2000" data-tph="saPh" placeholder="예: 포트폴리오 사진이 안 올라가요"></textarea>
+      <button class="btn" id="saBtn" style="margin-top:10px" onclick="sendAdminMsg()"><i class="ti ti-send"></i> <span data-t="saSend">보내기</span></button>
+    </div>
   </div>
 
   <!-- 프로필 -->
@@ -725,7 +732,30 @@ Object.assign(T.en,{shopLeaveBtn:'Leave branch',shopLeaveConfirm:'Leave this bra
 Object.assign(T.ja,{shopLeaveBtn:'店舗を退会',shopLeaveConfirm:'この店舗の所属を解除しますか？',shopAssignedHint:'店舗の所属は店舗オーナー・管理者が配置します。（なりすまし防止・配置後は退会のみ可能）'});
 Object.assign(T.th,{shopLeaveBtn:'ออกจากสาขา',shopLeaveConfirm:'ออกจากสาขานี้?',shopAssignedHint:'การสังกัดสาขากำหนดโดยเจ้าของสาขา/แอดมิน (ป้องกันการแอบอ้าง · ออกได้หลังถูกเพิ่มเท่านั้น)'});
 Object.assign(T.zh,{shopLeaveBtn:'退出门店',shopLeaveConfirm:'退出此门店？',shopAssignedHint:'门店归属由门店店主/管理员分配。（防止冒充 · 被添加后仅可退出）'});
+// 운영팀 문의 — 어드민 '문의' 탭(inquiries)으로 바로 들어간다
+Object.assign(T.ko,{saTitle:'운영팀에 문의',saHint:'궁금한 점이나 불편한 점을 남겨주세요. 확인 후 답변드릴게요.',saPh:'예: 포트폴리오 사진이 안 올라가요',saSend:'보내기',saNeed:'문의 내용을 입력해주세요',saSent:'문의가 접수됐어요 ✨ 확인 후 답변드릴게요.',saFail:'전송 실패'});
+Object.assign(T.en,{saTitle:'Contact the team',saHint:"Questions or problems? Leave a message and we'll get back to you.",saPh:"e.g. My portfolio photos won't upload",saSend:'Send',saNeed:'Please enter your message',saSent:"Got it! ✨ We'll get back to you soon.",saFail:'Failed to send'});
+Object.assign(T.ja,{saTitle:'運営に問い合わせ',saHint:'ご不明な点や不具合をお知らせください。確認してご返信します。',saPh:'例：ポートフォリオの写真がアップできません',saSend:'送信',saNeed:'内容を入力してください',saSent:'受け付けました ✨ 確認してご返信します。',saFail:'送信に失敗しました'});
+Object.assign(T.th,{saTitle:'ติดต่อทีมงาน',saHint:'มีคำถามหรือปัญหา? ฝากข้อความไว้ เราจะติดต่อกลับ',saPh:'เช่น อัปโหลดรูปผลงานไม่ได้',saSend:'ส่ง',saNeed:'กรุณากรอกข้อความ',saSent:'รับเรื่องแล้ว ✨ เราจะติดต่อกลับเร็ว ๆ นี้',saFail:'ส่งไม่สำเร็จ'});
+Object.assign(T.zh,{saTitle:'联系运营团队',saHint:'有疑问或问题？留言给我们，确认后会回复你。',saPh:'例如：作品照片上传不了',saSend:'发送',saNeed:'请输入内容',saSent:'已收到 ✨ 确认后会尽快回复你。',saFail:'发送失败'});
 function t(k){var o=T[LANG]||T.ko;return (k in o)?o[k]:(T.ko[k]!=null?T.ko[k]:k);}
+// 운영팀 문의 전송 — 손님 문의(community 문의하기)와 같은 inquiries 테이블을 쓴다.
+// 어드민에 이미 '문의' 탭 + 신규 배지 + 완료처리가 있어서 새 받은함을 만들 필요가 없다.
+// page='/dashboard' 로 남겨 어드민에서 디자이너발 문의를 손님 문의와 구분한다.
+async function sendAdminMsg(){
+  var el=$('saMsg'); if(!el)return;
+  var v=(el.value||'').trim();
+  if(!v){toast(t('saNeed'));return;}
+  if(!UID){toast(t('saFail'));return;}
+  var b=$('saBtn'); b.disabled=true;
+  try{
+    var nm=(ME&&((ME.shop&&ME.shop.name)||ME.nickname))||EMAIL||'designer';
+    var r=await SB.from('inquiries').insert({uid:UID,name:nm,contact:EMAIL||null,message:v.slice(0,2000),page:'/dashboard',lang:LANG});
+    if(r.error){toast(t('saFail')+': '+r.error.message);b.disabled=false;return;}
+    el.value='';toast(t('saSent'));
+  }catch(e){toast(t('saFail'));}
+  b.disabled=false;
+}
 function tf(k,map){var s=t(k);for(var x in (map||{}))s=String(s).split('{'+x+'}').join(map[x]);return s;}
 function catLabel(en){var k='cat_'+en,o=T[LANG]||T.ko;if(k in o)return o[k];if(k in T.ko)return T.ko[k];return en;}
 function calTitle(y,m){if(LANG==='ko')return y+'년 '+m+'월';if(LANG==='ja')return y+'年 '+m+'月';return t('mon')[m-1]+' '+y;}
