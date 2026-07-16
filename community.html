@@ -592,7 +592,13 @@ html.native-app .sitefoot{display:none !important;}
 .pophead{display:flex;align-items:baseline;gap:10px;margin:6px 2px 12px;flex-wrap:wrap;}
 .pophead h3{font-size:20px;margin:0;color:var(--ink);}
 .popsub{font-size:12.5px;color:var(--sub);font-weight:600;}
-.poprow{display:flex;gap:13px;overflow-x:auto;padding:2px 2px 10px;scroll-snap-type:x mandatory;-webkit-overflow-scrolling:touch;}
+.poprowwrap{position:relative;}
+.poprow{display:flex;gap:13px;overflow-x:auto;padding:2px 2px 10px;scroll-snap-type:x mandatory;-webkit-overflow-scrolling:touch;scrollbar-width:none;} .poprow::-webkit-scrollbar{display:none;}
+.popnav{position:absolute;top:96px;transform:translateY(-50%);z-index:6;width:40px;height:40px;border-radius:50%;border:1px solid var(--line);background:rgba(255,255,255,.97);-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px);box-shadow:0 8px 22px -8px rgba(40,20,30,.35);color:var(--ink);font-size:21px;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:opacity .18s,transform .12s;}
+.popnav:hover{transform:translateY(-50%) scale(1.07);color:var(--plum);}
+.popnav.prev{left:-8px;} .popnav.next{right:-8px;}
+.popnav[disabled]{opacity:0;pointer-events:none;}
+@media(hover:none){.popnav{display:none;}}/* 터치기기는 스와이프로 넘김 */
 .poprow::-webkit-scrollbar{height:0;}
 .pcard{flex:0 0 auto;width:194px;scroll-snap-align:start;background:#fff;border:1px solid var(--line);border-radius:16px;overflow:hidden;cursor:pointer;transition:transform .12s,box-shadow .12s;content-visibility:auto;contain-intrinsic-size:auto 260px;}
 .pcard:hover{transform:translateY(-3px);box-shadow:0 16px 34px -20px rgba(40,20,40,.4);}
@@ -1318,11 +1324,11 @@ function revCount(x){return parseInt((x&&x.rev)||0,10)||0;}
 function newRateHtml(){var L={ko:'신규',en:'New',ja:'新規',th:'ใหม่',zh:'新'};return '<span class="newrate">'+(L[LANG]||'New')+'</span>';}
 function rateInline(x,o){o=o||{};if(revCount(x)<1)return newRateHtml();return '<span class="star"'+(o.gold?' style="color:#C9A063"':'')+'>★</span> '+esc(x.rating||'5')+(o.count?' ('+revCount(x)+')':'');}
 const HYB={
- ko:{popular:'오늘의 인기 스타일',popularSub:'매일 새로 큐레이션되는 포트폴리오',book:'바로 예약',prof:'프로필',viewProfile:'프로필 보기',verified:'인증 디자이너',reviews:'후기',fast:'빠른 예약 가능'},
- en:{popular:'Trending styles today',popularSub:'Freshly curated portfolios, every day',book:'Book',prof:'Profile',viewProfile:'View profile',verified:'Verified',reviews:'reviews',fast:'Instant booking'},
- ja:{popular:'今日の人気スタイル',popularSub:'毎日新しくキュレーション',book:'予約する',prof:'プロフィール',viewProfile:'プロフィール',verified:'認証済み',reviews:'口コミ',fast:'即時予約OK'},
- th:{popular:'สไตล์ยอดนิยมวันนี้',popularSub:'ผลงานคัดสรรใหม่ทุกวัน',book:'จอง',prof:'โปรไฟล์',viewProfile:'ดูโปรไฟล์',verified:'ยืนยันแล้ว',reviews:'รีวิว',fast:'จองได้ทันที'},
- zh:{popular:'今日热门风格',popularSub:'每日精选作品集',book:'预约',prof:'资料',viewProfile:'查看资料',verified:'认证设计师',reviews:'评价',fast:'可即时预约'}
+ ko:{popular:'오늘의 인기 스타일',popularSub:'매일 새로 큐레이션되는 포트폴리오',book:'바로 예약',prof:'프로필',viewProfile:'프로필 보기',verified:'인증 디자이너',reviews:'후기',fast:'빠른 예약 가능',prevSlide:'이전',nextSlide:'다음'},
+ en:{popular:'Trending styles today',popularSub:'Freshly curated portfolios, every day',book:'Book',prof:'Profile',viewProfile:'View profile',verified:'Verified',reviews:'reviews',fast:'Instant booking',prevSlide:'Previous',nextSlide:'Next'},
+ ja:{popular:'今日の人気スタイル',popularSub:'毎日新しくキュレーション',book:'予約する',prof:'プロフィール',viewProfile:'プロフィール',verified:'認証済み',reviews:'口コミ',fast:'即時予約OK',prevSlide:'前へ',nextSlide:'次へ'},
+ th:{popular:'สไตล์ยอดนิยมวันนี้',popularSub:'ผลงานคัดสรรใหม่ทุกวัน',book:'จอง',prof:'โปรไฟล์',viewProfile:'ดูโปรไฟล์',verified:'ยืนยันแล้ว',reviews:'รีวิว',fast:'จองได้ทันที',prevSlide:'ก่อนหน้า',nextSlide:'ถัดไป'},
+ zh:{popular:'今日热门风格',popularSub:'每日精选作品集',book:'预约',prof:'资料',viewProfile:'查看资料',verified:'认证设计师',reviews:'评价',fast:'可即时预约',prevSlide:'上一个',nextSlide:'下一个'}
 };
 function hyb(){return HYB[LANG]||HYB.en;}
 // 인기 스타일 일일 로테이션: KST 날짜를 시드로 매일 순서·대표컷이 바뀜(품질은 약하게 가점, 팔로우는 상단 고정)
@@ -1337,6 +1343,7 @@ function renderPopular(){var el=$('popwrap');if(!el)return;
  if(!show||ds.length<3){el.classList.add('off');el.innerHTML='';return;}
  el.classList.remove('off');var L=hyb();
  el.innerHTML='<div class="pophead"><h3 class="serif">'+esc(L.popular)+'</h3><span class="popsub">'+esc(L.popularSub)+'</span></div>'+
+  '<div class="poprowwrap"><button class="popnav prev" onclick="popScroll(-1)" aria-label="'+esc(L.prevSlide||'이전')+'"><i class="ti ti-chevron-left" aria-hidden="true"></i></button>'+
   '<div class="poprow">'+ds.map(function(d){var uid=d.uid;var nm=(LANG==='ko'&&d.ko)?d.ko:d.name;var tot=d.works.length;
    // 매일 대표컷 회전: 시작 오프셋을 날짜 시드로 정하고 원본 인덱스는 유지(openWork wid 정합)
    var off=tot?(hstr((d.uid||d.id||'')+'#'+daySeedKST())%tot):0;
@@ -1356,7 +1363,28 @@ function renderPopular(){var el=$('popwrap');if(!el)return;
       '<div class="pcm">'+rateInline(d)+' · '+esc(cl(d.cat))+(d.city?' · '+esc(cityLabel(d.city)):'')+'</div>'+
       (uid?'<button class="pcbook" onclick="event.stopPropagation();openBook(\''+d.id+'\')"><i class="ti ti-calendar-heart"></i> '+esc(L.book)+'</button>':'<button class="pcbook ghost" onclick="event.stopPropagation();openD(\''+d.id+'\')">'+esc(L.prof)+'</button>')+
      '</div></div>';
-  }).join('')+'</div>';}
+  }).join('')+'</div>'+
+  '<button class="popnav next" onclick="popScroll(1)" aria-label="'+esc(L.nextSlide||'다음')+'"><i class="ti ti-chevron-right" aria-hidden="true"></i></button></div>';
+ popNavInit();}
+// 인기 캐러셀 좌우 이동(PC: 가로 스크롤이 어려워서 버튼 제공 / 모바일은 스와이프)
+function popScroll(dir){
+  var row=document.querySelector('.poprow');if(!row)return;
+  var card=row.querySelector('.pcard');
+  var step=(card?card.offsetWidth+13:200)*2;              // 한 번에 2장씩
+  row.scrollBy({left:dir*step,behavior:'smooth'});
+}
+function popNavSync(){
+  var row=document.querySelector('.poprow');if(!row)return;
+  var p=document.querySelector('.popnav.prev'),n=document.querySelector('.popnav.next');
+  var max=row.scrollWidth-row.clientWidth;
+  if(p)p.disabled=(row.scrollLeft<=4);
+  if(n)n.disabled=(row.scrollLeft>=max-4);                // 끝이면 버튼 숨김
+}
+function popNavInit(){
+  var row=document.querySelector('.poprow');if(!row)return;
+  row.addEventListener('scroll',popNavSync,{passive:true});
+  requestAnimationFrame(popNavSync);
+}
 
 const SNSMETA={instagram:['ti-brand-instagram','Instagram'],tiktok:['ti-brand-tiktok','TikTok'],youtube:['ti-brand-youtube','YouTube'],x:['ti-brand-x','X'],whatsapp:['ti-brand-whatsapp','WhatsApp'],line:['ti-brand-line','LINE'],kakao:['ti-message-circle','KakaoTalk']};
 
