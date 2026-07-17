@@ -1387,7 +1387,10 @@ const D=[
   sns:['instagram'],reviews:[]},
 ];
 // 비포/애프터: 저장된 shop.ba(2장) 우선, 없으면 포폴 앞 2장 자동
-function baFrom(ba,works){var w=(works||[]).filter(Boolean);var b=ba&&ba[0],a=ba&&ba[1];if(b&&a&&safeUrl(b)&&safeUrl(a))return [b,a];return [w[0],w[Math.min(1,w.length-1)]];}
+/* 비포/애프터가 없으면 포폴 1·2번을 대신 끼워넣고 있었다. 서로 아무 관계 없는 사진 두 장을
+   "BEFORE / AFTER"로 붙여 보여준 것 — 손님에겐 거짓이고 디자이너에겐 작품 왜곡이다(19명 중 14명).
+   진짜 쌍이 등록됐을 때만 반환하고, 없으면 빈 배열 → 호출부에서 섹션 자체를 감춘다. */
+function baFrom(ba,works){var b=ba&&ba[0],a=ba&&ba[1];return (b&&a&&safeUrl(b)&&safeUrl(a))?[b,a]:[];}
 function meDesigner(){if(ME&&ME.uid&&ME.works&&ME.works.length){return {id:'me',uid:ME.uid,name:ME.name||'You',ko:'',cat:canonCat((ME.spec&&ME.spec[0])||'Hair'),city:ME.city||'',area:ME.area||'',flag:flagFor(ME.country,ME.city,ME.area),rating:5.0,rev:0,years:ME.career||'',ko_ok:1,ver:ME.verified?1:0,spec:(ME.spec&&ME.spec.length?ME.spec.slice():['Hair']),bio:ME.bio||'',avatar:ME.avatar||'',insta:ME.insta||'',handles:ME.sns||{},works:ME.works.slice(),ba:baFrom(ME.ba,ME.works),sns:Object.keys(ME.sns||{}).filter(function(k){return ME.sns[k];}),services:(ME.services||[]).slice(),cur:ME.cur||'',tags:(ME.tags||[]).slice(),shopName:ME.shopName||'',freelancer:!!ME.freelancer,reviews:[],isMe:1};}return null;}
 function gradFor(s){return GR[Math.abs((s||'B').charCodeAt(0))%GR.length];}
 function avHtml(d,cls){var nm=(LANG==='ko'&&d.ko)?d.ko:(d.name||'U');return d.avatar?`<div class="${cls}" style="background-image:url('${im(d.avatar,240)}')"></div>`:`<div class="${cls} mono" style="background:${gradFor(d.name)}">${esc(nm[0]||'U')}</div>`;}
@@ -2044,7 +2047,7 @@ function openD(did,keep){stopAllVideos();const d=dById(did);if(!d)return;curD=di
    </div>
   </div>
   <div class="dsec"><div class="chips">${chipsOf(d).map(s=>`<span class="chip">${esc(s)}</span>`).join('')}</div><div class="styl">${esc(d.bio)}</div><button class="idcardbtn" onclick="openIdCard('${d.id}')"><i class="ti ti-id-badge-2"></i> ${T[LANG].idCard}</button></div>
-  <div class="dsec"><div class="st">${T[LANG].beforeafter}</div>
+  ${(d.ba&&d.ba.length>=2)?`<div class="dsec"><div class="st">${T[LANG].beforeafter}</div>
    <div class="ba" id="ba">
      <div class="img after" style="background-image:url('${im(d.ba[1],700)}')"></div>
      <div class="img before" id="baBefore" style="width:50%"><div class="img" style="background-image:url('${im(d.ba[0],700)}')"></div></div>
@@ -2052,7 +2055,7 @@ function openD(did,keep){stopAllVideos();const d=dById(did);if(!d)return;curD=di
      <div class="divider" id="baDiv" style="left:50%"><div class="knob"><i class="ti ti-arrows-horizontal"></i></div></div>
      <input type="range" min="0" max="100" value="50" oninput="baMove(this.value)">
    </div>
-  </div>
+  </div>`:''}
   ${(d.services&&d.services.length)?`<div class="dsec"><div class="st">${T[LANG].svcTitle}</div>${d.services.map((s,i)=>`<div class="svc"><div class="svci"><div class="svcn">${esc(svcLabel(s,LANG))}</div><div class="svcm">${svcDur(s,LANG)?esc(svcDur(s,LANG))+' · ':''}<b>${esc(priceDisp(s.p,svcCur(d)))}</b>${priceApprox(s.p,svcCur(d))?`<span class="svcapprox"> ${esc(priceApprox(s.p,svcCur(d)))}</span>`:''}</div></div>${d.uid&&!d.isMe?`<button class="svcbk" onclick="openBook('${d.id}',${i})">${T[LANG].book2}</button>`:''}</div>`).join('')}</div>`:''}
   <div class="dsec"><div class="st">${T[LANG].portfolio}</div><div class="dgrid">${d.works.map(w=>isVid(w)?`<div class="dgvid" onclick="playInline(this,'${vsrc(w)}')"${workPoster(w)?` style="background-image:url('${im(workPoster(w),700)}')"`:''}>${workPoster(w)?'':vidStill(w)}<span class="thvb"><i class="ti ti-player-play-filled"></i></span></div>`:`<img src="${im(w,500)}" data-full="${im(w,1200)}" onclick="openLightbox(this)">`).join('')}</div></div>
   <div class="dsec" id="revsec"><div class="st">${T[LANG].reviews} · ${esc(d.rev)}</div>${d.reviews.map((r,i)=>`<div class="rev"><div class="ra" style="background:${GR[(gi+i)%GR.length]}">${esc((r.n||'?')[0])}</div><div style="flex:1"><div class="rn">${esc(r.n)}</div><div class="rs">${stars(r.s)}</div><div class="rt">${esc(r.t)}</div></div><button class="revreport" title="${esc(mt().report)}" onclick="reportContent('review','${esc(d.uid||d.id)}','${mlbl(r.n)}')"><i class="ti ti-flag"></i></button></div>`).join('')}</div>
