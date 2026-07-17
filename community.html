@@ -752,6 +752,14 @@ html.native-app .sitefoot{display:none !important;}
 .empty{text-align:center;padding:90px 20px;color:var(--sub);column-span:all;}
 .empty i{font-size:54px;color:#e0cdd3;}
 .empty .ectabtn{margin-top:14px;display:inline-flex;align-items:center;gap:5px;background:var(--plum);color:#fff;font-size:12.5px;font-weight:700;padding:8px 16px;border-radius:999px;border:0;cursor:pointer;}
+/* "○○ 빼면 N개" — 전체 리셋(둘러보기)보다 먼저 보여야 한다. 사용자가 방금 고른 조건을
+   통째로 버리게 만들지 말고, 막고 있는 하나만 집어서 풀어준다. */
+.ecsugs{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin-top:18px;}
+.ecsug{display:inline-flex;align-items:center;gap:6px;background:#fff;border:1px solid var(--line);
+  color:var(--ink);font-size:13px;font-weight:700;padding:9px 14px;border-radius:999px;cursor:pointer;transition:.14s;}
+.ecsug:hover{border-color:var(--ink);}
+.ecsug i{font-size:14px;color:var(--sub);}
+.ecsug b{font-size:12px;font-weight:800;color:#fff;background:var(--ink);border-radius:999px;padding:2px 7px;margin-left:2px;}
 .empty .ectabtn i{font-size:15px;}
 .empty .ectabtn:active{transform:scale(.96);}
 .coupreg{display:flex;gap:8px;margin:16px 0 14px;}
@@ -1914,8 +1922,42 @@ function render(){renderBanner();renderStories();renderPopular();
  else if(_sv==='rating')list=list.slice().sort(function(a,b){return (b.rating||0)-(a.rating||0);});
  else if(_sv==='near'&&USERLOC)list=list.slice().sort(function(a,b){return distOf(a.city)-distOf(b.city);});
  else if(_sv==='rec'&&DCLICKS)list=list.slice().sort(function(a,b){var f=(isFollowing(b.uid)?1:0)-(isFollowing(a.uid)?1:0);if(f)return f;return (DCLICKS[b.uid]||0)-(DCLICKS[a.uid]||0);}); // 추천순 = 실제 클릭 인기순(팔로잉 우선)
- if(!list.length){g.innerHTML=`<div class="empty"><i class="ti ti-${VIEW==='saved'?'heart':'search'}"></i><p>${VIEW==='saved'?T[LANG].emptyS:T[LANG].noRes}</p><button class="ectabtn" onclick="setCat('All');var q=$('q');if(q)q.value='';var c=$('city');if(c)c.value='';CTRY='';renderCountries();renderCities();setView('explore')"><i class="ti ti-compass"></i>${T[LANG].browseAll}</button></div>`;return;}
+ if(!list.length){g.innerHTML=emptyHtml();return;}
  g.innerHTML=list.map(tileHtml).join('');
+}
+/* 결과 0일 때. "결과가 없어요" 한 줄만 두면 사용자는 어느 조건이 막았는지 모른 채
+   필터를 하나씩 눌러보거나 그냥 나간다. 조건을 하나씩 빼봤을 때 몇 개가 나오는지
+   미리 세어서 "이것만 빼면 N개" 를 버튼으로 준다 — 되돌릴 곳을 찍어주는 게 핵심. */
+function countIf(o){
+  var cat=('cat' in o)?o.cat:CAT, ctry=('ctry' in o)?o.ctry:CTRY;
+  var city=('city' in o)?o.city:(($('city')&&$('city').value)||'');
+  var q=(('q' in o)?o.q:(($('q')&&$('q').value)||'')).toLowerCase().trim();
+  return TILES.filter(function(t){
+    return (cat==='All'||(t.cats?t.cats.indexOf(cat)>=0:t.cat===cat))
+      &&(!ctry||t.cc===ctry)&&(!city||t.ck===city)
+      &&(!q||(t.name+t.cat+t.city+t.area).toLowerCase().includes(q));
+  }).length;
+}
+function emptyHtml(){
+  var T2=T[LANG];
+  if(VIEW==='saved')
+    return '<div class="empty"><i class="ti ti-heart"></i><p>'+esc(T2.emptyS)+'</p>'
+      +'<button class="ectabtn" onclick="setView(\'explore\')"><i class="ti ti-compass"></i>'+esc(T2.browseAll)+'</button></div>';
+  var cityV=($('city')&&$('city').value)||'', qV=(($('q')&&$('q').value)||'').trim();
+  var opts=[];
+  if(CAT!=='All'){var n=countIf({cat:'All'});if(n)opts.push([cl(CAT),n,"setCat('All')"]);}
+  if(CTRY){var n2=countIf({ctry:''});if(n2)opts.push([cLabel(CTRY),n2,"setCtry('')"]);}
+  if(cityV){var n3=countIf({city:''});if(n3)opts.push([cityLabel(cityV),n3,"var c=$('city');if(c)c.value='';render()"]);}
+  if(qV){var n4=countIf({q:''});if(n4)opts.push(['"'+qV+'"',n4,"var q=$('q');if(q)q.value='';render()"]);}
+  opts.sort(function(a,b){return b[1]-a[1];});   // 많이 나오는 제안부터
+  var sug=opts.slice(0,3).map(function(o){
+    return '<button class="ecsug" onclick="'+o[2]+'"><i class="ti ti-x"></i>'
+      +esc(T2.emptyDrop.replace('{f}',o[0]))+'<b>'+o[1]+'</b></button>';
+  }).join('');
+  return '<div class="empty"><i class="ti ti-search"></i><p>'+esc(T2.noRes)+'</p>'
+    +(sug?('<div class="ecsugs">'+sug+'</div>'):'')
+    +'<button class="ectabtn" onclick="setCat(\'All\');var q=$(\'q\');if(q)q.value=\'\';var c=$(\'city\');if(c)c.value=\'\';CTRY=\'\';renderCountries();renderCities();setView(\'explore\')">'
+    +'<i class="ti ti-compass"></i>'+esc(T2.browseAll)+'</button></div>';
 }
 function renderDesigners(q,city){var g=$('grid');g.classList.add('dgview');
  var cm=countryMap();
@@ -2813,6 +2855,8 @@ T.ja.qrCust=['予約できますか？','料金はいくらですか？','場所
 T.th.qrCust=['ว่างไหมคะ/ครับ?','ราคาเท่าไหร่?','อยู่ที่ไหน?','ขอดูผลงานเพิ่ม'];T.th.qrDsgn=['ได้ค่ะ/ครับ ว่าง','ยืนยันการจองแล้ว','เวลานั้นไม่ว่าง','จะส่งผลงานให้'];
 T.zh.qrCust=['可以预约吗？','多少钱？','在哪里？','想看更多作品'];T.zh.qrDsgn=['可以，有空','预约已确认','那个时间不行','我发作品给你'];
 T.ko.browseAll='둘러보기';T.en.browseAll='Browse all';T.ja.browseAll='すべて見る';T.th.browseAll='ดูทั้งหมด';T.zh.browseAll='浏览全部';
+/* 결과 0일 때 "{f} 빼면 N개" 제안. {f}=막고 있는 조건 이름 */
+T.ko.emptyDrop='{f} 빼기';T.en.emptyDrop='Without {f}';T.ja.emptyDrop='{f} を外す';T.th.emptyDrop='เอา {f} ออก';T.zh.emptyDrop='去掉 {f}';
 T.ko.coupons='쿠폰';T.en.coupons='Coupons';T.ja.coupons='クーポン';T.th.coupons='คูปอง';T.zh.coupons='优惠券';
 T.ko.couponCodePh='쿠폰 코드 입력';T.en.couponCodePh='Enter coupon code';T.ja.couponCodePh='クーポンコードを入力';T.th.couponCodePh='กรอกรหัสคูปอง';T.zh.couponCodePh='输入优惠券码';
 T.ko.couponAdd='등록';T.en.couponAdd='Add';T.ja.couponAdd='登録';T.th.couponAdd='เพิ่ม';T.zh.couponAdd='添加';
