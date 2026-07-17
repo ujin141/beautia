@@ -888,13 +888,11 @@ textarea.askinp{resize:vertical;min-height:100px;}
 .dmapbtn:hover{background:var(--rosebg);}
 .sns{display:flex;flex-wrap:wrap;gap:var(--sp-3);align-items:center;}
 .sns a{width:54px;height:54px;border-radius:var(--r-lg);background:var(--soft);border:1px solid var(--line);display:flex;align-items:center;justify-content:center;font-size:26px;color:var(--ink);transition:.15s;}
-.sns a.extbook{width:auto;height:54px;}   /* 예약/문의 버튼만 글자폭 */
-.sns .extbook i{font-size:20px;}
+.sns .extbook i{font-size:24px;}
 .sns a:hover{background:var(--ink);color:#fff;transform:translateY(-2px);}
 .sns a.sns-nv{background:#03C75A;border-color:#03C75A;color:#fff;font-family:'Outfit','Pretendard',sans-serif;font-weight:900;font-size:24px;}
-/* 예약/문의 링크는 SNS 줄 안에 인스타와 나란히 선다 → 높이는 .sns a 와 같고 폭만 글자만큼.
-   풀와이드 바로 두면 옆의 48px 아이콘들과 크기가 따로 놀아 혼자 튄다. */
-.extbook{display:flex;align-items:center;justify-content:center;gap:var(--sp-2);width:auto;background:#03C75A;color:#fff;font-weight:700;font-size:var(--fs-base);padding:0 var(--sp-4);border-radius:var(--r-lg);border:1px solid transparent;text-decoration:none;transition:.15s;white-space:nowrap;}
+/* 예약/문의 링크는 SNS 줄 안에 인스타와 나란히 서는 정사각 아이콘. 크기는 .sns a 를 그대로 따른다. */
+.extbook{display:flex;align-items:center;justify-content:center;background:#03C75A;color:#fff;border:1px solid transparent;text-decoration:none;transition:.15s;}
 .extbook:hover{filter:brightness(1.06);}
 .extbook i{font-size:17px;}
 .sns a.sns-nv:hover{background:#02b350;color:#fff;}
@@ -983,7 +981,6 @@ body.mlock .apppop{opacity:0!important;pointer-events:none!important;}
   .lcard{padding:26px 20px 22px;border-radius:20px;} .icard{padding:22px 18px;} .pfcard{padding:22px 18px;}
   .lmodal,.imodal,.idmodal,.pfmodal{padding:14px;}
   .ba{height:230px;} .sns a{width:48px;height:48px;font-size:23px;}
-  .sns a.extbook{width:auto;height:48px;font-size:var(--fs-base);}
   .wbar{padding:11px 12px;gap:10px;} .wgo{padding:10px 12px;font-size:12px;}
   .rolepick{flex-direction:column;} .pmstats{gap:18px;}
   .chatmodal{padding:0;z-index:50;} .chatcard{height:100%;max-height:100%;max-width:100%;border-radius:0;padding-bottom:calc(60px + env(safe-area-inset-bottom));box-sizing:border-box;} .cback{display:flex;align-items:center;}
@@ -1909,7 +1906,8 @@ function openD(did,keep){stopAllVideos();const d=dById(did);if(!d)return;curD=di
  const SNSBASE={instagram:'https://instagram.com/',tiktok:'https://tiktok.com/@',youtube:'https://youtube.com/@',x:'https://x.com/'};
  const handles=Object.assign({},d.handles||(d.insta?{instagram:d.insta}:{}));
  const snsHtml=Object.keys(SNSBASE).map(function(p){var h=igClean(handles[p]||'');return h?`<a href="${SNSBASE[p]}${h}" target="_blank" rel="noopener"><i class="ti ${SNSMETA[p][0]}"></i></a>`:'';}).join('');
- const naverHtml=(function(){var u=safeUrl(d.naver);return u?`<a href="${esc(u)}" target="_blank" rel="noopener" class="sns-nv" title="네이버 예약">N</a>`:'';})();
+ /* 예약 버튼이 이미 같은 네이버 링크를 가리키면 N 아이콘은 중복이다(둘 다 아이콘이라 구분도 안 된다). */
+ const naverHtml=(function(){var u=safeUrl(d.naver);if(!u)return '';var bu=(d.bookMode!=='external')&&safeUrl(d.bookingUrl);if(bu&&bu===u)return '';return `<a href="${esc(u)}" target="_blank" rel="noopener" class="sns-nv" title="네이버 예약">N</a>`;})();
  const bookingHtml=(function(){if(d.bookMode==='external')return '';var bu=safeUrl(d.bookingUrl);if(!bu)return '';var u=bu.toLowerCase();var lb=T[LANG].extBook,c='#573f47',ic='ti-calendar-check',tc='#fff';
   /* 카카오 오픈채팅은 '예약 사이트'가 아니라 상담 창구다. 기본 문구("예약 사이트에서 예약하기")로
      떨어지면 거짓말이 된다 — 타투처럼 도안 상담이 먼저인 업종은 여기로 문의부터 받는다. */
@@ -1918,7 +1916,8 @@ function openD(did,keep){stopAllVideos();const d=dById(did);if(!d)return;curD=di
   else if(/naver\./.test(u)){lb=(LANG==='ja'?'NAVERで予約':(LANG==='ko'?'네이버 예약':'Book on NAVER'));c='#03C75A';}
   else if(/hotpepper|hpb\.jp|beauty\.hotpepper/.test(u)){lb='HotPepper 予約';c='#E9531F';}
   else if(/minimo/.test(u)){lb='minimo 予約';c='#FF7DA0';}
-  return '<a href="'+esc(bu)+'" target="_blank" rel="noopener" class="extbook" style="background:'+c+';color:'+tc+';box-shadow:0 8px 20px -10px '+c+'"><i class="ti '+ic+'"></i> '+esc(lb)+'</a>';})();
+  /* 글자 없이 아이콘만 — 옆의 인스타·네이버와 같은 정사각 버튼. 라벨은 title/aria 로만 남긴다. */
+  return '<a href="'+esc(bu)+'" target="_blank" rel="noopener" class="extbook" title="'+esc(lb)+'" aria-label="'+esc(lb)+'" style="background:'+c+';color:'+tc+'"><i class="ti '+ic+'"></i></a>';})();
  const blogHtml=(function(){var u=safeUrl(d.blog);return u?`<a href="${esc(u)}" target="_blank" rel="noopener" class="sns-nv" title="블로그"><i class="ti ti-notebook"></i></a>`:'';})();
  const mapHtml=(function(){var bits=[d.area,d.city].filter(Boolean);if(!bits.length)return '';var addr=[d.shopName].concat(bits).filter(Boolean).join(', ');var q=encodeURIComponent(addr);var mo=T[LANG].mapOpen||'지도에서 열기';
   return `<div class="dsec"><div class="st">${T[LANG].location||'위치'}</div>
