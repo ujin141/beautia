@@ -886,11 +886,15 @@ textarea.askinp{resize:vertical;min-height:100px;}
 .dmapopen{position:absolute;top:11px;right:11px;display:inline-flex;align-items:center;gap:var(--sp-1);font-size:var(--fs-xs);font-weight:800;color:var(--plum);background:rgba(255,255,255,.9);padding:6px 10px;border-radius:var(--r-pill);box-shadow:0 4px 12px -4px rgba(110,74,80,.3);}
 .dmapbtn{display:inline-flex;align-items:center;gap:var(--sp-2);margin-top:var(--sp-3);font-size:var(--fs-base);font-weight:700;color:var(--plum);background:var(--soft);border-radius:var(--r-sm);padding:var(--sp-3) var(--sp-4);text-decoration:none;}
 .dmapbtn:hover{background:var(--rosebg);}
-.sns{display:flex;flex-wrap:wrap;gap:var(--sp-3);}
+.sns{display:flex;flex-wrap:wrap;gap:var(--sp-3);align-items:center;}
 .sns a{width:54px;height:54px;border-radius:var(--r-lg);background:var(--soft);border:1px solid var(--line);display:flex;align-items:center;justify-content:center;font-size:26px;color:var(--ink);transition:.15s;}
+.sns a.extbook{width:auto;height:54px;}   /* 예약/문의 버튼만 글자폭 */
+.sns .extbook i{font-size:20px;}
 .sns a:hover{background:var(--ink);color:#fff;transform:translateY(-2px);}
 .sns a.sns-nv{background:#03C75A;border-color:#03C75A;color:#fff;font-family:'Outfit','Pretendard',sans-serif;font-weight:900;font-size:24px;}
-.extbook{display:flex;align-items:center;justify-content:center;gap:var(--sp-2);width:100%;background:#03C75A;color:#fff;font-weight:700;font-size:var(--fs-md);padding:var(--sp-3);border-radius:var(--r-md);margin-bottom:var(--sp-3);text-decoration:none;transition:.15s;box-shadow:0 8px 20px -10px rgba(3,199,90,.6);}
+/* 예약/문의 링크는 SNS 줄 안에 인스타와 나란히 선다 → 높이는 .sns a 와 같고 폭만 글자만큼.
+   풀와이드 바로 두면 옆의 48px 아이콘들과 크기가 따로 놀아 혼자 튄다. */
+.extbook{display:flex;align-items:center;justify-content:center;gap:var(--sp-2);width:auto;background:#03C75A;color:#fff;font-weight:700;font-size:var(--fs-base);padding:0 var(--sp-4);border-radius:var(--r-lg);border:1px solid transparent;text-decoration:none;transition:.15s;white-space:nowrap;}
 .extbook:hover{filter:brightness(1.06);}
 .extbook i{font-size:17px;}
 .sns a.sns-nv:hover{background:#02b350;color:#fff;}
@@ -979,6 +983,7 @@ body.mlock .apppop{opacity:0!important;pointer-events:none!important;}
   .lcard{padding:26px 20px 22px;border-radius:20px;} .icard{padding:22px 18px;} .pfcard{padding:22px 18px;}
   .lmodal,.imodal,.idmodal,.pfmodal{padding:14px;}
   .ba{height:230px;} .sns a{width:48px;height:48px;font-size:23px;}
+  .sns a.extbook{width:auto;height:48px;font-size:var(--fs-base);}
   .wbar{padding:11px 12px;gap:10px;} .wgo{padding:10px 12px;font-size:12px;}
   .rolepick{flex-direction:column;} .pmstats{gap:18px;}
   .chatmodal{padding:0;z-index:50;} .chatcard{height:100%;max-height:100%;max-width:100%;border-radius:0;padding-bottom:calc(60px + env(safe-area-inset-bottom));box-sizing:border-box;} .cback{display:flex;align-items:center;}
@@ -1947,7 +1952,7 @@ function openD(did,keep){stopAllVideos();const d=dById(did);if(!d)return;curD=di
   ${(d.services&&d.services.length)?`<div class="dsec"><div class="st">${T[LANG].svcTitle}</div>${d.services.map((s,i)=>`<div class="svc"><div class="svci"><div class="svcn">${esc(svcLabel(s,LANG))}</div><div class="svcm">${svcDur(s,LANG)?esc(svcDur(s,LANG))+' · ':''}<b>${esc(priceDisp(s.p,svcCur(d)))}</b>${priceApprox(s.p,svcCur(d))?`<span class="svcapprox"> ${esc(priceApprox(s.p,svcCur(d)))}</span>`:''}</div></div>${d.uid&&!d.isMe?`<button class="svcbk" onclick="openBook('${d.id}',${i})">${T[LANG].book2}</button>`:''}</div>`).join('')}</div>`:''}
   <div class="dsec"><div class="st">${T[LANG].portfolio}</div><div class="dgrid">${d.works.map(w=>isVid(w)?`<div class="dgvid" onclick="playInline(this,'${vsrc(w)}')"${workPoster(w)?` style="background-image:url('${im(workPoster(w),700)}')"`:''}>${workPoster(w)?'':vidStill(w)}<span class="thvb"><i class="ti ti-player-play-filled"></i></span></div>`:`<img src="${im(w,500)}" data-full="${im(w,1200)}" onclick="openLightbox(this)">`).join('')}</div></div>
   <div class="dsec" id="revsec"><div class="st">${T[LANG].reviews} · ${esc(d.rev)}</div>${d.reviews.map((r,i)=>`<div class="rev"><div class="ra" style="background:${GR[(gi+i)%GR.length]}">${esc((r.n||'?')[0])}</div><div style="flex:1"><div class="rn">${esc(r.n)}</div><div class="rs">${stars(r.s)}</div><div class="rt">${esc(r.t)}</div></div><button class="revreport" title="${esc(mt().report)}" onclick="reportContent('review','${esc(d.uid||d.id)}','${mlbl(r.n)}')"><i class="ti ti-flag"></i></button></div>`).join('')}</div>
-  ${(snsHtml||naverHtml||blogHtml||bookingHtml)?`<div class="dsec" style="border:none"><div class="st">${T[LANG].connect}</div>${bookingHtml}<div class="sns">${snsHtml}${naverHtml}${blogHtml}</div></div>`:''}
+  ${(snsHtml||naverHtml||blogHtml||bookingHtml)?`<div class="dsec" style="border:none"><div class="st">${T[LANG].connect}</div><div class="sns">${bookingHtml}${snsHtml}${naverHtml}${blogHtml}</div></div>`:''}
   ${mapHtml}
   ${productsSecHtml(d)}
   ${(d.uid&&!d.isMe)?`<div class="dsec" style="border:none"><div class="modrow"><button class="modlink" onclick="reportContent('designer','${esc(d.uid)}','${mlbl(name)}')"><i class="ti ti-flag"></i> ${esc(mt().report)}</button><button class="modlink" onclick="blockUser('${esc(d.uid)}','${mlbl(name)}')"><i class="ti ti-ban"></i> ${esc(mt().block)}</button></div></div>`:''}
