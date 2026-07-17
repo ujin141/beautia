@@ -1528,7 +1528,10 @@ function flagFor(country,region,area){
 function renderCats(){$('cats').innerHTML=CATS.map(c=>`<button class="cat ${CAT===c?'on':''}" onclick="setCat('${c}')">${cl(c)}</button>`).join('');}
 var CTRY=''; // 선택된 나라코드. '' = 전체
 var CNAME={KR:{f:'🇰🇷',ko:'대한민국',en:'South Korea',ja:'韓国',th:'เกาหลีใต้',zh:'韩国'},JP:{f:'🇯🇵',ko:'일본',en:'Japan',ja:'日本',th:'ญี่ปุ่น',zh:'日本'},TH:{f:'🇹🇭',ko:'태국',en:'Thailand',ja:'タイ',th:'ไทย',zh:'泰国'},CN:{f:'🇨🇳',ko:'중국',en:'China',ja:'中国',th:'จีน',zh:'中国'},TW:{f:'🇹🇼',ko:'대만',en:'Taiwan',ja:'台湾',th:'ไต้หวัน',zh:'台湾'},HK:{f:'🇭🇰',ko:'홍콩',en:'Hong Kong',ja:'香港',th:'ฮ่องกง',zh:'香港'},SG:{f:'🇸🇬',ko:'싱가포르',en:'Singapore',ja:'シンガポール',th:'สิงคโปร์',zh:'新加坡'},US:{f:'🇺🇸',ko:'미국',en:'United States',ja:'アメリカ',th:'สหรัฐฯ',zh:'美国'},VN:{f:'🇻🇳',ko:'베트남',en:'Vietnam',ja:'ベトナム',th:'เวียดนาม',zh:'越南'}};
-function cLabel(cc){var m=CNAME[cc];return m?(m.f+' '+(m[LANG]||m.en)):(cc||'🌐');}
+/* 국기 이모지를 붙이지 않는다: 윈도우는 regional indicator(🇰🇷)를 국기로 렌더하지 않고
+   "KR" 두 글자로 떨어뜨린다 → 나라명 앞에 영문 코드가 붙은 것처럼 보였다. 나라명만 쓴다.
+   (CNAME.f 는 다른 용도로 남겨둠) */
+function cLabel(cc){var m=CNAME[cc];return m?(m[LANG]||m.en):(cc||'');}
 // 도시명 다국어 (없는 도시는 원래 이름으로 폴백). 새 도시 생기면 여기 추가.
 var CITYNAME={
  '서울':{en:'Seoul',ja:'ソウル',th:'โซล',zh:'首尔'},'청담':{en:'Cheongdam',ja:'チョンダム',th:'ชองดัม',zh:'清潭'},
