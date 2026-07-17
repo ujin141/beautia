@@ -1245,6 +1245,10 @@ function workText(w){return (w&&typeof w==='object')?(w.text||''):'';}
 function isVid(w){var u=(w&&typeof w==='object')?(w.img||''):(w||'');return /\.(mp4|webm|mov|m4v|ogv)(\?|#|$)/i.test(String(u));}
 function vsrc(w){return safeUrl(workImg(w));}
 function workPoster(w){return (w&&typeof w==='object'&&w.poster)?w.poster:'';}
+/* 사진 한 장의 카테고리. 없으면 '' → 디자이너 카테고리로 폴백.
+   두 가지를 겸업하는 디자이너(예: 로엔뷰티 = 네일+속눈썹)는 이게 없으면
+   속눈썹 필터에 네일 사진이 딸려 나온다. 작품으로 고르는 서비스에서 이건 치명적이다. */
+function workCat(w){return (w&&typeof w==='object'&&w.cat)?matchCat(w.cat):'';}
 // 포스터가 없는 영상: 첫 프레임만(메타데이터) 정지 썸네일로 표시. 재생 바이트는 로드 안 함.
 // .thv 안에 넣으면 .thv video 규칙으로 꽉 채워지고 clip 됨.
 function vidStill(w){var u=safeUrl(workImg(w));if(!u)return '';var sep=(u.indexOf('#')>=0?'':'#t=0.1');return '<video src="'+u+sep+'" preload="metadata" muted playsinline tabindex="-1" aria-hidden="true"></video>';}
@@ -1359,7 +1363,11 @@ async function blockUser(uid,name){var L=mt();if(!(ME&&ME.uid)){openLogin('');re
 function openByUid(uid){if(!uid)return false;var d=allD().find(function(x){return x.uid===uid;});if(d){openD(d.id);return true;}return false;}
 let TILES=[];
 var TILEW=(typeof window!=='undefined'&&window.innerWidth<=600)?400:640;  // 반응형 타일 이미지(모바일 데이터 절약)
-function buildTiles(){TILES=[];var cm=countryMap();var ds=allD().slice().sort(function(a,b){return ((b.featured?1:0)-(a.featured?1:0))||((parseFloat(b.rating)||0)-(parseFloat(a.rating)||0));});var mx=0;ds.forEach(function(d){if(d.works&&d.works.length>mx)mx=d.works.length;});for(var r=0;r<mx;r++){ds.forEach(function(d){var w=d.works&&d.works[r];if(w===undefined||w===null)return;TILES.push({wid:d.id+'_'+r,did:d.id,uid:d.uid||'',img:workImg(w),poster:workPoster(w),vid:isVid(w),text:workText(w),cat:d.cat,cats:(d.cats&&d.cats.length?d.cats:[d.cat]),city:d.city,ck:cityKey(d.city),cc:dCC(d,cm),area:d.area,name:d.name,flag:d.flag,rating:d.rating,rev:d.rev||0,ver:d.ver,newAt:d.newAt||0,featured:d.featured,insta:d.insta});});}}
+function buildTiles(){TILES=[];var cm=countryMap();var ds=allD().slice().sort(function(a,b){return ((b.featured?1:0)-(a.featured?1:0))||((parseFloat(b.rating)||0)-(parseFloat(a.rating)||0));});var mx=0;ds.forEach(function(d){if(d.works&&d.works.length>mx)mx=d.works.length;});for(var r=0;r<mx;r++){ds.forEach(function(d){var w=d.works&&d.works[r];if(w===undefined||w===null)return;TILES.push({wid:d.id+'_'+r,did:d.id,uid:d.uid||'',img:workImg(w),poster:workPoster(w),vid:isVid(w),text:workText(w),cat:d.cat,
+      /* 사진에 카테고리가 지정돼 있으면 그 한 장만 그 카테고리에 속한다.
+         없으면 종전대로 디자이너의 카테고리 전부(겸업이면 여러 개). */
+      cats:(function(){var wc=workCat(w);return wc?[wc]:((d.cats&&d.cats.length)?d.cats:[d.cat]);})(),
+      city:d.city,ck:cityKey(d.city),cc:dCC(d,cm),area:d.area,name:d.name,flag:d.flag,rating:d.rating,rev:d.rev||0,ver:d.ver,newAt:d.newAt||0,featured:d.featured,insta:d.insta});});}}
 // 리뷰 0이면 가짜 5.0 대신 "신규" 배지 — 실제 리뷰가 쌓이면 진짜 평점 표시(신뢰도)
 function revCount(x){return parseInt((x&&x.rev)||0,10)||0;}
 function newRateHtml(){var L={ko:'신규',en:'New',ja:'新規',th:'ใหม่',zh:'新'};return '<span class="newrate">'+(L[LANG]||'New')+'</span>';}
