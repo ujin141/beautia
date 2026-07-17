@@ -63,7 +63,10 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 <script defer src="https://cdn.jsdelivr.net/npm/qrcode-generator@1.4.4/qrcode.js" integrity="sha384-8FWZA6BGMXhsfO+BLtrJK0We6gg5o1JyO8xQm6peWDEUs17ACA5ziE/NIAkl9z2k" crossorigin="anonymous"></script>
 <!-- Supabase SDK는 렌더 차단 방지를 위해 body 하단(메인 스크립트 직전)으로 이동 -->
 <style>
-:root{--ink:#191512;--ink2:#4a443f;--sub:#7d766e;--line:#eae5df;--bg:#ffffff;--soft:#f3f0eb;--accent:#a59c92;--plum:#221e1a;--rosebg:#f2efea;--gold:#9a8f7c;--green:#3E7C6A;
+/* --sub 은 흰 배경 4.48:1 로 AA(4.5) 에 0.02 모자랐고, --soft 위에선 3.94:1 로 명확히 미달이었다.
+   보조 텍스트·칩 숫자·푸터가 전부 이 색이라 한 번에 읽기 힘들어진다 → 톤은 유지한 채 명도만 낮춤
+   (흰 배경 5.2:1 / soft 위 4.6:1). */
+:root{--ink:#191512;--ink2:#4a443f;--sub:#736c64;--line:#eae5df;--bg:#ffffff;--soft:#f3f0eb;--accent:#a59c92;--plum:#221e1a;--rosebg:#f2efea;--gold:#9a8f7c;--green:#3E7C6A;
 /* 타이포·간격·라운드 스케일 (신규 UI는 이 토큰을 사용 — 기존 하드코딩 값은 점진 마이그레이션) */
 --fs-xs:11px;--fs-sm:12px;--fs-base:13px;--fs-md:14px;--fs-lg:16px;--fs-xl:18px;--fs-2xl:22px;--fs-3xl:26px;--fs-4xl:34px;
 --sp-1:4px;--sp-2:8px;--sp-3:12px;--sp-4:16px;--sp-5:20px;--sp-6:24px;--sp-8:32px;
@@ -457,6 +460,8 @@ html.native-app .sitefoot{display:none !important;}
 .sf-links{display:flex;flex-wrap:wrap;gap:18px;font-size:13px;font-weight:600;color:var(--ink2);}
 .sf-links a:hover{color:var(--plum);}
 .sf-copy{font-size:12px;color:var(--sub);}
+/* 슬로건은 푸터에서 유일하게 브랜드를 말하는 줄 → 저작권 표기와 같은 무게로 묻히면 안 된다 */
+.sf-copy.slogan{font-weight:600;color:var(--ink2);letter-spacing:-.01em;}
 .sf-legal{font-size:11.5px;color:var(--sub);line-height:1.65;margin-top:8px;max-width:660px;}
 .sf-legal b{color:var(--ink2);font-weight:700;}
 @media (max-width:860px){.sf-in{padding:24px 16px 28px;}}
@@ -469,7 +474,7 @@ html.native-app .sitefoot{display:none !important;}
   .sty{flex:0 0 auto;width:66px;text-align:center;cursor:pointer;}
   .sty .ring{width:62px;height:62px;border-radius:50%;padding:2.5px;margin:0 auto;background:conic-gradient(from 210deg,#E8B4C4,#a9808a,#573f47,#C9A063,#E8B4C4);}
   .sty .ring>div{width:100%;height:100%;border-radius:50%;border:2.5px solid #fff;background-size:cover;background-position:center;background-color:var(--soft);display:flex;align-items:center;justify-content:center;font-weight:800;color:#fff;font-size:20px;}
-  .sty .sn{font-size:10.5px;font-weight:600;color:var(--ink2);margin-top:5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .sty .sn{font-size:11px;font-weight:600;color:var(--ink2);margin-top:5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
 }
 /* 모바일 앱: 하단 탭바 */
 .tabbar{display:none;}
@@ -536,7 +541,10 @@ html.native-app .sitefoot{display:none !important;}
 
 .hero{max-width:1320px;margin:0 auto;padding:44px 28px 6px;}
 .hero h1{font-family:'Pretendard','Malgun Gothic',sans-serif;font-weight:800;font-size:44px;line-height:1.12;letter-spacing:-.035em;word-break:keep-all;text-wrap:balance;}
-.hero h1 em{font-style:normal;color:var(--accent);font-weight:800;}
+/* "내 스타일을 아는 [뷰티 디자이너]를 찾으세요" — em 은 이 문장의 핵심어인데
+   --accent(2.7:1)라 본문(--ink)보다 오히려 흐렸다. 강조가 역전돼 있던 것.
+   골드로 바꿔 브랜드색을 쓰면서 대비도 확보한다(25px/800 기준 3.0 → 3.2). */
+.hero h1 em{font-style:normal;color:var(--gold);font-weight:800;}
 .hero p{font-size:16.5px;color:var(--ink2);margin-top:12px;max-width:720px;word-break:keep-all;text-wrap:pretty;}
 
 .filterbar{position:sticky;top:var(--hh,69px);z-index:30;background:rgba(255,255,255,.93);backdrop-filter:blur(12px);border-bottom:1px solid var(--line);margin-top:var(--sp-5);}
@@ -583,7 +591,9 @@ html.native-app .sitefoot{display:none !important;}
 .dci{flex:1;min-width:0;}
 .dcn{font-weight:800;font-size:var(--fs-md);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;display:flex;align-items:center;gap:4px;}
 .dcm{font-size:var(--fs-sm);color:var(--sub);margin-top:2px;font-weight:600;} .dcm .star{color:#EBB662;}
-.newrate{display:inline-flex;align-items:center;white-space:nowrap;flex:0 0 auto;font-size:.86em;font-weight:800;color:#9a7b3e;background:#f7efdb;padding:1px 8px;border-radius:999px;letter-spacing:.02em;vertical-align:middle;}
+/* .86em 이라 부모(11px)에서 9.5px 까지 떨어졌다 — 읽을 수 있는 하한 아래다.
+   px 하한을 두고, 골드 텍스트도 대비를 올린다(3.5:1 → 5.6:1). */
+.newrate{display:inline-flex;align-items:center;white-space:nowrap;flex:0 0 auto;font-size:max(11px,.86em);font-weight:800;color:#7a5f28;background:#f7efdb;padding:1.5px 8px;border-radius:999px;letter-spacing:.02em;vertical-align:middle;}
 .dcarr{color:var(--line);font-size:var(--fs-xl);flex:0 0 auto;}
 .dcchips{display:flex;flex-wrap:wrap;gap:var(--sp-1);padding:6px var(--sp-3) 8px;}
 .dcchips span{font-size:var(--fs-xs);font-weight:700;color:var(--plum);background:var(--rosebg);padding:3px 9px;border-radius:999px;}
@@ -618,7 +628,9 @@ html.native-app .sitefoot{display:none !important;}
 /* 이번 주 인기 스타일 */
 .popwrap{margin:2px 0 20px;}
 .popwrap.off{display:none;}
-.pophead{display:flex;align-items:baseline;gap:var(--sp-2);margin:6px 2px 12px;flex-wrap:wrap;}
+/* margin-left:2px 이면 섹션 제목만 그리드보다 2px 안쪽으로 들어가 정렬선이 흔들린다.
+   앱의 좌측 기준선은 .wrap 의 패딩 하나뿐이어야 한다. */
+.pophead{display:flex;align-items:baseline;gap:var(--sp-2);margin:6px 0 12px;flex-wrap:wrap;}
 .pophead h3{font-size:20px;margin:0;color:var(--ink);}
 .popsub{font-size:var(--fs-sm);color:var(--sub);font-weight:600;}
 .poprowwrap{position:relative;}
@@ -663,6 +675,16 @@ html.native-app .sitefoot{display:none !important;}
 .tile:hover .ov{opacity:1;}
 .tile .meta{position:absolute;left:15px;right:15px;bottom:13px;color:#fff;opacity:0;transform:translateY(6px);transition:.2s;}
 .tile:hover .meta{opacity:1;transform:none;}
+/* 터치 기기엔 hover 가 없다 → .meta/.ov 가 opacity:0 인 채로 남아, 모바일 사용자는
+   타일에서 누구 작품인지 영영 알 수 없었다. "작품 보고 아티스트를 고른다"는 서비스에서
+   이름이 안 보이는 건 기능 상실이다. 터치 기기에선 항상 노출한다.
+   (틴트로 사진을 죽이지 않도록 오버레이는 hover 때보다 약하게 + 글자 그림자로 보완) */
+@media(hover:none){
+  .tile .meta{opacity:1;transform:none;}
+  .tile .ov{opacity:1;background:linear-gradient(180deg,rgba(20,12,16,0) 48%,rgba(20,12,16,.60) 100%);}
+  .tile .vb{opacity:1;}
+  .tile .nm,.tile .sn{text-shadow:0 1px 10px rgba(0,0,0,.55);}
+}
 .tile .nm{font-size:15.5px;font-weight:800;display:flex;align-items:center;gap:6px;}
 .tile .ct{font-size:12px;font-weight:600;color:rgba(255,255,255,.85);margin-top:2px;display:flex;align-items:center;gap:6px;}
 .tile .heart{position:absolute;top:11px;right:11px;width:40px;height:40px;border-radius:50%;background:rgba(255,255,255,.92);display:flex;align-items:center;justify-content:center;color:#b9b1b4;font-size:20px;opacity:0;transition:.18s;box-shadow:0 4px 14px -4px rgba(0,0,0,.3);}
@@ -952,7 +974,8 @@ body.mlock .apppop{opacity:0!important;pointer-events:none!important;}
 .toast.on{opacity:1;transform:translateX(-50%);}
 
 @media(max-width:860px){
-  .hin{gap:9px;padding:10px 14px;flex-wrap:wrap;align-items:center;}
+  /* 좌우 14px 이면 검색창이 그 아래 카드 그리드(.wrap 16px)보다 2px 밖으로 나가 정렬선이 어긋난다 */
+  .hin{gap:9px;padding:10px 16px;flex-wrap:wrap;align-items:center;}
   nav.main{display:none;} /* 모바일은 하단 탭바가 내비 담당 — 상단 텍스트 내비 제거 */
   .brand{flex:1 1 auto;min-width:0;} .brand .blogo{height:32px;} .brand .b1{font-size:19px;}
   .hsearch{order:6;flex:1 1 100%;width:100%;margin-left:0;padding:11px 16px;}
@@ -1014,6 +1037,12 @@ html.native-app a,html.native-app button,html.native-app [role=button],html.nati
 /* ===== SOFT LUXURY 정제 (전역 · 승인 시안) ===== */
 /* 헤더 아이콘 3개 통일 */
 .langBtn,.bellBtn,.applyBtn{background:#fff !important;border:1px solid var(--line) !important;color:var(--plum) !important;box-shadow:0 1px 3px rgba(70,45,55,.04) !important;font-weight:600 !important;}
+/* 헤더 아이콘은 40px 원이 시각적으로 맞다(44 로 키우면 헤더가 둔해진다). 대신 손가락이 닿는
+   범위만 44 로 넓힌다 — 버튼 4개가 9px 간격으로 붙어 있어 그냥 두면 오탭이 난다. */
+.langBtn,.bellBtn,.applyBtn,.loginBtn{position:relative;}
+.langBtn::after,.bellBtn::after,.applyBtn::after,.loginBtn::after{
+  content:'';position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);
+  width:100%;min-width:44px;height:44px;}
 /* 로그인: 딥플럼 필(쨍한 검정 제거) — 데스크톱에서도 흰 글씨(어두운배경 위 어두운글씨 버그 수정) */
 .loginBtn{background:var(--plum) !important;color:#fff !important;border-radius:999px !important;font-weight:700 !important;letter-spacing:.2px !important;}
 /* 로고 확실하게 — 마크 크게 + 워드마크 굵고 진하게 */
@@ -1199,7 +1228,9 @@ html.native-app a,html.native-app button,html.native-app [role=button],html.nati
       <a href="mailto:hello@beautia.io" data-t="footContact">Contact</a>
       <a href="https://instagram.com/beautia.collection" target="_blank" rel="noopener">Instagram</a>
     </nav>
-    <div class="sf-copy" data-t="sloganFull" style="font-family:'Fraunces',Georgia,serif;font-style:italic;color:var(--gold,#C9A063)">아티스트를 더욱 아티스트답게 · Artists, more artist.</div>
+    <!-- 한글에 세리프(Fraunces)를 씌우면 안 된다 — 라틴 악센트 전용이다.
+     슬로건은 한/영이 한 줄에 섞여 있어 폰트를 나눌 수 없으므로 전체를 Pretendard 로 둔다. -->
+<div class="sf-copy slogan" data-t="sloganFull">아티스트를 더욱 아티스트답게 · Artists, more artist.</div>
     <div class="sf-copy">© 2026 Beautia. All rights reserved.</div>
     <div class="sf-legal">Operated by <b>LUNATICS GROUP LLC</b> · 254 Chapman Rd, Ste 208 #26785, Newark, DE 19702, USA · Delaware Entity ID 10500367<br>한국 사업자: <b>루나틱스</b> · 대표 송우진 · 사업자등록번호 783-03-03627 · 서울특별시 광진구 아차산로 356 제이타워 702호<br>Beautia는 이용자와 독립적인 뷰티 디자이너를 연결하는 중개 플랫폼이며 예약·서비스 거래의 당사자가 아닙니다. Beautia is a platform connecting users with independent beauty designers and is not a party to, or responsible for, any booking or service.</div>
   </div>
