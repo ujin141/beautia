@@ -555,6 +555,13 @@ html.native-app .sitefoot{display:none !important;}
 .citysel select,.sortsel select{border:none;background:none;font-family:inherit;font-weight:600;font-size:var(--fs-md);color:var(--ink);outline:none;cursor:pointer;}
 @media(max-width:860px){.sortsel{display:flex!important;padding:var(--sp-2) var(--sp-3);}}
 .citysel select{border:none;background:none;outline:none;font:inherit;font-weight:700;}
+/* 나라 줄 — 드롭다운 안에 숨어 있던 나라를 밖으로 꺼낸다. 열어보지 않아도 어디에
+   디자이너가 있는지(그리고 우리가 여러 나라에 있다는 것) 한눈에 보이게. */
+.fincat{padding-bottom:0;}
+.fingeo{padding-top:var(--sp-2);}
+.cat.geo{display:inline-flex;align-items:center;gap:var(--sp-2);font-weight:600;padding:8px 14px;}
+.gnum{font-size:var(--fs-xs);font-weight:700;color:var(--sub);background:var(--soft);padding:1px 7px;border-radius:var(--r-pill);}
+.cat.geo.on .gnum{background:rgba(255,255,255,.22);color:#fff;}
 
 .wrap{max-width:1320px;margin:0 auto;padding:24px 28px 90px;}
 .grid{column-count:4;column-gap:18px;min-height:100vh;}/* CLS: 그리드 공간 예약 → 콘텐츠 채워질 때 푸터 점프 방지 */
@@ -1167,7 +1174,7 @@ html.native-app a,html.native-app button,html.native-app [role=button],html.nati
 <div class="hero" id="hero"><h1 class="serif"></h1><p data-t="tagline"></p></div>
 <div class="stories" id="stories"></div>
 
-<div class="filterbar"><div class="fin"><div class="cats" id="cats"></div><div class="fsorts"><div class="citysel sortsel"><i class="ti ti-arrows-sort"></i><select id="sort" aria-label="정렬 기준" onchange="render()"><option value="rec" data-t="sortRec">추천순</option><option value="new" data-t="sortNew">최신순</option><option value="rating" data-t="sortRating">평점순</option><option value="near" data-t="sortNear">가까운순</option></select></div><div class="citysel"><i class="ti ti-map-pin"></i><select id="city" aria-label="도시 필터" onchange="render()"></select></div></div></div></div>
+<div class="filterbar"><div class="fin fincat"><div class="cats" id="cats"></div></div><div class="fin fingeo"><div class="cats" id="countries"></div><div class="fsorts"><div class="citysel sortsel"><i class="ti ti-arrows-sort"></i><select id="sort" aria-label="정렬 기준" onchange="render()"><option value="rec" data-t="sortRec">추천순</option><option value="new" data-t="sortNew">최신순</option><option value="rating" data-t="sortRating">평점순</option><option value="near" data-t="sortNear">가까운순</option></select></div><div class="citysel"><i class="ti ti-map-pin"></i><select id="city" aria-label="도시 필터" onchange="render()"></select></div></div></div></div>
 
 <main class="wrap"><section id="popwrap" class="popwrap off" aria-label="오늘의 인기 스타일"></section><div class="grid" id="grid"></div><div class="mepage" id="mepage" style="display:none"></div></main>
 
@@ -1342,7 +1349,7 @@ async function blockUser(uid,name){var L=mt();if(!(ME&&ME.uid)){openLogin('');re
 function openByUid(uid){if(!uid)return false;var d=allD().find(function(x){return x.uid===uid;});if(d){openD(d.id);return true;}return false;}
 let TILES=[];
 var TILEW=(typeof window!=='undefined'&&window.innerWidth<=600)?400:640;  // 반응형 타일 이미지(모바일 데이터 절약)
-function buildTiles(){TILES=[];var ds=allD().slice().sort(function(a,b){return ((b.featured?1:0)-(a.featured?1:0))||((parseFloat(b.rating)||0)-(parseFloat(a.rating)||0));});var mx=0;ds.forEach(function(d){if(d.works&&d.works.length>mx)mx=d.works.length;});for(var r=0;r<mx;r++){ds.forEach(function(d){var w=d.works&&d.works[r];if(w===undefined||w===null)return;TILES.push({wid:d.id+'_'+r,did:d.id,uid:d.uid||'',img:workImg(w),poster:workPoster(w),vid:isVid(w),text:workText(w),cat:d.cat,cats:(d.cats&&d.cats.length?d.cats:[d.cat]),city:d.city,area:d.area,name:d.name,flag:d.flag,rating:d.rating,rev:d.rev||0,ver:d.ver,newAt:d.newAt||0,featured:d.featured,insta:d.insta});});}}
+function buildTiles(){TILES=[];var cm=countryMap();var ds=allD().slice().sort(function(a,b){return ((b.featured?1:0)-(a.featured?1:0))||((parseFloat(b.rating)||0)-(parseFloat(a.rating)||0));});var mx=0;ds.forEach(function(d){if(d.works&&d.works.length>mx)mx=d.works.length;});for(var r=0;r<mx;r++){ds.forEach(function(d){var w=d.works&&d.works[r];if(w===undefined||w===null)return;TILES.push({wid:d.id+'_'+r,did:d.id,uid:d.uid||'',img:workImg(w),poster:workPoster(w),vid:isVid(w),text:workText(w),cat:d.cat,cats:(d.cats&&d.cats.length?d.cats:[d.cat]),city:d.city,ck:cityKey(d.city),cc:dCC(d,cm),area:d.area,name:d.name,flag:d.flag,rating:d.rating,rev:d.rev||0,ver:d.ver,newAt:d.newAt||0,featured:d.featured,insta:d.insta});});}}
 // 리뷰 0이면 가짜 5.0 대신 "신규" 배지 — 실제 리뷰가 쌓이면 진짜 평점 표시(신뢰도)
 function revCount(x){return parseInt((x&&x.rev)||0,10)||0;}
 function newRateHtml(){var L={ko:'신규',en:'New',ja:'新規',th:'ใหม่',zh:'新'};return '<span class="newrate">'+(L[LANG]||'New')+'</span>';}
@@ -1360,7 +1367,7 @@ function daySeedKST(){var n=new Date(Date.now()+9*3600*1000);return ''+n.getUTCF
 function hstr(s){s=String(s||'');var h=2166136261;for(var i=0;i<s.length;i++){h^=s.charCodeAt(i);h=Math.imul(h,16777619);}return (h>>>0);}
 function popRank(d){var base=hstr((d.uid||d.id||'')+'@'+daySeedKST())%10000;var boost=((d.featured?1:0)*1500)+((parseFloat(d.rating)||0)*300)+Math.min((d.works?d.works.length:0),8)*80;return base-boost;}
 function renderPopular(){var el=$('popwrap');if(!el)return;
- var show=(VIEW==='explore'&&CAT==='All'&&!(($('q').value||'').trim())&&!$('city').value);
+ var show=(VIEW==='explore'&&CAT==='All'&&!(($('q').value||'').trim())&&!$('city').value&&!CTRY);
  // 디자이너 중복 없이(1명당 카드 1개), 매일 바뀌는 인기 로테이션(팔로우 우선)
  var ds=show?allD().filter(function(d){return d.works&&d.works.length;}):[];
  ds=ds.slice().sort(function(a,b){return ((isFollowing(b.uid)?1:0)-(isFollowing(a.uid)?1:0))||(popRank(a)-popRank(b));}).slice(0,12);
@@ -1519,6 +1526,7 @@ function flagFor(country,region,area){
 }
 
 function renderCats(){$('cats').innerHTML=CATS.map(c=>`<button class="cat ${CAT===c?'on':''}" onclick="setCat('${c}')">${cl(c)}</button>`).join('');}
+var CTRY=''; // 선택된 나라코드. '' = 전체
 var CNAME={KR:{f:'🇰🇷',ko:'대한민국',en:'South Korea',ja:'韓国',th:'เกาหลีใต้',zh:'韩国'},JP:{f:'🇯🇵',ko:'일본',en:'Japan',ja:'日本',th:'ญี่ปุ่น',zh:'日本'},TH:{f:'🇹🇭',ko:'태국',en:'Thailand',ja:'タイ',th:'ไทย',zh:'泰国'},CN:{f:'🇨🇳',ko:'중국',en:'China',ja:'中国',th:'จีน',zh:'中国'},TW:{f:'🇹🇼',ko:'대만',en:'Taiwan',ja:'台湾',th:'ไต้หวัน',zh:'台湾'},HK:{f:'🇭🇰',ko:'홍콩',en:'Hong Kong',ja:'香港',th:'ฮ่องกง',zh:'香港'},SG:{f:'🇸🇬',ko:'싱가포르',en:'Singapore',ja:'シンガポール',th:'สิงคโปร์',zh:'新加坡'},US:{f:'🇺🇸',ko:'미국',en:'United States',ja:'アメリカ',th:'สหรัฐฯ',zh:'美国'},VN:{f:'🇻🇳',ko:'베트남',en:'Vietnam',ja:'ベトナム',th:'เวียดนาม',zh:'越南'}};
 function cLabel(cc){var m=CNAME[cc];return m?(m.f+' '+(m[LANG]||m.en)):(cc||'🌐');}
 // 도시명 다국어 (없는 도시는 원래 이름으로 폴백). 새 도시 생기면 여기 추가.
@@ -1534,6 +1542,15 @@ var CITYNAME={
  '교토':{en:'Kyoto',ja:'京都',th:'เกียวโต',zh:'京都'},'후쿠오카':{en:'Fukuoka',ja:'福岡',th:'ฟุกุโอกะ',zh:'福冈'}
 };
 function cityLabel(c){if(!c)return '';if(LANG==='ko')return c;var m=CITYNAME[c];return (m&&m[LANG])||c;}
+/* 필터용 도시 정규화. 청담·강남·신사는 '서울 안의 동네'인데 city 값이 그렇게 들어와 있어서
+   필터에선 서울과 별개 도시로 갈라졌다 → '서울'을 골라도 청담 디자이너가 안 나왔음.
+   카드·상세의 표시는 원래 값(청담) 그대로 두고 필터 키만 합친다. 동네 이름은 area·검색으로 여전히 찾힌다. */
+var CITY_ALIAS={'청담':'서울','강남':'서울','신사':'서울','압구정':'서울','홍대':'서울','성수':'서울','잠실':'서울'};
+function cityKey(c){return c?(CITY_ALIAS[c]||c):'';}
+/* 나라가 비어 있는 디자이너는 같은 도시의 다른 디자이너에게서 나라를 학습해 채운다. */
+function countryMap(){var m={};allD().forEach(function(d){var cc=(d.country||'').toUpperCase();if(d.city&&cc)m[cityKey(d.city)]=cc;});return m;}
+function dCC(d,cm){return (d.country||'').toUpperCase()||cm[cityKey(d.city)]||'ZZ';}
+function otherLabel(){return {ko:'기타',en:'Other',ja:'その他',th:'อื่นๆ',zh:'其他'}[LANG]||'Other';}
 // ===== 제품 홍보 (예약완료 팝업 + 디자이너 상세 하단) =====
 var PROD_EMOJI={Hair:'💇‍♀️',Makeup:'💄',Nail:'💅',Lash:'👁️',Skin:'🧴',Bridal:'👰',Tattoo:'🖊️'};
 var DEFAULT_PRODUCTS={
@@ -1606,22 +1623,40 @@ function closeBooked(){var b=$('bookedOv');if(b)b.classList.remove('on');}
 +'.bkdok{width:100%;margin-top:16px;border:none;background:#f4ece9;color:#6a5c60;font-size:14px;font-weight:700;padding:13px;border-radius:12px;cursor:pointer}'
 +'.prodsec{margin-top:6px}.prodsec .pgrid{margin-top:12px}';
  document.head.appendChild(st);})();
+function renderCountries(){
+  var el=$('countries');if(!el)return;
+  var cm=countryMap(),n={};
+  allD().forEach(function(d){var cc=dCC(d,cm);n[cc]=(n[cc]||0)+1;});
+  var order=Object.keys(n).sort(function(a,b){if(a==='ZZ')return 1;if(b==='ZZ')return -1;return n[b]-n[a];});
+  // 나라가 하나뿐이면 고를 게 없다 → 칩만 숨긴다(같은 줄의 정렬·도시는 남아야 함)
+  el.style.display=order.length<2?'none':'';
+  var h='<button class="cat geo '+(CTRY?'':'on')+'" onclick="setCtry(\'\')">🌐 '+esc(T[LANG].all)+'<span class="gnum">'+allD().length+'</span></button>';
+  order.forEach(function(cc){
+    h+='<button class="cat geo '+(CTRY===cc?'on':'')+'" onclick="setCtry(\''+cc+'\')">'+esc(cc==='ZZ'?otherLabel():cLabel(cc))+'<span class="gnum">'+n[cc]+'</span></button>';
+  });
+  el.innerHTML=h;
+}
+function setCtry(cc){CTRY=cc;var s=$('city');if(s)s.value='';renderCountries();renderCities();render();}
 function renderCities(){
-  var cityCountry={}; // 나라 있는 디자이너로 도시→나라 학습 → 나라 비어있는 같은 도시도 채움
-  allD().forEach(function(d){var cc=(d.country||'').toUpperCase();if(d.city&&cc)cityCountry[d.city]=cc;});
-  var byC={};
-  allD().forEach(function(d){if(!d.city)return;var cc=(d.country||'').toUpperCase()||cityCountry[d.city]||'ZZ';(byC[cc]=byC[cc]||{}) [d.city]=1;});
+  var cm=countryMap(),byC={};
+  allD().forEach(function(d){
+    if(!d.city)return;
+    var cc=dCC(d,cm); if(CTRY&&cc!==CTRY)return;   // 나라를 골랐으면 그 나라 도시만
+    var k=cityKey(d.city);
+    (byC[cc]=byC[cc]||{}); byC[cc][k]=(byC[cc][k]||0)+1;
+  });
   var order=Object.keys(byC).sort(function(a,b){if(a==='ZZ')return 1;if(b==='ZZ')return -1;return Object.keys(byC[b]).length-Object.keys(byC[a]).length;});
   var html='<option value="">'+esc(T[LANG].allcity)+'</option>';
   order.forEach(function(cc){
-    var cities=Object.keys(byC[cc]).sort();
-    var lbl=cc==='ZZ'?({ko:'기타',en:'Other',ja:'その他',th:'อื่นๆ',zh:'其他'}[LANG]||'Other'):cLabel(cc);
-    html+='<optgroup label="'+esc(lbl)+'">'+cities.map(function(c){return '<option value="'+esc(c)+'">'+esc(cityLabel(c))+'</option>';}).join('')+'</optgroup>';
+    // 가나다순이면 디자이너가 제일 많은 도시(서울)가 목록 한가운데 파묻힌다 → 많은 순 먼저
+    var cities=Object.keys(byC[cc]).sort(function(a,b){return byC[cc][b]-byC[cc][a]||cityLabel(a).localeCompare(cityLabel(b));});
+    var opts=cities.map(function(c){return '<option value="'+esc(c)+'">'+esc(cityLabel(c))+' ('+byC[cc][c]+')</option>';}).join('');
+    html+=CTRY?opts:'<optgroup label="'+esc(cc==='ZZ'?otherLabel():cLabel(cc))+'">'+opts+'</optgroup>';
   });
   $('city').innerHTML=html;
 }
 function setCat(c){CAT=c;renderCats();render();}
-function setLang(l){LANG=l;document.documentElement.lang=l;applyI18n();renderCats();renderCities();updateNearby();render();if(curD)openD(curD,true);updateLangLabel();}
+function setLang(l){LANG=l;document.documentElement.lang=l;applyI18n();renderCats();renderCountries();renderCities();updateNearby();render();if(curD)openD(curD,true);updateLangLabel();}
 function toggleLangMenu(e){if(e)e.stopPropagation();var m=document.getElementById('langmenu');if(m)m.classList.toggle('on');}
 function pickLang(l){try{localStorage.setItem('beautia_lang',l);}catch(e){}var m=document.getElementById('langmenu');if(m)m.classList.remove('on');if(l!==LANG)setLang(l);else updateLangLabel();}
 function updateLangLabel(){var el=document.getElementById('langCur');if(el)el.textContent=({ko:'한국어',en:'EN',ja:'日本語',th:'ไทย',zh:'中文'})[LANG]||'EN';var m=document.getElementById('langmenu');if(m)Array.prototype.forEach.call(m.querySelectorAll('a'),function(a){a.classList.toggle('on',(a.getAttribute('onclick')||'').indexOf("'"+LANG+"'")>=0);});}
@@ -1796,7 +1831,7 @@ function render(){renderBanner();renderStories();renderPopular();
  g.classList.remove('dgview');
  let list;
  if(VIEW==='saved'){list=TILES.filter(t=>isSaved(t.wid));}
- else list=TILES.filter(t=>(CAT==='All'||(t.cats?t.cats.indexOf(CAT)>=0:t.cat===CAT))&&(!city||t.city===city)&&(!q||(t.name+t.cat+t.city+t.area).toLowerCase().includes(q)));
+ else list=TILES.filter(t=>(CAT==='All'||(t.cats?t.cats.indexOf(CAT)>=0:t.cat===CAT))&&(!CTRY||t.cc===CTRY)&&(!city||t.ck===city)&&(!q||(t.name+t.cat+t.city+t.area).toLowerCase().includes(q)));
  if(USERLOC&&VIEW!=='saved'&&!city){list=list.slice().sort(function(x,y){return distOf(x.city)-distOf(y.city);});}
  if(VIEW!=='saved'&&FOLLOWS.length){list=list.slice().sort(function(x,y){return (isFollowing(y.uid)?1:0)-(isFollowing(x.uid)?1:0);});}
  var _sv=($('sort')&&$('sort').value)||'rec';
@@ -1804,13 +1839,15 @@ function render(){renderBanner();renderStories();renderPopular();
  else if(_sv==='rating')list=list.slice().sort(function(a,b){return (b.rating||0)-(a.rating||0);});
  else if(_sv==='near'&&USERLOC)list=list.slice().sort(function(a,b){return distOf(a.city)-distOf(b.city);});
  else if(_sv==='rec'&&DCLICKS)list=list.slice().sort(function(a,b){var f=(isFollowing(b.uid)?1:0)-(isFollowing(a.uid)?1:0);if(f)return f;return (DCLICKS[b.uid]||0)-(DCLICKS[a.uid]||0);}); // 추천순 = 실제 클릭 인기순(팔로잉 우선)
- if(!list.length){g.innerHTML=`<div class="empty"><i class="ti ti-${VIEW==='saved'?'heart':'search'}"></i><p>${VIEW==='saved'?T[LANG].emptyS:T[LANG].noRes}</p><button class="ectabtn" onclick="setCat('All');var q=$('q');if(q)q.value='';var c=$('city');if(c)c.value='';setView('explore')"><i class="ti ti-compass"></i>${T[LANG].browseAll}</button></div>`;return;}
+ if(!list.length){g.innerHTML=`<div class="empty"><i class="ti ti-${VIEW==='saved'?'heart':'search'}"></i><p>${VIEW==='saved'?T[LANG].emptyS:T[LANG].noRes}</p><button class="ectabtn" onclick="setCat('All');var q=$('q');if(q)q.value='';var c=$('city');if(c)c.value='';CTRY='';renderCountries();renderCities();setView('explore')"><i class="ti ti-compass"></i>${T[LANG].browseAll}</button></div>`;return;}
  g.innerHTML=list.map(tileHtml).join('');
 }
 function renderDesigners(q,city){var g=$('grid');g.classList.add('dgview');
+ var cm=countryMap();
  var ds=allD().filter(function(d){return d.works&&d.works.length;});
  if(CAT!=='All')ds=ds.filter(function(d){return d.cat===CAT;});
- if(city)ds=ds.filter(function(d){return d.city===city;});
+ if(CTRY)ds=ds.filter(function(d){return dCC(d,cm)===CTRY;});
+ if(city)ds=ds.filter(function(d){return cityKey(d.city)===city;});
  if(q)ds=ds.filter(function(d){return (d.name+(d.ko||'')+d.cat+(d.city||'')+(d.area||'')+(d.spec||[]).join('')).toLowerCase().includes(q);});
  if(dgFollowOnly)ds=ds.filter(function(d){return isFollowing(d.uid);});
  if(USERLOC&&!city)ds=ds.slice().sort(function(x,y){return distOf(x.city)-distOf(y.city);});
@@ -2757,7 +2794,7 @@ function applyDesignerRows(rows){
       sns:Object.keys(s.sns||{}).filter(function(k){return (s.sns||{})[k];}),services:svcNormalize(s.services),cur:s.cur||'',tags:s.tags||[],shopName:s.name||'',freelancer:!!s.freelancer,shopId:p.shop_id||'',shopRaw:s,reviews:[]});
   });
   list.forEach(attachShop);
-  DUSERS=list;buildTiles();renderCities();render();maybeNotifyNewWork();
+  DUSERS=list;buildTiles();renderCountries();renderCities();render();maybeNotifyNewWork();
   var _pu=new URLSearchParams(location.search).get('u');if(_pu&&!document.querySelector('.dmodal.on'))openByUid(_pu);
 }
 // ===== 브랜드 · 지점(샵) =====
@@ -3094,7 +3131,7 @@ function dismissRemind(){var el=$('bkremind');if(el)el.classList.remove('on');if
 async function submitFeatured(){var ig=igClean($('faIG')?$('faIG').value:'');var cat=$('faCat')?$('faCat').value:'Hair';var city=$('faCity')?$('faCity').value.trim():'';var imgs=($('faImgs')?$('faImgs').value:'').split(/\n+/).map(function(s){return s.trim();}).filter(function(s){return /^https?:\/\//.test(s);}).slice(0,12);if(!ig){toast('인스타 핸들을 입력하세요');return;}if(!imgs.length){toast('사진 URL을 넣으세요');return;}
   try{var r=await SB.from('featured').insert({insta:ig,cat:cat,city:city,imgs:imgs});if(r.error){toast('저장 실패: '+r.error.message);return;}}catch(e){toast('저장 실패');return;}
   closeFa();await loadFeatured();toast('추가됐어요 ✨');}
-buildTiles();renderCats();renderCities();applyI18n();render();renderAuth();updateLangLabel();
+buildTiles();renderCats();renderCountries();renderCities();applyI18n();render();renderAuth();updateLangLabel();
 // 설치앱 스플래시: 초기화 완료 후 페이드아웃(최소 노출 900ms 보장)
 (function(){var sp=document.getElementById('splash');if(!sp||sp.style.display!=='flex')return;var t0=(window.__splashT0||performance.now());var wait=Math.max(0,1250-(performance.now()-t0));setTimeout(function(){sp.classList.add('hide');var m=document.querySelector('meta[name=theme-color]');if(m&&window.__thmPrev!=null)m.setAttribute('content',window.__thmPrev);setTimeout(function(){sp.style.display='none';},600);},wait);})();
 // PWA: 서비스워커 + 설치 프롬프트
