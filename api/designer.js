@@ -24,14 +24,14 @@ function pickLang(str) {
   return 'en';
 }
 const L = {
-  ko: { designer: '뷰티 디자이너', portfolio: '포트폴리오', career: '경력', spec: '전문 분야', book: 'Beautia에서 예약·문의', insta: '인스타그램 보기', blog: '블로그', naver: '네이버 예약', more: '다른 디자이너', home: '홈', work: '작업', worksIn: '지역', by: '작업', locale: 'ko_KR', htmllang: 'ko' },
-  ja: { designer: 'ビューティーデザイナー', portfolio: 'ポートフォリオ', career: '経歴', spec: '専門', book: 'Beautiaで予約・問い合わせ', insta: 'Instagramを見る', blog: 'ブログ', naver: 'NAVER', more: '他のデザイナー', home: 'ホーム', work: '作品', worksIn: 'エリア', by: '作品', locale: 'ja_JP', htmllang: 'ja' },
-  en: { designer: 'Beauty designer', portfolio: 'Portfolio', career: 'Experience', spec: 'Specialties', book: 'Book / message on Beautia', insta: 'View on Instagram', blog: 'Blog', naver: 'NAVER', more: 'More designers', home: 'Home', work: 'work', worksIn: 'Area', by: 'work', locale: 'en_US', htmllang: 'en' },
+  ko: { designer: '뷰티 디자이너', portfolio: '포트폴리오', career: '경력', spec: '전문 분야', book: 'Beautia에서 예약·문의', insta: '인스타그램 보기', blog: '블로그', naver: '네이버 예약', more: '다른 디자이너', home: '홈', work: '작업', worksIn: '지역', by: '작업', menu: '시술 · 가격', from: '가격대', locale: 'ko_KR', htmllang: 'ko' },
+  ja: { designer: 'ビューティーデザイナー', portfolio: 'ポートフォリオ', career: '経歴', spec: '専門', book: 'Beautiaで予約・問い合わせ', insta: 'Instagramを見る', blog: 'ブログ', naver: 'NAVER', more: '他のデザイナー', home: 'ホーム', work: '作品', worksIn: 'エリア', by: '作品', menu: 'メニュー · 料金', from: '料金', locale: 'ja_JP', htmllang: 'ja' },
+  en: { designer: 'Beauty designer', portfolio: 'Portfolio', career: 'Experience', spec: 'Specialties', book: 'Book / message on Beautia', insta: 'View on Instagram', blog: 'Blog', naver: 'NAVER', more: 'More designers', home: 'Home', work: 'work', worksIn: 'Area', by: 'work', menu: 'Services & prices', from: 'From', locale: 'en_US', htmllang: 'en' },
 };
 
 // OG는 항상 영어로 — 전문분야·도시를 영어로 매핑(디자이너 상호명은 고유명사라 유지)
 const CATMAP_EN = { '속눈썹': 'Lash', '속눈썹펌': 'Lash perm', '래쉬': 'Lash', '래쉬리프트': 'Lash lift', '네일': 'Nail', '젤네일': 'Gel nail', '네일아트': 'Nail art', '헤어': 'Hair', '헤어컷': 'Hair', '펌': 'Perm', '염색': 'Color', '메이크업': 'Makeup', '메이크': 'Makeup', '스킨': 'Skin', '피부': 'Skin', '브라이덜': 'Bridal', '왁싱': 'Waxing', '케라틴': 'Keratin', '타투': 'Tattoo', '문신': 'Tattoo', '레터링': 'Lettering tattoo' };
-const CITYMAP_EN = { '서울': 'Seoul', '부산': 'Busan', '대구': 'Daegu', '인천': 'Incheon', '광주': 'Gwangju', '광명': 'Gwangmyeong', '김포': 'Gimpo', '분당': 'Bundang', '성남': 'Seongnam', '서현': 'Seohyun', '수원': 'Suwon', '오사카': 'Osaka', '大阪府': 'Osaka', '도쿄': 'Tokyo', '東京': 'Tokyo', '교토': 'Kyoto' };
+const CITYMAP_EN = { '서울': 'Seoul', '부산': 'Busan', '대구': 'Daegu', '인천': 'Incheon', '광주': 'Gwangju', '광명': 'Gwangmyeong', '김포': 'Gimpo', '분당': 'Bundang', '성남': 'Seongnam', '서현': 'Seohyun', '수원': 'Suwon', '용인': 'Yongin', '일산': 'Ilsan', '창원': 'Changwon', '청담': 'Cheongdam', '강남': 'Gangnam', '신사': 'Sinsa', '오사카': 'Osaka', '大阪府': 'Osaka', '도쿄': 'Tokyo', '東京': 'Tokyo', '교토': 'Kyoto', '후쿠오카': 'Fukuoka', '치앙마이': 'Chiang Mai', '방콕': 'Bangkok', '푸켓': 'Phuket', '파타야': 'Pattaya' };
 const engCat = s => CATMAP_EN[String(s || '').trim()] || String(s || '').trim();
 const engCity = s => { s = String(s || '').trim(); return CITYMAP_EN[s] || s; };
 
@@ -54,7 +54,11 @@ export default async function handler(req, res) {
   if (!pr) { res.status(404).setHeader('Content-Type', 'text/html; charset=utf-8'); res.end(page404()); return; }
 
   const shop = pr.shop || {};
-  const name = (shop.name && shop.name.trim()) || pr.nickname || 'Beautia designer';
+  // 앱(/community)은 nickname 을 디자이너 이름으로 쓴다. 여기서 shop.name 을 먼저 쓰면
+  // 같은 사람이 앱엔 "Bancsi", 검색결과엔 "올드캘리"로 뜬다 → 앱과 같은 기준으로 맞춘다.
+  const name = (pr.nickname && pr.nickname.trim()) || (shop.name && shop.name.trim()) || 'Beautia designer';
+  const shopNm = (shop.name && shop.name.trim()) || '';
+  const shopSep = (shopNm && shopNm !== name) ? shopNm : '';   // 이름과 같으면 중복이라 안 씀
   const city = (pr.region || shop.area || '').toString().trim();
   const cityEN = engCity(city);
   const specs = Array.isArray(shop.specialties) ? shop.specialties.filter(Boolean) : [];
@@ -68,6 +72,24 @@ export default async function handler(req, res) {
   const imgs = works.map(imgOf).filter(Boolean);   // 이미지 URL만(영상은 포스터)
   const avatar = (typeof shop.avatar === 'string' && shop.avatar.startsWith('http')) ? shop.avatar : '';
   const t = L.en;   // OG는 항상 영어
+
+  // 시술·가격. 이게 페이지에 없으면 답변엔진이 "이 동네 네일 얼마?" 같은 질문에 우리를 인용할 수 없다.
+  const svcs = (Array.isArray(shop.services) ? shop.services : [])
+    .map(s => ({ n: String((s && (s.n || s.name)) || '').trim(), p: String((s && s.p) || '').trim(), du: String((s && s.du) || '').trim() }))
+    .filter(s => s.n);
+  const cur = String(shop.cur || '').trim().toUpperCase();
+  const addr = String(shop.address || shop.area || '').trim();
+  const country = String(shop.country || '').trim().toUpperCase();
+  const bookUrl = (typeof shop.bookingUrl === 'string' && /^https?:\/\//i.test(shop.bookingUrl)) ? shop.bookingUrl : '';
+  // "฿300~200,000" 처럼 범위가 섞여도 첫 숫자만 — 구조화 데이터의 price 는 하한이 맞다
+  const priceOf = p => { const m = String(p || '').match(/[0-9][0-9,]*/); return m ? Number(m[0].replace(/,/g, '')) : 0; };
+  const CURSYM = { KRW: '₩', THB: '฿', JPY: '¥', USD: '$', TWD: 'NT$', VND: '₫', SGD: 'S$', CNY: '¥', HKD: 'HK$' };
+  const priceRange = (() => {
+    const ns = svcs.map(s => priceOf(s.p)).filter(n => n > 0);
+    if (!ns.length) return '';
+    const sym = CURSYM[cur] || '';
+    return sym ? `${sym}${Math.min(...ns).toLocaleString()}~` : '';
+  })();
 
   const canon = `${SITE}/d/${encodeURIComponent(u)}`;
   const appUrl = `/community?u=${encodeURIComponent(u)}`;
@@ -95,6 +117,48 @@ export default async function handler(req, res) {
   if (sameAs.length) person.sameAs = sameAs;
   if (career) person.award = career;
 
+  // 지역 검색·지도·AI 답변은 Person 이 아니라 LocalBusiness 를 본다.
+  // 카테고리별 구체 타입을 쓰면(BeautySalon/NailSalon/HairSalon/TattooParlor) 매칭이 정확해진다.
+  const BIZTYPE = { Nail: 'NailSalon', Hair: 'HairSalon', Tattoo: 'TattooParlor' };
+  const bizType = (() => {
+    const s = specs.map(x => engCat(x)).join(' ');
+    if (/Nail/i.test(s)) return BIZTYPE.Nail;
+    if (/Hair|Perm|Color|Keratin/i.test(s)) return BIZTYPE.Hair;
+    if (/Tattoo|Lettering/i.test(s)) return BIZTYPE.Tattoo;
+    return 'BeautySalon';
+  })();
+  const biz = {
+    // 업장 이름은 샵명이 맞다(디자이너 개인은 아래 employee 로 연결)
+    '@type': bizType, '@id': canon + '#business', name: shopNm || name, url: canon, image: heroImg,
+    ...(bio ? { description: bio } : {}),
+    ...(addr || cityEN ? {
+      address: {
+        '@type': 'PostalAddress',
+        ...(addr ? { streetAddress: addr } : {}),
+        ...(cityEN ? { addressLocality: engCity(cityEN) } : {}),
+        ...(country ? { addressCountry: country } : {}),
+      },
+    } : {}),
+    ...(priceRange ? { priceRange } : {}),
+    ...(cur ? { currenciesAccepted: cur } : {}),
+    ...(sameAs.length ? { sameAs } : {}),
+    ...(bookUrl ? { potentialAction: { '@type': 'ReserveAction', target: bookUrl } } : {}),
+    employee: { '@id': canon + '#person' },
+  };
+  // 시술 하나하나를 Offer 로 — 가격이 구조화돼야 "300밧부터" 같은 답이 인용된다
+  if (svcs.length) {
+    biz.makesOffer = svcs.map(s => {
+      const n = priceOf(s.p);
+      return {
+        '@type': 'Offer',
+        itemOffered: { '@type': 'Service', name: s.n, ...(specText ? { serviceType: specText } : {}) },
+        ...(n && cur ? { price: n, priceCurrency: cur } : {}),
+        ...(n && cur ? { availability: 'https://schema.org/InStock' } : {}),
+        url: canon,
+      };
+    });
+  }
+
   const graph = [
     { '@type': 'BreadcrumbList', itemListElement: [
       { '@type': 'ListItem', position: 1, name: t.home, item: `${SITE}/community` },
@@ -102,6 +166,7 @@ export default async function handler(req, res) {
     ] },
     { '@type': 'ProfilePage', '@id': canon, url: canon, name: title,
       inLanguage: t.htmllang, isPartOf: { '@id': `${SITE}/#website` }, mainEntity: person },
+    biz,
   ];
   if (imgs.length) {
     graph.push({
@@ -129,6 +194,19 @@ export default async function handler(req, res) {
     return `<figure class="w"><img src="${esc(w.src)}" loading="${i < 2 ? 'eager' : 'lazy'}" decoding="async" alt="${altTxt}"></figure>`;
   }).join('');
 
+  // 이 페이지는 앱(/community?u=)에서 5개 언어로 열린다. 같은 내용의 언어별 주소를 알려줘야
+  // 검색엔진이 한국어 쿼리엔 한국어 화면을, 태국어 쿼리엔 태국어 화면을 물어온다.
+  const hreflangs = ['ko', 'en', 'ja', 'th', 'zh']
+    .map(l => `<link rel="alternate" hreflang="${l}" href="${esc(canon + '?lang=' + l)}">`)
+    .concat([`<link rel="alternate" hreflang="x-default" href="${esc(canon)}">`])
+    .join('\n');
+
+  // 가격표는 사람이 읽는 텍스트로도 나와야 한다. 답변엔진은 JSON-LD 만이 아니라 본문을 읽는다.
+  const svcTable = svcs.length ? `<h2 class="sec">${esc(t.menu)}</h2><table class="svc"><tbody>${
+    svcs.map(s => `<tr><th scope="row">${esc(s.n)}</th><td>${esc(s.p || '-')}</td>${
+      svcs.some(x => x.du) ? `<td class="du">${esc(s.du || '')}</td>` : ''}</tr>`).join('')
+  }</tbody></table>${priceRange ? `<p class="note">${esc(t.from)} ${esc(priceRange)}</p>` : ''}` : '';
+
   const chips = specs.map(s => `<span class="chip">${esc(s)}</span>`).join('');
   const moreLinks = others.map(o => {
     const os = o.shop || {}; const on = (os.name && os.name.trim()) || o.nickname || 'designer';
@@ -143,6 +221,7 @@ export default async function handler(req, res) {
 <meta name="description" content="${esc(desc)}">
 <meta name="robots" content="index,follow,max-image-preview:large,max-snippet:-1">
 <link rel="canonical" href="${esc(canon)}">
+${hreflangs}
 <meta property="og:type" content="profile"><meta property="og:site_name" content="Beautia">
 <meta property="og:title" content="${esc(title)}"><meta property="og:description" content="${esc(desc)}">
 <meta property="og:url" content="${esc(canon)}"><meta property="og:image" content="${esc(heroImg)}">
@@ -173,6 +252,12 @@ nav.bc a:hover{color:var(--plum)}
 .cta{display:inline-flex;align-items:center;gap:7px;margin:22px 0 6px;background:var(--plum);color:#fff;font-weight:800;font-size:15px;padding:14px 26px;border-radius:999px}
 .cta.ghost{background:#fff;color:var(--plum);border:1.5px solid var(--plum);margin-left:10px}
 h2.sec{font-size:19px;letter-spacing:-.02em;margin:38px 0 16px}
+table.svc{width:100%;max-width:680px;border-collapse:collapse;font-size:15px}
+table.svc tr{border-bottom:1px solid var(--line)}
+table.svc th{text-align:left;font-weight:600;padding:13px 0}
+table.svc td{text-align:right;padding:13px 0;font-weight:700;white-space:nowrap}
+table.svc td.du{color:var(--sub);font-weight:500;font-size:13px;padding-left:14px}
+p.note{color:var(--sub);font-size:13.5px;margin-top:10px}
 .gal{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
 .gal .w{margin:0;border-radius:18px;overflow:hidden;background:var(--soft);aspect-ratio:4/5}
 .gal .w img{width:100%;height:100%;object-fit:cover}
@@ -193,12 +278,13 @@ footer{border-top:1px solid var(--line);margin-top:56px;padding:28px 0;color:var
   <div>
     <h1>${esc(name)}</h1>
     <div class="role">${esc(specText ? specText + ' · ' + t.designer : t.designer)}</div>
-    <div class="meta">${city ? `<span>📍 ${esc(city)}</span>` : ''}${career ? `<span>${esc(t.career)}: ${esc(career)}</span>` : ''}${ig ? `<a href="https://instagram.com/${esc(ig)}" rel="me nofollow" target="_blank">@${esc(ig)}</a>` : ''}${blog ? `<a href="${esc(blog)}" rel="me nofollow" target="_blank">${esc(t.blog)}</a>` : ''}${naver ? `<a href="${esc(naver)}" rel="me nofollow" target="_blank">${esc(t.naver)}</a>` : ''}</div>
+    <div class="meta">${shopSep ? `<span>🏪 ${esc(shopSep)}</span>` : ''}${city ? `<span>📍 ${esc(city)}</span>` : ''}${career ? `<span>${esc(t.career)}: ${esc(career)}</span>` : ''}${ig ? `<a href="https://instagram.com/${esc(ig)}" rel="me nofollow" target="_blank">@${esc(ig)}</a>` : ''}${blog ? `<a href="${esc(blog)}" rel="me nofollow" target="_blank">${esc(t.blog)}</a>` : ''}${naver ? `<a href="${esc(naver)}" rel="me nofollow" target="_blank">${esc(t.naver)}</a>` : ''}</div>
   </div>
 </section>
 ${chips ? `<div class="chips">${chips}</div>` : ''}
 ${bio ? `<p class="bio">${esc(bio)}</p>` : ''}
 <div><a class="cta" href="${esc(appUrl)}">${esc(t.book)} →</a>${ig ? `<a class="cta ghost" href="https://instagram.com/${esc(ig)}" rel="nofollow" target="_blank">${esc(t.insta)}</a>` : ''}</div>
+${svcTable}
 ${works.length ? `<h2 class="sec">${esc(t.portfolio)}</h2><div class="gal">${gallery}</div>` : ''}
 ${moreLinks ? `<h2 class="sec">${esc(t.more)}</h2><div class="more">${moreLinks}</div>` : ''}
 <footer>© Beautia — <a href="/community">beautia.io</a></footer>
