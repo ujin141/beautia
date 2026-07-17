@@ -716,7 +716,8 @@ html.native-app .sitefoot{display:none !important;}
 .mrow.me .mbub{background:var(--plum);color:#fff;border-color:var(--plum);border-bottom-left-radius:16px;border-bottom-right-radius:5px;}
 .morig{font-size:11px;color:var(--accent);font-weight:700;margin-top:3px;padding:1px 2px;}
 .cinput{display:flex;gap:8px;padding:12px;border-top:1px solid var(--line);flex:0 0 auto;}
-.qreplies{display:flex;gap:6px;overflow-x:auto;padding:8px 12px 0;flex:0 0 auto;-webkit-overflow-scrolling:touch;}
+/* 아래 여백이 0이면 칩이 입력창 테두리에 그대로 닿아 겹쳐 보인다. 입력창과 띄운다. */
+.qreplies{display:flex;gap:6px;overflow-x:auto;padding:10px 12px;flex:0 0 auto;-webkit-overflow-scrolling:touch;background:#fff;}
 .qreplies::-webkit-scrollbar{display:none;}
 .qrchip{flex:0 0 auto;background:#f7f2f1;border:1px solid var(--line);color:var(--ink2);font-size:13px;font-weight:600;padding:7px 13px;border-radius:999px;white-space:nowrap;cursor:pointer;}
 .qrchip:active{opacity:.65;}
@@ -838,6 +839,11 @@ body.reels-mode #fbanner,body.reels-mode #hero,body.reels-mode #popwrap,body.ree
 .askfab .adot{position:absolute;top:2px;right:2px;width:12px;height:12px;border-radius:50%;background:var(--gold);border:2px solid #fff;}
 @media(max-width:720px){.askfab{bottom:calc(74px + env(safe-area-inset-bottom));width:52px;height:52px;font-size:24px;}}
 body.reels-mode .askfab{display:none;}
+/* 채팅이 열려 있으면 문의 FAB 을 숨긴다.
+   모바일에서 .chatmodal 은 z-index:50 인데 FAB 은 57 이라 채팅 위로 올라오고,
+   하필 위치가 전송 버튼과 정확히 겹쳐서 전송이 눌리지 않았다.
+   (askFab 이 DOM 상 chatmodal 보다 앞이라 :has 로 잡는다 — 미지원 브라우저 대비는 아래 JS) */
+body:has(#chatmodal.on) .askfab{display:none;}
 .askmodal{position:fixed;inset:0;z-index:200;background:rgba(20,12,16,.5);display:none;align-items:flex-end;justify-content:center;}
 .askmodal.on{display:flex;}
 .askcard{background:#fff;width:min(440px,100%);border-radius:22px 22px 0 0;padding:24px 20px calc(24px + env(safe-area-inset-bottom));position:relative;box-shadow:0 -20px 60px -20px rgba(0,0,0,.4);}
@@ -2617,8 +2623,11 @@ function avChip(o){return o.avatar?`<div class="cav" style="background-image:url
 function otherUid(c){return c.customer===ME.uid?c.designer:c.customer;}
 async function ensureLoginC(){if(ME&&ME.uid)return true;openLogin('');return false;}
 async function fetchProfiles(ids){var need=ids.filter(function(x){return x&&!PROFCACHE[x];});if(need.length){try{var d=(await SB.from('profiles').select('id,nickname,shop').in('id',need)).data||[];d.forEach(function(p){PROFCACHE[p.id]={name:p.nickname||(p.shop&&p.shop.name)||'User',avatar:(p.shop&&p.shop.avatar)||''};});}catch(e){}}need.forEach(function(x){if(!PROFCACHE[x])PROFCACHE[x]={name:'User',avatar:''};});}
-async function openChat(){if(!(await ensureLoginC()))return;curConv=null;await loadConvos();$('chatmodal').classList.add('on');var mt=document.getElementById('tbMsg');if(mt)mt.classList.add('on');markChatSeen();}
-function closeChat(){if(chatSub){try{SB.removeChannel(chatSub);}catch(e){}chatSub=null;}$('chatmodal').classList.remove('on');curConv=null;var mt=document.getElementById('tbMsg');if(mt)mt.classList.remove('on');}
+// 문의 FAB 이 채팅 위(z-index 57 > 모바일 chatmodal 50)로 올라와 전송 버튼을 덮는다 → 채팅 중엔 숨김.
+// CSS :has() 로도 처리하지만, 미지원 브라우저를 위해 여기서도 확실히 토글한다.
+function chatFab(show){var f=document.getElementById('askFab');if(f)f.style.display=show?'':'none';}
+async function openChat(){if(!(await ensureLoginC()))return;curConv=null;await loadConvos();$('chatmodal').classList.add('on');chatFab(false);var mt=document.getElementById('tbMsg');if(mt)mt.classList.add('on');markChatSeen();}
+function closeChat(){if(chatSub){try{SB.removeChannel(chatSub);}catch(e){}chatSub=null;}$('chatmodal').classList.remove('on');chatFab(true);curConv=null;var mt=document.getElementById('tbMsg');if(mt)mt.classList.remove('on');}
 // 안 읽음 배지
 let chatUnread=0,chatGlobalSub=null;
 function chatSeenTs(){return parseInt(localStorage.getItem('beautia_chat_seen')||'0',10)||0;}
@@ -2738,7 +2747,7 @@ function renderChatList(){var rows=CHATS.map(function(c){var o=PROFCACHE[otherUi
  $('chatcard').innerHTML=`<div class="chead"><div class="chl">${T[LANG].messages}</div><button class="cx" onclick="closeChat()">×</button></div><div class="cvlist">${rows||('<div class="cempty"><i class="ti ti-messages" style="font-size:34px;color:#d8c9cc"></i><p>'+T[LANG].noChats+'</p></div>')}</div>`;}
 function openConvoById(id){var c=CHATS.find(function(x){return x.id===id;});if(c)openConvo(c);}
 async function startConvoWith(did){var d=dById(did);if(!d||!d.uid){toast(T[LANG].cantChat);return null;}if(d.uid===ME.uid){toast(T[LANG].cantChatSelf);return null;}PROFCACHE[d.uid]={name:(LANG==='ko'&&d.ko)?d.ko:d.name,avatar:d.avatar||''};var conv=null;try{conv=(await SB.from('conversations').select('*').eq('customer',ME.uid).eq('designer',d.uid).maybeSingle()).data;}catch(e){}if(!conv){try{conv=(await SB.from('conversations').insert({customer:ME.uid,designer:d.uid}).select('*').maybeSingle()).data;}catch(e){}}return conv;}
-async function openChatWith(did){if(!(await ensureLoginC()))return;var conv=await startConvoWith(did);if(!conv){toast(T[LANG].cantChat);return;}await loadConvos();var c=CHATS.find(function(x){return x.id===conv.id;})||conv;$('chatmodal').classList.add('on');openConvo(c);}
+async function openChatWith(did){if(!(await ensureLoginC()))return;var conv=await startConvoWith(did);if(!conv){toast(T[LANG].cantChat);return;}await loadConvos();var c=CHATS.find(function(x){return x.id===conv.id;})||conv;$('chatmodal').classList.add('on');chatFab(false);openConvo(c);}
 async function openConvo(c){curConv=c;var msgs=[];try{msgs=(await SB.from('messages').select('*').eq('conversation',c.id).order('created_at',{ascending:true})).data||[];}catch(e){}c._msgs=msgs;renderThread();markChatSeen();if(chatSub){try{SB.removeChannel(chatSub);}catch(e){}}chatSub=SB.channel('msg-'+c.id).on('postgres_changes',{event:'INSERT',schema:'public',table:'messages',filter:'conversation=eq.'+c.id},function(p){var m=p.new;if((c._msgs||[]).some(function(x){return x.id===m.id;}))return;c._msgs.push(m);renderThread(true);}).subscribe();}
 function msgText(m){if(!m.lang||m.lang===LANG)return m.body;return (m.tr&&m.tr[LANG])?m.tr[LANG]:m.body;}
 function renderThread(){var c=curConv;if(!c)return;var o=PROFCACHE[otherUid(c)]||{name:'User'};var body=(c._msgs||[]).map(function(m){var mine=m.sender===ME.uid;return `<div class="mrow ${mine?'me':''}"><div class="mbub">${esc(msgText(m))}</div>${(!mine&&m.body)?`<button class="morig" onclick="transChat(this)">${trLabel()}</button>`:''}</div>`;}).join('');$('chatcard').innerHTML=`<div class="chead"><button class="cback" onclick="backToList()" aria-label="뒤로"><i class="ti ti-chevron-left" aria-hidden="true"></i></button>${avChip(o)}<div class="chl2">${esc(o.name)}</div><button class="cx" onclick="reportContent('message','${esc(otherUid(c))}','${mlbl(o.name)}')" title="${esc(mt().report)}"><i class="ti ti-flag"></i></button><button class="cx" onclick="blockUser('${esc(otherUid(c))}','${mlbl(o.name)}')" title="${esc(mt().block)}"><i class="ti ti-ban"></i></button><button class="cx" onclick="closeChat()">×</button></div><div class="cthread" id="cthread">${body||('<div class="cempty"><p>'+T[LANG].sayHi+'</p></div>')}</div><div class="cinput"><input id="cmsg" maxlength="1000" placeholder="${T[LANG].typeMsg}" onkeydown="if(event.key==='Enter')sendChat()"><button onclick="sendChat()" aria-label="전송"><i class="ti ti-send" aria-hidden="true"></i></button></div>`;var th=$('cthread');if(th)th.scrollTop=th.scrollHeight;}
