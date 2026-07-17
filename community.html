@@ -1551,7 +1551,9 @@ var CITYNAME={
  '대구':{en:'Daegu',ja:'テグ',th:'แทกู',zh:'大邱'},'창원':{en:'Changwon',ja:'チャンウォン',th:'ชางวอน',zh:'昌原'},
  '부산':{en:'Busan',ja:'釜山',th:'ปูซาน',zh:'釜山'},'수원':{en:'Suwon',ja:'水原',th:'ซูวอน',zh:'水原'},
  '오사카':{en:'Osaka',ja:'大阪',th:'โอซาก้า',zh:'大阪'},'도쿄':{en:'Tokyo',ja:'東京',th:'โตเกียว',zh:'东京'},
- '교토':{en:'Kyoto',ja:'京都',th:'เกียวโต',zh:'京都'},'후쿠오카':{en:'Fukuoka',ja:'福岡',th:'ฟุกุโอกะ',zh:'福冈'}
+ '교토':{en:'Kyoto',ja:'京都',th:'เกียวโต',zh:'京都'},'후쿠오카':{en:'Fukuoka',ja:'福岡',th:'ฟุกุโอกะ',zh:'福冈'},
+ '치앙마이':{en:'Chiang Mai',ja:'チェンマイ',th:'เชียงใหม่',zh:'清迈'},'방콕':{en:'Bangkok',ja:'バンコク',th:'กรุงเทพฯ',zh:'曼谷'},
+ '푸켓':{en:'Phuket',ja:'プーケット',th:'ภูเก็ต',zh:'普吉'},'파타야':{en:'Pattaya',ja:'パタヤ',th:'พัทยา',zh:'芭提雅'}
 };
 function cityLabel(c){if(!c)return '';if(LANG==='ko')return c;var m=CITYNAME[c];return (m&&m[LANG])||c;}
 /* 필터용 도시 정규화. 청담·강남·신사는 '서울 안의 동네'인데 city 값이 그렇게 들어와 있어서
@@ -1933,8 +1935,8 @@ function openD(did,keep){stopAllVideos();const d=dById(did);if(!d)return;curD=di
    <button class="dclose" onclick="closeD()">×</button>
    <div class="dhcap">
      ${avHtml(d,'dav-c')}
-     <div class="dn">${esc(d.flag)} ${esc(name)} ${d.ver?`<span class="vbadge"><i class="ti ti-rosette-discount-check-filled"></i>${T[LANG].verified}</span>`:''}${d.freelancer?`<span class="fbadge"><i class="ti ti-user-star"></i>${esc(FRLZ[LANG]||FRLZ.ko)}</span>`:''}</div>${d.shopId&&SHOPS[d.shopId]?`<div class="dshop dshoplink" onclick="event.stopPropagation();openShop('${d.shopId}')"><i class="ti ti-building-store"></i> ${esc(shopLabel(d))} <i class="ti ti-chevron-right" style="font-size:14px;opacity:.7"></i></div>`:(d.shopName?`<div class="dshop"><i class="ti ti-building-store"></i> ${esc(d.shopName)}</div>`:'')}
-     <div class="dmeta"><span id="dstars">${rateInline(d,{count:true})}</span>${d.cat?`<span>${esc(cl(d.cat))}</span>`:''}${shopMeta(d)}<span><i class="ti ti-map-pin" style="font-size:16px"></i> ${esc(cityLabel(d.city)||d.area)}</span>${d.years?`<span><i class="ti ti-briefcase" style="font-size:16px"></i> ${esc(d.years)}${LANG==='en'?' ':''}${T[LANG].years}</span>`:''}</div>
+     <div class="dn">${esc(d.flag)} ${esc(name)} ${d.ver?`<span class="vbadge"><i class="ti ti-rosette-discount-check-filled"></i>${T[LANG].verified}</span>`:''}${d.freelancer?`<span class="fbadge"><i class="ti ti-user-star"></i>${esc(FRLZ[LANG]||FRLZ.ko)}</span>`:''}</div>${d.shopId&&SHOPS[d.shopId]?`<div class="dshop dshoplink" onclick="event.stopPropagation();openShop('${d.shopId}')"><i class="ti ti-building-store"></i> ${esc(shopLabel(d))} <i class="ti ti-chevron-right" style="font-size:14px;opacity:.7"></i></div>`:(shopOf(d)?`<div class="dshop"><i class="ti ti-building-store"></i> ${esc(shopOf(d))}</div>`:'')}
+     <div class="dmeta"><span id="dstars">${rateInline(d,{count:true})}</span>${d.cat?`<span>${esc(cl(d.cat))}</span>`:''}<span><i class="ti ti-map-pin" style="font-size:16px"></i> ${esc(cityLabel(d.city)||d.area)}</span>${d.years?`<span><i class="ti ti-briefcase" style="font-size:16px"></i> ${esc(d.years)}${LANG==='en'?' ':''}${T[LANG].years}</span>`:''}</div>
      ${(d.uid&&!d.isMe)?followBtnHtml(d.uid,'dhfollow'):''}
    </div>
   </div>
@@ -2852,10 +2854,6 @@ function shopChip(d){
   return d.shopId
     ? '<div class="dcbranch" onclick="event.stopPropagation();openShop(\''+d.shopId+'\')">'+ico+esc(lbl)+'</div>'
     : '<div class="dcbranch nolink">'+ico+esc(lbl)+'</div>';
-}
-function shopMeta(d){
-  var lbl=shopOf(d);
-  return lbl?'<span><i class="ti ti-building-store" style="font-size:16px"></i> '+esc(lbl)+'</span>':'';
 }
 async function loadDesigners(){
   // stale-while-revalidate: 캐시가 있으면 즉시 그려서 빠르게 보여주되,
