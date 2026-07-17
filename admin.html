@@ -426,8 +426,30 @@ function revealPII(id){var el=$(id);if(el)el.textContent=el.dataset.real||'';}
 // ===== 보안: 접속 기록(IP 로그) =====
 var ACCESS=[];
 function shouldLogAccess(result){ if(result!=='owner')return true; try{var last=+localStorage.getItem('beautia_admin_logged')||0; if(Date.now()-last<30*60000)return false; localStorage.setItem('beautia_admin_logged',String(Date.now())); }catch(e){} return true; }
-async function logAccess(result){ if(!shouldLogAccess(result))return; var info={}; try{var r=await fetch('https://ipapi.co/json/');if(r.ok)info=await r.json();}catch(e){}
-  try{ await SB.from('admin_access_log').insert({email:(EMAIL||'').slice(0,120), ip:String(info.ip||'').slice(0,64), city:String(info.city||'').slice(0,80), country:String(info.country_name||info.country||'').slice(0,80), ua:(navigator.userAgent||'').slice(0,400), result:result}); }catch(e){} }
+// IP 조회는 외부 서비스에 의존한다. 하나만 쓰면(=예전 코드) 그 서비스가 429/차단될 때
+// ip:'' 로 조용히 기록됐고, 경보 트리거는 ''를 '이미 본 IP'로 오인해 새 IP 경보가 통째로 죽었다.
+// → 공격자가 IP 조회만 막으면 감시를 회피할 수 있었음. 다중 소스 + 실패 시 null(빈문자 금지).
+async function ipInfo(){
+  var srcs=[
+    ['https://ipapi.co/json/',        function(j){return {ip:j.ip,city:j.city,country:j.country_name||j.country};}],
+    ['https://ipwho.is/',             function(j){return j&&j.success===false?null:{ip:j.ip,city:j.city,country:j.country};}],
+    ['https://api.ipify.org?format=json', function(j){return {ip:j.ip,city:'',country:''};}]
+  ];
+  for(var i=0;i<srcs.length;i++){
+    try{ var r=await fetch(srcs[i][0],{cache:'no-store'}); if(!r.ok)continue;
+      var v=srcs[i][1](await r.json());
+      if(v&&v.ip)return v;
+    }catch(e){}
+  }
+  return null;   // 전부 실패 → null. DB 트리거가 'IP 확인 실패' 경보를 올린다.
+}
+async function logAccess(result){ if(!shouldLogAccess(result))return;
+  var info=await ipInfo();
+  try{ await SB.from('admin_access_log').insert({email:(EMAIL||'').slice(0,120),
+    ip:info?String(info.ip).slice(0,64):null,
+    city:info?String(info.city||'').slice(0,80):null,
+    country:info?String(info.country||'').slice(0,80):null,
+    ua:(navigator.userAgent||'').slice(0,400), result:result}); }catch(e){} }
 async function loadAccessLog(){ var el=$('acclist'); if(el&&!ACCESS.length)el.innerHTML='<div class="empty"><i class="ti ti-loader"></i><p>불러오는 중…</p></div>';
   try{var res=await SB.from('admin_access_log').select('*').order('created_at',{ascending:false}).limit(100); if(res.error){renderAccessLog(res.error.message);return;} ACCESS=res.data||[]; renderAccessLog(); }catch(e){renderAccessLog(e.message);} }
 function renderAccessLog(err){ var el=$('acclist'); if(!el)return;

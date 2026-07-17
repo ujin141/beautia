@@ -42,7 +42,7 @@ begin
         '권한 없는 관리자 접근 시도: '||coalesce(NEW.email,'?')||' ('||coalesce(NEW.ip,'?')||')',
         jsonb_build_object('ip',NEW.ip,'email',NEW.email,'city',NEW.city,'country',NEW.country));
     end if;
-  elsif NEW.result = 'owner' and NEW.ip is not null then
+  elsif NEW.result = 'owner' and coalesce(NEW.ip,'') <> '' then
     -- 관리자가 처음 보는 IP에서 로그인 → 도난 세션 의심
     select count(*) into seen_ip from public.admin_access_log
       where result='owner' and ip = NEW.ip and id <> NEW.id;
@@ -51,6 +51,18 @@ begin
       values('admin_new_ip','med',
         '새 IP에서 관리자 로그인: '||NEW.ip||' ('||coalesce(NEW.city||', ','')||coalesce(NEW.country,'')||')',
         jsonb_build_object('ip',NEW.ip,'city',NEW.city,'country',NEW.country));
+    end if;
+  elsif NEW.result = 'owner' then
+    -- IP 확인 실패(조회 서비스 429/차단/오프라인). 이걸 조용히 넘기면 감시에 구멍이 난다:
+    -- 공격자가 IP 조회만 막아도 위 admin_new_ip 경보를 통째로 회피할 수 있기 때문.
+    -- '모른다'는 사실 자체를 경보로 올린다. (1시간 중복 억제)
+    select count(*) into dup from public.security_alerts
+      where kind='admin_ip_unknown' and created_at > now()-interval '1 hour';
+    if dup = 0 then
+      insert into public.security_alerts(kind,severity,detail,meta)
+      values('admin_ip_unknown','med',
+        '관리자 로그인 시 IP 확인 실패 — 조회 차단·한도 초과 의심 (새 IP 경보가 동작하지 않는 상태)',
+        jsonb_build_object('email',NEW.email,'ua',NEW.ua));
     end if;
   end if;
   return NEW;
@@ -94,3 +106,15 @@ grant execute on function public.unseen_alert_count() to authenticated;
 -- (옵션 B) 폰 알림 — 실시간 경보를 우진 폰으로 밀어주려면 pg_net + notify 엣지함수 연동.
 --   원하면 별도 스크립트로 붙여줌.
 -- ============================================================
+
+
+-- ── 과거 데이터 정리 ────────────────────────────────────────
+-- IP 조회 실패를 빈 문자열('')로 기록하던 시절의 행. ''는 null과 달리 위 seen_ip 매칭에
+-- 걸려서 "이미 본 IP"로 취급된다 → 새 IP 경보가 죽는다. null 로 통일한다.
+-- (AFTER INSERT 트리거라 이 UPDATE 로는 경보가 발생하지 않는다. 안전.)
+update public.admin_access_log
+   set ip = null, city = null, country = null
+ where ip = '';
+
+-- 확인: 빈 문자열 IP 가 0건이어야 정상
+select count(*) as empty_ip_rows from public.admin_access_log where ip = '';

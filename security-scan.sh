@@ -88,6 +88,13 @@ for f in db_shops.sql db_mfa_enforce.sql; do
 done
 ok "관리자 권한 aal2 요구 검사 완료"
 
+# 19) 관리자 IP 로깅이 단일 외부서비스에 의존하거나 실패를 빈 문자열로 기록하면
+#     새 IP 경보(admin_new_ip)가 무력화된다. ''는 null과 달리 "이미 본 IP"로 매칭되기 때문.
+#     (2026-07-17 실제 발생: ipapi.co 429 -> ip:'' 2건 기록, 경보 미발생)
+if grep -q "async function ipInfo()" admin.html 2>/dev/null && grep -q "ipwho.is" admin.html 2>/dev/null && grep -q "await ipInfo()" admin.html 2>/dev/null; then ok "관리자 IP 조회 다중화 유지"; else red "admin.html IP 조회가 단일 소스로 회귀(경보 회피 가능)"; fi
+if grep -qE "ip:String\(info\.ip\|\|''\)" admin.html 2>/dev/null; then red "IP 조회 실패를 빈 문자열로 기록(새 IP 경보 무력화) — null 이어야 함"; else ok "IP 실패 시 null 기록 유지"; fi
+if grep -q "admin_ip_unknown" db_security_guard.sql 2>/dev/null; then ok "IP 확인 실패 경보 유지"; else red "IP 확인 실패 경보(admin_ip_unknown) 누락 — 감시 사각"; fi
+
 echo "-----"
 if [ "$FAIL" -eq 0 ]; then echo "🛡️ 보안 회귀 없음 — 통과"; else echo "⚠️ 보안 회귀 발견 — 위 [FAIL] 확인 필요"; fi
 exit $FAIL
