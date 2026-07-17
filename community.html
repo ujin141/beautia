@@ -890,9 +890,9 @@ textarea.askinp{resize:vertical;min-height:100px;}
 .sns a{width:54px;height:54px;border-radius:var(--r-lg);background:var(--soft);border:1px solid var(--line);display:flex;align-items:center;justify-content:center;font-size:26px;color:var(--ink);transition:.15s;}
 .sns a:hover{background:var(--ink);color:#fff;transform:translateY(-2px);}
 .sns a.sns-nv{background:#03C75A;border-color:#03C75A;color:#fff;font-family:'Outfit','Pretendard',sans-serif;font-weight:900;font-size:24px;}
-.extbook{display:flex;align-items:center;justify-content:center;gap:var(--sp-2);width:100%;background:#03C75A;color:#fff;font-weight:800;font-size:var(--fs-lg);padding:var(--sp-4);border-radius:var(--r-md);margin-bottom:var(--sp-3);text-decoration:none;transition:.15s;box-shadow:0 8px 20px -10px rgba(3,199,90,.6);}
+.extbook{display:flex;align-items:center;justify-content:center;gap:var(--sp-2);width:100%;background:#03C75A;color:#fff;font-weight:700;font-size:var(--fs-md);padding:var(--sp-3);border-radius:var(--r-md);margin-bottom:var(--sp-3);text-decoration:none;transition:.15s;box-shadow:0 8px 20px -10px rgba(3,199,90,.6);}
 .extbook:hover{filter:brightness(1.06);}
-.extbook i{font-size:20px;}
+.extbook i{font-size:17px;}
 .sns a.sns-nv:hover{background:#02b350;color:#fff;}
 /* sticky footer cta */
 .dfoot{flex:0 0 auto;display:flex;gap:var(--sp-3);padding:var(--sp-5) var(--sp-8);border-top:1px solid var(--line);background:#fff;}
@@ -1905,12 +1905,15 @@ function openD(did,keep){stopAllVideos();const d=dById(did);if(!d)return;curD=di
  const handles=Object.assign({},d.handles||(d.insta?{instagram:d.insta}:{}));
  const snsHtml=Object.keys(SNSBASE).map(function(p){var h=igClean(handles[p]||'');return h?`<a href="${SNSBASE[p]}${h}" target="_blank" rel="noopener"><i class="ti ${SNSMETA[p][0]}"></i></a>`:'';}).join('');
  const naverHtml=(function(){var u=safeUrl(d.naver);return u?`<a href="${esc(u)}" target="_blank" rel="noopener" class="sns-nv" title="네이버 예약">N</a>`:'';})();
- const bookingHtml=(function(){if(d.bookMode==='external')return '';var bu=safeUrl(d.bookingUrl);if(!bu)return '';var u=bu.toLowerCase();var lb=T[LANG].extBook,c='#573f47',ic='ti-calendar-check';
-  if(/line\.me|lin\.ee|liff/.test(u)){lb=(LANG==='ja'?'LINEで予約':(LANG==='ko'?'LINE으로 예약':'Book on LINE'));c='#06C755';ic='ti-brand-line';}
+ const bookingHtml=(function(){if(d.bookMode==='external')return '';var bu=safeUrl(d.bookingUrl);if(!bu)return '';var u=bu.toLowerCase();var lb=T[LANG].extBook,c='#573f47',ic='ti-calendar-check',tc='#fff';
+  /* 카카오 오픈채팅은 '예약 사이트'가 아니라 상담 창구다. 기본 문구("예약 사이트에서 예약하기")로
+     떨어지면 거짓말이 된다 — 타투처럼 도안 상담이 먼저인 업종은 여기로 문의부터 받는다. */
+  if(/open\.kakao\.com|pf\.kakao\.com|kakao\.com|katalk/.test(u)){lb=({ko:'오픈채팅 문의',en:'Chat on KakaoTalk',ja:'カカオトークで相談',th:'แชทผ่าน KakaoTalk',zh:'KakaoTalk 咨询'}[LANG]||'Chat on KakaoTalk');c='#FEE500';tc='#191600';ic='ti-message-2';}   /* 카카오 노랑엔 흰 글자가 안 보인다 */
+  else if(/line\.me|lin\.ee|liff/.test(u)){lb=(LANG==='ja'?'LINEで予約':(LANG==='ko'?'LINE으로 예약':'Book on LINE'));c='#06C755';ic='ti-brand-line';}
   else if(/naver\./.test(u)){lb=(LANG==='ja'?'NAVERで予約':(LANG==='ko'?'네이버 예약':'Book on NAVER'));c='#03C75A';}
   else if(/hotpepper|hpb\.jp|beauty\.hotpepper/.test(u)){lb='HotPepper 予約';c='#E9531F';}
   else if(/minimo/.test(u)){lb='minimo 予約';c='#FF7DA0';}
-  return '<a href="'+esc(bu)+'" target="_blank" rel="noopener" class="extbook" style="background:'+c+';box-shadow:0 8px 20px -10px '+c+'"><i class="ti '+ic+'"></i> '+esc(lb)+'</a>';})();
+  return '<a href="'+esc(bu)+'" target="_blank" rel="noopener" class="extbook" style="background:'+c+';color:'+tc+';box-shadow:0 8px 20px -10px '+c+'"><i class="ti '+ic+'"></i> '+esc(lb)+'</a>';})();
  const blogHtml=(function(){var u=safeUrl(d.blog);return u?`<a href="${esc(u)}" target="_blank" rel="noopener" class="sns-nv" title="블로그"><i class="ti ti-notebook"></i></a>`:'';})();
  const mapHtml=(function(){var bits=[d.area,d.city].filter(Boolean);if(!bits.length)return '';var addr=[d.shopName].concat(bits).filter(Boolean).join(', ');var q=encodeURIComponent(addr);var mo=T[LANG].mapOpen||'지도에서 열기';
   return `<div class="dsec"><div class="st">${T[LANG].location||'위치'}</div>
