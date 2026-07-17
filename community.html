@@ -760,6 +760,8 @@ html.native-app .sitefoot{display:none !important;}
 .dshoplink:hover{background:rgba(255,255,255,.28);}
 .dcbranch{margin-top:3px;font-size:var(--fs-xs);font-weight:700;color:var(--plum);display:inline-flex;align-items:center;gap:var(--sp-1);cursor:pointer;background:var(--rosebg);padding:2px 9px;border-radius:999px;}
 .dcbranch:hover{background:#f3e4e6;}
+.dcbranch.nolink{cursor:default;}
+.dcbranch.nolink:hover{background:transparent;}
 /* 지점 페이지 */
 .shopcover{height:150px;background:linear-gradient(135deg,#48323a,#2e2326);background-size:cover;background-position:center;position:relative;}
 .shopcover::after{content:'';position:absolute;inset:0;background:linear-gradient(0deg,rgba(0,0,0,.5),transparent 60%);}
@@ -1874,7 +1876,7 @@ function renderDesigners(q,city){var g=$('grid');g.classList.add('dgview');
     <div class="dcbody" onclick="openD('${d.id}')">
       ${avHtml(d,'dcav')}
       <div class="dci"><div class="dcn">${esc(d.flag)} ${esc(nm)} ${d.ver?`<i class="ti ti-rosette-discount-check-filled" style="color:var(--gold);font-size:15px"></i>`:''}</div>
-       <div class="dcm">${rateInline(d)} · ${esc(cl(d.cat))}${d.city?' · '+esc(cityLabel(d.city)):''}</div>${(d.brand||d.branch)?`<div class="dcbranch" onclick="event.stopPropagation();openShop('${d.shopId}')"><i class="ti ti-building-store"></i> ${esc(shopLabel(d))}</div>`:''}</div>
+       <div class="dcm">${rateInline(d)} · ${esc(cl(d.cat))}${d.city?' · '+esc(cityLabel(d.city)):''}</div>${shopChip(d)}</div>
     </div>
     ${badges?`<div class="dctrust">${badges}</div>`:''}
     ${(chipsOf(d).length)?`<div class="dcchips">${chipsOf(d).slice(0,3).map(function(s){return `<span>${esc(s)}</span>`;}).join('')}</div>`:''}
@@ -1925,7 +1927,7 @@ function openD(did,keep){stopAllVideos();const d=dById(did);if(!d)return;curD=di
    <div class="dhcap">
      ${avHtml(d,'dav-c')}
      <div class="dn">${esc(d.flag)} ${esc(name)} ${d.ver?`<span class="vbadge"><i class="ti ti-rosette-discount-check-filled"></i>${T[LANG].verified}</span>`:''}${d.freelancer?`<span class="fbadge"><i class="ti ti-user-star"></i>${esc(FRLZ[LANG]||FRLZ.ko)}</span>`:''}</div>${d.shopId&&SHOPS[d.shopId]?`<div class="dshop dshoplink" onclick="event.stopPropagation();openShop('${d.shopId}')"><i class="ti ti-building-store"></i> ${esc(shopLabel(d))} <i class="ti ti-chevron-right" style="font-size:14px;opacity:.7"></i></div>`:(d.shopName?`<div class="dshop"><i class="ti ti-building-store"></i> ${esc(d.shopName)}</div>`:'')}
-     <div class="dmeta"><span id="dstars">${rateInline(d,{count:true})}</span>${d.cat?`<span>${esc(cl(d.cat))}</span>`:''}<span><i class="ti ti-map-pin" style="font-size:16px"></i> ${esc(cityLabel(d.city)||d.area)}</span>${d.years?`<span><i class="ti ti-briefcase" style="font-size:16px"></i> ${esc(d.years)}${LANG==='en'?' ':''}${T[LANG].years}</span>`:''}</div>
+     <div class="dmeta"><span id="dstars">${rateInline(d,{count:true})}</span>${d.cat?`<span>${esc(cl(d.cat))}</span>`:''}${shopMeta(d)}<span><i class="ti ti-map-pin" style="font-size:16px"></i> ${esc(cityLabel(d.city)||d.area)}</span>${d.years?`<span><i class="ti ti-briefcase" style="font-size:16px"></i> ${esc(d.years)}${LANG==='en'?' ':''}${T[LANG].years}</span>`:''}</div>
      ${(d.uid&&!d.isMe)?followBtnHtml(d.uid,'dhfollow'):''}
    </div>
   </div>
@@ -2827,6 +2829,27 @@ function attachShop(d){
   if(s.book_mode==='link'&&s.book_link){d.bookMode='external';d.bookingUrl=s.book_link;}
 }
 function shopLabel(d){return (d&&(d.brand||d.branch))?[d.brand,d.branch].filter(Boolean).join(' · '):(d&&d.shopName||'');}
+/* 소속 샵 칩. shops 테이블에 연결된 곳(brand/branch)만 보여주면, 디자이너명과 샵명이 다른
+   1인 스튜디오(예: 디자이너 Bancsi @ 올드캘리)는 샵이 어디인지 카드에서 사라진다.
+   반대로 이름과 샵명이 같은 곳(블레스헤어=블레스헤어)에 칩을 달면 같은 글자가 두 번 나온다.
+   → shopName 이 표시명과 다를 때만 보여주고, shopId 가 없으면 클릭(샵 페이지)은 붙이지 않는다. */
+function shopOf(d){
+  if(!d)return '';
+  var lbl=shopLabel(d); if(!lbl)return '';
+  var nm=(LANG==='ko'&&d.ko)?d.ko:d.name;
+  return (lbl===nm||lbl===d.name)?'':lbl;   // 이름과 같으면 중복이라 안 보여줌
+}
+function shopChip(d){
+  var lbl=shopOf(d); if(!lbl)return '';
+  var ico='<i class="ti ti-building-store"></i> ';
+  return d.shopId
+    ? '<div class="dcbranch" onclick="event.stopPropagation();openShop(\''+d.shopId+'\')">'+ico+esc(lbl)+'</div>'
+    : '<div class="dcbranch nolink">'+ico+esc(lbl)+'</div>';
+}
+function shopMeta(d){
+  var lbl=shopOf(d);
+  return lbl?'<span><i class="ti ti-building-store" style="font-size:16px"></i> '+esc(lbl)+'</span>':'';
+}
 async function loadDesigners(){
   // stale-while-revalidate: 캐시가 있으면 즉시 그려서 빠르게 보여주되,
   // 항상 서버로 재검증해서 최신 데이터로 갱신한다(옛 캐시에 갇히는 문제 방지).
