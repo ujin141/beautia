@@ -1024,6 +1024,15 @@ html.native-app input,html.native-app textarea,html.native-app select,html.nativ
 html.native-app img{-webkit-user-drag:none;user-drag:none;}
 /* 탭 시 파란/회색 포커스 아웃라인 제거 — 버튼/링크만(입력창 포커스는 유지) */
 html.native-app button:focus,html.native-app a:focus,html.native-app [role=button]:focus,html.native-app .tb:focus,html.native-app .cat:focus{outline:none !important;}
+/* 키보드 포커스 표시. 조작 요소 190개에 아무 표시가 없어서 Tab 으로 다니면 지금 어디에
+   있는지 알 수 없었다. :focus-visible 이라 마우스 클릭 때는 안 뜨고 키보드일 때만 뜬다. */
+:focus-visible{outline:2.5px solid var(--ink);outline-offset:2px;border-radius:3px;}
+/* 사진 위 버튼(하트·배지)은 어두운 링이 묻히므로 흰 링 */
+.tile :focus-visible,.dhero :focus-visible,.pcard :focus-visible{outline-color:#fff;}
+/* 검정 배경 버튼은 링이 버튼에 먹히지 않게 바깥으로 더 띄운다 */
+.cbtn.book:focus-visible,.cat.on:focus-visible,.ectabtn:focus-visible{outline-offset:3px;}
+/* 네이티브 앱(터치)에선 링을 띄우지 않는다 */
+html.native-app :focus-visible{outline:none !important;}
 /* 탭 지연 제거 + 더블탭 확대 방지(스냅한 반응) */
 html.native-app a,html.native-app button,html.native-app [role=button],html.native-app .tb,html.native-app .cat,html.native-app .qrchip{touch-action:manipulation !important;}
 /* ===== 인앱 사진 라이트박스 ===== */
@@ -1119,6 +1128,13 @@ html.native-app a,html.native-app button,html.native-app [role=button],html.nati
 @keyframes splashDot{0%,100%{opacity:.3;transform:translateY(0)}50%{opacity:1;transform:translateY(-5px)}}
 @keyframes splashSheen{0%{opacity:0;background-position:135% 0}22%{opacity:1}100%{opacity:0;background-position:-70% 0}}
 @media (prefers-reduced-motion: reduce){#splash .sm,#splash .sw span,#splash .sl,#splash .st,#splash .sdots,#splash .smsheen{animation:none!important;opacity:1!important}#splash .smsheen{opacity:0!important}#splash .swrap::before,#splash .swrap::after,#splash .sl::after,#splash .sdots i{animation:none!important}#splash .swrap::after{opacity:0}#splash.hide,#splash.hide .score{transform:none;filter:none}}
+/* 스플래시 말고 앱 전체에도 적용해야 한다 — 카드 hover, 캐러셀, 모달 슬라이드가 그대로 남아
+   전정기관 민감 사용자에겐 어지럼을 준다. 끄지 않고 0.01ms 로 줄여 완료 콜백은 살린다. */
+@media (prefers-reduced-motion: reduce){
+  *,*::before,*::after{
+    animation-duration:.01ms!important;animation-iteration-count:1!important;
+    transition-duration:.01ms!important;scroll-behavior:auto!important;}
+}
 /* 모더레이션: 신고/차단 */
 .repmodal{position:fixed;inset:0;z-index:1200;background:rgba(28,20,24,.5);backdrop-filter:blur(3px);display:none;align-items:flex-end;justify-content:center;}
 .repmodal.on{display:flex;}
