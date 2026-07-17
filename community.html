@@ -402,12 +402,14 @@ body.mlock{position:fixed;left:0;right:0;width:100%;overflow:hidden;}
 .bksvc{position:relative;display:flex;flex-direction:row;align-items:center;gap:var(--sp-3);min-width:0;text-align:left;border:1.5px solid var(--line);border-radius:var(--r-md);padding:12px 14px;background:#fff;cursor:pointer;transition:.12s;}
 .bksvc.on{border-color:var(--plum);background:var(--rosebg);}
 .bksvc.on::after{content:'✓';position:static;order:9;flex:0 0 auto;width:18px;height:18px;border-radius:50%;background:var(--plum);color:#fff;font-size:11px;font-weight:800;display:flex;align-items:center;justify-content:center;}
-.bksvc .bsn{flex:1;min-width:0;font-weight:700;font-size:var(--fs-md);line-height:1.35;color:var(--ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.bksvc .bsi{flex:1;min-width:0;display:flex;flex-direction:column;gap:2px;}
+.bksvc .bsn{min-width:0;font-weight:700;font-size:var(--fs-md);line-height:1.35;color:var(--ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
 .bksvc .bsp{flex:0 0 auto;font-weight:800;font-size:var(--fs-md);color:var(--plum);white-space:nowrap;}
 .bksvc .bsp .bsapx{font-weight:600;font-size:11px;color:var(--sub);}
-.bksvc .bsd{flex:0 0 auto;display:inline-flex;align-items:center;gap:4px;font-size:var(--fs-sm);font-weight:600;color:var(--sub);white-space:nowrap;}
+.bksvc .bsd{min-width:0;font-size:var(--fs-sm);font-weight:500;color:var(--sub);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
 .bksvc.consult{justify-content:center;padding:12px;background:#faf6f4;border-style:dashed;}
 .bksvc.consult .bsn{flex:0 0 auto;font-weight:600;color:var(--ink2);}
+.bksvc .bsp{align-self:center;}
 .bksvc.consult.on{background:var(--rosebg);border-style:solid;}
 .bksum{display:flex;align-items:center;gap:10px;border:1.5px solid var(--line);border-radius:14px;padding:12px 14px;background:#faf6f4;margin-top:6px;}
 .bksum .bsn{flex:1;min-width:0;font-weight:700;font-size:var(--fs-base);color:var(--ink);line-height:1.3;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
@@ -2879,7 +2881,7 @@ function bkRender(){var d=dById(bkSel.did);if(!d)return;
  if(bkSel.step===1&&svcs.length){
   $('bkcard').innerHTML=head
    +`<div class="il">${T[LANG].bkService}</div>
-  <div class="bksvcs" style="max-height:min(58vh,460px)">${svcs.map((s,i)=>`<button class="bksvc${i===bkSel.svc?' on':''}" onclick="bkPickSvc(${i})"><span class="bsn">${esc(svcLabel(s,LANG))}</span>${priceNum(s.p)?`<span class="bsp">${esc(priceDisp(s.p,svcCur(d)))}${priceApprox(s.p,svcCur(d))?` <span class="bsapx">${esc(priceApprox(s.p,svcCur(d)))}</span>`:''}</span>`:(s.p?`<span class="bsp">${esc(s.p)}</span>`:'')}${svcDur(s,LANG)?`<span class="bsd">${esc(svcDur(s,LANG))}</span>`:''}</button>`).join('')}<button class="bksvc consult${bkSel.svc<0?' on':''}" onclick="bkPickSvc(-1)"><span class="bsn">💬 ${T[LANG].bkConsult}</span></button></div>`;
+  <div class="bksvcs" style="max-height:min(58vh,460px)">${svcs.map((s,i)=>`<button class="bksvc${i===bkSel.svc?' on':''}" onclick="bkPickSvc(${i})"><span class="bsi"><span class="bsn">${esc(svcLabel(s,LANG))}</span>${svcDur(s,LANG)?`<span class="bsd">${esc(svcDur(s,LANG))}</span>`:''}</span>${priceNum(s.p)?`<span class="bsp">${esc(priceDisp(s.p,svcCur(d)))}${priceApprox(s.p,svcCur(d))?` <span class="bsapx">${esc(priceApprox(s.p,svcCur(d)))}</span>`:''}</span>`:(s.p?`<span class="bsp">${esc(s.p)}</span>`:'')}</button>`).join('')}<button class="bksvc consult${bkSel.svc<0?' on':''}" onclick="bkPickSvc(-1)"><span class="bsn">💬 ${T[LANG].bkConsult}</span></button></div>`;
   return;
  }
  // ── 2단계: 날짜·시간·요청사항 (+선택한 서비스 요약) ──
