@@ -26,7 +26,13 @@
     { "source": "/apply.html", "destination": "/community", "permanent": true },
     { "source": "/salon", "destination": "/community", "permanent": true },
     { "source": "/salon.html", "destination": "/community", "permanent": true },
-    { "source": "/p/:id", "destination": "/community", "permanent": true }
+    { "source": "/p/:id", "destination": "/community", "permanent": true },
+
+    { "source": "/guide/eyebrow-semi-permanent", "destination": "/guide/eyebrow-tattoo-korea", "permanent": true },
+    { "source": "/guide/eyelash-extension-vs-perm", "destination": "/guide/lash-extensions-seoul", "permanent": true },
+    { "source": "/guide/find-korean-speaking-salon-japan", "destination": "/designers", "permanent": true },
+    { "source": "/guide/gel-nail-long-lasting", "destination": "/guides", "permanent": true },
+    { "source": "/guide/bridal-beauty-checklist", "destination": "/guides", "permanent": true }
   ],
   "rewrites": [
     { "source": "/c/:u", "destination": "/api/card?u=:u" },
