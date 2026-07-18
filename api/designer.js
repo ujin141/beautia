@@ -6,6 +6,8 @@ const SB_URL = 'https://pzbxcktaljhesrfnqwzq.supabase.co';
 const SB_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InB6Ynhja3RhbGpoZXNyZm5xd3pxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjgxNjc1MjYsImV4cCI6MjA4Mzc0MzUyNn0.aUZbTgfWbjEISNr1-cu9YJnOGj1lzjXeRVifHygAplc';
 const SITE = 'https://beautia.io';
 
+import { makeSlug, seoTitle, seoDesc, placeText, searchPhrase, countryEN } from './_seo.js';
+
 const esc = s => (s == null ? '' : String(s)).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
 const jsonld = o => JSON.stringify(o).replace(/</g, '\\u003c');
 
@@ -45,13 +47,39 @@ const workList = shop => (Array.isArray(shop && shop.photos) ? shop.photos : [])
 // SEO/OG용 대표 이미지 URL: 영상이면 포스터(없으면 제외), 이미지는 자신
 const imgOf = w => (w.vid ? w.poster : w.src);
 
+const SEL = 'id,nickname,role,bio,region,shop';
+const isUuid = s => /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(s);
+
+/* 주소 조각(UUID 또는 슬러그) → 디자이너 레코드.
+ * 슬러그는 shop.slug 에 박아둔 값이 우선이고, 아직 없는 디자이너를 위해
+ * 전체를 훑어 계산값과 맞춰보는 경로를 남겨둔다(19명이라 비용이 무의미하다). */
+async function resolve(u) {
+  if (isUuid(u)) {
+    const r = await sb(`profiles?id=eq.${encodeURIComponent(u)}&select=${SEL}`);
+    return (r && r[0]) || null;
+  }
+  const byslug = await sb(`profiles?role=eq.designer&shop->>slug=eq.${encodeURIComponent(u)}&select=${SEL}`);
+  if (byslug && byslug[0]) return byslug[0];
+  const all = await sb(`profiles?role=eq.designer&select=${SEL}`);
+  return (all || []).find(p => makeSlug(p) === u) || null;
+}
+
 export default async function handler(req, res) {
   const u = (req.query && req.query.u || '').toString();
-  if (!/^[0-9a-fA-F-]{6,}$/.test(u)) { res.status(404).setHeader('Content-Type', 'text/html; charset=utf-8'); res.end(page404()); return; }
+  if (!/^[a-zA-Z0-9-]{3,120}$/.test(u)) { res.status(404).setHeader('Content-Type', 'text/html; charset=utf-8'); res.end(page404()); return; }
 
-  const profs = await sb(`profiles?id=eq.${encodeURIComponent(u)}&select=id,nickname,role,bio,region,shop`);
-  const pr = profs && profs[0];
+  const pr = await resolve(u);
   if (!pr) { res.status(404).setHeader('Content-Type', 'text/html; charset=utf-8'); res.end(page404()); return; }
+
+  // UUID로 들어왔으면 검색어가 들어간 주소로 영구 이전한다. 301이라야 지금까지
+  // 옛 주소에 쌓인 신뢰도가 새 주소로 넘어간다(302면 안 넘어간다).
+  const slug = makeSlug(pr);
+  if (u !== slug) {
+    res.setHeader('Location', `/d/${slug}`);
+    res.setHeader('Cache-Control', 's-maxage=86400');
+    res.status(301).end();
+    return;
+  }
 
   const shop = pr.shop || {};
   // 앱(/community)은 nickname 을 디자이너 이름으로 쓴다. 여기서 shop.name 을 먼저 쓰면
@@ -91,15 +119,18 @@ export default async function handler(req, res) {
     return sym ? `${sym}${Math.min(...ns).toLocaleString()}~` : '';
   })();
 
-  const canon = `${SITE}/d/${encodeURIComponent(u)}`;
-  const appUrl = `/community?u=${encodeURIComponent(u)}`;
+  const canon = `${SITE}/d/${slug}`;
+  // 앱은 UUID로 디자이너를 찾는다. 여기 슬러그를 넣으면 예약 버튼이 죽는다.
+  const appUrl = `/community?u=${encodeURIComponent(pr.id)}`;
   const heroImg = imgs[0] || avatar || `${SITE}/og-cover.png`;
-  const titleBits = [name, specText, cityEN].filter(Boolean);
-  const title = `${titleBits.join(' · ')} | Beautia`;
-  const desc = `${name} — ${specText ? specText + ' ' : ''}${t.designer}${cityEN ? ' · ' + cityEN : ''}. Browse the portfolio and book on Beautia.`.slice(0, 155);
+  // 제목은 영어 검색어가 맨 앞. "더필뷰티"를 검색하는 외국인은 없다.
+  const title = seoTitle({ name, region: pr.region, shop });
+  const desc = seoDesc({ name, region: pr.region, shop });
+  const place = placeText(pr.region, shop);
+  const phrase = searchPhrase(shop.specialties);
 
   // 다른 디자이너(내부 링크 그래프) — 최대 8명
-  const others = (await sb(`profiles?role=eq.designer&id=neq.${encodeURIComponent(u)}&select=id,nickname,region,shop&limit=8`)) || [];
+  const others = (await sb(`profiles?role=eq.designer&id=neq.${encodeURIComponent(pr.id)}&select=id,nickname,region,shop&limit=8`)) || [];
 
   // ── 구조화 데이터 ─────────────────────────────────────────────
   const person = {
@@ -162,7 +193,8 @@ export default async function handler(req, res) {
   const graph = [
     { '@type': 'BreadcrumbList', itemListElement: [
       { '@type': 'ListItem', position: 1, name: t.home, item: `${SITE}/community` },
-      { '@type': 'ListItem', position: 2, name, item: canon },
+      { '@type': 'ListItem', position: 2, name: 'Designers', item: `${SITE}/designers` },
+      { '@type': 'ListItem', position: 3, name, item: canon },
     ] },
     { '@type': 'ProfilePage', '@id': canon, url: canon, name: title,
       inLanguage: t.htmllang, isPartOf: { '@id': `${SITE}/#website` }, mainEntity: person },
@@ -208,11 +240,11 @@ export default async function handler(req, res) {
   }</tbody></table>${priceRange ? `<p class="note">${esc(t.from)} ${esc(priceRange)}</p>` : ''}` : '';
 
   const chips = specs.map(s => `<span class="chip">${esc(s)}</span>`).join('');
+  // 내부 링크는 영어 슬러그 주소로. 링크에 붙은 글자도 검색어라서 영어로 쓴다.
   const moreLinks = others.map(o => {
-    const os = o.shop || {}; const on = (os.name && os.name.trim()) || o.nickname || 'designer';
-    const oc = (o.region || os.area || '').toString().trim();
-    const osp = (Array.isArray(os.specialties) ? os.specialties : []).join(' · ');
-    return `<a class="more-card" href="/d/${esc(o.id)}"><b>${esc(on)}</b><span>${esc([osp, oc].filter(Boolean).join(' · '))}</span></a>`;
+    const os = o.shop || {}; const on = (o.nickname && o.nickname.trim()) || (os.name && os.name.trim()) || 'designer';
+    const otxt = [searchPhrase(os.specialties), placeText(o.region, os)].filter(Boolean).join(' · ');
+    return `<a class="more-card" href="/d/${esc(makeSlug(o))}"><b>${esc(on)}</b><span>${esc(otxt)}</span></a>`;
   }).join('');
 
   const html = `<!DOCTYPE html><html lang="${t.htmllang}"><head>
@@ -243,7 +275,8 @@ nav.bc{font-size:12.5px;color:var(--sub);padding:16px 0 4px}
 nav.bc a:hover{color:var(--plum)}
 .hero{display:flex;gap:22px;align-items:flex-end;padding:14px 0 22px;border-bottom:1px solid var(--line);flex-wrap:wrap}
 .hero .av{width:96px;height:96px;border-radius:24px;object-fit:cover;background:var(--soft);border:1px solid var(--line)}
-.hero h1{font-size:30px;letter-spacing:-.03em;line-height:1.15}
+.hero h1{font-size:30px;letter-spacing:-.03em;line-height:1.2}
+.hero h1 .h1sub{display:block;font-size:17px;font-weight:600;color:var(--sub);letter-spacing:-.022em;margin-top:7px}
 .hero .role{color:var(--plum);font-weight:700;font-size:15px;margin-top:6px}
 .hero .meta{color:var(--sub);font-size:13.5px;margin-top:6px;display:flex;gap:14px;flex-wrap:wrap}
 .chips{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px}
@@ -272,11 +305,11 @@ footer{border-top:1px solid var(--line);margin-top:56px;padding:28px 0;color:var
 </head><body>
 <header class="top"><div class="in"><a href="/community" class="b">Beautia</a></div></header>
 <div class="wrap">
-<nav class="bc"><a href="/community">${esc(t.home)}</a> · <span>${esc(name)}</span></nav>
+<nav class="bc"><a href="/community">${esc(t.home)}</a> · <a href="/designers">Designers</a> · <span>${esc(name)}</span></nav>
 <section class="hero">
   ${avatar ? `<img class="av" src="${esc(avatar)}" alt="${esc(name)}" loading="eager" decoding="async">` : ''}
   <div>
-    <h1>${esc(name)}</h1>
+    <h1>${esc(name)}${phrase ? ` <span class="h1sub">— ${esc(phrase)}${place ? ' in ' + esc(place) : ''}</span>` : ''}</h1>
     <div class="role">${esc(specText ? specText + ' · ' + t.designer : t.designer)}</div>
     <div class="meta">${shopSep ? `<span>🏪 ${esc(shopSep)}</span>` : ''}${city ? `<span>📍 ${esc(city)}</span>` : ''}${career ? `<span>${esc(t.career)}: ${esc(career)}</span>` : ''}${ig ? `<a href="https://instagram.com/${esc(ig)}" rel="me nofollow" target="_blank">@${esc(ig)}</a>` : ''}${blog ? `<a href="${esc(blog)}" rel="me nofollow" target="_blank">${esc(t.blog)}</a>` : ''}${naver ? `<a href="${esc(naver)}" rel="me nofollow" target="_blank">${esc(t.naver)}</a>` : ''}</div>
   </div>
@@ -287,7 +320,7 @@ ${bio ? `<p class="bio">${esc(bio)}</p>` : ''}
 ${svcTable}
 ${works.length ? `<h2 class="sec">${esc(t.portfolio)}</h2><div class="gal">${gallery}</div>` : ''}
 ${moreLinks ? `<h2 class="sec">${esc(t.more)}</h2><div class="more">${moreLinks}</div>` : ''}
-<footer>© Beautia — <a href="/community">beautia.io</a></footer>
+<footer><a href="/designers">All designers</a> · <a href="/guides">Guides</a> · <a href="/community">beautia.io</a><br>© Beautia</footer>
 </div>
 </body></html>`;
 
