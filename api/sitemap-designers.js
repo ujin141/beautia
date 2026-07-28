@@ -9,8 +9,19 @@ import { makeSlug, searchPhrase, placeText } from './_seo.js';
 
 const esc = s => (s == null ? '' : String(s)).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&apos;' }[c]));
 
+// 이미지 사이트맵의 image:loc 에는 이미지만 들어가야 한다. 영상(.mp4)이 들어가면
+// 구글이 그 항목을 무시한다. 영상 포트폴리오는 poster(썸네일)를 대신 넣고,
+// poster 가 없는 영상은 아예 뺀다.
+const VIDRE = /\.(mp4|webm|mov|m4v|ogv)(\?|#|$)/i;
 const photoUrls = shop => (Array.isArray(shop && shop.photos) ? shop.photos : [])
-  .map(p => (p && typeof p === 'object') ? p.img : p)
+  .map(p => {
+    const src = (p && typeof p === 'object') ? p.img : p;
+    const poster = (p && typeof p === 'object') ? p.poster : '';
+    if (typeof src === 'string' && VIDRE.test(src)) {
+      return (typeof poster === 'string' && poster.startsWith('http')) ? poster : '';
+    }
+    return src;
+  })
   .filter(x => typeof x === 'string' && x.startsWith('http'));
 
 export default async function handler(req, res) {
