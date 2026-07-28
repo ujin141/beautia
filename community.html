@@ -2472,13 +2472,27 @@ function logDclick(uid){try{
   },function(){});
 }catch(e){}})();
 function roleIn(r){return (r==='designer'||r==='owner'||r==='desg')?'desg':'cust';}
+/* 프로필 조회. notif_seen_at 컬럼이 아직 없는 DB에서도 로그인이 깨지지 않게,
+   실패하면 그 컬럼만 빼고 한 번 더 조회한다. (컬럼 추가 SQL 실행 전/후 모두 동작) */
+var PROF_COLS='id,nickname,role,region,bio,interests,shop,avatar_url,full_name,created_at,points,notif_seen_at';
+var PROF_COLS_FALLBACK='id,nickname,role,region,bio,interests,shop,avatar_url,full_name,created_at,points';
+async function fetchMyProfile(uid){
+ try{
+  var r=await SB.from('profiles').select(PROF_COLS).eq('id',uid).maybeSingle();
+  if(!r.error)return r.data;
+ }catch(e){}
+ try{
+  var r2=await SB.from('profiles').select(PROF_COLS_FALLBACK).eq('id',uid).maybeSingle();
+  return r2.data;
+ }catch(e){return null;}
+}
 function profToMe(p){const s=p.shop||{};const photos=[];(s.photos||[]).forEach(function(x){if(x&&photos.indexOf(x)<0)photos.push(x);});
- return {uid:p.id,role:roleIn(p.role),name:p.nickname||p.full_name||'',country:s.country||'',city:p.region||s.area||'',area:s.area||'',spec:(s.specialties||p.interests||[]),career:s.career||'',avatar:s.avatar||p.avatar_url||'',insta:(s.insta||'').replace(/^@/,''),sns:s.sns||(s.insta?{instagram:(s.insta||'').replace(/^@/,'')}:{}),naver:s.naver||'',shopName:s.name||'',freelancer:!!s.freelancer,bio:p.bio||'',works:photos,ba:(s.ba&&s.ba.length===2)?s.ba.slice():null,shopRaw:s,idCols:s.idCols||2,idColor:s.idColor||'',idTheme:s.idTheme||'light',services:svcNormalize(s.services),cur:s.cur||'',tags:s.tags||[],points:(p.points||0),verified:true,provider:'email',joined:p.created_at?new Date(p.created_at).getTime():Date.now()};}
+ return {uid:p.id,role:roleIn(p.role),name:p.nickname||p.full_name||'',country:s.country||'',city:p.region||s.area||'',area:s.area||'',spec:(s.specialties||p.interests||[]),career:s.career||'',avatar:s.avatar||p.avatar_url||'',insta:(s.insta||'').replace(/^@/,''),sns:s.sns||(s.insta?{instagram:(s.insta||'').replace(/^@/,'')}:{}),naver:s.naver||'',shopName:s.name||'',freelancer:!!s.freelancer,bio:p.bio||'',works:photos,ba:(s.ba&&s.ba.length===2)?s.ba.slice():null,shopRaw:s,idCols:s.idCols||2,idColor:s.idColor||'',idTheme:s.idTheme||'light',services:svcNormalize(s.services),cur:s.cur||'',tags:s.tags||[],points:(p.points||0),notifSeenAt:(p.notif_seen_at?new Date(p.notif_seen_at).getTime():0),verified:true,provider:'email',joined:p.created_at?new Date(p.created_at).getTime():Date.now()};}
 async function uploadOne(dataUrl){try{const sess=(await SB.auth.getSession()).data.session;if(!sess||dataUrl.indexOf('data:')!==0)return dataUrl;const uid=sess.user.id;const blob=await (await fetch(dataUrl)).blob();const path=uid+'/'+Date.now()+'-'+Math.random().toString(36).slice(2,8)+'.jpg';const up=await SB.storage.from('beautia').upload(path,blob,{contentType:'image/jpeg',cacheControl:'31536000',upsert:false});if(up.error){console.warn('[beautia] storage upload failed → base64 fallback:',up.error&&up.error.message);return dataUrl;}const pu=SB.storage.from('beautia').getPublicUrl(path);return (pu.data&&pu.data.publicUrl)||dataUrl;}catch(e){return dataUrl;}}
 async function persistShop(){if(!ME||!ME.uid)return;try{await SB.from('profiles').update({shop:Object.assign({},ME.shopRaw||{},{name:ME.shopName||'',area:ME.city||'',freelancer:!!ME.freelancer,specialties:ME.spec||[],avatar:ME.avatar||'',photos:ME.works||[],ba:(ME.ba&&ME.ba.length===2)?ME.ba:[],career:ME.career||'',insta:ME.insta||'',sns:ME.sns||{},idCols:ME.idCols||2,idColor:ME.idColor||'',idTheme:ME.idTheme||'light',services:ME.services||[],tags:ME.tags||[]})}).eq('id',ME.uid);}catch(e){}}
 async function onAuth(session){
  if(!session){ME=null;renderAuth();buildTiles();render();return;}
- let prof=null;try{prof=(await SB.from('profiles').select('id,nickname,role,region,bio,interests,shop,avatar_url,full_name,created_at,points').eq('id',session.user.id).maybeSingle()).data;}catch(e){}
+ let prof=null;try{prof=await fetchMyProfile(session.user.id);}catch(e){}
  if(prof&&prof.nickname){ME=profToMe(prof);closeLogin();renderAuth();buildTiles();render();loadSaves();loadFollows();loadBlocks();checkUnread();refreshOwner();loadBkBadge();loadCoupons();return;}
  if($('lmodal')&&$('lmodal').classList.contains('on'))return;
  let pend={};try{pend=JSON.parse(localStorage.getItem('beautia_coll_pending')||'{}');}catch(e){}
@@ -2693,7 +2707,7 @@ async function suVerify(){const v=$('suCode')?$('suCode').value.trim():'';if(!v)
    ? await SB.auth.signInWithPassword({email:SU.contact,password:v})   // 심사 계정: 고정 코드로 로그인
    : await SB.auth.verifyOtp({email:SU.contact,token:v,type:'email'});
  if(error){toast(T[LANG].codeWrong);return;}
- const uid=data.user.id;let prof=null;try{prof=(await SB.from('profiles').select('id,nickname,role,region,bio,interests,shop,avatar_url,full_name,created_at,points').eq('id',uid).maybeSingle()).data;}catch(e){}
+ const uid=data.user.id;let prof=null;try{prof=await fetchMyProfile(uid);}catch(e){}
  if(prof&&prof.nickname){ME=profToMe(prof);closeLogin();renderAuth();buildTiles();render();loadSaves();loadFollows();loadBlocks();checkUnread();refreshOwner();loadBkBadge();toast(T[LANG].welcomeBack||T[LANG].verifiedToast);return;}
  SU.verified=true;SU.uid=uid;renderSU();toast(T[LANG].verifiedToast);}
 async function suFinish(){const wasEdit=SU.edit;
@@ -2711,7 +2725,7 @@ async function suFinish(){const wasEdit=SU.edit;
   shop:Object.assign({},(wasEdit&&ME&&ME.shopRaw)||{},{name:SU.shopName||'',area:SU.area||SU.city||'',freelancer:!!SU.freelancer,specialties:(SU.spec||[]).slice(),avatar:avatar,photos:oldWorks,career:SU.career||'',insta:insta,sns:sns,idCols:(wasEdit&&ME?ME.idCols:2)||2,idColor:(wasEdit&&ME?ME.idColor:'')||'',idTheme:(wasEdit&&ME?ME.idTheme:'')||'tint',services:(wasEdit&&ME?ME.services:[])||[],tags:(SU.tags||[]).slice()})};
  const {error}=await SB.from('profiles').upsert(payload);
  if(error){toast('저장 실패: '+error.message);return;}
- let prof=(await SB.from('profiles').select('id,nickname,role,region,bio,interests,shop,avatar_url,full_name,created_at,points').eq('id',uid).maybeSingle()).data;
+ let prof=await fetchMyProfile(uid);
  ME=prof?profToMe(prof):null;
  loadSaves();loadFollows();loadBlocks();checkUnread();refreshOwner();loadBkBadge();
  try{localStorage.removeItem('beautia_coll_pending');}catch(e){}
@@ -2786,8 +2800,24 @@ var NOTIFT={
 };
 function ntf(){return NOTIFT[LANG]||NOTIFT.en;}
 var NOTIFS=[],notifUnread=0;
-function notifSeenTs(){try{return +(localStorage.getItem('beautia_notif_seen')||0);}catch(e){return 0;}}
-function markNotifSeen(){try{localStorage.setItem('beautia_notif_seen',''+Date.now());}catch(e){}notifUnread=0;renderNotifBadge();}
+/* '확인함' 기록은 서버(profiles.notif_seen_at)에 남긴다.
+   브라우저 저장소에만 두면 기기·브라우저가 바뀌거나, 사파리가 7일 미접속 사이트의
+   저장소를 비우면(ITP) 기록이 사라져 배지가 계속 다시 켜진다. 실제로 그 증상이 있었다.
+   로컬은 즉시 반영용 캐시로만 쓰고, 둘 중 더 최신 값을 '확인 시각'으로 본다. */
+function notifSeenTs(){
+ var loc=0;try{loc=+(localStorage.getItem('beautia_notif_seen')||0);}catch(e){}
+ var srv=(ME&&ME.notifSeenAt)||0;
+ return Math.max(loc,srv);
+}
+function markNotifSeen(){
+ var now=Date.now();
+ try{localStorage.setItem('beautia_notif_seen',''+now);}catch(e){}
+ if(ME&&ME.uid){
+  ME.notifSeenAt=now;
+  try{SB.from('profiles').update({notif_seen_at:new Date(now).toISOString()}).eq('id',ME.uid).then(function(){},function(){});}catch(e){}
+ }
+ notifUnread=0;renderNotifBadge();
+}
 function renderNotifBadge(){var el=$('bellBtn');if(!el)return;var b=el.querySelector('.unread');if(notifUnread>0){if(!b){b=document.createElement('span');b.className='unread';el.appendChild(b);}}else if(b){b.remove();}}
 async function buildNotifs(){
  var list=[];
