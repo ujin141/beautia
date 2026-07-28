@@ -287,8 +287,7 @@ textarea.inp{resize:vertical;min-height:70px;line-height:1.5;}
     <div style="display:flex;justify-content:flex-end;margin-bottom:10px"><button class="mini g" style="font-size:12px;padding:8px 13px" onclick="exportCSV()"><i class="ti ti-download"></i> 현재 탭 CSV 내보내기</button></div>
 
     <div id="sec-designers">
-      <div class="searchbar"><input class="inp" id="q" placeholder="이름·지역·시술 검색…" oninput="renderList()"><button class="mini g" onclick="loadAll()">새로고침</button></div>
-      <div class="note" style="margin-bottom:12px"><i class="ti ti-info-circle"></i> 신규 디자이너 <b>생성</b>은 등록 스크립트로 진행합니다. 여기서는 기존 디자이너 <b>편집·사진·서비스·노출</b>을 관리합니다.</div>
+      <div class="searchbar"><input class="inp" id="q" placeholder="이름·지역·시술 검색…" oninput="renderList()"><button class="mini" onclick="openNew()"><i class="ti ti-plus"></i> 신규 등록</button><button class="mini g" onclick="loadAll()">새로고침</button></div>
       <div class="dlist" id="dlist"></div>
     </div>
 
@@ -363,6 +362,11 @@ textarea.inp{resize:vertical;min-height:70px;line-height:1.5;}
 <div class="drawer" id="drawer">
   <div class="dh"><div class="dt" id="edTitle">디자이너 편집</div><a class="mini g" id="edView" target="_blank">공개 프로필</a><button class="x" onclick="closeEdit()">×</button></div>
   <div class="dbody" id="edBody"></div>
+</div>
+<div class="scrim" id="newScrim" onclick="closeNew()"></div>
+<div class="drawer" id="newDrawer">
+  <div class="dh"><div class="dt">신규 디자이너 등록</div><button class="x" onclick="closeNew()">×</button></div>
+  <div class="dbody" id="newBody"></div>
 </div>
 <div class="scrim" id="shopScrim" onclick="closeShopEdit()"></div>
 <div class="drawer" id="shopDrawer">
@@ -1152,6 +1156,144 @@ async function saveEdit(){
     const d=PMAP[ed.id];if(d){Object.assign(d,{nickname:ed.nickname,region:ed.region,bio:ed.bio,shopName:ed.shopName,area:ed.area,career:ed.career,insta:insta,naver:ed.naver,blog:ed.blog,avatar:ed.avatar,photos:ed.photos.slice(),spec:ed.spec.slice(),tags:ed.tags.slice(),services:ed.services.slice(),hidden:ed.hidden,shop:shop});}
     renderStats();renderList();toast('저장됐어요 ✓');closeEdit();
   }catch(e){toast('오류: '+e.message);btn.disabled=false;btn.innerHTML='<i class="ti ti-device-floppy"></i> 저장';}
+}
+
+// ── 신규 디자이너 등록 (오너 전용, Edge Function 경유) ─────────────────
+// 계정 생성은 service_role 이 필요해 클라이언트에서 못 한다. 사진만 여기서 올려
+// URL 을 만든 뒤, 폼 값과 함께 admin-create-designer 함수를 호출한다.
+const COUNTRIES=[['KR','대한민국'],['JP','일본'],['TH','태국'],['TW','대만'],['VN','베트남'],['US','미국'],['SG','싱가포르']];
+let nw=null, ME_UID='';
+async function myUid(){ if(ME_UID)return ME_UID; try{ME_UID=((await SB.auth.getUser()).data.user||{}).id||'';}catch(e){} return ME_UID; }
+function openNew(){
+  nw={nickname:'',shopName:'',region:'',area:'',career:'',bio:'',country:'KR',cur:'KRW',
+      avatar:'',photos:[],spec:[],tags:[],services:[],insta:'',naver:'',bookingUrl:'',result:null};
+  renderNew();myUid();
+  $('newScrim').classList.add('on');$('newDrawer').classList.add('on');document.body.style.overflow='hidden';
+}
+function closeNew(){$('newScrim').classList.remove('on');$('newDrawer').classList.remove('on');document.body.style.overflow='';nw=null;}
+function nwSync(){ if(!nw||!$('n_name'))return;
+  nw.nickname=$('n_name').value.trim();nw.shopName=$('n_shop').value.trim();nw.region=$('n_region').value.trim();
+  nw.area=$('n_area').value.trim();nw.career=$('n_career').value.trim();nw.bio=$('n_bio').value.trim();
+  nw.insta=$('n_insta').value.trim();nw.naver=$('n_naver').value.trim();nw.bookingUrl=$('n_book').value.trim();
+  nw.country=$('n_country').value; nw.cur=$('n_cur').value.trim().toUpperCase()||'KRW';
+}
+function renderNew(){
+  if(nw.result){ // 등록 완료 화면 — 임시 계정 안내
+    const r=nw.result;
+    $('newBody').innerHTML=`<div class="card">
+      <h3><i class="ti ti-circle-check" style="color:#2e9e5b"></i> 등록 완료 — <b>${esc(nw.shopName||nw.nickname)}</b></h3>
+      <div class="note" style="margin:8px 0 14px"><i class="ti ti-alert-triangle"></i> 아래 <b>임시 계정</b>을 디자이너에게 전달하세요. 첫 로그인 때 본인 이메일·비밀번호로 바꾸게 됩니다.</div>
+      <div class="row"><label>임시 이메일(ID)</label><input class="inp" id="r_email" value="${esc(r.email)}" readonly onclick="this.select()"></div>
+      <div class="row"><label>임시 비밀번호</label><input class="inp" id="r_pw" value="${esc(r.password)}" readonly onclick="this.select()"></div>
+      <div class="row"><label>공개 프로필 주소</label><input class="inp" value="${esc(r.url)}" readonly onclick="this.select()"></div>
+      <div class="savebar">
+        <button class="mini g" onclick="copyCreds()"><i class="ti ti-copy"></i> 계정정보 복사</button>
+        <a class="mini g" href="${esc(r.url)}" target="_blank"><i class="ti ti-external-link"></i> 프로필 보기</a>
+        <button class="btn" onclick="closeNew();loadAll();"><i class="ti ti-check"></i> 닫기</button>
+      </div></div>`;
+    return;
+  }
+  const specChips=SPECS.map(([en,ko])=>`<button class="chip${nw.spec.includes(en)?' on':''}" onclick="nwSpec('${en}')">${ko}</button>`).join('');
+  const tagChips=nw.tags.length?nw.tags.map((t,i)=>`<span class="tagc">${esc(t)}<button onclick="nwDelTag(${i})"><i class="ti ti-x"></i></button></span>`).join(''):'<span style="font-size:12.5px;color:var(--sub);font-weight:600">태그 없음</span>';
+  const svc=nw.services.length?nw.services.map((s,i)=>`<div class="svcitem"><div class="si"><div class="sn">${esc(s.n||'')}</div><div class="sd">${esc(s.du||'')}</div></div>${s.p?`<span class="sp">${esc(s.p)}</span>`:''}<button class="x" onclick="nwDelSvc(${i})"><i class="ti ti-trash"></i></button></div>`).join(''):'<div style="font-size:12.5px;color:var(--sub);font-weight:600;padding:4px 0">등록된 서비스 없음</div>';
+  const pf=nw.photos.map((p,i)=>`<div class="pf" style="background-image:url('${esc(p)}')"><button class="del" onclick="nwDelPhoto(${i})"><i class="ti ti-x"></i></button></div>`).join('');
+  const cOpts=COUNTRIES.map(([c,k])=>`<option value="${c}"${nw.country===c?' selected':''}>${k}</option>`).join('');
+  $('newBody').innerHTML=`
+    <div class="card">
+      <h3><i class="ti ti-user-circle"></i> 프로필 사진</h3>
+      <div class="avwrap">
+        <div class="avbig" style="background-image:url('${esc(nw.avatar)}')"></div>
+        <div style="flex:1"><label class="mini g" style="display:inline-flex" for="nAvIn"><i class="ti ti-upload"></i> 사진 선택</label>
+        <input id="nAvIn" type="file" accept="image/*" style="display:none" onchange="nwAvatar(this)">
+        <label class="ck" style="margin-top:12px"><input type="checkbox" id="nAvLogo"> 로고(여백 자동 제거)</label></div>
+      </div>
+    </div>
+    <div class="card">
+      <h3><i class="ti ti-id-badge"></i> 기본 정보</h3>
+      <div class="two"><div class="row"><label>표시 이름 *</label><input class="inp" id="n_name" value="${esc(nw.nickname)}" placeholder="예: 블레스헤어"></div>
+      <div class="row"><label>샵 이름</label><input class="inp" id="n_shop" value="${esc(nw.shopName)}" placeholder="비우면 표시 이름 사용"></div></div>
+      <div class="two"><div class="row"><label>지역(도시)</label><input class="inp" id="n_region" value="${esc(nw.region)}" placeholder="예: 서울, 부산, 오사카"></div>
+      <div class="row"><label>나라</label><select class="inp" id="n_country">${cOpts}</select></div></div>
+      <div class="two"><div class="row"><label>상세 지역</label><input class="inp" id="n_area" value="${esc(nw.area)}" placeholder="예: 홍대, 동작구"></div>
+      <div class="row"><label>통화</label><input class="inp" id="n_cur" value="${esc(nw.cur)}" placeholder="KRW / JPY / THB"></div></div>
+      <div class="row"><label>경력</label><input class="inp" id="n_career" value="${esc(nw.career)}" placeholder="예: 8년"></div>
+      <div class="row"><label>소개</label><textarea class="inp" id="n_bio" placeholder="디자이너 소개">${esc(nw.bio)}</textarea></div>
+    </div>
+    <div class="card">
+      <h3><i class="ti ti-sparkles"></i> 전문 분야 *</h3>
+      <div class="chips">${specChips}</div>
+    </div>
+    <div class="card">
+      <h3><i class="ti ti-tag"></i> 태그</h3>
+      <div class="chips" id="nTagBox">${tagChips}</div>
+      <div class="addrow"><input class="inp" id="nTagIn" placeholder="예: 레이어드컷" onkeydown="if(event.key==='Enter'){event.preventDefault();nwAddTag();}"><button class="mini" onclick="nwAddTag()">추가</button></div>
+    </div>
+    <div class="card">
+      <h3><i class="ti ti-photo"></i> 포트폴리오 (${nw.photos.length})</h3>
+      <div class="pfgrid">${pf}</div>
+      <label class="upbtn" for="nPfIn"><i class="ti ti-plus"></i> 사진 추가</label>
+      <input id="nPfIn" type="file" accept="image/*" multiple style="display:none" onchange="nwPhotos(this)">
+    </div>
+    <div class="card">
+      <h3><i class="ti ti-clipboard-list"></i> 서비스·가격</h3>
+      <div id="nSvcBox">${svc}</div>
+      <div class="addrow" style="flex-wrap:wrap"><input class="inp" id="nSvN" placeholder="서비스명 (예: 컷+펌)" style="flex:1 1 100%"><input class="inp" id="nSvP" placeholder="가격 (예: 80,000원)"><input class="inp" id="nSvD" placeholder="시간 (예: 2시간)"><button class="mini" onclick="nwAddSvc()">추가</button></div>
+    </div>
+    <div class="card">
+      <h3><i class="ti ti-link"></i> 연락 링크</h3>
+      <div class="row"><label>Instagram</label><input class="inp" id="n_insta" value="${esc(nw.insta)}" placeholder="아이디 또는 링크"></div>
+      <div class="two"><div class="row"><label>네이버 플레이스</label><input class="inp" id="n_naver" value="${esc(nw.naver)}" placeholder="https://…"></div>
+      <div class="row"><label>외부 예약 링크</label><input class="inp" id="n_book" value="${esc(nw.bookingUrl)}" placeholder="비우면 앱 예약"></div></div>
+    </div>
+    <div class="savebar">
+      <button class="btn" id="nSaveBtn" onclick="saveNew()"><i class="ti ti-user-plus"></i> 디자이너 생성</button>
+    </div>`;
+}
+function nwSpec(en){const i=nw.spec.indexOf(en);if(i<0)nw.spec.unshift(en);else nw.spec.splice(i,1);nwSync();renderNew();}
+function nwAddTag(){const v=($('nTagIn').value||'').trim();if(!v)return;if(!nw.tags.includes(v))nw.tags.push(v);nwSync();renderNew();setTimeout(()=>$('nTagIn')&&$('nTagIn').focus(),0);}
+function nwDelTag(i){nw.tags.splice(i,1);nwSync();renderNew();}
+function nwAddSvc(){const n=($('nSvN').value||'').trim();if(!n){toast('서비스명을 입력하세요');return;}nw.services.push({n:n,p:($('nSvP').value||'').trim(),du:($('nSvD').value||'').trim()});nwSync();renderNew();}
+function nwDelSvc(i){nw.services.splice(i,1);nwSync();renderNew();}
+function nwDelPhoto(i){nw.photos.splice(i,1);nwSync();renderNew();}
+async function nwAvatar(input){
+  const f=input.files&&input.files[0];if(!f||!nw)return;input.value='';nwSync();
+  const logo=$('nAvLogo')&&$('nAvLogo').checked;toast('업로드 중…');
+  try{let file=f,png=false;if(logo){file=await trimWhite(f);png=true;}
+    const url=await uploadImg(file,await myUid()||'_new',png);nw.avatar=url;renderNew();toast('사진 선택됨 ✓');
+  }catch(e){toast('업로드 실패: '+(e.message||e));}
+}
+async function nwPhotos(input){
+  const files=Array.from(input.files||[]);if(!files.length||!nw)return;input.value='';nwSync();
+  toast('업로드 중… ('+files.length+')');
+  try{const fu=await myUid()||'_new';for(const f of files){const url=await uploadImg(f,fu,false);nw.photos.push(url);}renderNew();toast('사진 추가됨 ✓');
+  }catch(e){toast('업로드 실패: '+(e.message||e));}
+}
+function copyCreds(){ if(!nw||!nw.result)return; const r=nw.result;
+  const txt=`Beautia 임시 계정\n이메일(ID): ${r.email}\n비밀번호: ${r.password}\n프로필: ${r.url}\n※ 첫 로그인 시 본인 이메일·비번으로 변경하세요.`;
+  navigator.clipboard.writeText(txt).then(()=>toast('복사됨 ✓'),()=>toast('복사 실패 — 직접 선택하세요'));
+}
+async function saveNew(){
+  if(!nw)return;nwSync();
+  if(!nw.nickname){toast('표시 이름을 입력하세요');return;}
+  if(!nw.spec.length){toast('전문 분야를 하나 이상 선택하세요');return;}
+  const btn=$('nSaveBtn');btn.disabled=true;btn.innerHTML='<i class="ti ti-loader-2"></i> 생성 중…';
+  const insta=nw.insta.replace(/^@/,'').replace(/^https?:\/\/(www\.)?instagram\.com\//i,'').replace(/[/?#].*$/,'');
+  const body={ name:(nw.shopName||nw.nickname), region:nw.region, area:nw.area, country:nw.country, cur:nw.cur,
+    career:nw.career, bio:nw.bio, avatar:nw.avatar, specialties:nw.spec.slice(), tags:nw.tags.slice(),
+    photos:nw.photos.map(u=>({img:u,text:''})), services:nw.services.slice(),
+    insta:insta, sns:insta?{instagram:insta}:undefined, naver:nw.naver, bookingUrl:nw.bookingUrl };
+  try{
+    const {data,error}=await SB.functions.invoke('admin-create-designer',{body});
+    if(error){
+      // 함수가 아직 배포 안 됐을 때 안내
+      let m=error.message||String(error);
+      try{const ctx=error.context&&await error.context.json();if(ctx&&ctx.error)m=ctx.error+(ctx.detail?(' — '+ctx.detail):'');}catch(e){}
+      if(/not\s*found|404|Failed to send|non-2xx/i.test(m)) m='등록 함수가 아직 서버에 배포되지 않았어요. (supabase functions deploy admin-create-designer 필요)';
+      toast('생성 실패: '+m);btn.disabled=false;btn.innerHTML='<i class="ti ti-user-plus"></i> 디자이너 생성';return;
+    }
+    if(!data||!data.ok){toast('생성 실패: '+((data&&(data.error+(data.detail?' — '+data.detail:'')))||'알 수 없는 오류'));btn.disabled=false;btn.innerHTML='<i class="ti ti-user-plus"></i> 디자이너 생성';return;}
+    nw.result=data;renderNew();toast('디자이너가 생성됐어요 ✓');
+  }catch(e){toast('오류: '+(e.message||e));btn.disabled=false;btn.innerHTML='<i class="ti ti-user-plus"></i> 디자이너 생성';}
 }
 
 function fmtDate(s){if(!s)return '';try{return new Date(s).toLocaleDateString('ko-KR',{month:'short',day:'numeric'});}catch(e){return s;}}
