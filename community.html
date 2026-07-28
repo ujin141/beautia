@@ -2528,7 +2528,7 @@ function renderMe(){var el=document.getElementById('mepage');if(!el)return;if(!M
    ${row('ti-mail',T[LANG].footContact,"location.href='mailto:hello@beautia.io'")}
    ${row('ti-logout',T[LANG].logout,'logout()')}
  </div>
- <div class="meacct"><a href="mailto:hello@beautia.io?subject=${encodeURIComponent('Beautia '+T[LANG].delAcct)}&body=${encodeURIComponent('uid: '+(ME.uid||''))}">${T[LANG].delAcct}</a></div>
+ <div class="meacct"><a onclick="deleteAccount()">${T[LANG].delAcct}</a></div>
  <div class="mever">Beautia · v1.0.0</div>`;}
 function savedCount(){return SAVED.length;}
 // ── 쿠폰 (고객: 개수·목록·코드 등록) ──
@@ -2712,6 +2712,22 @@ async function suFinish(){const wasEdit=SU.edit;
  closeLogin();renderAuth();buildTiles();render();
  toast(wasEdit?'✅':(T[LANG].joinDone+(SU.role==='desg'?' — '+T[LANG].joinToast:'')));}
 async function logout(){if($('dmodal'))$('dmodal').classList.remove('on');try{await SB.auth.signOut();}catch(e){}ME=null;BLOCKED=[];SAVED=JSON.parse(localStorage.getItem('beautia_coll_saved')||'[]');chatUnread=0;bkPend=0;NOTIFS=[];notifUnread=0;if(chatGlobalSub){try{SB.removeChannel(chatGlobalSub);}catch(e){}chatGlobalSub=null;}if(bkSub){try{SB.removeChannel(bkSub);}catch(e){}bkSub=null;}renderAuth();buildTiles();render();renderChatBadge();renderNotifBadge();toast(T[LANG].logoutToast);}
+// 인앱 계정 삭제 (App Store 5.1.1(v)) — 추가 단계 없이 즉시 삭제, 모든 데이터 연쇄삭제
+async function deleteAccount(){
+ if(!(ME&&ME.uid)){openLogin('');return;}
+ if(!confirm(T[LANG].delAcctConfirm))return;
+ if(!confirm(T[LANG].delAcctConfirm2))return;
+ toast(T[LANG].delAcctWorking);
+ try{
+   var r=await SB.functions.invoke('delete-account',{body:{}});
+   if(r&&r.error){toast(T[LANG].delAcctFail);return;}
+   try{await SB.auth.signOut();}catch(_e){}
+   try{['beautia_dcache2','beautia_coll_saved','beautia_coll_follows'].forEach(function(k){localStorage.removeItem(k);});}catch(_e){}
+   ME=null;
+   alert(T[LANG].delAcctDone);
+   location.href='/community';
+ }catch(e){toast(T[LANG].delAcctFail);}
+}
 
 function openProfile(){if(!ME){openLogin('');return;}const since=ME.joined?new Date(ME.joined).toLocaleDateString():'';
  $('dsheet').innerHTML=`<div class="dbody"><div class="pmhead">
@@ -2888,6 +2904,11 @@ T.ko.couponAdded='쿠폰이 등록되었어요 ✨';T.en.couponAdded='Coupon add
 T.ko.couponBad='유효하지 않은 코드예요';T.en.couponBad='Invalid code';T.ja.couponBad='無効なコードです';T.th.couponBad='รหัสไม่ถูกต้อง';T.zh.couponBad='优惠码无效';
 T.ko.couponDup='이미 등록된 쿠폰이에요';T.en.couponDup='Already added';T.ja.couponDup='登録済みです';T.th.couponDup='เพิ่มไปแล้ว';T.zh.couponDup='已添加';
 T.ko.bkCoupon='쿠폰 적용';T.en.bkCoupon='Apply a coupon';T.ja.bkCoupon='クーポンを使う';T.th.bkCoupon='ใช้คูปอง';T.zh.bkCoupon='使用优惠券';
+T.ko.delAcctConfirm='정말 계정을 삭제하시겠어요?\n프로필·예약·메시지·쿠폰 등 모든 데이터가 영구 삭제되며 되돌릴 수 없어요.';T.en.delAcctConfirm='Delete your account?\nYour profile, bookings, messages and coupons will be permanently deleted. This cannot be undone.';T.ja.delAcctConfirm='アカウントを削除しますか？\nプロフィール・予約・メッセージ・クーポンなど全データが完全に削除され、元に戻せません。';T.th.delAcctConfirm='ลบบัญชีของคุณ?\nโปรไฟล์ การจอง ข้อความ และคูปองทั้งหมดจะถูกลบถาวรและกู้คืนไม่ได้';T.zh.delAcctConfirm='确定删除账号？\n资料、预约、消息和优惠券等所有数据将被永久删除，且无法恢复。';
+T.ko.delAcctConfirm2='마지막 확인 — 지금 삭제하면 복구할 수 없어요. 삭제할까요?';T.en.delAcctConfirm2='Final confirmation — this is permanent. Delete now?';T.ja.delAcctConfirm2='最終確認 — 復元できません。今すぐ削除しますか？';T.th.delAcctConfirm2='ยืนยันครั้งสุดท้าย — ไม่สามารถกู้คืนได้ ลบเลยไหม?';T.zh.delAcctConfirm2='最后确认 — 无法恢复。现在删除？';
+T.ko.delAcctWorking='계정을 삭제하는 중…';T.en.delAcctWorking='Deleting your account…';T.ja.delAcctWorking='アカウントを削除中…';T.th.delAcctWorking='กำลังลบบัญชี…';T.zh.delAcctWorking='正在删除账号…';
+T.ko.delAcctDone='계정이 삭제되었습니다.';T.en.delAcctDone='Your account has been deleted.';T.ja.delAcctDone='アカウントを削除しました。';T.th.delAcctDone='ลบบัญชีของคุณแล้ว';T.zh.delAcctDone='账号已删除。';
+T.ko.delAcctFail='삭제에 실패했어요. 잠시 후 다시 시도해주세요.';T.en.delAcctFail='Delete failed. Please try again shortly.';T.ja.delAcctFail='削除に失敗しました。しばらくして再試行してください。';T.th.delAcctFail='ลบไม่สำเร็จ กรุณาลองใหม่อีกครั้ง';T.zh.delAcctFail='删除失败，请稍后再试。';
 T.ko.bkCouponNone='적용 안 함';T.en.bkCouponNone='None';T.ja.bkCouponNone='使わない';T.th.bkCouponNone='ไม่ใช้';T.zh.bkCouponNone='不使用';
 T.ko.bkCouponUse='쿠폰 사용';T.en.bkCouponUse='Coupon';T.ja.bkCouponUse='クーポン';T.th.bkCouponUse='คูปอง';T.zh.bkCouponUse='优惠券';
 function injectQuickReplies(){try{var c=curConv;if(!c)return;var input=document.querySelector('.chatcard .cinput');if(!input)return;if(document.querySelector('.chatcard .qreplies'))return;var iAmDsgn=(ME&&c.designer===ME.uid);var qs=(iAmDsgn?T[LANG].qrDsgn:T[LANG].qrCust)||[];if(!qs.length)return;var row=document.createElement('div');row.className='qreplies';qs.forEach(function(q){var b=document.createElement('button');b.className='qrchip';b.type='button';b.textContent=q;b.onclick=function(){var inp=document.getElementById('cmsg');if(inp)inp.value=q;sendChat();};row.appendChild(b);});input.parentNode.insertBefore(row,input);}catch(e){}}
