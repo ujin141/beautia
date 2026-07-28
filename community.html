@@ -2679,13 +2679,19 @@ async function suGoogle(){suSnapshot();
  try{localStorage.setItem('beautia_coll_pending',JSON.stringify({role:SU.role||'',name:SU.name||''}));}catch(e){}
  const {error}=await SB.auth.signInWithOAuth({provider:'google',options:{redirectTo:location.href.split('#')[0].split('?')[0]}});
  if(error)toast('Google: '+error.message);}
+// App Store 심사 전용 계정: 심사관이 메일함 없이 로그인할 수 있게 고정 코드 사용(일반 사용자 흐름은 그대로 OTP)
+const REVIEW_EMAIL='appreview@beautia.io';
+function isReviewLogin(em){return String(em||'').trim().toLowerCase()===REVIEW_EMAIL;}
 async function suSendCode(){suSnapshot();const em=(SU.contact||'').trim();if(em.indexOf('@')<1){toast(T[LANG].needContact);return;}SU.contact=em;
+ if(isReviewLogin(em)){SU.code='sent';renderSU();setTimeout(function(){var c=$('suCode');if(c)c.focus();},80);return;} // 심사 계정: 메일 발송 없이 코드 입력 단계로
  toast(T[LANG].sending||'...');
  const {error}=await SB.auth.signInWithOtp({email:em,options:{shouldCreateUser:true}});
  if(error){toast(error.message);return;}
  SU.code='sent';renderSU();toast(T[LANG].otpSentToast);setTimeout(function(){var c=$('suCode');if(c)c.focus();},80);}
 async function suVerify(){const v=$('suCode')?$('suCode').value.trim():'';if(!v){toast(T[LANG].needCode||T[LANG].needContact);return;}
- const {data,error}=await SB.auth.verifyOtp({email:SU.contact,token:v,type:'email'});
+ const {data,error}=isReviewLogin(SU.contact)
+   ? await SB.auth.signInWithPassword({email:SU.contact,password:v})   // 심사 계정: 고정 코드로 로그인
+   : await SB.auth.verifyOtp({email:SU.contact,token:v,type:'email'});
  if(error){toast(T[LANG].codeWrong);return;}
  const uid=data.user.id;let prof=null;try{prof=(await SB.from('profiles').select('id,nickname,role,region,bio,interests,shop,avatar_url,full_name,created_at,points').eq('id',uid).maybeSingle()).data;}catch(e){}
  if(prof&&prof.nickname){ME=profToMe(prof);closeLogin();renderAuth();buildTiles();render();loadSaves();loadFollows();loadBlocks();checkUnread();refreshOwner();loadBkBadge();toast(T[LANG].welcomeBack||T[LANG].verifiedToast);return;}
