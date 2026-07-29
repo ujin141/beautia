@@ -2438,7 +2438,7 @@ function showAppPop(){try{
 }catch(e){}}
 showAppPop();
 // 웹푸시: 구독(알림 켜기) + 발송 헬퍼
-const VAPID_PUB='BEqmwrpTXryFvloIrotb9c9Mg3Q0NIXf4Oftc-OOCIlEHc3JQE8oFrqUGyzhcH6ZojZt_gf-RWw_M6Jz3LCx57M';
+const VAPID_PUB='BEpKjqYhyzj4JErJOcQBSzQd37VKP9hxkkdWQEGbWzEz_VNoXuNjk2wAw48tdMTEyrK8qHGsTIHmTTLEiR6ybyo';
 function urlB64ToU8(s){var p='='.repeat((4-s.length%4)%4),b=atob((s+p).replace(/-/g,'+').replace(/_/g,'/')),a=new Uint8Array(b.length);for(var i=0;i<b.length;i++)a[i]=b.charCodeAt(i);return a;}
 async function enablePush(){closeUmenu();
  if(!(ME&&ME.uid)){openLogin('');return;}
