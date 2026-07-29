@@ -1215,7 +1215,6 @@ html.native-app a,html.native-app button,html.native-app [role=button],html.nati
     <nav class="main" id="nav">
       <a data-v="explore" class="on" onclick="setView('explore')" data-t="explore">Explore</a>
       <a data-v="designers" onclick="setView('designers')" data-t="designers">Designers</a>
-      <a data-v="reels" id="navReels" onclick="setView('reels')" data-t="reels" style="display:none">Reels</a>
       <a data-v="saved" onclick="setView('saved')" data-t="saved">Saved</a>
     </nav>
     <div class="hsearch"><i class="ti ti-search"></i><input id="q" oninput="onSearchInput()" onfocus="renderSuggest()" onblur="hideSuggest()" autocomplete="off" data-tph="search"><div class="sugbox" id="sugbox"></div></div>
@@ -1239,7 +1238,6 @@ html.native-app a,html.native-app button,html.native-app [role=button],html.nati
 <nav class="tabbar" id="tabbar">
   <a class="tb on" data-v="explore" onclick="tabGo('explore')" aria-label="Explore"><i class="ti ti-home"></i></a>
   <a class="tb" data-v="designers" onclick="tabGo('designers')" aria-label="Designers"><i class="ti ti-search"></i></a>
-  <a class="tb" id="tabReels" data-v="reels" onclick="tabGo('reels')" aria-label="Reels" style="display:none"><i class="ti ti-player-play"></i></a>
   <a class="tb" onclick="tabBook()" aria-label="Bookings"><i class="ti ti-calendar-heart"></i></a>
   <a class="tb" id="tbMsg" onclick="tabMsg()" aria-label="Messages"><i class="ti ti-message-circle"></i></a>
   <a class="tb" id="tbMy" data-v="me" onclick="tabMy(event)" aria-label="My"><i class="ti ti-user"></i></a>
@@ -1898,7 +1896,9 @@ function renderStats(){var el=$('statstrip');if(!el)return;
 var REELS_MIN=6, _reelIO=null;
 function reelVideos(){return TILES.filter(function(t){return t.vid;});}
 function reelsReady(){return reelVideos().length>=REELS_MIN;}
-function updateReelsTab(){var on=reelsReady();var a=$('navReels'),b=$('tabReels');if(a)a.style.display=on?'':'none';if(b)b.style.display=on?'':'none';}
+// 릴스 내비게이션은 제거했다(2026-07-29). 진입점이 없으므로 탭 노출 로직도 하는 일이 없다.
+// 피드 코드 자체는 남겨둔다 — 되살릴 때 nav/탭바 링크만 다시 넣으면 된다.
+function updateReelsTab(){}
 function stopAllVideos(){try{[].forEach.call(document.querySelectorAll('video'),function(v){try{v.pause();}catch(e){}});}catch(e){}}
 function teardownReels(){if(_reelIO){try{_reelIO.disconnect();}catch(e){}_reelIO=null;}var _rh=document.getElementById('reels');if(_rh){[].forEach.call(_rh.querySelectorAll('video'),function(v){try{v.pause();v.removeAttribute('src');v.load();v.remove();}catch(e){}});}}
 function renderReels(){
