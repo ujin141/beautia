@@ -134,6 +134,10 @@ nav.main a.on{color:var(--plum);}
 .umenu .uh .un{font-weight:800;font-size:var(--fs-md);} .umenu .uh .ur{font-size:var(--fs-sm);color:var(--sub);margin-top:2px;}
 .umenu a{display:flex;align-items:center;gap:10px;padding:12px 14px;font-size:var(--fs-md);font-weight:600;color:var(--ink);border-radius:var(--r-sm);cursor:pointer;}
 .umenu a:hover{background:var(--soft);} .umenu a i{font-size:var(--fs-xl);color:var(--sub);}
+/* 디자이너에게 대시보드는 이 메뉴에서 제일 중요한 항목이라 나머지와 구분해 둔다. */
+.umenu a.udash{background:var(--rosebg);font-weight:700;margin-bottom:6px;}
+.umenu a.udash:hover{background:#eae3e0;}
+.umenu a.udash i{color:var(--plum);}
 .langwrap{position:relative;flex:0 0 auto;}
 .langBtn{display:inline-flex;align-items:center;gap:5px;background:none;border:1px solid var(--line);border-radius:999px;padding:8px 12px;font-weight:700;font-size:var(--fs-base);color:var(--ink2);cursor:pointer;font-family:inherit;white-space:nowrap;}
 .langBtn i{font-size:var(--fs-lg);} .langBtn:hover{border-color:var(--plum);color:var(--plum);}
@@ -1526,19 +1530,19 @@ function matchCat(x){if(!x)return '';if(CATS.indexOf(x)>=0)return x;var s=String
 function canonCat(x){return matchCat(x)||'Hair';}
 function catsOf(arr){var out=[];(arr||[]).forEach(function(x){var c=matchCat(x);if(c&&out.indexOf(c)<0)out.push(c);});return out;}
 const T={
- en:{guestReviewer:'Guest',explore:'Explore',designers:'Designers',reels:'Reels',reelsEmpty:'No videos yet',saved:'Saved',join:'Join',search:'Search designers, styles…',all:'All',tagline:'Beauty designers, worldwide. Browse real work, save your favorites, and book or message the designer directly.',h1:'Find a designer who <em>gets your style.</em>',
+ en:{guestReviewer:'Guest',myDashboard:'My dashboard',explore:'Explore',designers:'Designers',reels:'Reels',reelsEmpty:'No videos yet',saved:'Saved',join:'Join',search:'Search designers, styles…',all:'All',tagline:'Beauty designers, worldwide. Browse real work, save your favorites, and book or message the designer directly.',h1:'Find a designer who <em>gets your style.</em>',
   verified:'Verified',portfolio:'PORTFOLIO',beforeafter:'BEFORE / AFTER',reviews:'REVIEWS',connect:'CONNECT',before:'BEFORE',after:'AFTER',years:'yrs',allcity:'All cities',
   save:'Save',saved2:'Saved',book:'Book / Message',inq:'Send inquiry',inqL:'Language',inqM:'Your message',inqPH:'Hi! I love your work. I would like to book…',send:'Send',
   emptyS:'No saved looks yet — tap ♡ on any work.',noRes:'No results.',saveT:'Saved to your collection ♡',unsaveT:'Removed from saved',bookT:'Opening chat ✨',inqT:'Message sent ✨',joinToast:'Welcome, designer — upload your portfolio ✨',Cat:{Hair:'Hair',Makeup:'Makeup',Nail:'Nail',Lash:'Lash',Skin:'Skin',Bridal:'Bridal',Tattoo:'Tattoo'}},
- ko:{guestReviewer:'손님',explore:'둘러보기',designers:'디자이너',reels:'릴스',reelsEmpty:'아직 영상이 없어요',saved:'저장',join:'등록',search:'디자이너·스타일 검색…',all:'전체',tagline:'세계 어디서든 내 스타일을 아는 뷰티 디자이너를 찾으세요. 실제 작업을 보고, 저장하고, 예약하거나 문의하세요.',h1:'내 스타일을 아는 <em>뷰티 디자이너</em>를 찾으세요.',
+ ko:{guestReviewer:'손님',myDashboard:'내 대시보드',explore:'둘러보기',designers:'디자이너',reels:'릴스',reelsEmpty:'아직 영상이 없어요',saved:'저장',join:'등록',search:'디자이너·스타일 검색…',all:'전체',tagline:'세계 어디서든 내 스타일을 아는 뷰티 디자이너를 찾으세요. 실제 작업을 보고, 저장하고, 예약하거나 문의하세요.',h1:'내 스타일을 아는 <em>뷰티 디자이너</em>를 찾으세요.',
   verified:'인증',portfolio:'포트폴리오',beforeafter:'비포 / 애프터',reviews:'후기',connect:'바로 연결',before:'비포',after:'애프터',years:'년',allcity:'전체 도시',
   save:'저장',saved2:'저장됨',book:'예약 · 문의',inq:'문의 보내기',inqL:'언어',inqM:'메시지',inqPH:'안녕하세요! 작업 너무 마음에 들어요. 예약하고 싶어요…',send:'보내기',
   emptyS:'아직 저장한 룩이 없어요 — 작업에 ♡를 눌러보세요.',noRes:'결과가 없어요.',saveT:'컬렉션에 저장했어요 ♡',unsaveT:'저장에서 제거했어요',bookT:'채팅을 여는 중 ✨',inqT:'메시지를 보냈어요 ✨',joinToast:'디자이너로 가입 완료! 포트폴리오를 올려보세요 ✨',Cat:{Hair:'헤어',Makeup:'메이크업',Nail:'네일',Lash:'속눈썹',Skin:'스킨',Bridal:'브라이덜',Tattoo:'타투'}},
- ja:{guestReviewer:'お客様',explore:'探す',designers:'デザイナー',reels:'リール',reelsEmpty:'まだ動画がありません',saved:'保存',join:'登録',search:'デザイナー・スタイル検索…',all:'すべて',tagline:'世界中どこでも、あなたのスタイルを分かるビューティーデザイナーを見つけよう。作品を見て、保存して、予約・問い合わせ。',h1:'あなたのスタイルを分かる<em>デザイナー</em>を。',
+ ja:{guestReviewer:'お客様',myDashboard:'マイダッシュボード',explore:'探す',designers:'デザイナー',reels:'リール',reelsEmpty:'まだ動画がありません',saved:'保存',join:'登録',search:'デザイナー・スタイル検索…',all:'すべて',tagline:'世界中どこでも、あなたのスタイルを分かるビューティーデザイナーを見つけよう。作品を見て、保存して、予約・問い合わせ。',h1:'あなたのスタイルを分かる<em>デザイナー</em>を。',
   verified:'認証',portfolio:'ポートフォリオ',beforeafter:'ビフォー / アフター',reviews:'レビュー',connect:'つながる',before:'BEFORE',after:'AFTER',years:'年',allcity:'すべての都市',
   save:'保存',saved2:'保存済み',book:'予約・問い合わせ',inq:'問い合わせ送信',inqL:'言語',inqM:'メッセージ',inqPH:'こんにちは！作品が素敵です。予約したいです…',send:'送信',
   emptyS:'保存した作品がありません — ♡を押してください。',noRes:'結果がありません。',saveT:'コレクションに保存 ♡',unsaveT:'保存から削除',bookT:'チャットを開いています ✨',inqT:'メッセージを送信しました ✨',joinToast:'デザイナー登録完了！ポートフォリオをアップしましょう ✨',Cat:{Hair:'ヘア',Makeup:'メイク',Nail:'ネイル',Lash:'まつげ',Skin:'スキン',Bridal:'ブライダル',Tattoo:'タトゥー'}},
- th:{guestReviewer:'ลูกค้า',explore:'สำรวจ',designers:'ดีไซเนอร์',reels:'รีลส์',reelsEmpty:'ยังไม่มีวิดีโอ',saved:'บันทึกไว้',join:'เข้าร่วม',search:'ค้นหาดีไซเนอร์ สไตล์…',all:'ทั้งหมด',tagline:'ค้นหาผู้เชี่ยวชาญด้านความงามที่เข้าใจสไตล์ของคุณ — จากทั่วโลก ดูผลงานจริง บันทึกที่ชอบ จองหรือส่งข้อความถึงดีไซเนอร์ได้เลย',h1:'ค้นหาผู้เชี่ยวชาญความงามที่<em>เข้าใจสไตล์ของคุณ</em>',
+ th:{guestReviewer:'ลูกค้า',myDashboard:'แดชบอร์ดของฉัน',explore:'สำรวจ',designers:'ดีไซเนอร์',reels:'รีลส์',reelsEmpty:'ยังไม่มีวิดีโอ',saved:'บันทึกไว้',join:'เข้าร่วม',search:'ค้นหาดีไซเนอร์ สไตล์…',all:'ทั้งหมด',tagline:'ค้นหาผู้เชี่ยวชาญด้านความงามที่เข้าใจสไตล์ของคุณ — จากทั่วโลก ดูผลงานจริง บันทึกที่ชอบ จองหรือส่งข้อความถึงดีไซเนอร์ได้เลย',h1:'ค้นหาผู้เชี่ยวชาญความงามที่<em>เข้าใจสไตล์ของคุณ</em>',
   verified:'ยืนยันแล้ว',portfolio:'ผลงาน',beforeafter:'ก่อน / หลัง',reviews:'รีวิว',connect:'เชื่อมต่อ',before:'ก่อน',after:'หลัง',years:'ปี',allcity:'ทุกเมือง',
   save:'บันทึก',saved2:'บันทึกแล้ว',book:'จอง · ส่งข้อความ',inq:'ส่งคำถาม',inqL:'ภาษา',inqM:'ข้อความของคุณ',inqPH:'สวัสดีค่ะ! ชอบผลงานมากเลย อยากจองคิว…',send:'ส่ง',
   emptyS:'ยังไม่มีลุคที่บันทึก — แตะ ♡ ที่ผลงานใดก็ได้',noRes:'ไม่พบผลลัพธ์',saveT:'บันทึกลงคอลเลกชันแล้ว ♡',unsaveT:'นำออกจากที่บันทึกแล้ว',bookT:'กำลังเปิดแชท ✨',inqT:'ส่งข้อความแล้ว ✨',joinToast:'ยินดีต้อนรับดีไซเนอร์ — อัปโหลดผลงานของคุณ ✨',Cat:{Hair:'ผม',Makeup:'เมคอัพ',Nail:'เล็บ',Lash:'ขนตา',Skin:'ผิว',Bridal:'เจ้าสาว',Tattoo:'แท็ททู'}},
@@ -2411,7 +2415,7 @@ Object.assign(T.zh,{
  fbHead5:'你身边的\n实力设计师',fbSub5:'找到你附近、契合你品味的设计师。',
  fbHead6:'全球美业\n尽在一处',fbSub6:'韩国、日本及更多 — 全汇聚于此。'
 });
-Object.assign(T.zh,{guestReviewer:'顾客',myPoints:'我的积分',pointsHint:'每次完成预约都能累积积分',sloganFull:'让艺术家更像艺术家 · Artists, more artist.',bkDoneT:'预约已提交！🎉',bkDoneS:'设计师确认后即预订成功，也会在聊天中通知你。',prodPromo:'与此服务搭配的推荐产品',relatedProd:'推荐产品',buyBtn:'购买',bkChange:'更改'});
+Object.assign(T.zh,{guestReviewer:'顾客',myDashboard:'我的工作台',myPoints:'我的积分',pointsHint:'每次完成预约都能累积积分',sloganFull:'让艺术家更像艺术家 · Artists, more artist.',bkDoneT:'预约已提交！🎉',bkDoneS:'设计师确认后即预订成功，也会在聊天中通知你。',prodPromo:'与此服务搭配的推荐产品',relatedProd:'推荐产品',buyBtn:'购买',bkChange:'更改'});
 // 태국어: 영어 전체를 상속받고 주요 문자열만 태국어로 (누락 키는 영어로 자동 폴백)
 T.th=Object.assign({},T.th,{
  explore:'สำรวจ',designers:'ดีไซเนอร์',reels:'รีลส์',reelsEmpty:'ยังไม่มีวิดีโอ',saved:'บันทึกไว้',join:'สมัคร',my:'ฉัน',messages:'ข้อความ',
@@ -2577,6 +2581,7 @@ function renderAuth(){const li=$('loginBtn'),av=$('avatar'),jb=$('joinBtn');if(j
  if(ME){li.style.display='none';av.style.display='flex';if(ME.avatar){av.style.backgroundImage="url('"+ME.avatar+"')";av.style.backgroundSize='cover';av.style.backgroundPosition='center';av.textContent='';}else{av.style.backgroundImage='';av.textContent=(ME.name||'U')[0].toUpperCase();}}else{li.style.display='inline-flex';av.style.display='none';closeUmenu();}}
 function toggleUmenu(e){if(e)e.stopPropagation();const m=$('umenu');m.classList.remove('frombar');if(m.classList.contains('on')){closeUmenu();return;}
  m.innerHTML=`<div class="uh"><div class="un">${T[LANG].hi}, ${esc(ME?ME.name:'')}</div><div class="ur">${ME?roleLabel(ME.role):''}${ME&&ME.verified?' · '+T[LANG].verifiedMember:''}</div></div>
+ ${ME&&ME.role==='designer'?`<a class="udash" href="/dashboard" onclick="closeUmenu()"><i class="ti ti-building-store"></i> ${T[LANG].myDashboard}</a>`:''}
  <a onclick="openProfile();closeUmenu()"><i class="ti ti-user"></i> ${T[LANG].profile}</a>
  <a onclick="openChat();closeUmenu()"><i class="ti ti-message-2"></i> ${T[LANG].messages}${chatUnread>0?'<span class="undot"></span>':''}</a>
  <a onclick="openBookings();closeUmenu()"><i class="ti ti-calendar-heart"></i> ${T[LANG].myBookings}${bkPend>0?'<span class="undot"></span>':''}</a>
