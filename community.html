@@ -1115,39 +1115,30 @@ html.native-app a,html.native-app button,html.native-app [role=button],html.nati
 .bkguesthint{margin-top:9px;font-size:var(--fs-sm);line-height:1.55;color:#8a7f84;text-align:center}
 </style>
 <style id="splashcss">
-/* 스플래시 — 브랜드를 1.2초 안에 한 번 보여주는 화면.
-   이전에는 효과가 19개 동시에 돌았다: 로고 바운스, 링 퍼짐, 뒤 glow 깜빡임,
-   로고 위 금빛 스침, 글자 하나씩 날아오기, 금선 반짝임, 점 3개 통통 튀기.
-   화면이 1.25초에 닫히니 절반은 시작하지도 못하고 사라졌고, 남은 인상은 '싸구려 템플릿'이었다.
-   지금은 동작이 하나다 — 흐릿하게 가라앉아 있던 것이 초점을 찾으며 떠오른다.
-   전부 같은 감속 곡선(.16,1,.3,1)을 쓰고, 무한 반복은 없다. */
-#splash{position:fixed;inset:0;z-index:99999;display:none;flex-direction:column;align-items:center;justify-content:center;
-  background:radial-gradient(120% 85% at 50% 18%,#5f4049 0%,#3d2930 46%,#241820 100%);
-  transition:opacity .5s cubic-bezier(.4,0,.2,1),transform .5s cubic-bezier(.4,0,.2,1);
-  transform-origin:50% 48%;will-change:opacity,transform;}
-#splash.hide{opacity:0;transform:scale(1.02);pointer-events:none;}
+/* 스플래시 — 앱이 열릴 때 1.2초 동안 보이는 화면.
+   이전 판은 '어두운 자주 그라데이션 + 금색 이탤릭 필기체 + 금색 장식선' 이었다.
+   그건 고급이 아니라 유흥가 간판 문법이고, 고급스러워 보이려 애쓴 티가 그대로 남는다.
+   게다가 어두운 화면에서 흰 앱으로 넘어가느라 실행할 때마다 번쩍였다.
+
+   지금은 앱과 같은 흰 배경이다. 넘어갈 때 화면이 바뀌는 느낌 자체가 없고,
+   장식을 다 걷어내면 남는 건 로고 하나뿐이다. 그게 제일 비싸 보인다. */
+#splash{position:fixed;inset:0;z-index:99999;display:none;flex-direction:column;
+  align-items:center;justify-content:center;background:#fff;
+  transition:opacity .45s cubic-bezier(.4,0,.2,1);will-change:opacity;}
+#splash.hide{opacity:0;pointer-events:none;}
 #splash .score{display:flex;flex-direction:column;align-items:center;}
 #splash .swrap{position:relative;display:flex;align-items:center;justify-content:center;}
-/* 화면은 1.25초에 닫힌다. 마지막 줄까지 1.10초 안에 앉아야
-   사라지기 전에 '멈춰 있는 한 순간'이 생긴다. 그 정지가 차분해 보이게 만든다. */
-#splash .sm{width:100px;height:auto;animation:splashRise .85s cubic-bezier(.16,1,.3,1) both;}
-#splash .sw{font-family:'Fraunces',Georgia,serif;font-weight:600;color:#fff;font-size:var(--fs-5xl);
-  margin-top:22px;letter-spacing:-.01em;animation:splashRise .85s cubic-bezier(.16,1,.3,1) .12s both;}
-#splash .sl{width:56px;height:2px;margin:20px 0 14px;border-radius:2px;
-  background:linear-gradient(90deg,#F0D98F,#C9A063);
-  animation:splashDraw .63s cubic-bezier(.16,1,.3,1) .32s both;}
-#splash .st{font-family:'Fraunces',Georgia,serif;font-style:italic;font-weight:500;color:#EBCB90;
-  font-size:var(--fs-xl);animation:splashRise .6s cubic-bezier(.16,1,.3,1) .42s both;}
-#splash .st2{margin-top:7px;font-family:'Pretendard',sans-serif;font-style:normal;font-weight:500;
-  font-size:var(--fs-md);color:rgba(255,255,255,.5);letter-spacing:.04em;
-  animation:splashRise .6s cubic-bezier(.16,1,.3,1) .5s both;}
-@keyframes splashRise{from{opacity:0;transform:translateY(16px);filter:blur(7px)}
-  to{opacity:1;transform:none;filter:blur(0)}}
-@keyframes splashDraw{from{opacity:0;transform:scaleX(0)}to{opacity:1;transform:scaleX(1)}}
+/* 화면은 1.25초에 닫힌다. 마지막 줄이 0.86초에 앉아 정지하는 순간을 남긴다. */
+#splash .sm{width:78px;height:auto;animation:splashRise .62s cubic-bezier(.16,1,.3,1) both;}
+#splash .sw{font-family:'Fraunces',Georgia,serif;font-weight:600;color:#2B2422;
+  font-size:var(--fs-4xl);margin-top:18px;letter-spacing:-.015em;
+  animation:splashRise .62s cubic-bezier(.16,1,.3,1) .12s both;}
+#splash .st{margin-top:10px;font-family:'Pretendard',sans-serif;font-weight:500;
+  font-size:var(--fs-base);color:#8A817B;letter-spacing:.05em;
+  animation:splashRise .62s cubic-bezier(.16,1,.3,1) .24s both;}
+@keyframes splashRise{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
 @media (prefers-reduced-motion: reduce){
-  #splash .sm,#splash .sw,#splash .sl,#splash .st,#splash .st2{
-    animation:none!important;opacity:1!important;filter:none!important;transform:none!important}
-  #splash.hide{transform:none}
+  #splash .sm,#splash .sw,#splash .st{animation:none!important;opacity:1!important;transform:none!important}
 }
 /* 스플래시 말고 앱 전체에도 적용해야 한다 — 카드 hover, 캐러셀, 모달 슬라이드가 그대로 남아
    전정기관 민감 사용자에겐 어지럼을 준다. 끄지 않고 0.01ms 로 줄여 완료 콜백은 살린다. */
@@ -1175,8 +1166,8 @@ html.native-app a,html.native-app button,html.native-app [role=button],html.nati
 .revreport:active{color:#573f47;}
 @media (prefers-color-scheme:dark){.repcard{background:#241a1f;}.reptitle{color:#ece4e6;}.repreason{background:#2a2025;border-color:#3a2c31;color:#ece4e6;}.repcancel{background:#332830;color:#cdbfc4;}}
 </style></head><body>
-<div id="splash" aria-hidden="true"><div class="score"><div class="swrap"><img class="sm" src="/logo-mark-white.png" alt=""></div><div class="sw">Beautia</div><div class="sl"></div><div class="st">Your style, found.</div><div class="st st2">Artists, more artist.</div></div></div>
-<script>(function(){try{var app=window.matchMedia&&window.matchMedia('(display-mode: standalone)').matches;var seen=false;try{seen=sessionStorage.getItem('beautia_splashed')==='1';}catch(e){}if(app||!seen){document.getElementById('splash').style.display='flex';window.__splashT0=performance.now();var m=document.querySelector('meta[name=theme-color]');if(m){window.__thmPrev=m.getAttribute('content');m.setAttribute('content','#48323a');}if(!app){try{sessionStorage.setItem('beautia_splashed','1');}catch(e){}}}}catch(e){}})();</script>
+<div id="splash" aria-hidden="true"><div class="score"><div class="swrap"><img class="sm" src="/logo-mark.png" alt=""></div><div class="sw">Beautia</div><div class="st">Your style, found.</div></div></div>
+<script>(function(){try{var app=window.matchMedia&&window.matchMedia('(display-mode: standalone)').matches;var seen=false;try{seen=sessionStorage.getItem('beautia_splashed')==='1';}catch(e){}if(app||!seen){document.getElementById('splash').style.display='flex';window.__splashT0=performance.now();var m=document.querySelector('meta[name=theme-color]');if(m){window.__thmPrev=m.getAttribute('content');m.setAttribute('content','#ffffff');}if(!app){try{sessionStorage.setItem('beautia_splashed','1');}catch(e){}}}}catch(e){}})();</script>
 <!-- Google Tag Manager (noscript) -->
 <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-5SNMQDGD" height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 <!-- End Google Tag Manager (noscript) -->
