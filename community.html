@@ -94,7 +94,11 @@ header{position:sticky;top:0;z-index:40;background:rgba(255,255,255,.93);backdro
 .hin{max-width:1320px;margin:0 auto;display:flex;align-items:center;gap:24px;padding:16px 28px;}
 .brand{display:flex;align-items:center;gap:10px;cursor:pointer;}
 .brand .bcol{display:flex;flex-direction:column;line-height:1;}
-.brand .b1{font-family:'Pretendard','Malgun Gothic',sans-serif;font-weight:700;font-size:var(--fs-2xl);color:var(--plum);}
+/* 워드마크는 로고 마크와 같은 계열이어야 한다. 마크는 획 굵기가 확 변하는 캘리그래피 B 인데
+   획이 일정한 고딕(Pretendard Bold)을 붙이면 둘이 따로 논다. 표시용 글꼴은 Fraunces 다.
+   본문·UI 는 그대로 Pretendard 를 쓴다 — 여기만 예외다. */
+/* Fraunces 는 기본 세로 여백이 커서 line-height 를 안 잡으면 헤더가 44px 부풀었다. */
+.brand .b1{font-family:'Fraunces',Georgia,serif;font-weight:600;font-size:var(--fs-2xl);line-height:1.1;color:var(--plum);}
 .brand .blogo{height:38px;width:auto;display:block;}
 .brand .b2{font-size:var(--fs-2xs);font-weight:800;letter-spacing:.38em;color:var(--sub);margin-top:5px;}
 nav.main{display:flex;gap:2px;margin-left:4px;flex:0 0 auto;flex-wrap:nowrap;}
@@ -1078,6 +1082,13 @@ html.native-app a,html.native-app button,html.native-app [role=button],html.nati
 .brand .b1{font-size:var(--fs-2xl) !important;letter-spacing:-.3px !important;color:#191512 !important;}
 /* 브랜드 서브텍스트(무채색) */
 .brand .b2{letter-spacing:2.6px !important;color:#8f8880 !important;font-weight:700 !important;}
+/* 위 !important 들이 모바일 축소 규칙(.blogo 32px / .b1 18px)을 덮어써서,
+   375px 화면에서 헤더가 한 줄에 겨우 맞는 상태였다. 글꼴 폭이 3px 만 늘어도
+   로그인 버튼이 다음 줄로 밀린다. 모바일에서는 다시 줄여 여유를 만든다. */
+@media(max-width:860px){
+  .brand .blogo{height:34px !important;}
+  .brand .b1{font-size:var(--fs-xl) !important;}
+}
 /* 인증 뱃지: 쨍한 색·금박 제거 → 뉴트럴 (클래식) */
 .fbadge{background:#f1efea !important;color:#5f574f !important;border-color:#e6e1da !important;}
 .vbadge{background:#f1efea !important;color:#4a443f !important;box-shadow:none !important;border:1px solid #e6e1da !important;font-weight:700 !important;}
