@@ -2581,7 +2581,7 @@ function renderAuth(){const li=$('loginBtn'),av=$('avatar'),jb=$('joinBtn');if(j
  if(ME){li.style.display='none';av.style.display='flex';if(ME.avatar){av.style.backgroundImage="url('"+ME.avatar+"')";av.style.backgroundSize='cover';av.style.backgroundPosition='center';av.textContent='';}else{av.style.backgroundImage='';av.textContent=(ME.name||'U')[0].toUpperCase();}}else{li.style.display='inline-flex';av.style.display='none';closeUmenu();}}
 function toggleUmenu(e){if(e)e.stopPropagation();const m=$('umenu');m.classList.remove('frombar');if(m.classList.contains('on')){closeUmenu();return;}
  m.innerHTML=`<div class="uh"><div class="un">${T[LANG].hi}, ${esc(ME?ME.name:'')}</div><div class="ur">${ME?roleLabel(ME.role):''}${ME&&ME.verified?' · '+T[LANG].verifiedMember:''}</div></div>
- ${ME&&ME.role==='designer'?`<a class="udash" href="/dashboard" onclick="closeUmenu()"><i class="ti ti-building-store"></i> ${T[LANG].myDashboard}</a>`:''}
+ ${ME&&ME.role==='desg'?`<a class="udash" href="/dashboard" onclick="closeUmenu()"><i class="ti ti-building-store"></i> ${T[LANG].myDashboard}</a>`:''}
  <a onclick="openProfile();closeUmenu()"><i class="ti ti-user"></i> ${T[LANG].profile}</a>
  <a onclick="openChat();closeUmenu()"><i class="ti ti-message-2"></i> ${T[LANG].messages}${chatUnread>0?'<span class="undot"></span>':''}</a>
  <a onclick="openBookings();closeUmenu()"><i class="ti ti-calendar-heart"></i> ${T[LANG].myBookings}${bkPend>0?'<span class="undot"></span>':''}</a>
@@ -2590,7 +2590,7 @@ function toggleUmenu(e){if(e)e.stopPropagation();const m=$('umenu');m.classList.
  <a onclick="setView('saved');closeUmenu()"><i class="ti ti-heart"></i> ${T[LANG].saved}</a>
  <a onclick="enablePush()"><i class="ti ti-bell-ringing"></i> ${T[LANG].notifOn}</a>
  ${window.matchMedia&&window.matchMedia('(display-mode: standalone)').matches?'':`<a onclick="installApp()"><i class="ti ti-device-mobile-plus"></i> ${T[LANG].installApp}</a>`}
- ${ME&&ME.role!=='designer'?`<a onclick="closeUmenu();openDesignerApply()"><i class="ti ti-briefcase"></i> ${T[LANG].applyDesigner}</a>`:''}
+ ${ME&&ME.role!=='desg'?`<a onclick="closeUmenu();openDesignerApply()"><i class="ti ti-briefcase"></i> ${T[LANG].applyDesigner}</a>`:''}
  <a onclick="logout();closeUmenu()"><i class="ti ti-logout"></i> ${T[LANG].logout}</a>`;
  m.classList.add('on');
  var av=$('avatar'),r=av.getBoundingClientRect();
@@ -2603,7 +2603,8 @@ function closeLogin(){$('lmodal').classList.remove('on');}
 let DA={name:'',shop:'',region:'',spec:'',insta:'',career:'',contact:'',message:'',photos:[],busy:false,already:false};
 async function openDesignerApply(){
  if(!(ME&&ME.uid)){toast(T[LANG].applyLogin);openLogin('');return;}
- if(ME.role==='designer'){toast(T[LANG].applyAlreadyDesigner);return;}
+ // ME.role 은 roleIn() 을 거쳐 'desg'/'cust' 로만 들어온다. DB 값인 'designer' 와 비교하면 절대 참이 안 된다.
+ if(ME.role==='desg'){toast(T[LANG].applyAlreadyDesigner);return;}
  var em='';try{var ss=(await SB.auth.getSession()).data.session;em=ss&&ss.user?(ss.user.email||''):'';}catch(e){}
  DA={name:ME.name||'',shop:ME.shopName||'',region:ME.city||ME.country||'',spec:'',insta:ME.insta||'',career:'',contact:em,message:'',photos:[],busy:false,already:false};
  renderDApply();$('damodal').classList.add('on');
