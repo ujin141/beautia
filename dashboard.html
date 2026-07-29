@@ -344,7 +344,9 @@ textarea.inp{resize:vertical;min-height:80px;line-height:1.6;}
 </div></header>
 
 <!-- 로그인 -->
-<div class="wrap"><div class="login" id="loginView">
+<!-- 이 바깥 wrap 도 함께 숨겨야 한다. .wrap 은 padding-bottom 84px 을 갖고 있어서
+     안쪽 loginView 만 숨기면 로그인 후에도 헤더 밑에 84px 짜리 빈 띠가 남는다. -->
+<div class="wrap" id="loginWrap"><div class="login" id="loginView">
   <!-- data-t="slogan" 은 한국어에서 "아티스트를 더욱 아티스트답게"로 치환된다.
        Georgia 이탤릭을 씌우면 그 한글이 세리프로 나온다(브랜드 규칙 위반).
        골드 15px/400 은 흰 배경에서 2.42:1 이라 읽히지도 않았다. -->
@@ -847,7 +849,7 @@ async function afterLogin(user){
   enterDashboard();
 }
 function enterDashboard(){
-  $('loginView').classList.add('hide');$('dashView').classList.remove('hide');
+  $('loginView').classList.add('hide');$('loginWrap').classList.add('hide');$('dashView').classList.remove('hide');
   $('who').textContent=EMAIL;$('logoutBtn').classList.remove('hide');
   fillProfile();renderSpec();renderTags();renderPf();renderServices();renderProducts();
   renderHome();loadBookings();loadReviews();initMessages();applyI18n();loadShopSection();
