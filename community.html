@@ -1530,19 +1530,19 @@ function matchCat(x){if(!x)return '';if(CATS.indexOf(x)>=0)return x;var s=String
 function canonCat(x){return matchCat(x)||'Hair';}
 function catsOf(arr){var out=[];(arr||[]).forEach(function(x){var c=matchCat(x);if(c&&out.indexOf(c)<0)out.push(c);});return out;}
 const T={
- en:{guestReviewer:'Guest',myDashboard:'My dashboard',explore:'Explore',designers:'Designers',reels:'Reels',reelsEmpty:'No videos yet',saved:'Saved',join:'Join',search:'Search designers, styles…',all:'All',tagline:'Beauty designers, worldwide. Browse real work, save your favorites, and book or message the designer directly.',h1:'Find a designer who <em>gets your style.</em>',
+ en:{pushErrPerm:'Permission request failed',pushErrSw:'Service worker not ready',pushErrSub:'Could not subscribe',pushErrSave:'Could not save subscription',guestReviewer:'Guest',myDashboard:'My dashboard',explore:'Explore',designers:'Designers',reels:'Reels',reelsEmpty:'No videos yet',saved:'Saved',join:'Join',search:'Search designers, styles…',all:'All',tagline:'Beauty designers, worldwide. Browse real work, save your favorites, and book or message the designer directly.',h1:'Find a designer who <em>gets your style.</em>',
   verified:'Verified',portfolio:'PORTFOLIO',beforeafter:'BEFORE / AFTER',reviews:'REVIEWS',connect:'CONNECT',before:'BEFORE',after:'AFTER',years:'yrs',allcity:'All cities',
   save:'Save',saved2:'Saved',book:'Book / Message',inq:'Send inquiry',inqL:'Language',inqM:'Your message',inqPH:'Hi! I love your work. I would like to book…',send:'Send',
   emptyS:'No saved looks yet — tap ♡ on any work.',noRes:'No results.',saveT:'Saved to your collection ♡',unsaveT:'Removed from saved',bookT:'Opening chat ✨',inqT:'Message sent ✨',joinToast:'Welcome, designer — upload your portfolio ✨',Cat:{Hair:'Hair',Makeup:'Makeup',Nail:'Nail',Lash:'Lash',Skin:'Skin',Bridal:'Bridal',Tattoo:'Tattoo'}},
- ko:{guestReviewer:'손님',myDashboard:'내 대시보드',explore:'둘러보기',designers:'디자이너',reels:'릴스',reelsEmpty:'아직 영상이 없어요',saved:'저장',join:'등록',search:'디자이너·스타일 검색…',all:'전체',tagline:'세계 어디서든 내 스타일을 아는 뷰티 디자이너를 찾으세요. 실제 작업을 보고, 저장하고, 예약하거나 문의하세요.',h1:'내 스타일을 아는 <em>뷰티 디자이너</em>를 찾으세요.',
+ ko:{pushErrPerm:'권한 요청 실패',pushErrSw:'서비스워커 준비 안 됨',pushErrSub:'구독 실패',pushErrSave:'구독 저장 실패',guestReviewer:'손님',myDashboard:'내 대시보드',explore:'둘러보기',designers:'디자이너',reels:'릴스',reelsEmpty:'아직 영상이 없어요',saved:'저장',join:'등록',search:'디자이너·스타일 검색…',all:'전체',tagline:'세계 어디서든 내 스타일을 아는 뷰티 디자이너를 찾으세요. 실제 작업을 보고, 저장하고, 예약하거나 문의하세요.',h1:'내 스타일을 아는 <em>뷰티 디자이너</em>를 찾으세요.',
   verified:'인증',portfolio:'포트폴리오',beforeafter:'비포 / 애프터',reviews:'후기',connect:'바로 연결',before:'비포',after:'애프터',years:'년',allcity:'전체 도시',
   save:'저장',saved2:'저장됨',book:'예약 · 문의',inq:'문의 보내기',inqL:'언어',inqM:'메시지',inqPH:'안녕하세요! 작업 너무 마음에 들어요. 예약하고 싶어요…',send:'보내기',
   emptyS:'아직 저장한 룩이 없어요 — 작업에 ♡를 눌러보세요.',noRes:'결과가 없어요.',saveT:'컬렉션에 저장했어요 ♡',unsaveT:'저장에서 제거했어요',bookT:'채팅을 여는 중 ✨',inqT:'메시지를 보냈어요 ✨',joinToast:'디자이너로 가입 완료! 포트폴리오를 올려보세요 ✨',Cat:{Hair:'헤어',Makeup:'메이크업',Nail:'네일',Lash:'속눈썹',Skin:'스킨',Bridal:'브라이덜',Tattoo:'타투'}},
- ja:{guestReviewer:'お客様',myDashboard:'マイダッシュボード',explore:'探す',designers:'デザイナー',reels:'リール',reelsEmpty:'まだ動画がありません',saved:'保存',join:'登録',search:'デザイナー・スタイル検索…',all:'すべて',tagline:'世界中どこでも、あなたのスタイルを分かるビューティーデザイナーを見つけよう。作品を見て、保存して、予約・問い合わせ。',h1:'あなたのスタイルを分かる<em>デザイナー</em>を。',
+ ja:{pushErrPerm:'許可のリクエストに失敗',pushErrSw:'サービスワーカー未準備',pushErrSub:'購読に失敗',pushErrSave:'購読の保存に失敗',guestReviewer:'お客様',myDashboard:'マイダッシュボード',explore:'探す',designers:'デザイナー',reels:'リール',reelsEmpty:'まだ動画がありません',saved:'保存',join:'登録',search:'デザイナー・スタイル検索…',all:'すべて',tagline:'世界中どこでも、あなたのスタイルを分かるビューティーデザイナーを見つけよう。作品を見て、保存して、予約・問い合わせ。',h1:'あなたのスタイルを分かる<em>デザイナー</em>を。',
   verified:'認証',portfolio:'ポートフォリオ',beforeafter:'ビフォー / アフター',reviews:'レビュー',connect:'つながる',before:'BEFORE',after:'AFTER',years:'年',allcity:'すべての都市',
   save:'保存',saved2:'保存済み',book:'予約・問い合わせ',inq:'問い合わせ送信',inqL:'言語',inqM:'メッセージ',inqPH:'こんにちは！作品が素敵です。予約したいです…',send:'送信',
   emptyS:'保存した作品がありません — ♡を押してください。',noRes:'結果がありません。',saveT:'コレクションに保存 ♡',unsaveT:'保存から削除',bookT:'チャットを開いています ✨',inqT:'メッセージを送信しました ✨',joinToast:'デザイナー登録完了！ポートフォリオをアップしましょう ✨',Cat:{Hair:'ヘア',Makeup:'メイク',Nail:'ネイル',Lash:'まつげ',Skin:'スキン',Bridal:'ブライダル',Tattoo:'タトゥー'}},
- th:{guestReviewer:'ลูกค้า',myDashboard:'แดชบอร์ดของฉัน',explore:'สำรวจ',designers:'ดีไซเนอร์',reels:'รีลส์',reelsEmpty:'ยังไม่มีวิดีโอ',saved:'บันทึกไว้',join:'เข้าร่วม',search:'ค้นหาดีไซเนอร์ สไตล์…',all:'ทั้งหมด',tagline:'ค้นหาผู้เชี่ยวชาญด้านความงามที่เข้าใจสไตล์ของคุณ — จากทั่วโลก ดูผลงานจริง บันทึกที่ชอบ จองหรือส่งข้อความถึงดีไซเนอร์ได้เลย',h1:'ค้นหาผู้เชี่ยวชาญความงามที่<em>เข้าใจสไตล์ของคุณ</em>',
+ th:{pushErrPerm:'ขอสิทธิ์ไม่สำเร็จ',pushErrSw:'เซอร์วิสเวิร์กเกอร์ยังไม่พร้อม',pushErrSub:'สมัครรับการแจ้งเตือนไม่สำเร็จ',pushErrSave:'บันทึกไม่สำเร็จ',guestReviewer:'ลูกค้า',myDashboard:'แดชบอร์ดของฉัน',explore:'สำรวจ',designers:'ดีไซเนอร์',reels:'รีลส์',reelsEmpty:'ยังไม่มีวิดีโอ',saved:'บันทึกไว้',join:'เข้าร่วม',search:'ค้นหาดีไซเนอร์ สไตล์…',all:'ทั้งหมด',tagline:'ค้นหาผู้เชี่ยวชาญด้านความงามที่เข้าใจสไตล์ของคุณ — จากทั่วโลก ดูผลงานจริง บันทึกที่ชอบ จองหรือส่งข้อความถึงดีไซเนอร์ได้เลย',h1:'ค้นหาผู้เชี่ยวชาญความงามที่<em>เข้าใจสไตล์ของคุณ</em>',
   verified:'ยืนยันแล้ว',portfolio:'ผลงาน',beforeafter:'ก่อน / หลัง',reviews:'รีวิว',connect:'เชื่อมต่อ',before:'ก่อน',after:'หลัง',years:'ปี',allcity:'ทุกเมือง',
   save:'บันทึก',saved2:'บันทึกแล้ว',book:'จอง · ส่งข้อความ',inq:'ส่งคำถาม',inqL:'ภาษา',inqM:'ข้อความของคุณ',inqPH:'สวัสดีค่ะ! ชอบผลงานมากเลย อยากจองคิว…',send:'ส่ง',
   emptyS:'ยังไม่มีลุคที่บันทึก — แตะ ♡ ที่ผลงานใดก็ได้',noRes:'ไม่พบผลลัพธ์',saveT:'บันทึกลงคอลเลกชันแล้ว ♡',unsaveT:'นำออกจากที่บันทึกแล้ว',bookT:'กำลังเปิดแชท ✨',inqT:'ส่งข้อความแล้ว ✨',joinToast:'ยินดีต้อนรับดีไซเนอร์ — อัปโหลดผลงานของคุณ ✨',Cat:{Hair:'ผม',Makeup:'เมคอัพ',Nail:'เล็บ',Lash:'ขนตา',Skin:'ผิว',Bridal:'เจ้าสาว',Tattoo:'แท็ททู'}},
@@ -2415,7 +2415,7 @@ Object.assign(T.zh,{
  fbHead5:'你身边的\n实力设计师',fbSub5:'找到你附近、契合你品味的设计师。',
  fbHead6:'全球美业\n尽在一处',fbSub6:'韩国、日本及更多 — 全汇聚于此。'
 });
-Object.assign(T.zh,{guestReviewer:'顾客',myDashboard:'我的工作台',myPoints:'我的积分',pointsHint:'每次完成预约都能累积积分',sloganFull:'让艺术家更像艺术家 · Artists, more artist.',bkDoneT:'预约已提交！🎉',bkDoneS:'设计师确认后即预订成功，也会在聊天中通知你。',prodPromo:'与此服务搭配的推荐产品',relatedProd:'推荐产品',buyBtn:'购买',bkChange:'更改'});
+Object.assign(T.zh,{pushErrPerm:'请求权限失败',pushErrSw:'Service Worker 未就绪',pushErrSub:'订阅失败',pushErrSave:'保存订阅失败',guestReviewer:'顾客',myDashboard:'我的工作台',myPoints:'我的积分',pointsHint:'每次完成预约都能累积积分',sloganFull:'让艺术家更像艺术家 · Artists, more artist.',bkDoneT:'预约已提交！🎉',bkDoneS:'设计师确认后即预订成功，也会在聊天中通知你。',prodPromo:'与此服务搭配的推荐产品',relatedProd:'推荐产品',buyBtn:'购买',bkChange:'更改'});
 // 태국어: 영어 전체를 상속받고 주요 문자열만 태국어로 (누락 키는 영어로 자동 폴백)
 T.th=Object.assign({},T.th,{
  explore:'สำรวจ',designers:'ดีไซเนอร์',reels:'รีลส์',reelsEmpty:'ยังไม่มีวิดีโอ',saved:'บันทึกไว้',join:'สมัคร',my:'ฉัน',messages:'ข้อความ',
@@ -3536,17 +3536,45 @@ showAppPop();
 // 웹푸시: 구독(알림 켜기) + 발송 헬퍼
 const VAPID_PUB='BEpKjqYhyzj4JErJOcQBSzQd37VKP9hxkkdWQEGbWzEz_VNoXuNjk2wAw48tdMTEyrK8qHGsTIHmTTLEiR6ybyo';
 function urlB64ToU8(s){var p='='.repeat((4-s.length%4)%4),b=atob((s+p).replace(/-/g,'+').replace(/_/g,'/')),a=new Uint8Array(b.length);for(var i=0;i<b.length;i++)a[i]=b.charCodeAt(i);return a;}
+// 예전에는 try 전체를 하나로 catch 해서 무슨 일이 나든 '이 브라우저는 지원 안 함'이라고 떴다.
+// 권한 거부·구독 실패·저장 실패가 전부 같은 문구라 원인을 볼 수 없었다. 단계별로 나눈다.
 async function enablePush(){closeUmenu();
  if(!(ME&&ME.uid)){openLogin('');return;}
  if(!('serviceWorker' in navigator)||!('PushManager' in window)||!('Notification' in window)){toast(T[LANG].pushUnsupported);return;}
+ var perm;
+ try{ perm=await Notification.requestPermission(); }
+ catch(e){ toast(T[LANG].pushErrPerm+': '+((e&&e.message)||e)); return; }
+ if(perm!=='granted'){toast(T[LANG].pushDenied);return;}
+
+ // serviceWorker.ready 는 등록된 워커가 없으면 거부가 아니라 '영원히 대기'다.
+ // 그대로 두면 아무 안내도 없이 멈춘 것처럼 보이므로 시간 제한을 둔다.
+ var reg;
  try{
-  var perm=await Notification.requestPermission();if(perm!=='granted'){toast(T[LANG].pushDenied);return;}
-  var reg=await navigator.serviceWorker.ready;
-  var sub=await reg.pushManager.subscribe({userVisibleOnly:true,applicationServerKey:urlB64ToU8(VAPID_PUB)});
+  reg=await Promise.race([
+   navigator.serviceWorker.ready,
+   new Promise(function(_,rj){setTimeout(function(){rj(new Error('timeout'));},8000);})
+  ]);
+ }catch(e){ toast(T[LANG].pushErrSw+': '+((e&&e.message)||e)); return; }
+
+ var sub=null;
+ try{
+  sub=await reg.pushManager.subscribe({userVisibleOnly:true,applicationServerKey:urlB64ToU8(VAPID_PUB)});
+ }catch(e){
+  // 서버 키(VAPID)를 바꾸면 이 기기에 남아 있는 옛 구독과 충돌해 InvalidStateError 가 난다.
+  // 그때는 옛 구독을 버리고 한 번만 다시 시도한다.
+  try{
+   var old=await reg.pushManager.getSubscription();
+   if(old){ await old.unsubscribe();
+    sub=await reg.pushManager.subscribe({userVisibleOnly:true,applicationServerKey:urlB64ToU8(VAPID_PUB)}); }
+  }catch(e2){}
+  if(!sub){ toast(T[LANG].pushErrSub+': '+((e&&e.message)||e)); return; }
+ }
+
+ try{
   var r=await SB.from('push_subs').upsert({user_id:ME.uid,endpoint:sub.endpoint,sub:sub.toJSON()},{onConflict:'endpoint'});
-  if(r.error){toast(T[LANG].bkFail+': '+r.error.message);return;}
-  toast(T[LANG].pushOn);
- }catch(e){toast(T[LANG].pushUnsupported);}}
+  if(r.error){toast(T[LANG].pushErrSave+': '+r.error.message);return;}
+ }catch(e){ toast(T[LANG].pushErrSave+': '+((e&&e.message)||e)); return; }
+ toast(T[LANG].pushOn);}
 // tr(선택): {titleKey,bodyKey} — 서버가 수신자 기기 언어로 제목/본문을 렌더. 없으면 전달된 title/body(발신자 언어) 사용.
 function pushNotify(to,title,body,url,tr){if(!to)return;try{SB.functions.invoke('notify',{body:{to:to,title:title,body:body,url:url||'/community',tr:tr||null}}).then(function(){},function(){});}catch(e){}}
 SB.auth.getSession().then(function(r){onAuth(r.data.session);}).catch(function(){});
