@@ -2045,9 +2045,18 @@ function openD(did,keep){stopAllVideos();const d=dById(did);if(!d)return;curD=di
  if(!keep&&d.uid)logDclick(d.uid); // 인기 순위용 클릭 기록(리렌더 제외)
  const fav=isSaved(d.id+'_0');
  const name=(LANG==='ko'&&d.ko)?d.ko:d.name;
- const SNSBASE={instagram:'https://instagram.com/',tiktok:'https://tiktok.com/@',youtube:'https://youtube.com/@',x:'https://x.com/'};
+ // 외국인 손님은 인스타보다 라인·왓츠앱으로 먼저 묻는다. SNSMETA 에는 아이콘이
+ // 있었지만 이 URL 표에 없어서 렌더링 루프가 통째로 건너뛰고 있었다.
+ const SNSBASE={instagram:'https://instagram.com/',tiktok:'https://tiktok.com/@',youtube:'https://youtube.com/@',x:'https://x.com/',
+   line:'https://line.me/ti/p/~',whatsapp:'https://wa.me/'};
  const handles=Object.assign({},d.handles||(d.insta?{instagram:d.insta}:{}));
- const snsHtml=Object.keys(SNSBASE).map(function(p){var h=igClean(handles[p]||'');return h?`<a href="${SNSBASE[p]}${h}" target="_blank" rel="noopener"><i class="ti ${SNSMETA[p][0]}"></i></a>`:'';}).join('');
+ const snsHtml=Object.keys(SNSBASE).map(function(p){
+   // 손질 규칙이 채널마다 다르다. 왓츠앱은 숫자만 남겨야 wa.me 링크가 열린다
+   // ('+82 10-5934-0595' 를 그대로 붙이면 깨진 주소가 된다).
+   var raw=handles[p]||'';
+   var h=(p==='whatsapp')?String(raw).replace(/[^0-9]/g,''):igClean(raw);
+   return h?`<a href="${SNSBASE[p]}${esc(h)}" target="_blank" rel="noopener" title="${SNSMETA[p][1]}"><i class="ti ${SNSMETA[p][0]}"></i></a>`:'';
+ }).join('');
  /* 예약 버튼이 이미 같은 네이버 링크를 가리키면 N 아이콘은 중복이다(둘 다 아이콘이라 구분도 안 된다). */
  const naverHtml=(function(){var u=safeUrl(d.naver);if(!u)return '';var bu=(d.bookMode!=='external')&&safeUrl(d.bookingUrl);if(bu&&bu===u)return '';return `<a href="${esc(u)}" target="_blank" rel="noopener" class="sns-nv" title="네이버 예약">N</a>`;})();
  const bookingHtml=(function(){if(d.bookMode==='external')return '';var bu=safeUrl(d.bookingUrl);if(!bu)return '';var u=bu.toLowerCase();var lb=T[LANG].extBook,c='#573f47',ic='ti-calendar-check',tc='#fff';
@@ -2686,13 +2695,29 @@ function suBody(){
   <div class="il">${T[LANG].snsL}</div>
   <div class="snsrow"><i class="ti ti-brand-instagram"></i><input class="linput" id="suIG" placeholder="instagram — @handle" value="${((SU.sns&&SU.sns.instagram)||'').replace(/"/g,'&quot;')}"></div>
   <div class="snsrow"><i class="ti ti-brand-tiktok"></i><input class="linput" id="suTT" placeholder="tiktok — @handle" value="${((SU.sns&&SU.sns.tiktok)||'').replace(/"/g,'&quot;')}"></div>
-  <div class="snsrow"><i class="ti ti-brand-youtube"></i><input class="linput" id="suYT" placeholder="youtube — @handle" value="${((SU.sns&&SU.sns.youtube)||'').replace(/"/g,'&quot;')}"></div>`:(SU.role==='cust'?`<div class="il">${T[LANG].interests}</div><div class="chiprow">${CATS.slice(1).map(c=>`<span class="wchip ${SU.spec.includes(c)?'on':''}" onclick="suToggleSpec('${c}')">${cl(c)}</span>`).join('')}</div>`:'')}`;
+  <div class="snsrow"><i class="ti ti-brand-youtube"></i><input class="linput" id="suYT" placeholder="youtube — @handle" value="${((SU.sns&&SU.sns.youtube)||'').replace(/"/g,'&quot;')}"></div>
+  <div class="snsrow"><i class="ti ti-brand-line"></i><input class="linput" id="suLINE" placeholder="LINE — ID" value="${((SU.sns&&SU.sns.line)||'').replace(/"/g,'&quot;')}"></div>
+  <div class="snsrow"><i class="ti ti-brand-whatsapp"></i><input class="linput" id="suWA" inputmode="tel" placeholder="WhatsApp — 821012345678" value="${((SU.sns&&SU.sns.whatsapp)||'').replace(/"/g,'&quot;')}"></div>`:(SU.role==='cust'?`<div class="il">${T[LANG].interests}</div><div class="chiprow">${CATS.slice(1).map(c=>`<span class="wchip ${SU.spec.includes(c)?'on':''}" onclick="suToggleSpec('${c}')">${cl(c)}</span>`).join('')}</div>`:'')}`;
  if(SU.step===3)return `<h3>${T[LANG].agreements}</h3>
   <label class="agree"><input type="checkbox" ${SU.tos?'checked':''} onchange="SU.tos=this.checked"><span><span class="req">[${T[LANG].req}]</span> ${T[LANG].agreeTerms} <a href="terms.html" target="_blank" onclick="event.stopPropagation()">${T[LANG].view}</a></span></label>
   <label class="agree"><input type="checkbox" ${SU.priv?'checked':''} onchange="SU.priv=this.checked"><span><span class="req">[${T[LANG].req}]</span> ${T[LANG].agreePrivacy} <a href="privacy.html" target="_blank" onclick="event.stopPropagation()">${T[LANG].view}</a></span></label>
   <label class="agree"><input type="checkbox" ${SU.mktg?'checked':''} onchange="SU.mktg=this.checked"><span>${T[LANG].agreeMktg}</span></label>`;
  return '';}
-function suSnapshot(){if(SU.step===1&&$('suContact')&&!SU.code)SU.contact=$('suContact').value.trim();if(SU.step===2){if($('suNick'))SU.name=$('suNick').value.trim();if($('suCountry'))SU.country=$('suCountry').value;if($('suCity'))SU.city=$('suCity').value.trim();if($('suShop'))SU.shopName=$('suShop').value.trim();if($('suArea'))SU.area=$('suArea').value.trim();if($('suTagIn')&&$('suTagIn').value.trim())suPushTag($('suTagIn').value);if($('suCareer'))SU.career=$('suCareer').value.trim();if($('suIG')||$('suTT')||$('suYT')){SU.sns={instagram:igClean($('suIG')?$('suIG').value:''),tiktok:igClean($('suTT')?$('suTT').value:''),youtube:igClean($('suYT')?$('suYT').value:'')};}}}
+function suSnapshot(){if(SU.step===1&&$('suContact')&&!SU.code)SU.contact=$('suContact').value.trim();if(SU.step===2){if($('suNick'))SU.name=$('suNick').value.trim();if($('suCountry'))SU.country=$('suCountry').value;if($('suCity'))SU.city=$('suCity').value.trim();if($('suShop'))SU.shopName=$('suShop').value.trim();if($('suArea'))SU.area=$('suArea').value.trim();if($('suTagIn')&&$('suTagIn').value.trim())suPushTag($('suTagIn').value);if($('suCareer'))SU.career=$('suCareer').value.trim();if($('suIG')||$('suTT')||$('suYT')||$('suLINE')||$('suWA')){SU.sns={instagram:igClean($('suIG')?$('suIG').value:''),tiktok:igClean($('suTT')?$('suTT').value:''),youtube:igClean($('suYT')?$('suYT').value:''),
+  line:igClean($('suLINE')?$('suLINE').value:''),
+  whatsapp:waNumber($('suWA')?$('suWA').value:'',SU.country)};}}}
+// 왓츠앱은 국가번호가 붙은 숫자여야 wa.me 가 열린다. 그런데 디자이너는 자기 나라
+// 방식대로 '010-5934-0595' 라고 적는다. 그대로 두면 링크가 죽으므로 0 을 떼고
+// 선택한 나라의 국가번호를 붙인다. 이미 국가번호로 시작하면 그대로 둔다.
+const DIAL={KR:'82',JP:'81',US:'1',TH:'66',TW:'886',VN:'84',SG:'65',CN:'86',HK:'852',PH:'63',MY:'60',ID:'62',AU:'61',GB:'44',CA:'1'};
+function waNumber(v,country){
+  var n=String(v||'').replace(/[^0-9]/g,'');
+  if(!n)return '';
+  var cc=DIAL[String(country||'').toUpperCase()];
+  if(!cc)return n;
+  if(n.indexOf(cc)===0)return n;         // 이미 국가번호로 시작
+  return cc+n.replace(/^0+/,'');
+}
 function suToggleSpec(c){const i=SU.spec.indexOf(c);if(i<0)SU.spec.push(c);else SU.spec.splice(i,1);renderSU();}
 function suSetFree(v){try{suSnapshot();}catch(e){}SU.freelancer=!!v;renderSU();}
 function suPushTag(v){v=(v||'').trim();if(!v)return;SU.tags=SU.tags||[];if(SU.tags.length<8&&SU.tags.indexOf(v)<0)SU.tags.push(v);}
